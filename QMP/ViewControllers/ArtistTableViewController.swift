@@ -48,9 +48,6 @@ class ArtistTableViewController: UITableViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-        albumArtistsSections.removeAll(keepCapacity: false)
-        albumArtists.removeAll(keepCapacity: false)
     }
 
     // MARK: - Table view data source

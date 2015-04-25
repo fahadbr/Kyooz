@@ -14,16 +14,25 @@ class ContainerViewController : UIViewController {
     let centerPanelExpandedOffset:CGFloat = 60
     
     var tapGestureRecognizer:UITapGestureRecognizer!
+    var panGestureRecognizer:UIPanGestureRecognizer!
     
     var rootNavigationControler:UINavigationController!
-    var rootViewController:UIViewController!
+    var rootViewController:RootViewController!
     
     var sidePanelViewController:UIViewController?
     
     var sidePanelExpanded:Bool = false {
         didSet {
             showShadowForCenterViewController(sidePanelExpanded)
-            tapGestureRecognizer.enabled = sidePanelExpanded
+            for gestureRecognizerObject in rootNavigationControler.view.gestureRecognizers! {
+                let gestureRecognizer = gestureRecognizerObject as! UIGestureRecognizer
+                if(gestureRecognizer == tapGestureRecognizer || gestureRecognizer == panGestureRecognizer) {
+                    gestureRecognizer.enabled = sidePanelExpanded
+                } else {
+                    gestureRecognizer.enabled = !sidePanelExpanded
+                }
+            }
+            rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelExpanded)
         }
     }
     
@@ -42,14 +51,21 @@ class ContainerViewController : UIViewController {
         self.rootNavigationControler.toolbarHidden = false
         self.view.addSubview(rootNavigationControler.view)
         self.addChildViewController(rootNavigationControler)
-        
         self.rootNavigationControler.didMoveToParentViewController(self)
-        let panGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePanGesture:")
-        panGestureRecognizer.edges = UIRectEdge.Right
-        rootNavigationControler.view.addGestureRecognizer(panGestureRecognizer)
-        self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTouchGesture:")
         
-        self.view.addGestureRecognizer(tapGestureRecognizer)
+        let screenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
+        screenEdgePanGestureRecognizer.edges = UIRectEdge.Right
+        self.rootNavigationControler.view.addGestureRecognizer(screenEdgePanGestureRecognizer)
+
+        //keep a reference of this gesture recogizer to enable/disable it
+        self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTouchGesture:")
+        self.tapGestureRecognizer.enabled = sidePanelExpanded
+        self.rootNavigationControler.view.addGestureRecognizer(tapGestureRecognizer)
+        
+        self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
+        self.panGestureRecognizer.enabled = sidePanelExpanded
+        self.rootNavigationControler.view.addGestureRecognizer(panGestureRecognizer)
+        
     }
     
     func toggleSidePanel() {
@@ -109,22 +125,23 @@ class ContainerViewController : UIViewController {
             options: .CurveEaseInOut,
             animations: {self.rootNavigationControler.view.frame.origin.x = targetPosition},
             completion: completion)
+        
     }
     
+}
+
+extension ContainerViewController : UIGestureRecognizerDelegate {
     // MARK: Gesture recognizer
     
     func handleTouchGesture(recognizer:UITapGestureRecognizer) {
         if(recognizer.state == .Ended) {
-            let touchX = recognizer.locationInView(self.view).x
-            if(touchX <= centerPanelExpandedOffset && sidePanelExpanded) {
-                self.toggleSidePanel()
-            }
+            self.toggleSidePanel()
         }
     }
     
-    func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+    func handleScreenEdgePanGesture(recognizer: UIPanGestureRecognizer) {
         let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
-
+        
         
         switch(recognizer.state) {
         case .Began:
@@ -148,9 +165,33 @@ class ContainerViewController : UIViewController {
             }
         default:
             break
-        
+            
         }
         
     }
     
+    func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+        let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
+        
+        
+        switch(recognizer.state) {
+        case .Changed:
+            recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
+            recognizer.setTranslation(CGPointZero, inView: view)
+        case .Ended:
+            if(sidePanelViewController != nil) {
+                let hasMovedGreaterThanHalfway = recognizer.view!.center.x < 0
+                animateSidePanel(shouldExpand: hasMovedGreaterThanHalfway)
+            }
+        case .Cancelled:
+            if(sidePanelViewController != nil) {
+                let hasMovedGreaterThanHalfway = recognizer.view!.center.x < 0
+                animateSidePanel(shouldExpand: hasMovedGreaterThanHalfway)
+            }
+        default:
+            break
+        }
+        
+    }
+   
 }

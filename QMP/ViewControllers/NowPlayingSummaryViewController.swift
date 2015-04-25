@@ -35,7 +35,7 @@ class NowPlayingSummaryViewController: UIViewController {
     deinit {
         println("deinitializing NowPlayingSummaryViewController")
         invalidateTimer(nil)
-        unregisterForMediaPlayerNotifications()
+        unregisterForNotifications()
     }
     
     @IBAction func unwindToSummaryScreen(segue : UIStoryboardSegue)  {
@@ -90,7 +90,7 @@ class NowPlayingSummaryViewController: UIViewController {
         
         
         self.reloadData(nil)
-        registerForMediaPlayerNotifications()
+        registerForNotifications()
         // Do any additional setup after loading the view.
     }
 
@@ -138,16 +138,19 @@ class NowPlayingSummaryViewController: UIViewController {
     func updatePlaybackProgressTimer() {
         let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds)
         let queue = dispatch_get_main_queue()
-        dispatch_after(dispatchTime, queue, { [unowned self] ()  in
-            if(self.queueBasedMusicPlayer.musicIsPlaying && self.playbackProgressTimer == nil) {
+        dispatch_after(dispatchTime, queue, { [weak self] ()  in
+            if(self == nil) {
+                return
+            }
+            if(self!.queueBasedMusicPlayer.musicIsPlaying && self!.playbackProgressTimer == nil) {
                 println("initiating playbackProgressTimer")
-                self.playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
-                    target: self,
+                self!.playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
+                    target: self!,
                     selector: "updatePlaybackProgressBar:",
                     userInfo: nil,
                     repeats: true)
-            } else if(!self.queueBasedMusicPlayer.musicIsPlaying && self.playbackProgressTimer != nil){
-                self.invalidateTimer(nil)
+            } else if(!self!.queueBasedMusicPlayer.musicIsPlaying && self!.playbackProgressTimer != nil){
+                self!.invalidateTimer(nil)
             }
         })
     }
@@ -207,7 +210,7 @@ class NowPlayingSummaryViewController: UIViewController {
     }
 
 
-    private func registerForMediaPlayerNotifications() {
+    private func registerForNotifications() {
         let musicPlayer = MusicPlayerContainer.defaultMusicPlayerController
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
@@ -230,7 +233,7 @@ class NowPlayingSummaryViewController: UIViewController {
         musicPlayer.beginGeneratingPlaybackNotifications()
     }
     
-    private func unregisterForMediaPlayerNotifications() {
+    private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     

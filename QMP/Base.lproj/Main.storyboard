@@ -11,7 +11,7 @@
             <objects>
                 <tableViewController title="Artists" id="r19-5Y-R1W" customClass="ArtistTableViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="SVv-HR-1xv">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
@@ -42,7 +42,7 @@
             <objects>
                 <tableViewController title="Albums" id="HQW-hx-zTb" customClass="FilteredAlbumTableViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="72" sectionHeaderHeight="22" sectionFooterHeight="22" id="bFA-dr-TGZ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <connections>
@@ -64,7 +64,7 @@
             <objects>
                 <tableViewController id="sUt-9Z-Udd" customClass="FilteredSongTableViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="ihN-Pn-ElJ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -92,7 +92,7 @@
         <!--Artist-->
         <scene sceneID="PG5-55-KkY">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="AlC-4z-9IE" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="libraryNavigationController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="AlC-4z-9IE" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Artist" image="first" id="qp2-Kj-XpR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Kfj-cB-Vol">
@@ -178,7 +178,7 @@
         <!--NowPlayingSummaryView-->
         <scene sceneID="hrQ-wI-PHv">
             <objects>
-                <viewController title="NowPlayingSummaryView" id="igl-8i-tSd" customClass="NowPlayingSummaryViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="nowPlayingSummaryViewController" title="NowPlayingSummaryView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="igl-8i-tSd" customClass="NowPlayingSummaryViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="PC2-mG-M0S"/>
                         <viewControllerLayoutGuide type="bottom" id="4hG-pS-V2Q"/>
@@ -187,7 +187,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R1l-bh-GSp">
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R1l-bh-GSp">
                                 <rect key="frame" x="0.0" y="-20" width="600" height="620"/>
                                 <view key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" id="aOX-id-Cd2">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="620"/>
@@ -207,7 +207,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LL1-x0-BD9">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LL1-x0-BD9">
                                 <rect key="frame" x="140" y="0.0" width="320" height="320"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="LL1-x0-BD9" secondAttribute="height" multiplier="1:1" id="1aV-0u-dvX"/>
@@ -302,7 +302,7 @@
         <!--Navigation Controller-->
         <scene sceneID="anc-wd-y6O">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" toolbarHidden="NO" id="Va0-od-Y5g" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="nowPlayingSummaryNavigationController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" navigationBarHidden="YES" toolbarHidden="NO" id="Va0-od-Y5g" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="bBW-p1-bfV">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -344,6 +344,7 @@
         <!--Root View Controller-->
         <scene sceneID="d1h-e6-UUA">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="K6W-mH-eV3" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="rootViewController" id="2qn-Hd-hWR" customClass="RootViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="eA4-ZK-j3B"/>
@@ -352,21 +353,7 @@
                     <view key="view" contentMode="scaleToFill" id="buc-2e-8hJ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5ZV-TN-ERd">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
-                                <connections>
-                                    <segue destination="AlC-4z-9IE" kind="embed" id="ooR-ai-PG8"/>
-                                </connections>
-                            </containerView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="5ZV-TN-ERd" firstAttribute="leading" secondItem="buc-2e-8hJ" secondAttribute="leading" id="6a7-lg-Oyf"/>
-                            <constraint firstAttribute="trailing" secondItem="5ZV-TN-ERd" secondAttribute="trailing" id="9m9-hO-ceE"/>
-                            <constraint firstItem="5ZV-TN-ERd" firstAttribute="top" secondItem="eA4-ZK-j3B" secondAttribute="bottom" constant="-20" id="Awh-kg-VmH"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="5ZV-TN-ERd" secondAttribute="bottom" constant="44" id="zSt-jR-KFZ"/>
-                        </constraints>
                     </view>
                     <toolbarItems>
                         <barButtonItem title="Now Playing" id="D0l-FN-QzU">
@@ -377,7 +364,6 @@
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="ngY-N2-8Bc"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="K6W-mH-eV3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1586" y="-2094"/>
         </scene>

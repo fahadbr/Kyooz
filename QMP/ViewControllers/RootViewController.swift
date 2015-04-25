@@ -11,9 +11,10 @@ import MediaPlayer
 
 class RootViewController: UIViewController {
     
+    var libraryNavigationController:UINavigationController!
     
-
-
+    var nowPlayingSummaryNavigationController:UINavigationController!
+    var nowPlayingSummaryViewController:NowPlayingSummaryViewController!
     
     @IBAction func unwindToBrowser(segue : UIStoryboardSegue)  {
         
@@ -21,52 +22,28 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        nowPlayingItem.title = MusicPlayerContainer.applicationMusicPlayer().nowPlayingItem.title
-        // Do any additional setup after loading the view.
+        self.libraryNavigationController = UIStoryboard.libraryNavigationController()
+        let originalFrame = self.libraryNavigationController.view.frame
+        let newOrigin = originalFrame.origin
+        let newSize = CGSize(width: CGRectGetWidth(originalFrame), height: originalFrame.height - 44)
+        self.libraryNavigationController.view.frame = CGRect(origin: newOrigin, size: newSize)
         
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    func handleNowPlayingItemChanged(notification:NSNotification) {
-//        nowPlayingItem.title = MusicPlayerContainer.applicationMusicPlayer().nowPlayingItem.title
-    }
-    
-    func handlePlaybackStateChanged(notification:NSNotification) {
-
+        self.view.addSubview(libraryNavigationController.view)
+        self.addChildViewController(libraryNavigationController)
+        self.libraryNavigationController.didMoveToParentViewController(self)
+        
+//        self.nowPlayingSummaryViewController = UIStoryboard.nowPlayingSummaryViewController()
+//        self.nowPlayingSummaryNavigationController = UINavigationController(rootViewController: self.nowPlayingSummaryViewController)
+//        self.nowPlayingSummaryNavigationController.toolbarHidden = false
+//        self.nowPlayingSummaryNavigationController.navigationBarHidden = true
+        
+        
 
     }
-    
-    private func registerForMediaPlayerNotifications() {
-//        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleNowPlayingItemChanged:",
-//            name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification,
-//            object: MusicPlayerContainer.applicationMusicPlayer())
-//        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handlePlaybackStateChanged:",
-//            name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
-//            object: MusicPlayerContainer.applicationMusicPlayer())
-//        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handlePlaybackStateChanged:",
-//            name:PlaybackStateManager.instance.PlaybackStateCorrectedNotification,
-//            object: PlaybackStateManager.instance)
-//        MusicPlayerContainer.applicationMusicPlayer().beginGeneratingPlaybackNotifications()
-    }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func enableGesturesInSubViews(#shouldEnable:Bool) {
+        self.libraryNavigationController.interactivePopGestureRecognizer.enabled = shouldEnable
     }
-    */
-    
     
 
 }

@@ -15,17 +15,20 @@ extension UIStoryboard {
         return UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
     }
     
-//    static let mainStoryboard:UIStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
     
-    class func rootViewController() -> UIViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("rootViewController") as! UIViewController
+    class func rootViewController() -> RootViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("rootViewController") as! RootViewController
     }
     
-//    class func libraryViewController() -> UIViewController {
-//        return mainStoryboard().instantiateViewControllerWithIdentifier("libraryViewController") as! UIViewController
-//    }
+    class func libraryNavigationController() -> UINavigationController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("libraryNavigationController") as! UINavigationController
+    }
     
     class func nowPlayingViewController() -> UIViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingViewController") as! UIViewController
+    }
+    
+    class func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
     }
 }
