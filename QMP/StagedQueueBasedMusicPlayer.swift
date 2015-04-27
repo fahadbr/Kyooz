@@ -174,8 +174,11 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         queue.removeRange(Range<Int>(start: fromIndex + 1, end: queue.count))
         
         let playbackState = getPlaybackState()
-        setQueueInternal(queue, itemToPlay: queue[fromIndex])
-        restorePlaybackState(playbackState, override: false, restoreFullState: true)
+        let mediaItemToPlay = queue[fromIndex]
+        setQueueInternal(queue, itemToPlay: mediaItemToPlay)
+        if(mediaItemToPlay.persistentID == playbackState.nowPlayingItem!.persistentID) {
+            restorePlaybackState(playbackState, override: false, restoreFullState: true)
+        }
     }
     
     func deleteItemAtIndexFromQueue(index:Int) {
