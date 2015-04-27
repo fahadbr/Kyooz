@@ -160,7 +160,7 @@ extension NowPlayingViewController:SongDetailsTableViewCellDelegate {
         let controller = UIAlertController(title: sender.songTitleLabel.text! + " (" + sender.albumArtistAndAlbumLabel.text! + ")", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
-        
+
         if(!self.queueBasedMusicPlayer.musicIsPlaying || sender.indexInQueue >= queueBasedMusicPlayer.indexOfNowPlayingItem) {
             let clearUpcomingItemsAction = UIAlertAction(title: "Clear Upcoming Items", style: UIAlertActionStyle.Default) { action in
                 self.queueBasedMusicPlayer.clearUpcomingItems(fromIndex: sender.indexInQueue)
@@ -168,6 +168,12 @@ extension NowPlayingViewController:SongDetailsTableViewCellDelegate {
             }
             controller.addAction(clearUpcomingItemsAction)
         }
+        
+        let deleteAction = UIAlertAction(title: "Delete", style:UIAlertActionStyle.Destructive, handler: { action in
+            self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
+                forRowAtIndexPath: NSIndexPath(forRow: sender.indexInQueue, inSection: 0))
+        })
+        controller.addAction(deleteAction)
         self.presentViewController(controller, animated: true, completion: nil)
     }
     
