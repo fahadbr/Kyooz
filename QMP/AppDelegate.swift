@@ -42,11 +42,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(application: UIApplication) {
         if(!isMultiTaskingSupported()) {
-            queueBasedMusicPlayer.executePreBackgroundTasks?()
+            queueBasedMusicPlayer.executePreBackgroundTasks()
             return
         }
-        let moreTimeNeeded = queueBasedMusicPlayer.moreBackgroundTimeIsNeeded?()
-        if((moreTimeNeeded != nil && !(moreTimeNeeded!)) || PlaybackStateManager.instance.otherMusicIsPlaying()) {
+
+        if( !queueBasedMusicPlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
             return
         }
         
@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         println("Starting background task: " + taskName)
         backgroundTaskIdentifier = application.beginBackgroundTaskWithName(taskName,
             expirationHandler: { [weak self]() in
-            self!.queueBasedMusicPlayer.executePreBackgroundTasks?()
+            self!.queueBasedMusicPlayer.executePreBackgroundTasks()
             self!.endBackgroundTask()
         })
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -85,7 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         
-        queueBasedMusicPlayer.executePreBackgroundTasks?()
+        queueBasedMusicPlayer.executePreBackgroundTasks()
         TempDataDAO.persistNowPlayingQueueToTempStorage(queueBasedMusicPlayer.getNowPlayingQueue())
     }
     
@@ -105,8 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func waitForStagedQueuePromotion(sender: NSTimer) {
-        let moreTimeNeeded = queueBasedMusicPlayer.moreBackgroundTimeIsNeeded?()
-        if((moreTimeNeeded != nil && !(moreTimeNeeded!)) || PlaybackStateManager.instance.otherMusicIsPlaying()) {
+        if(!queueBasedMusicPlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
             self.endBackgroundTask()
         } else {
             println("Staged queue is not yet promoted")

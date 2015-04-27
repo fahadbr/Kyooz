@@ -15,8 +15,8 @@ class ContainerViewController : UIViewController {
     
     var tapGestureRecognizer:UITapGestureRecognizer!
     var panGestureRecognizer:UIPanGestureRecognizer!
+    var screenEdgePanGestureRecognizer:UIScreenEdgePanGestureRecognizer!
     
-    var rootNavigationControler:UINavigationController!
     var rootViewController:RootViewController!
     
     var sidePanelViewController:UIViewController?
@@ -24,7 +24,7 @@ class ContainerViewController : UIViewController {
     var sidePanelExpanded:Bool = false {
         didSet {
             showShadowForCenterViewController(sidePanelExpanded)
-            for gestureRecognizerObject in rootNavigationControler.view.gestureRecognizers! {
+            for gestureRecognizerObject in rootViewController.view.gestureRecognizers! {
                 let gestureRecognizer = gestureRecognizerObject as! UIGestureRecognizer
                 if(gestureRecognizer == tapGestureRecognizer || gestureRecognizer == panGestureRecognizer) {
                     gestureRecognizer.enabled = sidePanelExpanded
@@ -41,30 +41,34 @@ class ContainerViewController : UIViewController {
         
     }
     
+    deinit {
+        unregisterForNotifications()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerForNotifications()
         
-        self.rootViewController = UIStoryboard.rootViewController()
+        self.rootViewController = RootViewController.instance
         
-        self.rootNavigationControler = UINavigationController(rootViewController: self.rootViewController)
-        self.rootNavigationControler.navigationBarHidden = true
-        self.rootNavigationControler.toolbarHidden = false
-        self.view.addSubview(rootNavigationControler.view)
-        self.addChildViewController(rootNavigationControler)
-        self.rootNavigationControler.didMoveToParentViewController(self)
+        self.view.addSubview(rootViewController.view)
+        self.addChildViewController(rootViewController)
+        self.rootViewController.didMoveToParentViewController(self)
+        self.rootViewController.gestureDelegate = self
         
-        let screenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
-        screenEdgePanGestureRecognizer.edges = UIRectEdge.Right
-        self.rootNavigationControler.view.addGestureRecognizer(screenEdgePanGestureRecognizer)
+        self.screenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
+        self.screenEdgePanGestureRecognizer.edges = UIRectEdge.Right
+        self.screenEdgePanGestureRecognizer.delegate = self
+        self.rootViewController.view.addGestureRecognizer(self.screenEdgePanGestureRecognizer)
 
         //keep a reference of this gesture recogizer to enable/disable it
         self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTouchGesture:")
         self.tapGestureRecognizer.enabled = sidePanelExpanded
-        self.rootNavigationControler.view.addGestureRecognizer(tapGestureRecognizer)
+        self.rootViewController.view.addGestureRecognizer(tapGestureRecognizer)
         
         self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
         self.panGestureRecognizer.enabled = sidePanelExpanded
-        self.rootNavigationControler.view.addGestureRecognizer(panGestureRecognizer)
+        self.rootViewController.view.addGestureRecognizer(panGestureRecognizer)
         
     }
     
@@ -77,9 +81,9 @@ class ContainerViewController : UIViewController {
     
     func showShadowForCenterViewController(shouldShowShadow:Bool) {
         if(shouldShowShadow) {
-            self.rootNavigationControler.view.layer.shadowOpacity = 0.8
+            self.rootViewController.view.layer.shadowOpacity = 0.8
         } else {
-            self.rootNavigationControler.view.layer.shadowOpacity = 0.0
+            self.rootViewController.view.layer.shadowOpacity = 0.0
         }
     }
     
@@ -104,15 +108,12 @@ class ContainerViewController : UIViewController {
         if(shouldExpand) {
             sidePanelExpanded = true
             
-            animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootNavigationControler.view.frame) +
+            animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
                 centerPanelExpandedOffset)
             
         } else {
             animateCenterPanelXPosition(targetPosition: 0) { finished in
                 self.sidePanelExpanded = false
-                
-                self.sidePanelViewController!.view.removeFromSuperview()
-                self.sidePanelViewController = nil
             }
         }
     }
@@ -123,9 +124,35 @@ class ContainerViewController : UIViewController {
             usingSpringWithDamping: 0.8,
             initialSpringVelocity: 0,
             options: .CurveEaseInOut,
-            animations: {self.rootNavigationControler.view.frame.origin.x = targetPosition},
+            animations: {self.rootViewController.view.frame.origin.x = targetPosition},
             completion: completion)
         
+    }
+    
+    func deinitializeSideViewController(notification:NSNotification) {
+        if(!sidePanelExpanded && self.sidePanelViewController != nil) {
+            println("deinitializing side view controller")
+            self.sidePanelViewController!.view.removeFromSuperview()
+            self.sidePanelViewController = nil
+        }
+    }
+    
+    private func registerForNotifications() {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let application = UIApplication.sharedApplication()
+        
+        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+            name: UIApplicationDidEnterBackgroundNotification, object: application)
+        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+            name: UIApplicationWillResignActiveNotification, object: application)
+        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+            name: UIApplicationWillTerminateNotification, object: application)
+        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+            name: UIApplicationDidReceiveMemoryWarningNotification, object: application)
+    }
+    
+    private func unregisterForNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
 }
@@ -145,6 +172,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         
         switch(recognizer.state) {
         case .Began:
+            println("NPVC Screen Edge Pan Gesture Began")
             if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
                 addSidePanelViewController()
             }
@@ -153,19 +181,13 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         case .Changed:
             recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
             recognizer.setTranslation(CGPointZero, inView: view)
-        case .Ended:
+        case .Ended, .Cancelled:
             if(sidePanelViewController != nil) {
-                let hasMovedGreaterThanHalfway = recognizer.view!.center.x < 0
-                animateSidePanel(shouldExpand: hasMovedGreaterThanHalfway)
-            }
-        case .Cancelled:
-            if(sidePanelViewController != nil) {
-                let hasMovedGreaterThanHalfway = recognizer.view!.center.x < 0
-                animateSidePanel(shouldExpand: hasMovedGreaterThanHalfway)
+                let hasMovedEnoughLeftOfCenter = recognizer.view!.center.x < (self.view.center.x * 0.90)
+                animateSidePanel(shouldExpand: hasMovedEnoughLeftOfCenter)
             }
         default:
             break
-            
         }
         
     }
@@ -173,25 +195,41 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
         
-        
         switch(recognizer.state) {
         case .Changed:
             recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
             recognizer.setTranslation(CGPointZero, inView: view)
-        case .Ended:
+        case .Ended, .Cancelled:
             if(sidePanelViewController != nil) {
-                let hasMovedGreaterThanHalfway = recognizer.view!.center.x < 0
-                animateSidePanel(shouldExpand: hasMovedGreaterThanHalfway)
-            }
-        case .Cancelled:
-            if(sidePanelViewController != nil) {
-                let hasMovedGreaterThanHalfway = recognizer.view!.center.x < 0
-                animateSidePanel(shouldExpand: hasMovedGreaterThanHalfway)
+                let hasMovedEnoughRightOfScreenEdge = recognizer.view!.center.x < -(self.view.center.x * 0.90)
+                animateSidePanel(shouldExpand: hasMovedEnoughRightOfScreenEdge)
             }
         default:
             break
         }
         
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if(gestureRecognizer.isEqual(self.rootViewController.nowPlayingPanGestureRecognizer) &&
+            otherGestureRecognizer.isEqual(self.screenEdgePanGestureRecognizer)) {
+                println("Mandating screenEdgePanGestureRecognizer to fail")
+                return true
+        }
+        return false
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if(gestureRecognizer.isEqual(self.screenEdgePanGestureRecognizer) &&
+            otherGestureRecognizer.isEqual(self.rootViewController.nowPlayingPanGestureRecognizer)) {
+                println("Mandating screenEdgePanGestureRecognizer to fail")
+                return true
+        }
+        return false
     }
    
 }

@@ -24,7 +24,6 @@
 		0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */; };
 		0B13DA1B1AE6FA9A00CC5C01 /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA061AE6FA9A00CC5C01 /* AlbumTableViewCell.swift */; };
 		0B13DA1C1AE6FA9A00CC5C01 /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13DA071AE6FA9A00CC5C01 /* AlbumTableViewCell.xib */; };
-		0B13DA1D1AE6FA9A00CC5C01 /* NowPlayingToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA081AE6FA9A00CC5C01 /* NowPlayingToolBar.swift */; };
 		0B13DA1E1AE6FA9A00CC5C01 /* MusicPlayerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */; };
 		0B13DA1F1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */; };
 		0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */; };
@@ -37,6 +36,10 @@
 		0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */; };
 		0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */; };
 		0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */; };
+		0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA601AED49AF00CC5C01 /* SongDetailsTableViewCell.swift */; };
+		0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */; };
+		0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA651AED584700CC5C01 /* ImageContainer.swift */; };
+		0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,7 +74,6 @@
 		0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0B13DA061AE6FA9A00CC5C01 /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
 		0B13DA071AE6FA9A00CC5C01 /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
-		0B13DA081AE6FA9A00CC5C01 /* NowPlayingToolBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingToolBar.swift; sourceTree = "<group>"; };
 		0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPlayerContainer.swift; sourceTree = "<group>"; };
 		0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPlayerTableViewActionFactory.swift; sourceTree = "<group>"; };
 		0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibContainer.swift; sourceTree = "<group>"; };
@@ -84,6 +86,10 @@
 		0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardExtension.swift; sourceTree = "<group>"; };
 		0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		0B13DA601AED49AF00CC5C01 /* SongDetailsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SongDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		0B13DA651AED584700CC5C01 /* ImageContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainer.swift; sourceTree = "<group>"; };
+		0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItemUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +142,8 @@
 				0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */,
 				0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */,
 				0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */,
+				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
+				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
 				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
 				0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */,
 				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
@@ -213,7 +221,8 @@
 			children = (
 				0B13DA061AE6FA9A00CC5C01 /* AlbumTableViewCell.swift */,
 				0B13DA071AE6FA9A00CC5C01 /* AlbumTableViewCell.xib */,
-				0B13DA081AE6FA9A00CC5C01 /* NowPlayingToolBar.swift */,
+				0B13DA601AED49AF00CC5C01 /* SongDetailsTableViewCell.swift */,
+				0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -303,6 +312,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */,
 				0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */,
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
 				0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */,
@@ -336,13 +346,15 @@
 				0B13DA151AE6FA9A00CC5C01 /* ArtistTableViewController.swift in Sources */,
 				0B13DA1F1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* MusicPlayerContainer.swift in Sources */,
+				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B13DA211AE6FA9A00CC5C01 /* PlaybackStateDTO.swift in Sources */,
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
+				0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */,
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
+				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,
 				0B13DA171AE6FA9A00CC5C01 /* FilteredSongTableViewController.swift in Sources */,
-				0B13DA1D1AE6FA9A00CC5C01 /* NowPlayingToolBar.swift in Sources */,
 				0B13DA131AE6FA9A00CC5C01 /* QueueBasedMusicPlayerImpl.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
 				0B13DA241AE6FA9A00CC5C01 /* StagedQueueBasedMusicPlayer.swift in Sources */,
@@ -544,6 +556,7 @@
 				0B13D9DC1AE6F80E00CC5C01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "QMPTests" */ = {
 			isa = XCConfigurationList;
@@ -552,6 +565,7 @@
 				0B13D9DF1AE6F80E00CC5C01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

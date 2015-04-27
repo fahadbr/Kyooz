@@ -66,6 +66,7 @@ class FilteredSongTableViewController: UITableViewController {
         var nowPlayingItem = songs.items[index] as! MPMediaItem
         queueBasedMusicPlayer.playNowWithCollection(mediaCollection: songs,
             itemToPlay: nowPlayingItem)
+        RootViewController.instance.animatePullablePanel(shouldExpand: true)
     }
     
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

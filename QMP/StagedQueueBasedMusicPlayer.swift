@@ -24,11 +24,22 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
     private let playbackStateManager = PlaybackStateManager.instance
     private let timeDelayInNanoSeconds = Int64(1.0 * Double(NSEC_PER_SEC))
     
-    private var nowPlayingQueue:[MPMediaItem]?
-    private var stagedQueue:[MPMediaItem]?
-    private var nextStagedMediaItem:MPMediaItem?
+    private var nowPlayingQueue:[MPMediaItem]? {
+        didSet {
+            println("publishing notification for queue change")
+            self.publishNotification(updateType: .QueueUpdate)
+        }
+    }
+    private var stagedQueue:[MPMediaItem]? {
+        didSet {
+            println("publishing notification for queue change")
+            self.publishNotification(updateType: .QueueUpdate)
+        }
+    }
     
+    private var nextStagedMediaItem:MPMediaItem?
     private var indexOfNextStagedItemExceedsNowPlayingQueueLength:Bool = false
+    
 
     //MARK: COMPUTED PROPERTIES
     var nowPlayingItem:MPMediaItem? {
@@ -41,6 +52,25 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
     
     var currentPlaybackTime:NSTimeInterval {
         return musicPlayer.currentPlaybackTime
+    }
+    
+    var indexOfNowPlayingItem:Int {
+        var indexToReturn = 0
+        
+        if(stagedQueueIsEmpty()) {
+            indexToReturn = musicPlayer.indexOfNowPlayingItem
+        } else {
+            var i = 0
+            for mediaItem in getNowPlayingQueue()! {
+                if((self.nowPlayingItem?.persistentID ?? 0) == mediaItem.persistentID) {
+                    indexToReturn = i
+                    break
+                }
+                i++
+            }
+        }
+        println("index to return: \(indexToReturn)")
+        return indexToReturn
     }
     
     //MARK: INIT/DE-INITS
@@ -75,7 +105,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         unregisterForMediaPlayerNotifications()
     }
     
-    //MARK:FUNCTIONS
+    //MARK:QueueBasedMusicPlayer Functions
     func play() {
         promoteStagedQueueWithCurrentNowPlayingItem()
         musicPlayer.play()
@@ -136,10 +166,15 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         playbackStateManager.correctPlaybackState()
     }
     
-    func clearUpcomingItems() {
-        var nowPlayingItem = musicPlayer.nowPlayingItem
+    func clearUpcomingItems(#fromIndex:Int) {
+        var queue = self.getNowPlayingQueue()!
+        
+        
+        println("clearing now playing queue from index \(fromIndex)")
+        queue.removeRange(Range<Int>(start: fromIndex + 1, end: queue.count))
+        
         let playbackState = getPlaybackState()
-        setQueueInternal([nowPlayingItem], itemToPlay: nowPlayingItem)
+        setQueueInternal(queue, itemToPlay: queue[fromIndex])
         restorePlaybackState(playbackState, override: false, restoreFullState: true)
     }
     
@@ -174,7 +209,8 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         restorePlaybackState(playbackState, override: false, restoreFullState: true)
         evaluateNextStagedMediaItem(playbackState)
     }
-    
+   
+    //MARK:Class Functions
     func handleNowPlayingItemChanged(notification:NSNotification) {
         var message = "NowPlayingItemChanged notification received: "
         if(notification.userInfo != nil) {
@@ -189,6 +225,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         }
         println(message)
         promoteStagedQueueToNowPlaying(nextStagedMediaItem, restoreFullState: false)
+        self.publishNotification(updateType: .NowPlayingItemChanged)
     }
     
     func handlePlaybackStateChanged(notification:NSNotification) {
@@ -208,6 +245,21 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
                 }
             }
         }
+        self.publishNotification(updateType: .PlaybackStateUpdate)
+    }
+    
+    private func publishNotification(#updateType:QueueBasedMusicPlayerNoficiation) {
+        let notificationPublication = {[unowned self] () -> Void in
+            let notification = NSNotification(name: updateType.rawValue, object: self)
+            NSNotificationCenter.defaultCenter().postNotification(notification)
+        }
+        
+        if(updateType == QueueBasedMusicPlayerNoficiation.QueueUpdate) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue(), notificationPublication)
+        } else {
+            dispatch_async(dispatch_get_main_queue(), notificationPublication)
+        }
+        
     }
     
     private func stagedQueueIsEmpty() -> Bool {
@@ -316,14 +368,9 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         notificationCenter.addObserver(self, selector: "handlePlaybackStateChanged:",
             name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
             object: musicPlayer)
-        
-//        let application = UIApplication.sharedApplication()
-//        notificationCenter.addObserver(self, selector: "invalidateTimer:",
-//            name: UIApplicationDidEnterBackgroundNotification, object: application)
-//        notificationCenter.addObserver(self, selector: "invalidateTimer:",
-//            name: UIApplicationWillResignActiveNotification, object: application)
-//        notificationCenter.addObserver(self, selector: "reloadData:",
-//            name: UIApplicationDidBecomeActiveNotification, object: application)
+        notificationCenter.addObserver(self, selector: "handlePlaybackStateChanged:",
+            name:PlaybackStateManager.PlaybackStateCorrectedNotification,
+            object: PlaybackStateManager.instance)
         musicPlayer.beginGeneratingPlaybackNotifications()
     }
     

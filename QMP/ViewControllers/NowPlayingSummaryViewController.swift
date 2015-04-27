@@ -15,27 +15,45 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBOutlet weak var albumArtistAndAlbumTitleLabel: UILabel!
     @IBOutlet weak var songTitleLabel: UILabel!
 
+
+    @IBOutlet weak var songTitleCollapsedLabel: UILabel!
+    @IBOutlet weak var albumArtistAndAlbumTitleCollapsedLabel: UILabel!
+    
     @IBOutlet weak var playbackProgressBar: UISlider!
     @IBOutlet weak var totalPlaybackTimeLabel: UILabel!
     @IBOutlet weak var currentPlaybackTimeLabel: UILabel!
     
+    @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var playPauseCollapsedButton: UIButton!
+    
+    @IBOutlet weak var nowPlayingCollapsedBar: UIView!
+    @IBOutlet weak var playbackProgressCollapsedBar: UIProgressView!
     
     private let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
-    private let zeroTime = "0:00"
     private let timeDelayInNanoSeconds = Int64(0.5 * Double(NSEC_PER_SEC))
     
-    private var playPauseButtonIndex:Int?
     private var playbackProgressTimer:NSTimer?
-    private var playBarButtonItem:UIBarButtonItem!
-    private var pauseBarButtonItem:UIBarButtonItem!
-    
     private var albumTitleForCurrentAlbumArt:String?
+    
+    private var playButtonImage:UIImage!
+    private var playButtonHighlightedImage:UIImage!
+    private var pauseButtonImage:UIImage!
+    private var pauseButtonHighlightedImage:UIImage!
+    
+    typealias KVOContext = UInt8
+    private var observationContext = KVOContext()
+    
+    var expanded:Bool = false {
+        didSet{
+//            albumArtwork?.hidden = !expanded
+        }
+    }
     
     //MARK: - FUNCTIONS
     deinit {
         println("deinitializing NowPlayingSummaryViewController")
-        invalidateTimer(nil)
-        unregisterForNotifications()
+        self.invalidateTimer(nil)
+        self.unregisterForNotifications()
     }
     
     @IBAction func unwindToSummaryScreen(segue : UIStoryboardSegue)  {
@@ -64,7 +82,7 @@ class NowPlayingSummaryViewController: UIViewController {
     }
     
     
-    @IBAction func playPauseAction(sender: UIBarButtonItem) {
+    @IBAction func playPauseAction(sender: AnyObject) {
         if(queueBasedMusicPlayer.musicIsPlaying) {
             self.queueBasedMusicPlayer.pause()
         } else {
@@ -77,21 +95,17 @@ class NowPlayingSummaryViewController: UIViewController {
         super.viewDidLoad()
         var i = 0
         
-        self.playBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Play, target: self, action: "playPauseAction:")
-        self.pauseBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Pause, target: self, action: "playPauseAction:")
-
-        for buttonItem in self.toolbarItems! {
-            if((buttonItem as! UIBarButtonItem).title == "PP") {
-                println("setting playPauseButtonIndex as \(i)")
-                self.playPauseButtonIndex = i
-            }
-            i++
-        }
+        self.playButtonImage = playPauseButton.imageForState(UIControlState.Normal)
+        self.playButtonHighlightedImage = playPauseButton.imageForState(UIControlState.Highlighted)
         
+        self.pauseButtonImage = UIImage(named: "pause_button")
+        self.pauseButtonHighlightedImage = UIImage(named: "pause_button_highlighted")
         
         self.reloadData(nil)
         registerForNotifications()
-        // Do any additional setup after loading the view.
+        updateAlphaLevels()
+        self.view.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
+        self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
     }
 
     override func didReceiveMemoryWarning() {
@@ -106,9 +120,12 @@ class NowPlayingSummaryViewController: UIViewController {
     func reloadData(notification:NSNotification?) {
         var nowPlayingItem = queueBasedMusicPlayer.nowPlayingItem;
         self.songTitleLabel.text = nowPlayingItem?.title ?? "Nothing"
+        self.songTitleCollapsedLabel.text = self.songTitleLabel.text
+        
         let albumArtist = nowPlayingItem?.albumArtist ?? "To"
         let albumTitle = nowPlayingItem?.albumTitle ?? "Play"
         self.albumArtistAndAlbumTitleLabel.text = (albumArtist + " - " + albumTitle)
+        self.albumArtistAndAlbumTitleCollapsedLabel.text = self.albumArtistAndAlbumTitleLabel.text
         
         let artwork = nowPlayingItem?.artwork
         var albumArtTitle:String!
@@ -122,7 +139,7 @@ class NowPlayingSummaryViewController: UIViewController {
             println("loading new album art image")
             var albumArtImage = artwork?.imageWithSize(CGSize(width: self.albumArtwork.frame.width, height: self.albumArtwork.frame.height))
             if(albumArtImage == nil) {
-                albumArtImage = UIImage(named: "headphones")
+                albumArtImage = ImageContainer.defaultAlbumArtworkImage
             }
             self.albumArtwork.image = albumArtImage
             self.view.backgroundColor = UIColor(patternImage: albumArtImage!)
@@ -167,9 +184,10 @@ class NowPlayingSummaryViewController: UIViewController {
     func updatePlaybackProgressBar(sender:NSTimer?) {
         dispatch_async(dispatch_get_main_queue(), { [unowned self]() in
             if(self.queueBasedMusicPlayer.nowPlayingItem == nil) {
-                self.totalPlaybackTimeLabel.text = self.zeroTime
-                self.currentPlaybackTimeLabel.text = self.zeroTime
+                self.totalPlaybackTimeLabel.text = MediaItemUtils.zeroTime
+                self.currentPlaybackTimeLabel.text = MediaItemUtils.zeroTime
                 self.playbackProgressBar.setValue(0.0, animated: false)
+                self.playbackProgressCollapsedBar.progress = 0.0
                 return
             }
             
@@ -177,51 +195,62 @@ class NowPlayingSummaryViewController: UIViewController {
             var totalPlaybackTime = self.queueBasedMusicPlayer.nowPlayingItem!.playbackDuration
             var remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
             
-            self.totalPlaybackTimeLabel.text = "-" + self.getTimeRepresentation(remainingPlaybackTime)
-            self.currentPlaybackTimeLabel.text = self.getTimeRepresentation(currentPlaybackTime)
-            self.playbackProgressBar.setValue(Float(currentPlaybackTime), animated: false)
+            self.totalPlaybackTimeLabel.text = "-" + MediaItemUtils.getTimeRepresentation(remainingPlaybackTime)
+            self.currentPlaybackTimeLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
+            let progress = Float(currentPlaybackTime)
+            self.playbackProgressBar.setValue(progress, animated: false)
+            self.playbackProgressCollapsedBar.setProgress(Float(currentPlaybackTime/totalPlaybackTime), animated: false)
         })
     }
     
     func updatePlaybackStatus(sender:AnyObject?) {
         if(queueBasedMusicPlayer.musicIsPlaying) {
-            self.toolbarItems![playPauseButtonIndex!] = pauseBarButtonItem
+            self.playPauseButton.setImage(pauseButtonImage, forState: UIControlState.Normal)
+            self.playPauseButton.setImage(pauseButtonHighlightedImage, forState: UIControlState.Highlighted)
+            self.playPauseCollapsedButton.setImage(pauseButtonImage, forState: UIControlState.Normal)
+            self.playPauseCollapsedButton.setImage(pauseButtonHighlightedImage, forState: UIControlState.Highlighted)
         } else {
-            self.toolbarItems![playPauseButtonIndex!] = playBarButtonItem
+            self.playPauseButton.setImage(playButtonImage, forState: UIControlState.Normal)
+            self.playPauseButton.setImage(playButtonHighlightedImage, forState: UIControlState.Highlighted)
+            self.playPauseCollapsedButton.setImage(playButtonImage, forState: UIControlState.Normal)
+            self.playPauseCollapsedButton.setImage(playButtonHighlightedImage, forState: UIControlState.Highlighted)
         }
     }
     
-    //MARK: - FUNCITONS: - Private Functions
-    private func getTimeRepresentation(timevalue:NSTimeInterval) ->  String {
-        if(timevalue == Double.NaN || timevalue < 1) {
-            return self.zeroTime
+    //MARK: - FUNCTIONS: - KVOFunction
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        switch(keyPath) {
+        case "frame","center":
+            updateAlphaLevels()
+        default:
+            println("non observed property has changed")
+        }
+    }
+    
+    //MARK: - FUNCTIONS: - Private Functions
+    
+    private func updateAlphaLevels() {
+        let frame = self.view.frame
+        let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
+        let currentY = maxY - (frame.origin.y - RootViewController.nowPlayingViewCollapsedOffset)
+        var alphaLevel = (currentY/maxY)
+        
+        if(alphaLevel > 1.0 || alphaLevel < 0.1) {
+            alphaLevel = floor(alphaLevel)
         }
         
-        var min:String = (Int(timevalue)/60).description
-        var secValue = Int(timevalue)%60
-        var sec:String!
-        if(secValue < 10) {
-            sec = "0" + secValue.description
-        } else {
-            sec = secValue.description
-        }
-        
-        return min + ":" + sec
+        self.albumArtwork.alpha = alphaLevel
+        self.nowPlayingCollapsedBar.alpha = (1.0 - alphaLevel)
     }
 
 
     private func registerForNotifications() {
-        let musicPlayer = MusicPlayerContainer.defaultMusicPlayerController
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
-        
         notificationCenter.addObserver(self, selector: "reloadData:",
-            name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
+            name: QueueBasedMusicPlayerNoficiation.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
         notificationCenter.addObserver(self, selector: "reloadData:",
-            name:MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
-        
-        notificationCenter.addObserver(self, selector: "reloadData:",
-            name:PlaybackStateManager.PlaybackStateCorrectedNotification, object: PlaybackStateManager.instance)
+            name: QueueBasedMusicPlayerNoficiation.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
         
         notificationCenter.addObserver(self, selector: "invalidateTimer:",
             name: UIApplicationDidEnterBackgroundNotification, object: application)
@@ -229,17 +258,10 @@ class NowPlayingSummaryViewController: UIViewController {
             name: UIApplicationWillResignActiveNotification, object: application)
         notificationCenter.addObserver(self, selector: "reloadData:",
             name: UIApplicationDidBecomeActiveNotification, object: application)
-        
-        musicPlayer.beginGeneratingPlaybackNotifications()
     }
     
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    
-    // MARK: - Navigation
-
-
-    
-
 }
+

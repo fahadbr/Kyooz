@@ -9,11 +9,12 @@
 import Foundation
 import MediaPlayer
 
-@objc protocol QueueBasedMusicPlayer {
+protocol QueueBasedMusicPlayer:class {
     
     var nowPlayingItem:MPMediaItem? { get }
     var musicIsPlaying:Bool { get }
     var currentPlaybackTime:NSTimeInterval { get }
+    var indexOfNowPlayingItem:Int { get }
     
     func play()
     
@@ -31,10 +32,17 @@ import MediaPlayer
     
     func rearrangeMediaItems(fromIndexPath:Int, toIndexPath:Int)
     
-    func clearUpcomingItems()
+    func clearUpcomingItems(#fromIndex:Int)
     
-    optional func moreBackgroundTimeIsNeeded() -> Bool
+    func moreBackgroundTimeIsNeeded() -> Bool
     
-    optional func executePreBackgroundTasks()
+    func executePreBackgroundTasks()
     
 }
+
+enum QueueBasedMusicPlayerNoficiation : String {
+    case QueueUpdate = "QueueBasedMusicPlayerQueueUpdate"
+    case PlaybackStateUpdate = "QueueBasedMusicPlayerPlaybackStatusUpdate"
+    case NowPlayingItemChanged = "QueueBasedMusicPlayerNowPlayingItemChanged"
+}
+

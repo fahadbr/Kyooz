@@ -24,7 +24,8 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     
     private(set) var nowPlayingItem:MPMediaItem?
     private(set) var musicIsPlaying:Bool = false
-    private(set) var currentPlaybackTime:NSTimeInterval = 0.0;
+    private(set) var currentPlaybackTime:NSTimeInterval = 0.0
+    private (set) var indexOfNowPlayingItem:Int = 0
     
     class var instance : QueueBasedMusicPlayerImpl {
         struct Static {
@@ -86,7 +87,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         
     }
     
-    func clearUpcomingItems() {
+    func clearUpcomingItems(#fromIndex:Int) {
         
     }
     
@@ -94,6 +95,9 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         return false
     }
     
+    func executePreBackgroundTasks() {
+        
+    }
     
     private func registerForRemoteCommands() {
         remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in

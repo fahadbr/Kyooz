@@ -19,17 +19,15 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
         self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        registerForMediaPlayerNotifications()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
+        registerForNotifications()
     }
     
     deinit {
-        unregisterForMediaPlayerNotifications()
+        unregisterForNotifications()
     }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -51,59 +49,14 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             return 0
         }
     }
-    
-    
-    @IBAction func clearUpcomingItems(sender: UIBarButtonItem) {
-        queueBasedMusicPlayer.clearUpcomingItems()
-        tableView.reloadData()
-    }
-    
 
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
     }
     
-    func handleNowPlayingItemChanged(notification:NSNotification) {
-        tableView.reloadData()
-    }
-    
-    func handlePlaybackStateChanged(notification:NSNotification) {
-//        println("handling playback state changed notification");
-        tableView.reloadData()
-    }
-    
-    func handlePlaybackStateCorrected(notification:NSNotification) {
-        tableView.reloadData()
-    }
-    
-    private func registerForMediaPlayerNotifications() {
-        let musicPlayer = MusicPlayerContainer.defaultMusicPlayerController
-        notificationCenter.addObserver(self, selector: "handleNowPlayingItemChanged:",
-            name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification,
-            object: musicPlayer)
-        
-        notificationCenter.addObserver(self, selector: "handlePlaybackStateChanged:",
-            name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
-            object: musicPlayer)
-        
-        notificationCenter.addObserver(self, selector: "handlePlaybackStateCorrected:",
-            name:PlaybackStateManager.PlaybackStateCorrectedNotification,
-            object: PlaybackStateManager.instance)
-        musicPlayer.beginGeneratingPlaybackNotifications()
-    }
-    
-    private func unregisterForMediaPlayerNotifications() {
-        let musicPlayer = MusicPlayerContainer.defaultMusicPlayerController
-        notificationCenter.removeObserver(self, name: MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
-        notificationCenter.removeObserver(self, name: MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
-        notificationCenter.removeObserver(self, name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: PlaybackStateManager.instance)
-        musicPlayer.endGeneratingPlaybackNotifications()
-    }
-
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("nowPlayingItem", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("songDetailsTableViewCell", forIndexPath: indexPath) as! SongDetailsTableViewCell
         
         var queue = queueBasedMusicPlayer.getNowPlayingQueue()
         if(queue == nil) {
@@ -117,16 +70,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         
         var song = wrappedSong!
         
-        cell.textLabel?.text = song.title
-        cell.textLabel?.font = ThemeHelper.defaultFont
-//            + "(" + String.convertFromStringInterpolationSegment(song.persistentID) + ")"
-        cell.accessoryType = UITableViewCellAccessoryType.None
+        cell.configureForMediaItem(song)
+        cell.indexInQueue = indexPath.row
+        cell.delegate = self
+        cell.currentlyPlaying = false
         
-        if(queueBasedMusicPlayer.musicIsPlaying
-            && isNowPlayingItem(self.queueBasedMusicPlayer.nowPlayingItem, mediaItemToCompare:song, index:indexPath.row)) {
-                
-            //this is the now playing item that should be highlighted
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        if(queueBasedMusicPlayer.musicIsPlaying && isNowPlayingItem(mediaItemToCompare:song)) {
+            cell.currentlyPlaying = true
         }
 
         return cell
@@ -148,17 +98,12 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         return queue?[index]
     }
     
-    private func isNowPlayingItem(baseMediaItem:MPMediaItem?, mediaItemToCompare:MPMediaItem, index:Int) -> Bool{
-        if(baseMediaItem?.persistentID != mediaItemToCompare.persistentID) {
+    private func isNowPlayingItem(#mediaItemToCompare:MPMediaItem) -> Bool{
+        if let nowPlayingItem = self.queueBasedMusicPlayer.nowPlayingItem {
+            return nowPlayingItem.persistentID == mediaItemToCompare.persistentID
+        } else {
             return false
         }
-        
-//        if(index != musicPlayer.indexOfNowPlayingItem){
-//            return false
-//        }
-        
-        return true
-        
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -169,73 +114,62 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         return UITableViewCellEditingStyle.Delete
     }
     
-    // Override to support editing the table view.
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
             queueBasedMusicPlayer.deleteItemAtIndexFromQueue(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
            
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        } 
-        
+        }
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-//        tableView.moveRowAtIndexPath(<#indexPath: NSIndexPath#>, toIndexPath: <#NSIndexPath#>)
         queueBasedMusicPlayer.rearrangeMediaItems(sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the item to be re-orderable.
         return true
     }
-
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the specified item to be editable.
-        return true
+    
+    func reloadTableData(notification:NSNotification) {
+        self.tableView.reloadData()
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    private func registerForNotifications() {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let application = UIApplication.sharedApplication()
+        notificationCenter.addObserver(self, selector: "reloadTableData:",
+            name: QueueBasedMusicPlayerNoficiation.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
+        notificationCenter.addObserver(self, selector: "reloadTableData:",
+            name: QueueBasedMusicPlayerNoficiation.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
+        notificationCenter.addObserver(self, selector: "reloadTableData:",
+            name: QueueBasedMusicPlayerNoficiation.QueueUpdate.rawValue, object: queueBasedMusicPlayer)
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
+    
+    private func unregisterForNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    */
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
+
+    //MARK: - SongDetailsTableViewCellDelegate Methods
+extension NowPlayingViewController:SongDetailsTableViewCellDelegate {
+
+    func presentMenuItems(sender: SongDetailsTableViewCell) {
+        let controller = UIAlertController(title: sender.songTitleLabel.text! + " (" + sender.albumArtistAndAlbumLabel.text! + ")", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+        controller.addAction(cancelAction)
+        
+        if(!self.queueBasedMusicPlayer.musicIsPlaying || sender.indexInQueue >= queueBasedMusicPlayer.indexOfNowPlayingItem) {
+            let clearUpcomingItemsAction = UIAlertAction(title: "Clear Upcoming Items", style: UIAlertActionStyle.Default) { action in
+                self.queueBasedMusicPlayer.clearUpcomingItems(fromIndex: sender.indexInQueue)
+                self.tableView.reloadData()
+            }
+            controller.addAction(clearUpcomingItemsAction)
+        }
+        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    
+}
+

@@ -53,9 +53,9 @@ class FilteredAlbumTableViewController: UITableViewController {
         var album = albums[indexPath.row]
         cell.albumTitle.text = album.representativeItem.albumTitle
         cell.albumDetails.text = "\(album.count) Tracks"
-        let albumArtwork = album.representativeItem?.artwork?.imageWithSize(CGSize(width: cell.albumArtwork.frame.width, height: cell.albumArtwork.frame.height))
+        let albumArtwork = album.representativeItem?.artwork?.imageWithSize(cell.albumArtwork.frame.size)
         if(albumArtwork == nil) {
-            cell.albumArtwork?.image = UIImage(named: "headphones")
+            cell.albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
         } else {
             cell.albumArtwork?.image = albumArtwork
         }
