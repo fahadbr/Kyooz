@@ -51,7 +51,7 @@ class SongDetailsTableViewCell: UITableViewCell {
         }
         self.songTitleLabel.text = mediaItem.title
         self.albumArtistAndAlbumLabel.text = mediaItem.albumArtist + " - " + mediaItem.albumTitle
-        self.totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(mediaItem.playbackDuration)
+        self.totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(Float(mediaItem.playbackDuration))
         
     }
     

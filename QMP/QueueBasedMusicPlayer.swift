@@ -13,12 +13,16 @@ protocol QueueBasedMusicPlayer:class {
     
     var nowPlayingItem:MPMediaItem? { get }
     var musicIsPlaying:Bool { get }
-    var currentPlaybackTime:NSTimeInterval { get }
+    var currentPlaybackTime:Float { get set }
     var indexOfNowPlayingItem:Int { get }
     
     func play()
     
     func pause()
+    
+    func skipBackwards()
+    
+    func skipForwards()
     
     func getNowPlayingQueue() -> [MPMediaItem]?
     
@@ -30,7 +34,7 @@ protocol QueueBasedMusicPlayer:class {
     
     func deleteItemAtIndexFromQueue(index:Int)
     
-    func rearrangeMediaItems(fromIndexPath:Int, toIndexPath:Int)
+    func swapMediaItems(#fromIndexPath:Int, toIndexPath:Int)
     
     func clearUpcomingItems(#fromIndex:Int)
     

@@ -54,8 +54,14 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         return playbackStateManager.musicIsPlaying()
     }
     
-    var currentPlaybackTime:NSTimeInterval {
-        return musicPlayer.currentPlaybackTime
+    var currentPlaybackTime:Float {
+        get {
+            return Float(musicPlayer.currentPlaybackTime)
+        } set {
+            if(nowPlayingItem != nil) {
+                musicPlayer.currentPlaybackTime = NSTimeInterval(newValue)
+            }
+        }
     }
     
     var indexOfNowPlayingItem:Int {
@@ -117,6 +123,18 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
     func pause() {
         promoteStagedQueueWithCurrentNowPlayingItem()
         musicPlayer.pause()
+    }
+    
+    func skipForwards() {
+        musicPlayer.skipToNextItem()
+    }
+    
+    func skipBackwards() {
+        if(currentPlaybackTime < 2.0) {
+            musicPlayer.skipToPreviousItem()
+        } else {
+            musicPlayer.skipToBeginning()
+        }
     }
     
     func getNowPlayingQueue() -> [MPMediaItem]? {
@@ -200,7 +218,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         
     }
     
-    func rearrangeMediaItems(fromIndexPath:Int, toIndexPath:Int) {
+    func swapMediaItems(#fromIndexPath:Int, toIndexPath:Int) {
         var queue = getNowPlayingQueue()
         
         if(queue == nil || fromIndexPath > (queue!.count - 1) || toIndexPath > (queue!.count - 1)) {

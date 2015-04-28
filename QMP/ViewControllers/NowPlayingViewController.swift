@@ -136,7 +136,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        queueBasedMusicPlayer.rearrangeMediaItems(sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
+        queueBasedMusicPlayer.swapMediaItems(fromIndexPath:sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {

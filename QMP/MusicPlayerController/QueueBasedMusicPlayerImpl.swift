@@ -12,6 +12,11 @@ import AVFoundation
 
 class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     
+    //MARK: STATIC INSTANCE
+    static let instance:QueueBasedMusicPlayerImpl = QueueBasedMusicPlayerImpl()
+    
+    
+    //MARK: Class Properties
     let nowPlayingInfoHelper = NowPlayingInfoHelper.instance
     let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
     
@@ -22,18 +27,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     var avQueuePlayer = AVQueuePlayer()
     var avPlayerItem:AVPlayerItem?
     
-    private(set) var nowPlayingItem:MPMediaItem?
-    private(set) var musicIsPlaying:Bool = false
-    private(set) var currentPlaybackTime:NSTimeInterval = 0.0
-    private (set) var indexOfNowPlayingItem:Int = 0
-    
-    class var instance : QueueBasedMusicPlayerImpl {
-        struct Static {
-            static let instance:QueueBasedMusicPlayerImpl = QueueBasedMusicPlayerImpl()
-        }
-        return Static.instance
-    }
-    
+    //MARK: Init/Deinit
     override init() {
         super.init()
         registerForRemoteCommands()
@@ -42,6 +36,28 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     deinit {
         unregisterForRemoteCommands()
     }
+    
+    //MARK: QueueBasedMusicPlayer - Properties
+    var nowPlayingItem:MPMediaItem?
+    var musicIsPlaying:Bool = false
+    var currentPlaybackTime:Float {
+        get {
+            if let player = avPlayer {
+                let currentTime = player.currentTime()
+                let currentTimeInSeconds = Float(currentTime.value)/Float(currentTime.timescale)
+                return currentTimeInSeconds
+            }
+            
+            return 0.0
+        } set {
+            let scale = 10
+            avPlayer?.seekToTime(CMTimeMakeWithSeconds(Double(newValue), Int32(10)))
+        }
+    }
+    var indexOfNowPlayingItem:Int = 0
+    
+    
+    //MARK: QueueBasedMusicPlayer - Functions
     
     func play() {
         if(avPlayer != nil) {
@@ -60,6 +76,14 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         
     }
     
+    func skipForwards() {
+        
+    }
+    
+    func skipBackwards() {
+        
+    }
+    
     func getNowPlayingQueue() -> [MPMediaItem]? {
         if(nowPlayingItem != nil) {
             return [nowPlayingItem!]
@@ -75,7 +99,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         
     }
     
-    func enqueue(itemsToEnque:[MPMediaItem]) {
+    func enqueue(itemsToEnqueue:[MPMediaItem]) {
         
     }
     
@@ -83,7 +107,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         
     }
     
-    func rearrangeMediaItems(fromIndexPath:Int, toIndexPath:Int) {
+    func swapMediaItems(#fromIndexPath:Int, toIndexPath:Int) {
         
     }
     
@@ -99,6 +123,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         
     }
     
+    //MARK: Class Functions
     private func registerForRemoteCommands() {
         remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
             self.play()

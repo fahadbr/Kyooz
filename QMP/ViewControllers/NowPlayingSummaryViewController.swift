@@ -62,23 +62,17 @@ class NowPlayingSummaryViewController: UIViewController {
     
     //TODO: - ADD THESE FUNCTIONS TO THE INTERFACE
     @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
-        if(queueBasedMusicPlayer.nowPlayingItem != nil) {
-            MusicPlayerContainer.defaultMusicPlayerController.currentPlaybackTime = Double(sender.value)
-        }
+        queueBasedMusicPlayer.currentPlaybackTime = sender.value
         updatePlaybackProgressBar(nil)
     }
 
     
     @IBAction func skipBackward(sender: AnyObject) {
-        if(queueBasedMusicPlayer.currentPlaybackTime < 2.0) {
-            MusicPlayerContainer.defaultMusicPlayerController.skipToPreviousItem()
-        } else {
-            MusicPlayerContainer.defaultMusicPlayerController.skipToBeginning()
-            updatePlaybackProgressBar(nil)
-        }
+        queueBasedMusicPlayer.skipBackwards()
+        updatePlaybackProgressBar(nil)
     }
     @IBAction func skipForward(sender: AnyObject) {
-        MusicPlayerContainer.defaultMusicPlayerController.skipToNextItem()
+        queueBasedMusicPlayer.skipForwards()
     }
     
     
@@ -192,12 +186,12 @@ class NowPlayingSummaryViewController: UIViewController {
             }
             
             var currentPlaybackTime = self.queueBasedMusicPlayer.currentPlaybackTime
-            var totalPlaybackTime = self.queueBasedMusicPlayer.nowPlayingItem!.playbackDuration
+            var totalPlaybackTime = Float(self.queueBasedMusicPlayer.nowPlayingItem!.playbackDuration)
             var remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
             
             self.totalPlaybackTimeLabel.text = "-" + MediaItemUtils.getTimeRepresentation(remainingPlaybackTime)
             self.currentPlaybackTimeLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
-            let progress = Float(currentPlaybackTime)
+            let progress = currentPlaybackTime
             self.playbackProgressBar.setValue(progress, animated: false)
             self.playbackProgressCollapsedBar.setProgress(Float(currentPlaybackTime/totalPlaybackTime), animated: false)
         })

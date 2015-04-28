@@ -12,8 +12,8 @@ struct MediaItemUtils {
     
     static let zeroTime:String = "0:00"
 
-    static func getTimeRepresentation(timevalue:NSTimeInterval) -> String {
-        if(timevalue == Double.NaN || timevalue < 1) {
+    static func getTimeRepresentation(timevalue:Float) -> String {
+        if(timevalue == Float.NaN || timevalue == Float.infinity || timevalue < 1) {
             return self.zeroTime
         }
         

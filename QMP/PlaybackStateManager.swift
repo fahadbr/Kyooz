@@ -76,8 +76,10 @@ class PlaybackStateManager: NSObject {
         
         if(playbackStateCorrected) {
             println("Playback State Corrected to: \(self.musicPlaybackState.rawValue.description)")
-            let notification = NSNotification(name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: self)
-            NSNotificationCenter.defaultCenter().postNotification(notification)
+            dispatch_async(dispatch_get_main_queue()) {
+                let notification = NSNotification(name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: self)
+                NSNotificationCenter.defaultCenter().postNotification(notification)
+            }
         }
 
     }
