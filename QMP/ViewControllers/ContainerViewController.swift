@@ -19,7 +19,8 @@ class ContainerViewController : UIViewController {
     
     var rootViewController:RootViewController!
     
-    var sidePanelViewController:UIViewController?
+    var nowPlayingNavigationController:UINavigationController?
+    var nowPlayingViewController:NowPlayingViewController?
     
     var sidePanelExpanded:Bool = false {
         didSet {
@@ -33,6 +34,7 @@ class ContainerViewController : UIViewController {
                 }
             }
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelExpanded)
+            nowPlayingViewController?.viewExpanded = sidePanelExpanded
         }
     }
     
@@ -88,19 +90,21 @@ class ContainerViewController : UIViewController {
     }
     
     func addSidePanelViewController() {
-        if(self.sidePanelViewController == nil) {
-            self.sidePanelViewController = UIStoryboard.nowPlayingViewController()
+        if(nowPlayingViewController == nil) {
+            nowPlayingViewController = UIStoryboard.nowPlayingViewController()
             
-            let originalFrame = sidePanelViewController!.view.frame
-            let newWidth = CGRectGetWidth(self.view.frame) - centerPanelExpandedOffset
+            let originalFrame = nowPlayingViewController!.view.frame
+            let newWidth = CGRectGetWidth(self.view.bounds) - centerPanelExpandedOffset
             let newHeight = originalFrame.height
             let newX = originalFrame.origin.x + centerPanelExpandedOffset
             let newY = originalFrame.origin.y
             
-            self.sidePanelViewController?.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
-            self.view.insertSubview(sidePanelViewController!.view, atIndex: 0)
-            self.addChildViewController(sidePanelViewController!)
-            self.sidePanelViewController!.didMoveToParentViewController(self)
+//            nowPlayingViewController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+            nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
+            nowPlayingNavigationController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+            view.insertSubview(nowPlayingNavigationController!.view, atIndex: 0)
+            addChildViewController(nowPlayingNavigationController!)
+            nowPlayingNavigationController!.didMoveToParentViewController(self)
         }
     }
     
@@ -130,10 +134,11 @@ class ContainerViewController : UIViewController {
     }
     
     func deinitializeSideViewController(notification:NSNotification) {
-        if(!sidePanelExpanded && self.sidePanelViewController != nil) {
+        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
             println("deinitializing side view controller")
-            self.sidePanelViewController!.view.removeFromSuperview()
-            self.sidePanelViewController = nil
+            nowPlayingNavigationController!.view.removeFromSuperview()
+            nowPlayingViewController = nil
+            nowPlayingNavigationController = nil
         }
     }
     
@@ -182,7 +187,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
             recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
             recognizer.setTranslation(CGPointZero, inView: view)
         case .Ended, .Cancelled:
-            if(sidePanelViewController != nil) {
+            if(nowPlayingViewController != nil) {
                 let hasMovedEnoughLeftOfCenter = recognizer.view!.center.x < (self.view.center.x * 0.90)
                 animateSidePanel(shouldExpand: hasMovedEnoughLeftOfCenter)
             }
@@ -200,7 +205,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
             recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
             recognizer.setTranslation(CGPointZero, inView: view)
         case .Ended, .Cancelled:
-            if(sidePanelViewController != nil) {
+            if(nowPlayingViewController != nil) {
                 let hasMovedEnoughRightOfScreenEdge = recognizer.view!.center.x < -(self.view.center.x * 0.90)
                 animateSidePanel(shouldExpand: hasMovedEnoughRightOfScreenEdge)
             }

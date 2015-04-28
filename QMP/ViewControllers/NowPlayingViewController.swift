@@ -9,11 +9,18 @@
 import UIKit
 import MediaPlayer
 
-class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SongDetailsTableViewCellDelegate  {
 
     let notificationCenter = NSNotificationCenter.defaultCenter()
     let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.defaultCenter()
+    
+    var menuButtonTouched:Bool = false
+    var viewExpanded:Bool = false {
+        didSet {
+            reloadTableData(nil)
+        }
+    }
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -71,7 +78,6 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         var song = wrappedSong!
         
         cell.configureForMediaItem(song)
-        cell.indexInQueue = indexPath.row
         cell.delegate = self
         cell.currentlyPlaying = false
         
@@ -83,14 +89,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var index = indexPath.row
-        let cell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! SongDetailsTableViewCell
-        if(cell.menuButtonTouched) {
-            cell.indexInQueue = indexPath.row
-            self.presentMenuItems(cell)
+        if(menuButtonTouched) {
+            presentMenuItems(forIndex: indexPath.row)
+            menuButtonTouched = false
         } else {
-            queueBasedMusicPlayer.playItemWithIndexInCurrentQueue(index: index)
+            queueBasedMusicPlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
         }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
 
@@ -113,11 +118,12 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true;
+        return true
     }
     
     func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return UITableViewCellEditingStyle.Delete
+        
+        return indexPath.row == queueBasedMusicPlayer.indexOfNowPlayingItem ? .None : .Delete
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -137,9 +143,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         return true
     }
     
-    func reloadTableData(notification:NSNotification) {
-        self.tableView.reloadData()
+    func reloadTableData(notification:NSNotification?) {
+        if(viewExpanded) {
+            println("reloading now playing queue table view")
+            tableView.reloadData()
+        }
     }
+    
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
@@ -156,30 +166,31 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-
-}
-
-    //MARK: - SongDetailsTableViewCellDelegate Methods
-extension NowPlayingViewController:SongDetailsTableViewCellDelegate {
-
-    func presentMenuItems(sender: SongDetailsTableViewCell) {
-        let controller = UIAlertController(title: sender.songTitleLabel.text! + " (" + sender.albumArtistAndAlbumLabel.text! + ")", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+    
+    private func presentMenuItems(forIndex index:Int) {
+        let mediaItem = queueBasedMusicPlayer.getNowPlayingQueue()![index]
+        let controller = UIAlertController(title: mediaItem.title + "\n" + mediaItem.albumArtist + " - " + mediaItem.albumTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
-
-        if(!self.queueBasedMusicPlayer.musicIsPlaying || sender.indexInQueue >= queueBasedMusicPlayer.indexOfNowPlayingItem) {
+        
+        let indexOfNowPlayingItem = queueBasedMusicPlayer.indexOfNowPlayingItem
+        
+        if(!queueBasedMusicPlayer.musicIsPlaying || index >= indexOfNowPlayingItem) {
             let clearUpcomingItemsAction = UIAlertAction(title: "Clear Upcoming Items", style: UIAlertActionStyle.Default) { action in
-                self.queueBasedMusicPlayer.clearUpcomingItems(fromIndex: sender.indexInQueue)
+                self.queueBasedMusicPlayer.clearUpcomingItems(fromIndex: index)
                 self.tableView.reloadData()
             }
             controller.addAction(clearUpcomingItemsAction)
         }
         
-        let deleteAction = UIAlertAction(title: "Delete", style:UIAlertActionStyle.Destructive, handler: { action in
-            self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
-                forRowAtIndexPath: NSIndexPath(forRow: sender.indexInQueue, inSection: 0))
-        })
-        controller.addAction(deleteAction)
+        if(index != indexOfNowPlayingItem) {
+            let deleteAction = UIAlertAction(title: "Delete", style:UIAlertActionStyle.Destructive) { action in
+                self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
+                    forRowAtIndexPath: NSIndexPath(forRow: index, inSection: 0))
+            }
+            controller.addAction(deleteAction)
+        }
+
         self.presentViewController(controller, animated: true, completion: nil)
     }
     

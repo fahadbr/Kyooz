@@ -10,7 +10,7 @@ import UIKit
 import MediaPlayer
 
 protocol SongDetailsTableViewCellDelegate:class {
-    func presentMenuItems(sender:SongDetailsTableViewCell)
+    var menuButtonTouched:Bool { get set }
 }
 
 class SongDetailsTableViewCell: UITableViewCell {
@@ -22,10 +22,6 @@ class SongDetailsTableViewCell: UITableViewCell {
     @IBOutlet weak var menuButton: UIView!
     
     weak var delegate:SongDetailsTableViewCellDelegate?
-    
-    var indexInQueue:Int!
-    
-    var menuButtonTouched:Bool = false
     
     var currentlyPlaying:Bool = false {
         didSet {
@@ -62,16 +58,8 @@ class SongDetailsTableViewCell: UITableViewCell {
     
     func menuButtonPressed(sender: AnyObject) {
         println("menu button touched")
-        self.menuButtonTouched = true
+        delegate?.menuButtonTouched = true
     }
-    
-    func getMenuButtonTouched() -> Bool {
-        let originalValue = self.menuButtonTouched
-        self.menuButtonTouched = false
-        println("resetting menu button touched")
-        return originalValue
-    }
-    
     
 }
 

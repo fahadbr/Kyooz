@@ -24,16 +24,20 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
     private let playbackStateManager = PlaybackStateManager.instance
     private let timeDelayInNanoSeconds = Int64(1.0 * Double(NSEC_PER_SEC))
     
-    private var nowPlayingQueue:[MPMediaItem]? {
+    private var nowPlayingQueue:[MPMediaItem]? = [MPMediaItem]() {
         didSet {
-            println("publishing notification for queue change")
-            self.publishNotification(updateType: .QueueUpdate)
+            if(nowPlayingQueue!.count > oldValue!.count) {
+                println("publishing notification for queue change")
+                self.publishNotification(updateType: .QueueUpdate)
+            }
         }
     }
-    private var stagedQueue:[MPMediaItem]? {
+    private var stagedQueue:[MPMediaItem]? = [MPMediaItem]() {
         didSet {
-            println("publishing notification for queue change")
-            self.publishNotification(updateType: .QueueUpdate)
+            if(stagedQueue!.count > oldValue!.count) {
+                println("publishing notification for queue change")
+                self.publishNotification(updateType: .QueueUpdate)
+            }
         }
     }
     
@@ -69,7 +73,6 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
                 i++
             }
         }
-        println("index to return: \(indexToReturn)")
         return indexToReturn
     }
     
@@ -295,7 +298,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
     }
     
     private func resetAllStagedObjects() {
-        stagedQueue = nil
+        stagedQueue?.removeAll(keepCapacity: false)
         nextStagedMediaItem = nil
         indexOfNextStagedItemExceedsNowPlayingQueueLength = false
     }

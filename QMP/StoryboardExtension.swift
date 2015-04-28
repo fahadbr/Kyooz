@@ -24,8 +24,8 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("libraryNavigationController") as! UINavigationController
     }
     
-    class func nowPlayingViewController() -> UIViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingViewController") as! UIViewController
+    class func nowPlayingViewController() -> NowPlayingViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingViewController") as! NowPlayingViewController
     }
     
     class func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {

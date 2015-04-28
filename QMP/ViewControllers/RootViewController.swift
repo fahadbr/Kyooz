@@ -49,7 +49,7 @@ class RootViewController: UIViewController {
         self.libraryNavigationController.didMoveToParentViewController(self)
         
         self.nowPlayingSummaryViewController = UIStoryboard.nowPlayingSummaryViewController()
-        self.nowPlayingViewOrigin = CGPoint(x: 0, y: self.view.frame.height - RootViewController.nowPlayingViewCollapsedOffset)
+        self.nowPlayingViewOrigin = CGPoint(x: 0, y: self.view.bounds.height - RootViewController.nowPlayingViewCollapsedOffset)
 
         self.view.addSubview(nowPlayingSummaryViewController.view)
         self.addChildViewController(nowPlayingSummaryViewController)
@@ -63,9 +63,12 @@ class RootViewController: UIViewController {
         self.nowPlayingTapGestureRecognizer.delegate = gestureDelegate
         self.nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
         
+    }
+    
+    override func viewDidAppear(animated: Bool) {
         //explicitly setting this here
-        self.pullableViewExpanded = false
-        self.animatePullablePanel(shouldExpand: false)
+        pullableViewExpanded = false
+        nowPlayingSummaryViewController.view.frame.origin = nowPlayingViewOrigin
     }
 
     func enableGesturesInSubViews(#shouldEnable:Bool) {

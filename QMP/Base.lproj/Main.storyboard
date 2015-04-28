@@ -13,7 +13,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="SVv-HR-1xv">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="artistCell" id="4Db-C6-BTK">
                                 <autoresizingMask key="autoresizingMask"/>
@@ -111,7 +111,7 @@
         <!--Now Playing-->
         <scene sceneID="6XA-XL-1q0">
             <objects>
-                <viewController title="Now Playing" id="A5d-sE-21l" customClass="NowPlayingViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="nowPlayingViewController" title="Now Playing" useStoryboardIdentifierAsRestorationIdentifier="YES" id="A5d-sE-21l" customClass="NowPlayingViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1rR-fS-5dP"/>
                         <viewControllerLayoutGuide type="bottom" id="OWI-ym-SDW"/>
@@ -138,20 +138,13 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Now Playing" id="TBa-Zq-QGg">
-                        <barButtonItem key="leftBarButtonItem" systemItem="done" id="PrW-9M-whQ">
-                            <connections>
-                                <segue destination="0Tt-7n-Qv0" kind="unwind" unwindAction="unwindToSummaryScreen:" id="LGb-sP-bD4"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Now Playing" id="TBa-Zq-QGg"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="zVD-YM-21y" id="OLr-IP-egg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="orO-qo-BXR" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="0Tt-7n-Qv0" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3894" y="-283"/>
         </scene>
@@ -363,27 +356,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNa-UC-m6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2228" y="-288"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="0CJ-n0-Y0n">
-            <objects>
-                <navigationController storyboardIdentifier="nowPlayingViewController" automaticallyAdjustsScrollViewInsets="NO" id="TEt-Wv-h3e" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="sPA-Hj-tTg">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Jsr-kp-rW8">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </toolbar>
-                    <connections>
-                        <segue destination="A5d-sE-21l" kind="relationship" relationship="rootViewController" id="rNZ-ta-NQ7"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WLf-jd-pbk" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3082" y="-283"/>
         </scene>
     </scenes>
     <resources>
