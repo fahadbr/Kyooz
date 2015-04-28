@@ -84,7 +84,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var index = indexPath.row
-        queueBasedMusicPlayer.playItemWithIndexInCurrentQueue(index: index)
+        let cell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! SongDetailsTableViewCell
+        if(cell.menuButtonTouched) {
+            cell.indexInQueue = indexPath.row
+            self.presentMenuItems(cell)
+        } else {
+            queueBasedMusicPlayer.playItemWithIndexInCurrentQueue(index: index)
+        }
     }
     
 

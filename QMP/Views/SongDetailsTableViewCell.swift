@@ -19,11 +19,13 @@ class SongDetailsTableViewCell: UITableViewCell {
     @IBOutlet weak var songTitleLabel: UILabel!
     @IBOutlet weak var albumArtistAndAlbumLabel: UILabel!
     @IBOutlet weak var totalPlaybackTImeLabel: UILabel!
-    @IBOutlet weak var menuButton: UIButton!
+    @IBOutlet weak var menuButton: UIView!
     
     weak var delegate:SongDetailsTableViewCellDelegate?
     
     var indexInQueue:Int!
+    
+    var menuButtonTouched:Bool = false
     
     var currentlyPlaying:Bool = false {
         didSet {
@@ -35,14 +37,13 @@ class SongDetailsTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        println("loading SongTableViewCell from nib")
-        // Initialization code
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "menuButtonPressed:")
+        tapGestureRecognizer.cancelsTouchesInView = false
+        self.menuButton.addGestureRecognizer(tapGestureRecognizer)
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
     func configureForMediaItem(mediaItem:MPMediaItem) {
@@ -58,9 +59,20 @@ class SongDetailsTableViewCell: UITableViewCell {
         
     }
     
-    @IBAction func menuButtonPressed(sender: AnyObject) {
-        delegate?.presentMenuItems(self)
+    
+    func menuButtonPressed(sender: AnyObject) {
+        println("menu button touched")
+        self.menuButtonTouched = true
+    }
+    
+    func getMenuButtonTouched() -> Bool {
+        let originalValue = self.menuButtonTouched
+        self.menuButtonTouched = false
+        println("resetting menu button touched")
+        return originalValue
     }
     
     
 }
+
+
