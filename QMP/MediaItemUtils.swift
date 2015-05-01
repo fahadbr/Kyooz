@@ -16,7 +16,7 @@ struct MediaItemUtils {
         if(timevalue == Float.NaN || timevalue == Float.infinity || timevalue < 1) {
             return self.zeroTime
         }
-        
+               
         var min:String = (Int(timevalue)/60).description
         var secValue = Int(timevalue)%60
         var sec:String!

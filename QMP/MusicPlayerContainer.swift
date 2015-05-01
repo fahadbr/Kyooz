@@ -13,8 +13,8 @@ import MediaPlayer
 struct MusicPlayerContainer {
     
     static var queueBasedMusicPlayer:QueueBasedMusicPlayer {
-        return StagedQueueBasedMusicPlayer.instance
-//        return QueueBasedMusicPlayerImpl.instance
+//        return StagedQueueBasedMusicPlayer.instance
+        return QueueBasedMusicPlayerImpl.instance
     }
     
     static var defaultMusicPlayerController:MPMusicPlayerController {

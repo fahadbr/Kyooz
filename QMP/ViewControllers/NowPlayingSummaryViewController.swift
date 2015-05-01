@@ -63,7 +63,7 @@ class NowPlayingSummaryViewController: UIViewController {
     //TODO: - ADD THESE FUNCTIONS TO THE INTERFACE
     @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
         queueBasedMusicPlayer.currentPlaybackTime = sender.value
-        updatePlaybackProgressBar(nil)
+//        updatePlaybackProgressBar(nil)
     }
 
     
@@ -242,9 +242,9 @@ class NowPlayingSummaryViewController: UIViewController {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: "reloadData:",
-            name: QueueBasedMusicPlayerNoficiation.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
+            name: QueueBasedMusicPlayerUpdate.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
         notificationCenter.addObserver(self, selector: "reloadData:",
-            name: QueueBasedMusicPlayerNoficiation.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
+            name: QueueBasedMusicPlayerUpdate.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
         
         notificationCenter.addObserver(self, selector: "invalidateTimer:",
             name: UIApplicationDidEnterBackgroundNotification, object: application)

@@ -34,7 +34,7 @@ protocol QueueBasedMusicPlayer:class {
     
     func deleteItemAtIndexFromQueue(index:Int)
     
-    func swapMediaItems(#fromIndexPath:Int, toIndexPath:Int)
+    func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int)
     
     func clearUpcomingItems(#fromIndex:Int)
     
@@ -44,9 +44,21 @@ protocol QueueBasedMusicPlayer:class {
     
 }
 
-enum QueueBasedMusicPlayerNoficiation : String {
+enum QueueBasedMusicPlayerUpdate : String {
     case QueueUpdate = "QueueBasedMusicPlayerQueueUpdate"
     case PlaybackStateUpdate = "QueueBasedMusicPlayerPlaybackStatusUpdate"
     case NowPlayingItemChanged = "QueueBasedMusicPlayerNowPlayingItemChanged"
+}
+
+struct QueueBasedMusicPlayerNotificationPublisher {
+    
+    static func publishNotification(#updateType:QueueBasedMusicPlayerUpdate, sender:QueueBasedMusicPlayer) {
+        let notificationPublication = {() -> Void in
+            let notification = NSNotification(name: updateType.rawValue, object: sender)
+            NSNotificationCenter.defaultCenter().postNotification(notification)
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), notificationPublication)
+    }
 }
 

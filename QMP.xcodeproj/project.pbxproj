@@ -74,13 +74,13 @@
 		0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0B13DA061AE6FA9A00CC5C01 /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
 		0B13DA071AE6FA9A00CC5C01 /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
-		0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPlayerContainer.swift; sourceTree = "<group>"; };
+		0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MusicPlayerContainer.swift; path = ../MusicPlayerContainer.swift; sourceTree = "<group>"; };
 		0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPlayerTableViewActionFactory.swift; sourceTree = "<group>"; };
 		0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibContainer.swift; sourceTree = "<group>"; };
-		0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackStateDTO.swift; sourceTree = "<group>"; };
-		0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackStateManager.swift; sourceTree = "<group>"; };
-		0B13DA0E1AE6FA9A00CC5C01 /* QueueBasedMusicPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueBasedMusicPlayer.swift; sourceTree = "<group>"; };
-		0B13DA0F1AE6FA9A00CC5C01 /* StagedQueueBasedMusicPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StagedQueueBasedMusicPlayer.swift; sourceTree = "<group>"; };
+		0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlaybackStateDTO.swift; path = ../PlaybackStateDTO.swift; sourceTree = "<group>"; };
+		0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlaybackStateManager.swift; path = ../PlaybackStateManager.swift; sourceTree = "<group>"; };
+		0B13DA0E1AE6FA9A00CC5C01 /* QueueBasedMusicPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QueueBasedMusicPlayer.swift; path = ../QueueBasedMusicPlayer.swift; sourceTree = "<group>"; };
+		0B13DA0F1AE6FA9A00CC5C01 /* StagedQueueBasedMusicPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StagedQueueBasedMusicPlayer.swift; path = ../StagedQueueBasedMusicPlayer.swift; sourceTree = "<group>"; };
 		0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeHelper.swift; sourceTree = "<group>"; };
 		0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -140,15 +140,10 @@
 				0B13DA051AE6FA9A00CC5C01 /* Views */,
 				0B13D9FE1AE6FA9A00CC5C01 /* ViewControllers */,
 				0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */,
-				0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */,
 				0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */,
 				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
 				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
 				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
-				0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */,
-				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
-				0B13DA0E1AE6FA9A00CC5C01 /* QueueBasedMusicPlayer.swift */,
-				0B13DA0F1AE6FA9A00CC5C01 /* StagedQueueBasedMusicPlayer.swift */,
 				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
 				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
 				0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */,
@@ -188,8 +183,13 @@
 			isa = PBXGroup;
 			children = (
 				0B13D9F91AE6FA9A00CC5C01 /* AudioSessionManager.swift */,
+				0B13DA091AE6FA9A00CC5C01 /* MusicPlayerContainer.swift */,
 				0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */,
+				0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */,
+				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
+				0B13DA0E1AE6FA9A00CC5C01 /* QueueBasedMusicPlayer.swift */,
 				0B13D9FB1AE6FA9A00CC5C01 /* QueueBasedMusicPlayerImpl.swift */,
+				0B13DA0F1AE6FA9A00CC5C01 /* StagedQueueBasedMusicPlayer.swift */,
 			);
 			path = MusicPlayerController;
 			sourceTree = "<group>";

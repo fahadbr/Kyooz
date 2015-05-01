@@ -136,7 +136,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        queueBasedMusicPlayer.swapMediaItems(fromIndexPath:sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
+        queueBasedMusicPlayer.moveMediaItem(fromIndexPath:sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -155,11 +155,9 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: "reloadTableData:",
-            name: QueueBasedMusicPlayerNoficiation.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
+            name: QueueBasedMusicPlayerUpdate.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",
-            name: QueueBasedMusicPlayerNoficiation.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData:",
-            name: QueueBasedMusicPlayerNoficiation.QueueUpdate.rawValue, object: queueBasedMusicPlayer)
+            name: QueueBasedMusicPlayerUpdate.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
     }
     
     private func unregisterForNotifications() {

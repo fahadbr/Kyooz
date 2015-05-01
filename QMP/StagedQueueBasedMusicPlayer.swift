@@ -28,7 +28,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         didSet {
             if(nowPlayingQueue!.count > oldValue!.count) {
                 println("publishing notification for queue change")
-                self.publishNotification(updateType: .QueueUpdate)
+                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
     }
@@ -36,7 +36,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         didSet {
             if(stagedQueue!.count > oldValue!.count) {
                 println("publishing notification for queue change")
-                self.publishNotification(updateType: .QueueUpdate)
+                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
     }
@@ -88,7 +88,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         super.init()
         registerForMediaPlayerNotifications()
         
-        if let queueFromTempStorage = TempDataDAO.getNowPlayingQueueFromTempStorage(){
+        if let queueFromTempStorage = TempDataDAO.instance.getNowPlayingQueueFromTempStorage(){
             if let nowPlayingItem = musicPlayer.nowPlayingItem {
                 let index = musicPlayer.indexOfNowPlayingItem
                 //check if the queue from temp storage matches with the queue in the current music player
@@ -110,7 +110,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
     }
     
     deinit {
-        TempDataDAO.persistNowPlayingQueueToTempStorage(getNowPlayingQueue())
+        TempDataDAO.instance.persistNowPlayingQueueToTempStorage(getNowPlayingQueue())
         unregisterForMediaPlayerNotifications()
     }
     
@@ -218,7 +218,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         
     }
     
-    func swapMediaItems(#fromIndexPath:Int, toIndexPath:Int) {
+    func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int) {
         var queue = getNowPlayingQueue()
         
         if(queue == nil || fromIndexPath > (queue!.count - 1) || toIndexPath > (queue!.count - 1)) {
@@ -249,7 +249,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         }
         println(message)
         promoteStagedQueueToNowPlaying(nextStagedMediaItem, restoreFullState: false)
-        self.publishNotification(updateType: .NowPlayingItemChanged)
+        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender:self)
     }
     
     func handlePlaybackStateChanged(notification:NSNotification) {
@@ -269,22 +269,9 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
                 }
             }
         }
-        self.publishNotification(updateType: .PlaybackStateUpdate)
+        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender:self)
     }
     
-    private func publishNotification(#updateType:QueueBasedMusicPlayerNoficiation) {
-        let notificationPublication = {[unowned self] () -> Void in
-            let notification = NSNotification(name: updateType.rawValue, object: self)
-            NSNotificationCenter.defaultCenter().postNotification(notification)
-        }
-        
-        if(updateType == QueueBasedMusicPlayerNoficiation.QueueUpdate) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue(), notificationPublication)
-        } else {
-            dispatch_async(dispatch_get_main_queue(), notificationPublication)
-        }
-        
-    }
     
     private func stagedQueueIsEmpty() -> Bool {
         return (stagedQueue == nil || stagedQueue!.isEmpty)

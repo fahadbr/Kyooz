@@ -61,7 +61,7 @@ class FilteredSongTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
         var index = indexPath.row
         var nowPlayingItem = songs.items[index] as! MPMediaItem
         queueBasedMusicPlayer.playNowWithCollection(mediaCollection: songs,
