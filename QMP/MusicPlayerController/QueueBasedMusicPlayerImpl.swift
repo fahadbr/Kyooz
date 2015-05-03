@@ -26,6 +26,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     var avPlayer:AVPlayer?
     var timeObserver:AnyObject?
     var avPlayerItem:AVPlayerItem?
+    var avPlayerItemObserverRemoved:Bool = false
     var shouldPlayAfterLoading:Bool = false
     var restoredPlaybackTime:Float?
     
@@ -87,9 +88,10 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
             avPlayer?.seekToTime(CMTime.fromSeconds(newValue), completionHandler: { (finished:Bool) -> Void in
                 if(finished) {
                     self.nowPlayingInfoHelper.updateElapsedPlaybackTime(self.nowPlayingItem!, elapsedTime:newValue)
+                    QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
                 }
             })
-            QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+
         }
     }
     var indexOfNowPlayingItem:Int = 0
@@ -139,6 +141,9 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     }
     
     func playItemWithIndexInCurrentQueue(#index:Int) {
+        if(index == indexOfNowPlayingItem) {
+            return
+        }
         shouldPlayAfterLoading = true
         updateNowPlayingStateToIndex(index)
     }
@@ -147,10 +152,26 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         nowPlayingQueue.extend(itemsToEnqueue)
     }
     
-    func deleteItemAtIndexFromQueue(index:Int) {
-        nowPlayingQueue.removeAtIndex(index)
-        if(index < indexOfNowPlayingItem) {
-            updateNowPlayingStateToIndex(indexOfNowPlayingItem - 1, shouldLoadAfterUpdate: false)
+    func deleteItemsAtIndices(indiciesToRemove:[Int]) {
+        var indicies = indiciesToRemove
+        if(indicies.count > 1) {
+            //if removing more than 1 element, sort the array otherwise we will run into index out of bounds issues
+            indicies.sort { $0 < $1 }
+        }
+        var indiciesRemoved = 0
+        var nowPlayingItemRemoved = false
+        for index in indicies {
+            let adjustedIndexToRemove = index - indiciesRemoved++
+            nowPlayingQueue.removeAtIndex(adjustedIndexToRemove)
+            if(adjustedIndexToRemove < indexOfNowPlayingItem) {
+                updateNowPlayingStateToIndex(indexOfNowPlayingItem - 1, shouldLoadAfterUpdate: false)
+            } else if (adjustedIndexToRemove == indexOfNowPlayingItem) {
+                nowPlayingItemRemoved = true
+            }
+        }
+        
+        if(nowPlayingItemRemoved) {
+            updateNowPlayingStateToIndex(0)
         }
     }
     
@@ -184,8 +205,8 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         let reachedEndOfQueue = newIndex >= nowPlayingQueue.count
         if(reachedEndOfQueue) { pause() }
 
-        indexOfNowPlayingItem = reachedEndOfQueue ? 0 : newIndex
-        nowPlayingItem = nowPlayingQueue[indexOfNowPlayingItem]
+        indexOfNowPlayingItem = reachedEndOfQueue ? 0 : (newIndex < 0 ? 0 : newIndex)
+        nowPlayingItem = nowPlayingQueue.isEmpty ? nil : nowPlayingQueue[indexOfNowPlayingItem]
         if(shouldLoadAfterUpdate && nowPlayingItem != nil) {
             loadMediaItem(nowPlayingItem!)
         }
@@ -201,18 +222,27 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         songAsset.loadValuesAsynchronouslyForKeys([tracksKey], completionHandler: { [unowned self]() in
             let status = songAsset.statusOfValueForKey(tracksKey, error: error)
             if(status == AVKeyValueStatus.Loaded) {
+                if(!self.avPlayerItemObserverRemoved && self.avPlayerItem != nil && self.avPlayer != nil) {
+                    self.avPlayerItem?.removeObserver(self, forKeyPath: "status")
+                }
                 self.avPlayerItem = AVPlayerItem(asset: songAsset)
                 self.avPlayerItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
+                self.avPlayerItemObserverRemoved = false
                 self.avPlayer = AVPlayer(playerItem: self.avPlayerItem!)
             }
         })
+    }
+    
+    func scrobbleAndLoadNextTrack() {
+        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
+        skipForwards()
     }
     
     func addTimeObserver() {
         if(timeObserver == nil) {
             let playbackDuration = NSValue(CMTime: CMTime.fromSeconds(Float(nowPlayingItem!.playbackDuration)))
             timeObserver = avPlayer!.addBoundaryTimeObserverForTimes([playbackDuration],
-                queue: dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), usingBlock: self.skipForwards)
+                queue: dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), usingBlock: self.scrobbleAndLoadNextTrack)
             println("adding time observer \(timeObserver)")
         } else {
             fatalError("tried to add time observer before previous one was removed")
@@ -236,10 +266,11 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
             if(avPlayer?.currentItem?.status != nil && avPlayer?.currentItem?.status == AVPlayerItemStatus.ReadyToPlay) {
                 if(shouldPlayAfterLoading) {
                     play()
+                    nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
                 }
                 avPlayer?.currentItem?.removeObserver(self, forKeyPath: "status")
+                avPlayerItemObserverRemoved = true
                 println("Media item \(nowPlayingItem!.title) is ready to play")
-                nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
                 QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
                 if let playbackTime = restoredPlaybackTime {
                     currentPlaybackTime = playbackTime
