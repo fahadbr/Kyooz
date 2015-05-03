@@ -49,7 +49,7 @@ class SongDetailsTableViewCell: UITableViewCell {
     
     
     func menuButtonPressed(sender: AnyObject) {
-        println("menu button touched")
+        Logger.debug("menu button touched")
         delegate?.menuButtonTouched = true
     }
     

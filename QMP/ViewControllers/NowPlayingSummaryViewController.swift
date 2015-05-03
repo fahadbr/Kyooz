@@ -51,7 +51,7 @@ class NowPlayingSummaryViewController: UIViewController {
     
     //MARK: - FUNCTIONS
     deinit {
-        println("deinitializing NowPlayingSummaryViewController")
+        Logger.debug("deinitializing NowPlayingSummaryViewController")
         self.invalidateTimer(nil)
         self.unregisterForNotifications()
     }
@@ -59,7 +59,6 @@ class NowPlayingSummaryViewController: UIViewController {
 
     
     @IBAction func commitUpdateOfPlaybackTime(sender: AnyObject) {
-        println("committing slider changes")
         queueBasedMusicPlayer.currentPlaybackTime = sender.value
         playbackProgressBar.value = sender.value
         //leave the timer invalidated because changing the value will trigger a notification from the music player
@@ -68,7 +67,6 @@ class NowPlayingSummaryViewController: UIViewController {
     }
 
     @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
-        println("updating slider value")
         invalidateTimer(sender)
         let sliderValue = sender.value
         let remainingPlaybackTime = Float(queueBasedMusicPlayer.nowPlayingItem?.playbackDuration ?? 0.0) - sliderValue
@@ -139,7 +137,7 @@ class NowPlayingSummaryViewController: UIViewController {
         }
         
         if(albumTitleForCurrentAlbumArt == nil || albumTitleForCurrentAlbumArt! != albumArtTitle) {
-            println("loading new album art image")
+            Logger.debug("loading new album art image")
             var albumArtImage = artwork?.imageWithSize(CGSize(width: self.albumArtwork.frame.width, height: self.albumArtwork.frame.height))
             if(albumArtImage == nil) {
                 albumArtImage = ImageContainer.defaultAlbumArtworkImage
@@ -163,7 +161,7 @@ class NowPlayingSummaryViewController: UIViewController {
                 return
             }
             if(self!.queueBasedMusicPlayer.musicIsPlaying && self!.playbackProgressTimer == nil) {
-                println("initiating playbackProgressTimer")
+                Logger.debug("initiating playbackProgressTimer")
                 self!.playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
                     target: self!,
                     selector: "updatePlaybackProgressBar:",
@@ -177,7 +175,7 @@ class NowPlayingSummaryViewController: UIViewController {
     
     func invalidateTimer(sender:AnyObject?) {
         if let uwTimer = self.playbackProgressTimer {
-            println("resetting playbackProgressTimer")
+            Logger.debug("resetting playbackProgressTimer")
             uwTimer.invalidate()
             self.playbackProgressTimer = nil
         }
@@ -229,7 +227,7 @@ class NowPlayingSummaryViewController: UIViewController {
         case "frame","center":
             updateAlphaLevels()
         default:
-            println("non observed property has changed")
+            Logger.debug("non observed property has changed")
         }
     }
     

@@ -27,7 +27,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
     private var nowPlayingQueue:[MPMediaItem]? = [MPMediaItem]() {
         didSet {
             if(nowPlayingQueue!.count > oldValue!.count) {
-                println("publishing notification for queue change")
+                Logger.debug("publishing notification for queue change")
 //                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
@@ -35,7 +35,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
     private var stagedQueue:[MPMediaItem]? = [MPMediaItem]() {
         didSet {
             if(stagedQueue!.count > oldValue!.count) {
-                println("publishing notification for queue change")
+                Logger.debug("publishing notification for queue change")
 //                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
@@ -93,7 +93,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
                 let index = musicPlayer.indexOfNowPlayingItem
                 //check if the queue from temp storage matches with the queue in the current music player
                 if(index < queueFromTempStorage.count && queueFromTempStorage[index].persistentID == nowPlayingItem.persistentID) {
-                    println("restoring now playing queue from temp storage")
+                    Logger.debug("restoring now playing queue from temp storage")
                     self.nowPlayingQueue = queueFromTempStorage
                     return
                 }
@@ -104,7 +104,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
             query.addFilterPredicate(MPMediaPropertyPredicate(value: NSNumber(unsignedLongLong: nowPlayingItem.albumPersistentID),
                 forProperty: MPMediaItemPropertyAlbumPersistentID,
                 comparisonType: MPMediaPredicateComparison.EqualTo))
-            println("assuming now playing queue to be album")
+            Logger.debug("assuming now playing queue to be album")
             self.nowPlayingQueue = query.items as? [MPMediaItem]
         }
     }
@@ -191,7 +191,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
         var queue = self.getNowPlayingQueue()!
         
         
-        println("clearing now playing queue from index \(fromIndex)")
+        Logger.debug("clearing now playing queue from index \(fromIndex)")
         queue.removeRange(Range<Int>(start: fromIndex + 1, end: queue.count))
         
         let playbackState = getPlaybackState()
@@ -247,7 +247,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
                 message += song.title + ", Artist: " + song.albumArtist
             }
         }
-        println(message)
+        Logger.debug(message)
         promoteStagedQueueToNowPlaying(nextStagedMediaItem, restoreFullState: false)
 //        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender:self)
     }
@@ -283,7 +283,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
     
     private func setQueueInternal(mediaItems:[MPMediaItem], itemToPlay:MPMediaItem?) {
         if(playbackStateManager.musicIsPlaying() || playbackStateManager.otherMusicIsPlaying()) {
-            println("Setting staged queue")
+            Logger.debug("Setting staged queue")
             stagedQueue = mediaItems
         } else {
             setNowPlayingQueue(MPMediaItemCollection(items: mediaItems), itemToPlay: itemToPlay)
@@ -292,7 +292,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
     
     private func setNowPlayingQueue(mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem?) {
         if(mediaCollection.items != nil) {
-            println("Setting now playing queue")
+            Logger.debug("Setting now playing queue")
             
             nowPlayingQueue = mediaCollection.items as? [MPMediaItem]
             musicPlayer.setQueueWithItemCollection(mediaCollection)
@@ -333,7 +333,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
         if(stagedQueueIsEmpty()) {
             return
         }
-        println("PROMOTING STAGED QUEUE")
+        Logger.debug("PROMOTING STAGED QUEUE")
         let playbackState = getPlaybackState()
         setNowPlayingQueue(MPMediaItemCollection(items: stagedQueue), itemToPlay: itemToPlay)
         
@@ -347,7 +347,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
             nowPlayingItem: musicPlayer.nowPlayingItem,
             nowPlayingIndex: musicPlayer.indexOfNowPlayingItem,
             currentPlaybackTime: musicPlayer.currentPlaybackTime)
-        println(playbackState.description)
+        Logger.debug(playbackState.description)
         return playbackState
     }
     
@@ -355,12 +355,12 @@ class StagedQueueBasedMusicPlayer : NSObject{
         if(!override) {
             if(playbackStateManager.musicIsPlaying() || playbackStateManager.otherMusicIsPlaying()) {
                 //assume that the staged queue was set and the playback state does not need to be restored
-                println("Skipping restoring of playback state")
+                Logger.debug("Skipping restoring of playback state")
                 return
             }
         }
         
-        println("Restoring playback state: " + originalPlaybackState.description)
+        Logger.debug("Restoring playback state: " + originalPlaybackState.description)
         if(restoreFullState) {
             musicPlayer.nowPlayingItem = originalPlaybackState.nowPlayingItem
             musicPlayer.currentPlaybackTime = originalPlaybackState.currentPlaybackTime!

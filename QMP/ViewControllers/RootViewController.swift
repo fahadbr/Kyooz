@@ -95,7 +95,7 @@ class RootViewController: UIViewController {
         
         switch(recognizer.state) {
         case .Began:
-            println("NPSVC Pan Gesture Began")
+            Logger.debug("NPSVC Pan Gesture Began")
         case .Changed:
             let translationY = recognizer.translationInView(self.view).y
             let endYPos = currenyYPos + translationY

@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+    let tempDataDAO = TempDataDAO.instance
     
     var window: UIWindow?
     var timer: NSTimer?
@@ -33,8 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         AudioSessionManager.instance.initializeAudioSession()
-        LastFmScrobbler.instance.initializeLastFm()
-        
+        LastFmScrobbler.instance.initializeScrobbler()
         ThemeHelper.applyGlobalAppearanceSettings()
         
         return true
@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             repeats: true)
         let taskName = "waitForStagedQueuePromotionTask"
         
-        println("Starting background task: " + taskName)
+        Logger.debug("Starting background task: " + taskName)
         backgroundTaskIdentifier = application.beginBackgroundTaskWithName(taskName,
             expirationHandler: { [weak self]() in
             self!.queueBasedMusicPlayer.executePreBackgroundTasks()
@@ -94,11 +94,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func endBackgroundTask() {
-        println("Ending background task: " + backgroundTaskIdentifier.description)
+        Logger.debug("Ending background task: " + backgroundTaskIdentifier.description)
         let mainQueue = dispatch_get_main_queue()
         dispatch_async(mainQueue, { [weak self]() -> Void in
             if let uwTimer = self!.timer {
-                println("Resetting Timer")
+                Logger.debug("Resetting Timer")
                 uwTimer.invalidate()
                 self!.timer = nil
                 UIApplication.sharedApplication().endBackgroundTask(self!.backgroundTaskIdentifier)
@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(!queueBasedMusicPlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
             self.endBackgroundTask()
         } else {
-            println("Staged queue is not yet promoted")
+            Logger.debug("Staged queue is not yet promoted")
         }
     }
 

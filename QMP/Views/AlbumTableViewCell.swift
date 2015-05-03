@@ -17,7 +17,7 @@ class AlbumTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        println("loading AlbumTableViewCell from nib")
+        Logger.debug("loading AlbumTableViewCell from nib")
         // Initialization code
     }
 
