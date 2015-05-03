@@ -33,7 +33,7 @@ class AudioSessionManager : NSObject {
     private let secondaryAudioShouldBeSilencedHint = "secondaryAudioShouldBeSilencedHint"
     
     func initializeAudioSession() {
-        println("initializing audio session")
+        Logger.debug("initializing audio session")
         self.audioSession.setCategory(AVAudioSessionCategoryPlayback, error: NSErrorPointer())
     }
     

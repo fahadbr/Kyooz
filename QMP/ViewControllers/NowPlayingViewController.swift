@@ -134,7 +134,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             var i=0
             for indexPathToDelete in indexPathsToDelete! {
                 if(indexPathToDelete == indexPath) {
-                    println("removing indexPath from deletion list \(indexPath.description)")
+                    Logger.debug("removing indexPath from deletion list \(indexPath.description)")
                     indexToRemove = i
                     break;
                 }
@@ -192,7 +192,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func reloadTableData(notification:NSNotification?) {
         if(viewExpanded) {
-            println("reloading now playing queue table view")
+            Logger.debug("reloading now playing queue table view")
             tableView.reloadData()
         }
     }
@@ -230,7 +230,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         if let albumArtworkObject = mediaItem.artwork {
             var albumArtwork = tempImageCache[mediaItem.albumPersistentID]
             if(albumArtwork == nil) {
-                println("loading artwork into temp cache")
+                Logger.debug("loading artwork into temp cache")
                 albumArtwork = albumArtworkObject.imageWithSize(cellImageSize)
                 tempImageCache[mediaItem.albumPersistentID] = albumArtwork
             }

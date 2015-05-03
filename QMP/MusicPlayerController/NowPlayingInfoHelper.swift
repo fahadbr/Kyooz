@@ -52,7 +52,7 @@ class NowPlayingInfoHelper {
             mediaInfoToPublish[property] = value
         }
         
-        println("publishing now playing info for mediaItem: \(mediaInfoToPublish[MPMediaItemPropertyTitle])")
+//        Logger.debug("publishing now playing info for mediaItem: \(mediaInfoToPublish[MPMediaItemPropertyTitle])")
         return mediaInfoToPublish
     }
 }

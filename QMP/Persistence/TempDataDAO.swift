@@ -48,7 +48,7 @@ class TempDataDAO : NSObject {
         
         var persistentIds = [NSNumber]()
         for mediaItem in mediaItems! {
-            println("persisting mediaItem with persistentID:\(mediaItem.persistentID)")
+            Logger.debug("persisting mediaItem with persistentID:\(mediaItem.persistentID)")
             persistentIds.append(NSNumber(unsignedLongLong: mediaItem.persistentID))
         }
         
@@ -67,13 +67,13 @@ class TempDataDAO : NSObject {
         
 
         for mediaId in persistedMediaIds {
-            println("querying for mediaItem with persistentID:\(mediaId)")
+            Logger.debug("querying for mediaItem with persistentID:\(mediaId)")
             var query = MPMediaQuery()
             query.addFilterPredicate(MPMediaPropertyPredicate(value: mediaId,
                 forProperty: MPMediaItemPropertyPersistentID, comparisonType: MPMediaPredicateComparison.EqualTo))
             let tempQueryItems = query.items
             if(tempQueryItems == nil || tempQueryItems!.isEmpty) {
-                println("query for mediaItem with persistentID:\(mediaId) did not return anything")
+                Logger.debug("query for mediaItem with persistentID:\(mediaId) did not return anything")
                 continue
             }
             queriedMediaItems.extend(tempQueryItems)
@@ -89,7 +89,7 @@ class TempDataDAO : NSObject {
         currentPlaybackState[TempDataDAO.CURRENT_PLAYBACK_TIME_KEY] = NSNumber(float: currentPlaybackTime)
         
         let nsCurrentPlaybackState = currentPlaybackState as NSDictionary
-        println("persisting playback state \(currentPlaybackState.description)")
+        Logger.debug("persisting playback state \(currentPlaybackState.description)")
         nsCurrentPlaybackState.writeToFile(TempDataDAO.playbackStateFileName, atomically: true)
     }
     
@@ -102,7 +102,7 @@ class TempDataDAO : NSObject {
         
         let persistedIndex = persistedPlaybackState?.objectForKey(TempDataDAO.INDEX_OF_NOW_PLAYING_ITEM_KEY) as? Int
         let persistedTime = persistedPlaybackState?.objectForKey(TempDataDAO.CURRENT_PLAYBACK_TIME_KEY) as? Float
-        println("retrieving playback state from temp storage \(persistedPlaybackState?.description)")
+        Logger.debug("retrieving playback state from temp storage \(persistedPlaybackState?.description)")
         
         if let index = persistedIndex, let playbackTime = persistedTime {
             return (index, playbackTime)

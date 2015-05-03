@@ -113,6 +113,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     }
     
     func skipForwards() {
+        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1)
     }
     
@@ -234,7 +235,6 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     }
     
     func scrobbleAndLoadNextTrack() {
-        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         skipForwards()
     }
     
@@ -243,7 +243,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
             let playbackDuration = NSValue(CMTime: CMTime.fromSeconds(Float(nowPlayingItem!.playbackDuration)))
             timeObserver = avPlayer!.addBoundaryTimeObserverForTimes([playbackDuration],
                 queue: dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), usingBlock: self.scrobbleAndLoadNextTrack)
-            println("adding time observer \(timeObserver)")
+            Logger.debug("adding time observer \(timeObserver)")
         } else {
             fatalError("tried to add time observer before previous one was removed")
         }
@@ -251,7 +251,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     
     func removeTimeObserver() {
         if(timeObserver != nil) {
-            println("removing time observer \(timeObserver)")
+            Logger.debug("removing time observer \(timeObserver)")
             avPlayer?.removeTimeObserver(timeObserver!)
             timeObserver = nil
         }
@@ -262,7 +262,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         switch(keyPath) {
         case("status"):
-            println("status has changed to \(change)")
+            Logger.debug("status has changed to \(change)")
             if(avPlayer?.currentItem?.status != nil && avPlayer?.currentItem?.status == AVPlayerItemStatus.ReadyToPlay) {
                 if(shouldPlayAfterLoading) {
                     play()
@@ -270,7 +270,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
                 }
                 avPlayer?.currentItem?.removeObserver(self, forKeyPath: "status")
                 avPlayerItemObserverRemoved = true
-                println("Media item \(nowPlayingItem!.title) is ready to play")
+                Logger.debug("Media item \(nowPlayingItem!.title) is ready to play")
                 QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
                 if let playbackTime = restoredPlaybackTime {
                     currentPlaybackTime = playbackTime
@@ -278,7 +278,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
                 }
             }
         default:
-            println("non observed property has changed")
+            Logger.debug("non observed property has changed")
         }
     }
     

@@ -45,7 +45,7 @@ class PlaybackStateManager: NSObject {
         let dispatchTime1 = dispatch_time(DISPATCH_TIME_NOW, self.timeDelayInNanoSeconds)
         dispatch_after(dispatchTime1, dispatch_get_main_queue(), { [unowned self]() -> Void in
             let oldPlaybackTime = self.musicPlayer.currentPlaybackTime
-            println("oldPlaybackTime: \(oldPlaybackTime)")
+            Logger.debug("oldPlaybackTime: \(oldPlaybackTime)")
             
             let dispatchTime2 = dispatch_time(DISPATCH_TIME_NOW, self.timeDelayInNanoSeconds)
             dispatch_after(dispatchTime2, dispatch_get_main_queue(), { [unowned self] ()  in
@@ -57,7 +57,7 @@ class PlaybackStateManager: NSObject {
     private func checkAgainstPlaybackTime(playbackTime : NSTimeInterval) {
         let newPlaybackTime = self.musicPlayer.currentPlaybackTime
         var playbackStateCorrected:Bool = false
-        println("newPlaybackTime: \(newPlaybackTime)")
+        Logger.debug("newPlaybackTime: \(newPlaybackTime)")
 
         if(newPlaybackTime.isNaN && playbackTime.isNaN) {
             if(self.musicPlaybackState != MPMusicPlaybackState.Stopped) {
@@ -75,7 +75,7 @@ class PlaybackStateManager: NSObject {
         }
         
         if(playbackStateCorrected) {
-            println("Playback State Corrected to: \(self.musicPlaybackState.rawValue.description)")
+            Logger.debug("Playback State Corrected to: \(self.musicPlaybackState.rawValue.description)")
             dispatch_async(dispatch_get_main_queue()) {
                 let notification = NSNotification(name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: self)
                 NSNotificationCenter.defaultCenter().postNotification(notification)
@@ -94,7 +94,7 @@ class PlaybackStateManager: NSObject {
                 var stateToSet = MPMusicPlaybackState(rawValue: stateRawValue)
                 if(stateToSet != nil) {
                     self.musicPlaybackState = stateToSet!
-                    println("CurrentPlaybackState: " + self.musicPlaybackState.rawValue.description)
+                    Logger.debug("CurrentPlaybackState: " + self.musicPlaybackState.rawValue.description)
                 }
             }
         }

@@ -136,7 +136,7 @@ class ContainerViewController : UIViewController {
     
     func deinitializeSideViewController(notification:NSNotification) {
         if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
-            println("deinitializing side view controller")
+            Logger.debug("deinitializing side view controller")
             nowPlayingNavigationController!.view.removeFromSuperview()
             nowPlayingViewController = nil
             nowPlayingNavigationController = nil
@@ -178,7 +178,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         
         switch(recognizer.state) {
         case .Began:
-            println("NPVC Screen Edge Pan Gesture Began")
+            Logger.debug("NPVC Screen Edge Pan Gesture Began")
             if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
                 addSidePanelViewController()
             }
@@ -223,7 +223,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if(gestureRecognizer.isEqual(self.rootViewController.nowPlayingPanGestureRecognizer) &&
             otherGestureRecognizer.isEqual(self.screenEdgePanGestureRecognizer)) {
-                println("Mandating screenEdgePanGestureRecognizer to fail")
+                Logger.debug("Mandating screenEdgePanGestureRecognizer to fail")
                 return true
         }
         return false
@@ -232,7 +232,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if(gestureRecognizer.isEqual(self.screenEdgePanGestureRecognizer) &&
             otherGestureRecognizer.isEqual(self.rootViewController.nowPlayingPanGestureRecognizer)) {
-                println("Mandating screenEdgePanGestureRecognizer to fail")
+                Logger.debug("Mandating screenEdgePanGestureRecognizer to fail")
                 return true
         }
         return false
