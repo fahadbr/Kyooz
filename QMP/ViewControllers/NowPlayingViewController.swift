@@ -11,14 +11,28 @@ import MediaPlayer
 
 class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SongDetailsTableViewCellDelegate  {
 
+    @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
+    
     let notificationCenter = NSNotificationCenter.defaultCenter()
     let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.defaultCenter()
     
+    var tempImageCache = [MPMediaEntityPersistentID:UIImage]()
+    var noAlbumArtCellImage:UIImage!
+    var playingImage:UIImage!
+    var pausedImage:UIImage!
+    
+    var indexPathsToDelete:[NSIndexPath]?
+    var multipleDeleteButton:UIBarButtonItem!
+    
     var menuButtonTouched:Bool = false
     var viewExpanded:Bool = false {
         didSet {
-            reloadTableData(nil)
+            if(viewExpanded) {
+                reloadTableData(nil)
+            } else {
+                editing = false
+            }
         }
     }
     
@@ -26,8 +40,9 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
-        self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
+        
+        toolbarItems?[0] = editButtonItem()
         registerForNotifications()
     }
     
@@ -39,6 +54,29 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func commitDeletionOfIndexPaths(sender:AnyObject?) {
+        if(tableView.editing && indexPathsToDelete != nil) {
+            var indicies = [Int]()
+            for indexPath in indexPathsToDelete! {
+                indicies.append(indexPath.row)
+            }
+            queueBasedMusicPlayer.deleteItemsAtIndices(indicies)
+            tableView.deleteRowsAtIndexPaths(indexPathsToDelete!, withRowAnimation: UITableViewRowAnimation.Automatic)
+            indexPathsToDelete!.removeAll(keepCapacity: false)
+        } else if (!tableView.editing && queueBasedMusicPlayer.getNowPlayingQueue() != nil) {
+            var indicies = [Int]()
+            var indexPaths = [NSIndexPath]()
+            for var i=0 ; i < queueBasedMusicPlayer.getNowPlayingQueue()!.count; i++ {
+                if(i != queueBasedMusicPlayer.indexOfNowPlayingItem) {
+                    indicies.append(i)
+                    indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+            }
+            queueBasedMusicPlayer.deleteItemsAtIndices(indicies)
+            tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Automatic)
+        }
     }
 
     // MARK: - Table view data source
@@ -60,35 +98,27 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
+        indexPathsToDelete = !editing ? nil : [NSIndexPath]()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("songDetailsTableViewCell", forIndexPath: indexPath) as! SongDetailsTableViewCell
         
-        var queue = queueBasedMusicPlayer.getNowPlayingQueue()
-        if(queue == nil) {
-            return cell
-        }
-        
-        var wrappedSong = queue?[indexPath.row]
-        if(wrappedSong == nil) {
-            return cell
-        }
-        
-        var song = wrappedSong!
-        
-        cell.configureForMediaItem(song)
+        let mediaItem = queueBasedMusicPlayer.getNowPlayingQueue()![indexPath.row]
+        let isNowPlayingItem = (indexPath.row == queueBasedMusicPlayer.indexOfNowPlayingItem)
+        cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
+        cell.albumArtImageView.image = getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
         cell.delegate = self
-        cell.currentlyPlaying = false
         
-        if(queueBasedMusicPlayer.musicIsPlaying && isNowPlayingItem(mediaItemToCompare:song)) {
-            cell.currentlyPlaying = true
-        }
-
         return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if(tableView.editing) {
+            indexPathsToDelete?.append(indexPath)
+            return
+        }
+        
         if(menuButtonTouched) {
             presentMenuItems(forIndex: indexPath.row)
             menuButtonTouched = false
@@ -96,6 +126,24 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             queueBasedMusicPlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        if(tableView.editing) {
+            var indexToRemove:Int?
+            var i=0
+            for indexPathToDelete in indexPathsToDelete! {
+                if(indexPathToDelete == indexPath) {
+                    println("removing indexPath from deletion list \(indexPath.description)")
+                    indexToRemove = i
+                    break;
+                }
+                i++
+            }
+            if(indexToRemove != nil) {
+                indexPathsToDelete?.removeAtIndex(indexToRemove!)
+            }
+        }
     }
     
 
@@ -122,15 +170,14 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        
-        return indexPath.row == queueBasedMusicPlayer.indexOfNowPlayingItem ? .None : .Delete
+        return .Delete
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
-            queueBasedMusicPlayer.deleteItemAtIndexFromQueue(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+            queueBasedMusicPlayer.deleteItemsAtIndices([indexPath.row])
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
            
         }
     }
@@ -163,6 +210,40 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
+    private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:MPMediaItem, isNowPlayingItem:Bool) -> UIImage! {
+        if(isNowPlayingItem) {
+            if(!queueBasedMusicPlayer.musicIsPlaying) {
+                if(playingImage == nil) {
+                    playingImage = ImageContainer.resizeImage(ImageContainer.currentlyPlayingImage, toSize: cellImageSize)
+                }
+                return playingImage
+            } else {
+                if(pausedImage == nil) {
+                    pausedImage = ImageContainer.resizeImage(ImageContainer.currentlyPausedImage, toSize: cellImageSize)
+                }
+                return pausedImage
+            }
+        }
+        
+        
+        if let albumArtworkObject = mediaItem.artwork {
+            var albumArtwork = tempImageCache[mediaItem.albumPersistentID]
+            if(albumArtwork == nil) {
+                println("loading artwork into temp cache")
+                albumArtwork = albumArtworkObject.imageWithSize(cellImageSize)
+                tempImageCache[mediaItem.albumPersistentID] = albumArtwork
+            }
+            
+            return albumArtwork
+        }
+        
+        if(noAlbumArtCellImage == nil) {
+            noAlbumArtCellImage = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: cellImageSize)
+        }
+        return noAlbumArtCellImage
+
+    }
 
     
     private func presentMenuItems(forIndex index:Int) {
@@ -172,22 +253,27 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         controller.addAction(cancelAction)
         
         let indexOfNowPlayingItem = queueBasedMusicPlayer.indexOfNowPlayingItem
+        let lastIndex = queueBasedMusicPlayer.getNowPlayingQueue()!.count - 1
         
-        if(!queueBasedMusicPlayer.musicIsPlaying || index >= indexOfNowPlayingItem) {
+        if((!queueBasedMusicPlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
             let clearUpcomingItemsAction = UIAlertAction(title: "Clear Upcoming Items", style: UIAlertActionStyle.Default) { action in
+                var indicesToDelete = [NSIndexPath]()
+                for var i=index + 1; i <= lastIndex; i++ {
+                    indicesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                
                 self.queueBasedMusicPlayer.clearUpcomingItems(fromIndex: index)
-                self.tableView.reloadData()
+                self.tableView.deleteRowsAtIndexPaths(indicesToDelete, withRowAnimation: UITableViewRowAnimation.Automatic)
             }
             controller.addAction(clearUpcomingItemsAction)
         }
         
-        if(index != indexOfNowPlayingItem) {
-            let deleteAction = UIAlertAction(title: "Delete", style:UIAlertActionStyle.Destructive) { action in
-                self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
-                    forRowAtIndexPath: NSIndexPath(forRow: index, inSection: 0))
-            }
-            controller.addAction(deleteAction)
+
+        let deleteAction = UIAlertAction(title: "Delete", style:UIAlertActionStyle.Destructive) { action in
+            self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
+                forRowAtIndexPath: NSIndexPath(forRow: index, inSection: 0))
         }
+        controller.addAction(deleteAction)
 
         self.presentViewController(controller, animated: true, completion: nil)
     }

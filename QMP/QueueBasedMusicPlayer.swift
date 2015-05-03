@@ -32,7 +32,7 @@ protocol QueueBasedMusicPlayer:class {
     
     func enqueue(itemsToEnque:[MPMediaItem])
     
-    func deleteItemAtIndexFromQueue(index:Int)
+    func deleteItemsAtIndices(indicies:[Int])
     
     func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int)
     

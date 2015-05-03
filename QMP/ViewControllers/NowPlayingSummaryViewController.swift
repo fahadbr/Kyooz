@@ -56,14 +56,23 @@ class NowPlayingSummaryViewController: UIViewController {
         self.unregisterForNotifications()
     }
     
-    @IBAction func unwindToSummaryScreen(segue : UIStoryboardSegue)  {
-        reloadData(nil)
-    }
+
     
-    //TODO: - ADD THESE FUNCTIONS TO THE INTERFACE
-    @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
+    @IBAction func commitUpdateOfPlaybackTime(sender: AnyObject) {
+        println("committing slider changes")
         queueBasedMusicPlayer.currentPlaybackTime = sender.value
-//        updatePlaybackProgressBar(nil)
+        playbackProgressBar.value = sender.value
+        //leave the timer invalidated because changing the value will trigger a notification from the music player
+        //causing the view to reload and the timer to be reinitialized
+        //this is preferred because we dont want the timer to start until after the seeking to the time has completed
+    }
+
+    @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
+        println("updating slider value")
+        invalidateTimer(sender)
+        let sliderValue = sender.value
+        let remainingPlaybackTime = Float(queueBasedMusicPlayer.nowPlayingItem?.playbackDuration ?? 0.0) - sliderValue
+        updatePlaybackProgressBarTimeLabels(currentPlaybackTime: sliderValue, remainingPlaybackTime: remainingPlaybackTime)
     }
 
     
@@ -120,7 +129,7 @@ class NowPlayingSummaryViewController: UIViewController {
         let albumTitle = nowPlayingItem?.albumTitle ?? "Play"
         self.albumArtistAndAlbumTitleLabel.text = (albumArtist + " - " + albumTitle)
         self.albumArtistAndAlbumTitleCollapsedLabel.text = self.albumArtistAndAlbumTitleLabel.text
-        
+
         let artwork = nowPlayingItem?.artwork
         var albumArtTitle:String!
         if(artwork == nil) {
@@ -184,17 +193,20 @@ class NowPlayingSummaryViewController: UIViewController {
                 self.playbackProgressCollapsedBar.progress = 0.0
                 return
             }
-            
             var currentPlaybackTime = self.queueBasedMusicPlayer.currentPlaybackTime
             var totalPlaybackTime = Float(self.queueBasedMusicPlayer.nowPlayingItem!.playbackDuration)
             var remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
             
-            self.totalPlaybackTimeLabel.text = "-" + MediaItemUtils.getTimeRepresentation(remainingPlaybackTime)
-            self.currentPlaybackTimeLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
+            self.updatePlaybackProgressBarTimeLabels(currentPlaybackTime:currentPlaybackTime, remainingPlaybackTime:remainingPlaybackTime)
             let progress = currentPlaybackTime
-            self.playbackProgressBar.setValue(progress, animated: false)
-            self.playbackProgressCollapsedBar.setProgress(Float(currentPlaybackTime/totalPlaybackTime), animated: false)
+            self.playbackProgressBar.setValue(progress, animated: true)
+            self.playbackProgressCollapsedBar.setProgress(Float(progress/totalPlaybackTime), animated: true)
         })
+    }
+    
+    func updatePlaybackProgressBarTimeLabels(#currentPlaybackTime:Float, remainingPlaybackTime:Float) {
+        totalPlaybackTimeLabel.text = "-" + MediaItemUtils.getTimeRepresentation(remainingPlaybackTime)
+        currentPlaybackTimeLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
     }
     
     func updatePlaybackStatus(sender:AnyObject?) {

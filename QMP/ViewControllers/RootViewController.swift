@@ -38,37 +38,49 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.libraryNavigationController = UIStoryboard.libraryNavigationController()
-        let originalFrame = self.libraryNavigationController.view.frame
-        let newOrigin = originalFrame.origin
-        let newSize = CGSize(width: CGRectGetWidth(originalFrame), height: originalFrame.height - RootViewController.nowPlayingViewCollapsedOffset)
-        self.libraryNavigationController.view.frame = CGRect(origin: newOrigin, size: newSize)
-        
-        self.view.addSubview(libraryNavigationController.view)
-        self.addChildViewController(libraryNavigationController)
-        self.libraryNavigationController.didMoveToParentViewController(self)
-        
-        self.nowPlayingSummaryViewController = UIStoryboard.nowPlayingSummaryViewController()
-        self.nowPlayingViewOrigin = CGPoint(x: 0, y: self.view.bounds.height - RootViewController.nowPlayingViewCollapsedOffset)
+//        view.autoresizingMask = UIViewAutoresizing.
+        libraryNavigationController = UIStoryboard.libraryNavigationController()
 
-        self.view.addSubview(nowPlayingSummaryViewController.view)
-        self.addChildViewController(nowPlayingSummaryViewController)
-        self.nowPlayingSummaryViewController.didMoveToParentViewController(self)
         
-        self.nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
-        self.nowPlayingPanGestureRecognizer.delegate = gestureDelegate
-        self.nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingPanGestureRecognizer)
+        view.addSubview(libraryNavigationController.view)
+        addChildViewController(libraryNavigationController)
+        libraryNavigationController.didMoveToParentViewController(self)
         
-        self.nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
-        self.nowPlayingTapGestureRecognizer.delegate = gestureDelegate
-        self.nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
+        nowPlayingSummaryViewController = UIStoryboard.nowPlayingSummaryViewController()
+        
+        view.insertSubview(nowPlayingSummaryViewController.view, atIndex: 0)
+        addChildViewController(nowPlayingSummaryViewController)
+        nowPlayingSummaryViewController.didMoveToParentViewController(self)
+        
+        nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
+        nowPlayingPanGestureRecognizer.delegate = gestureDelegate
+        nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingPanGestureRecognizer)
+        
+        nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
+        nowPlayingTapGestureRecognizer.delegate = gestureDelegate
+        nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
         
     }
+    
+    override func viewDidLayoutSubviews() {
+        let originalFrame = view.bounds
+        let newOrigin = originalFrame.origin
+        let newSize = CGSize(width: CGRectGetWidth(originalFrame), height: originalFrame.height - RootViewController.nowPlayingViewCollapsedOffset)
+        libraryNavigationController.view.frame = CGRect(origin: newOrigin, size: newSize)
+        
+        nowPlayingViewOrigin = CGPoint(x: 0, y: self.view.bounds.height - RootViewController.nowPlayingViewCollapsedOffset)
+        nowPlayingSummaryViewController.view.frame = view.bounds
+        nowPlayingSummaryViewController.view.frame.origin.y = view.bounds.height
+        
+        view.bringSubviewToFront(nowPlayingSummaryViewController.view)
+        pullableViewExpanded = false
+        animatePullablePanel(shouldExpand: false)
+    }
+    
     
     override func viewDidAppear(animated: Bool) {
         //explicitly setting this here
         pullableViewExpanded = false
-        nowPlayingSummaryViewController.view.frame.origin = nowPlayingViewOrigin
     }
 
     func enableGesturesInSubViews(#shouldEnable:Bool) {

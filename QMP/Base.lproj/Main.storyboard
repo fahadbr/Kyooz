@@ -108,10 +108,10 @@
             </objects>
             <point key="canvasLocation" x="2234" y="-1163"/>
         </scene>
-        <!--Now Playing-->
+        <!--NowPlayingQueue-->
         <scene sceneID="6XA-XL-1q0">
             <objects>
-                <viewController storyboardIdentifier="nowPlayingViewController" title="Now Playing" useStoryboardIdentifierAsRestorationIdentifier="YES" id="A5d-sE-21l" customClass="NowPlayingViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="nowPlayingViewController" title="NowPlayingQueue" useStoryboardIdentifierAsRestorationIdentifier="YES" id="A5d-sE-21l" customClass="NowPlayingViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1rR-fS-5dP"/>
                         <viewControllerLayoutGuide type="bottom" id="OWI-ym-SDW"/>
@@ -120,7 +120,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="zVD-YM-21y">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="zVD-YM-21y">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -137,8 +137,16 @@
                             <constraint firstItem="zVD-YM-21y" firstAttribute="top" secondItem="tVN-Z3-FI3" secondAttribute="topMargin" id="hiH-Ls-KiQ"/>
                         </constraints>
                     </view>
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Now Playing" id="TBa-Zq-QGg"/>
+                    <toolbarItems>
+                        <barButtonItem tag="1" systemItem="edit" id="QSr-oK-Xkg"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="wt3-gB-nn2"/>
+                        <barButtonItem systemItem="trash" id="37S-xH-KYy">
+                            <connections>
+                                <action selector="commitDeletionOfIndexPaths:" destination="A5d-sE-21l" id="Vep-mB-8eT"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Queue" id="TBa-Zq-QGg"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="zVD-YM-21y" id="OLr-IP-egg"/>
@@ -168,10 +176,15 @@
                                 </view>
                                 <blurEffect style="dark"/>
                             </visualEffectView>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QGr-jm-hSe" propertyAccessControl="all">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="QGr-jm-hSe">
                                 <rect key="frame" x="58" y="375" width="487" height="31"/>
+                                <color key="minimumTrackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="maximumTrackTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <action selector="updatePlaybackTime:forEvent:" destination="igl-8i-tSd" eventType="valueChanged" id="pam-yn-JDb"/>
+                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpInside" id="4Ts-nL-rVY"/>
+                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpOutside" id="MQE-ja-bOT"/>
+                                    <action selector="updatePlaybackTime:forEvent:" destination="igl-8i-tSd" eventType="valueChanged" id="Ecq-Bz-uZG"/>
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Album Artist - Album Title" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="P3f-4Y-yeg">
@@ -221,8 +234,13 @@
                                             <action selector="playPauseAction:" destination="igl-8i-tSd" eventType="touchUpInside" id="dPd-mr-q1u"/>
                                         </connections>
                                     </button>
-                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-jw-XaA">
-                                        <rect key="frame" x="0.0" y="-1" width="600" height="2"/>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-jw-XaA">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="2"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="3" id="IB0-fm-sXt"/>
+                                        </constraints>
+                                        <color key="progressTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="trackTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     </progressView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -231,10 +249,11 @@
                                     <constraint firstItem="ksq-Lm-cab" firstAttribute="top" secondItem="qD5-cn-9cR" secondAttribute="top" constant="5" id="17F-9u-LgK"/>
                                     <constraint firstAttribute="trailing" secondItem="ksq-Lm-cab" secondAttribute="trailing" constant="8" id="3iM-8Y-Gtu"/>
                                     <constraint firstAttribute="trailing" secondItem="n4K-jw-XaA" secondAttribute="trailing" id="6Fq-dc-pRA"/>
+                                    <constraint firstAttribute="bottom" secondItem="n4K-jw-XaA" secondAttribute="bottom" constant="52" id="CXk-sL-aa0"/>
                                     <constraint firstItem="n4K-jw-XaA" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leading" id="Gur-he-96O"/>
                                     <constraint firstItem="xr0-cf-bxB" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leadingMargin" constant="4" id="Qij-M4-3NF"/>
                                     <constraint firstAttribute="centerY" secondItem="xr0-cf-bxB" secondAttribute="centerY" id="RrH-mS-CXd"/>
-                                    <constraint firstItem="n4K-jw-XaA" firstAttribute="top" secondItem="qD5-cn-9cR" secondAttribute="top" constant="-1" id="Za3-4P-i46"/>
+                                    <constraint firstItem="n4K-jw-XaA" firstAttribute="top" secondItem="qD5-cn-9cR" secondAttribute="top" id="Za3-4P-i46"/>
                                     <constraint firstItem="K4x-rb-a4f" firstAttribute="top" secondItem="ksq-Lm-cab" secondAttribute="bottom" constant="1" id="cga-Bf-XSj"/>
                                     <constraint firstItem="K4x-rb-a4f" firstAttribute="leading" secondItem="xr0-cf-bxB" secondAttribute="trailing" constant="8" id="kjC-av-bEM"/>
                                     <constraint firstAttribute="trailing" secondItem="K4x-rb-a4f" secondAttribute="trailing" constant="8" id="o7r-TO-zw8"/>

@@ -93,7 +93,7 @@ class ContainerViewController : UIViewController {
         if(nowPlayingViewController == nil) {
             nowPlayingViewController = UIStoryboard.nowPlayingViewController()
             
-            let originalFrame = nowPlayingViewController!.view.frame
+            let originalFrame = nowPlayingViewController!.view.bounds
             let newWidth = CGRectGetWidth(self.view.bounds) - centerPanelExpandedOffset
             let newHeight = originalFrame.height
             let newX = originalFrame.origin.x + centerPanelExpandedOffset
@@ -102,6 +102,7 @@ class ContainerViewController : UIViewController {
 //            nowPlayingViewController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
             nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
             nowPlayingNavigationController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+            nowPlayingNavigationController!.toolbarHidden = false
             view.insertSubview(nowPlayingNavigationController!.view, atIndex: 0)
             addChildViewController(nowPlayingNavigationController!)
             nowPlayingNavigationController!.didMoveToParentViewController(self)

@@ -40,6 +40,14 @@
 		0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */; };
 		0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA651AED584700CC5C01 /* ImageContainer.swift */; };
 		0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */; };
+		0B1BFD4C1AF30AAB009838A5 /* LastFm.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFD4B1AF30AAB009838A5 /* LastFm.m */; };
+		0B1BFD911AF31081009838A5 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B1BFD901AF31081009838A5 /* libxml2.2.dylib */; };
+		0B1BFDA21AF312C9009838A5 /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFD951AF312C9009838A5 /* DDXMLElementAdditions.m */; };
+		0B1BFDA31AF312C9009838A5 /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFD981AF312C9009838A5 /* NSString+DDXML.m */; };
+		0B1BFDA41AF312C9009838A5 /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFD9B1AF312C9009838A5 /* DDXMLDocument.m */; };
+		0B1BFDA51AF312C9009838A5 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFD9D1AF312C9009838A5 /* DDXMLElement.m */; };
+		0B1BFDA61AF312C9009838A5 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFD9F1AF312C9009838A5 /* DDXMLNode.m */; };
+		0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +98,23 @@
 		0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SongDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		0B13DA651AED584700CC5C01 /* ImageContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainer.swift; sourceTree = "<group>"; };
 		0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItemUtils.swift; sourceTree = "<group>"; };
+		0B1BFD4A1AF30AAB009838A5 /* LastFm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFm.h; sourceTree = "<group>"; };
+		0B1BFD4B1AF30AAB009838A5 /* LastFm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFm.m; sourceTree = "<group>"; };
+		0B1BFD901AF31081009838A5 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
+		0B1BFD941AF312C9009838A5 /* DDXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElementAdditions.h; sourceTree = "<group>"; };
+		0B1BFD951AF312C9009838A5 /* DDXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElementAdditions.m; sourceTree = "<group>"; };
+		0B1BFD971AF312C9009838A5 /* NSString+DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DDXML.h"; sourceTree = "<group>"; };
+		0B1BFD981AF312C9009838A5 /* NSString+DDXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DDXML.m"; sourceTree = "<group>"; };
+		0B1BFD991AF312C9009838A5 /* DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXML.h; sourceTree = "<group>"; };
+		0B1BFD9A1AF312C9009838A5 /* DDXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLDocument.h; sourceTree = "<group>"; };
+		0B1BFD9B1AF312C9009838A5 /* DDXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLDocument.m; sourceTree = "<group>"; };
+		0B1BFD9C1AF312C9009838A5 /* DDXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElement.h; sourceTree = "<group>"; };
+		0B1BFD9D1AF312C9009838A5 /* DDXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElement.m; sourceTree = "<group>"; };
+		0B1BFD9E1AF312C9009838A5 /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
+		0B1BFD9F1AF312C9009838A5 /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
+		0B1BFDA11AF312C9009838A5 /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
+		0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastFmScrobbler.swift; sourceTree = "<group>"; };
+		0B1BFDA91AF31627009838A5 /* LastFMBridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LastFMBridgingHeader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B1BFD911AF31081009838A5 /* libxml2.2.dylib in Frameworks */,
 				0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */,
 				0B13DA271AE6FB0400CC5C01 /* MediaPlayer.framework in Frameworks */,
 			);
@@ -115,6 +141,7 @@
 		0B13D9B21AE6F80E00CC5C01 = {
 			isa = PBXGroup;
 			children = (
+				0B1BFD901AF31081009838A5 /* libxml2.2.dylib */,
 				0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */,
 				0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */,
 				0B13D9BD1AE6F80E00CC5C01 /* QMP */,
@@ -135,6 +162,8 @@
 		0B13D9BD1AE6F80E00CC5C01 /* QMP */ = {
 			isa = PBXGroup;
 			children = (
+				0B1BFDAA1AF535DB009838A5 /* Extensions */,
+				0B1BFD491AF30A4C009838A5 /* LastFm */,
 				0B13D9F81AE6FA9A00CC5C01 /* MusicPlayerController */,
 				0B13D9FC1AE6FA9A00CC5C01 /* Persistence */,
 				0B13DA051AE6FA9A00CC5C01 /* Views */,
@@ -144,7 +173,6 @@
 				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
 				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
 				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
-				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
 				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
 				0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */,
 				0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */,
@@ -227,6 +255,69 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		0B1BFD491AF30A4C009838A5 /* LastFm */ = {
+			isa = PBXGroup;
+			children = (
+				0B1BFD921AF312C9009838A5 /* KissXML */,
+				0B1BFDA91AF31627009838A5 /* LastFMBridgingHeader.h */,
+				0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */,
+				0B1BFD4A1AF30AAB009838A5 /* LastFm.h */,
+				0B1BFD4B1AF30AAB009838A5 /* LastFm.m */,
+			);
+			name = LastFm;
+			sourceTree = "<group>";
+		};
+		0B1BFD921AF312C9009838A5 /* KissXML */ = {
+			isa = PBXGroup;
+			children = (
+				0B1BFD931AF312C9009838A5 /* Additions */,
+				0B1BFD961AF312C9009838A5 /* Categories */,
+				0B1BFD991AF312C9009838A5 /* DDXML.h */,
+				0B1BFD9A1AF312C9009838A5 /* DDXMLDocument.h */,
+				0B1BFD9B1AF312C9009838A5 /* DDXMLDocument.m */,
+				0B1BFD9C1AF312C9009838A5 /* DDXMLElement.h */,
+				0B1BFD9D1AF312C9009838A5 /* DDXMLElement.m */,
+				0B1BFD9E1AF312C9009838A5 /* DDXMLNode.h */,
+				0B1BFD9F1AF312C9009838A5 /* DDXMLNode.m */,
+				0B1BFDA01AF312C9009838A5 /* Private */,
+			);
+			path = KissXML;
+			sourceTree = "<group>";
+		};
+		0B1BFD931AF312C9009838A5 /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				0B1BFD941AF312C9009838A5 /* DDXMLElementAdditions.h */,
+				0B1BFD951AF312C9009838A5 /* DDXMLElementAdditions.m */,
+			);
+			path = Additions;
+			sourceTree = "<group>";
+		};
+		0B1BFD961AF312C9009838A5 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				0B1BFD971AF312C9009838A5 /* NSString+DDXML.h */,
+				0B1BFD981AF312C9009838A5 /* NSString+DDXML.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		0B1BFDA01AF312C9009838A5 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				0B1BFDA11AF312C9009838A5 /* DDXMLPrivate.h */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
+		0B1BFDAA1AF535DB009838A5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -295,6 +386,7 @@
 			knownRegions = (
 				en,
 				Base,
+				English,
 			);
 			mainGroup = 0B13D9B21AE6F80E00CC5C01;
 			productRefGroup = 0B13D9BC1AE6F80E00CC5C01 /* Products */;
@@ -334,6 +426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
@@ -342,6 +435,8 @@
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0B13DA231AE6FA9A00CC5C01 /* QueueBasedMusicPlayer.swift in Sources */,
 				0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */,
+				0B1BFDA51AF312C9009838A5 /* DDXMLElement.m in Sources */,
+				0B1BFDA21AF312C9009838A5 /* DDXMLElementAdditions.m in Sources */,
 				0B13DA161AE6FA9A00CC5C01 /* FilteredAlbumTableViewController.swift in Sources */,
 				0B13DA151AE6FA9A00CC5C01 /* ArtistTableViewController.swift in Sources */,
 				0B13DA1F1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift in Sources */,
@@ -350,15 +445,19 @@
 				0B13DA211AE6FA9A00CC5C01 /* PlaybackStateDTO.swift in Sources */,
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
 				0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */,
+				0B1BFD4C1AF30AAB009838A5 /* LastFm.m in Sources */,
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,
+				0B1BFDA61AF312C9009838A5 /* DDXMLNode.m in Sources */,
 				0B13DA171AE6FA9A00CC5C01 /* FilteredSongTableViewController.swift in Sources */,
 				0B13DA131AE6FA9A00CC5C01 /* QueueBasedMusicPlayerImpl.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
 				0B13DA241AE6FA9A00CC5C01 /* StagedQueueBasedMusicPlayer.swift in Sources */,
 				0B13DA1B1AE6FA9A00CC5C01 /* AlbumTableViewCell.swift in Sources */,
+				0B1BFDA41AF312C9009838A5 /* DDXMLDocument.m in Sources */,
+				0B1BFDA31AF312C9009838A5 /* NSString+DDXML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,22 +583,43 @@
 		0B13D9DB1AE6F80E00CC5C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = QMP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = /usr/include/libxml2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "";
+				"SWIFT_INCLUDE_PATHS[arch=*]" = /usr/include/libxml2;
+				SWIFT_OBJC_BRIDGING_HEADER = QMP/LastFMBridgingHeader.h;
+				USER_HEADER_SEARCH_PATHS = /usr/include/libxml2;
 			};
 			name = Debug;
 		};
 		0B13D9DC1AE6F80E00CC5C01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = QMP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /usr/include/libxml2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = /usr/include/libxml2;
+				SWIFT_OBJC_BRIDGING_HEADER = QMP/LastFMBridgingHeader.h;
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = /usr/include/libxml2;
 			};
 			name = Release;
 		};

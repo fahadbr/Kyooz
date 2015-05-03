@@ -10,7 +10,7 @@ import Foundation
 import MediaPlayer
 import AVFoundation
 
-class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
+class StagedQueueBasedMusicPlayer : NSObject{
     
     class var instance : StagedQueueBasedMusicPlayer {
         struct Static {
@@ -28,7 +28,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         didSet {
             if(nowPlayingQueue!.count > oldValue!.count) {
                 println("publishing notification for queue change")
-                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
+//                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
     }
@@ -36,7 +36,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         didSet {
             if(stagedQueue!.count > oldValue!.count) {
                 println("publishing notification for queue change")
-                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
+//                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
     }
@@ -202,19 +202,19 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         }
     }
     
-    func deleteItemAtIndexFromQueue(index:Int) {
-        var queue = getNowPlayingQueue()
-
-
-        if(queue == nil || index > (queue!.count - 1)) {
-            return
-        }
-        
-        let playbackState = getPlaybackState()
-        queue!.removeAtIndex(index)
-        setQueueInternal(queue!, itemToPlay: playbackState.nowPlayingItem)
-        restorePlaybackState(playbackState, override: false, restoreFullState: true)
-        evaluateNextStagedMediaItem(playbackState)
+    func deleteItemsAtIndices(index:[Int]) {
+//        var queue = getNowPlayingQueue()
+//
+//
+//        if(queue == nil || index > (queue!.count - 1)) {
+//            return
+//        }
+//        
+//        let playbackState = getPlaybackState()
+//        queue!.removeAtIndex(index)
+//        setQueueInternal(queue!, itemToPlay: playbackState.nowPlayingItem)
+//        restorePlaybackState(playbackState, override: false, restoreFullState: true)
+//        evaluateNextStagedMediaItem(playbackState)
         
     }
     
@@ -249,7 +249,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
         }
         println(message)
         promoteStagedQueueToNowPlaying(nextStagedMediaItem, restoreFullState: false)
-        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender:self)
+//        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender:self)
     }
     
     func handlePlaybackStateChanged(notification:NSNotification) {
@@ -269,7 +269,7 @@ class StagedQueueBasedMusicPlayer : NSObject, QueueBasedMusicPlayer{
                 }
             }
         }
-        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender:self)
+//        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender:self)
     }
     
     

@@ -30,7 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.rootViewController = containerViewController
         window!.makeKeyAndVisible()
         
+        
+        
         AudioSessionManager.instance.initializeAudioSession()
+        LastFmScrobbler.instance.initializeLastFm()
+        
+        ThemeHelper.applyGlobalAppearanceSettings()
+        
         return true
     }
 
@@ -74,7 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             endBackgroundTask()
         }
         
-        PlaybackStateManager.instance.correctPlaybackState()
+//        PlaybackStateManager.instance.correctPlaybackState()
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
