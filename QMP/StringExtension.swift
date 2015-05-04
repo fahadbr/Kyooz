@@ -27,4 +27,25 @@ extension String {
         return String(format:hash as String)
     }
     
+    var urlEncodedString:String! {
+        var encodedString = CFURLCreateStringByAddingPercentEscapes(nil,
+            self as CFString,
+            nil,
+            "!*'();:@&=+$,/?%#[]" as CFString,
+            CFStringBuiltInEncodings.UTF8.rawValue)
+        return encodedString as String
+    }
+    
+    subscript (i: Int) -> Character {
+        return self[advance(self.startIndex, i)]
+    }
+    
+    subscript (i: Int) -> String {
+        return String(self[i] as Character)
+    }
+    
+    subscript (r: Range<Int>) -> String {
+        return substringWithRange(Range(start: advance(startIndex, r.startIndex), end: advance(startIndex, r.endIndex)))
+    }
+    
 }
