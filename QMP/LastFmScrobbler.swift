@@ -52,8 +52,8 @@ class LastFmScrobbler {
     var session:String!
 
     var shouldCache = true
-    let cacheMax = 12
-    let BATCH_SIZE = 10
+    let cacheMax = 5
+    let BATCH_SIZE = 50
     var scrobbleCache = [(MPMediaItem, NSTimeInterval)]()
 
     var validSessionObtained:Bool = false
@@ -114,16 +114,19 @@ class LastFmScrobbler {
             }
             
             var params:[String:String] = [
-                self.track:self.formatString(mediaItem.title),
-                self.artist:self.formatString(mediaItem.artist),
-                self.albumArtist:self.formatString(mediaItem.albumArtist),
-                self.album:self.formatString(mediaItem.albumTitle),
+                self.track:mediaItem.title,
+                self.artist:mediaItem.artist,
+                self.album:mediaItem.albumTitle,
                 self.duration:"\(Int(mediaItem.playbackDuration))",
                 self.timestamp:"\(Int(timeStampToScrobble))",
                 self.method:self.method_scrobble,
                 self.api_key:self.api_key_value,
                 self.sk:self.session
             ]
+            
+            if(mediaItem.albumArtist != mediaItem.artist) {
+                params[self.albumArtist] = mediaItem.albumArtist
+            }
             
             self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:NSMutableString]) in
                 Logger.debug("scrobble was successful for mediaItem: \(mediaItem.title)")
@@ -154,12 +157,12 @@ class LastFmScrobbler {
             for i in 0..<scrobbleBatch.count {
                 let mediaItem = scrobbleBatch[i].0
                 let timestamp_value = scrobbleBatch[i].1
-                params[self.track + "[\(i)]" ] = self.formatString(mediaItem.title)
-                params[self.artist + "[\(i)]" ] = self.formatString(mediaItem.artist)
-                params[self.albumArtist + "[\(i)]" ] = self.formatString(mediaItem.albumArtist)
-                params[self.album + "[\(i)]" ] = self.formatString(mediaItem.albumTitle)
+                params[self.track + "[\(i)]" ] = mediaItem.title
+                params[self.artist + "[\(i)]" ] = mediaItem.albumArtist
+                params[self.album + "[\(i)]" ] = mediaItem.albumTitle
                 params[self.duration + "[\(i)]" ] = "\(Int(mediaItem.playbackDuration))"
                 params[self.timestamp + "[\(i)]" ] = "\(Int(timestamp_value))"
+
             }
             params[self.method] = self.method_scrobble
             params[self.api_key] = self.api_key_value
@@ -170,6 +173,7 @@ class LastFmScrobbler {
                 self.scrobbleCache.removeAll(keepCapacity: true)
                 }, failureHandler: { [unowned self](info:[String : NSMutableString]) -> () in
                     Logger.debug("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
+                    self.scrobbleCache.removeAll(keepCapacity: true)
                 })
             })
     }
@@ -183,15 +187,20 @@ class LastFmScrobbler {
     }
     
     private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:NSMutableString]) -> Void, failureHandler lastFmFailureHandler: ([String:NSMutableString]) -> ()) {
-        var newParams = params
+
         
-        var orderedParamKeys = getOrderedParamKeys(newParams)
+        var orderedParamKeys = getOrderedParamKeys(params)
         let apiSig = buildApiSig(params, orderedParamKeys: orderedParamKeys)
         
-        newParams[api_sig] = apiSig
-        orderedParamKeys.append(api_sig)
+        var newParams = [String]()
         
-        SimpleWSClient.instance.executeHTTPSPOSTCall(baseURL: API_URL, params: newParams, orderedParamKeys: orderedParamKeys,
+        for paramKey in orderedParamKeys{
+            newParams.append("\(paramKey)=\(params[paramKey]!.urlEncodedString)")
+        }
+        
+        newParams.append("\(api_sig)=\(apiSig)")
+        
+        SimpleWSClient.instance.executeHTTPSPOSTCall(baseURL: API_URL, params: newParams,
             successHandler: { [unowned self](info:[String:NSMutableString]) in
                 if(info[self.status_key]! == self.status_ok) {
                     lastFmSuccessHandler(info)
@@ -205,9 +214,7 @@ class LastFmScrobbler {
     }
     
     //MARK: Parameter builders
-    private func formatString(stringToFormat:String) -> String {
-        return stringToFormat.stringByReplacingOccurrencesOfString("&", withString: "and", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    }
+
     
     private func getOrderedParamKeys(params:[String:String]) -> [String] {
         var orderedParamKeys = [String]()
@@ -215,10 +222,59 @@ class LastFmScrobbler {
             orderedParamKeys.append(key)
         }
         orderedParamKeys.sort { (val1:String, val2:String) -> Bool in
+            
+//            var isArrayComponent = val1[val1.endIndex.predecessor()] == "]"
+//            if(isArrayComponent) {
+//                let parsedString1 = self.parseString(val1)
+//                let parsedString2 = self.parseString(val2)
+//                if(parsedString1.name == parsedString2.name) {
+//                    return self.isInASCIIOrder(parsedString1.numberString, val2: parsedString2.numberString)
+//                }
+//            }
+            
             return val1.caseInsensitiveCompare(val2) == NSComparisonResult.OrderedAscending
         }
         return orderedParamKeys
     }
+    
+    private func isInASCIIOrder(val1:String, val2:String) -> Bool{
+        let lastChar1 = val1[val1.endIndex.predecessor()]
+        let lastChar2 = val2[val2.endIndex.predecessor()]
+        if(lastChar1 == lastChar2) {
+            let count1 = count(val1)
+            let count2 = count(val2)
+            if(count1 == count2) {
+                let range1 = val1.startIndex..<val1.endIndex
+                let range2 = val2.startIndex..<val2.endIndex
+                return isInASCIIOrder(val1[range1], val2: val2[range2])
+            } else {
+                return count1 < count2
+            }
+        } else {
+            return (lastChar1 < lastChar2)
+        }
+    }
+
+    
+    private func parseString(string:String) -> (name:String, numberString:String) {
+        var finishedName = false
+        var name = ""
+        var numberString = ""
+        for char in string {
+            if(char == "[") {
+                finishedName = true
+                continue
+            } else if (char == "]") {
+                continue
+            } else if (finishedName) {
+                numberString.append(char)
+            } else {
+                name.append(char)
+            }
+        }
+        return (name, numberString)
+    }
+    
     
     private func buildApiSig(params:[String:String], orderedParamKeys:[String]) -> String {
         var apiSig = NSMutableString()

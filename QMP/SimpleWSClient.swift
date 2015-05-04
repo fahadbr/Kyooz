@@ -15,7 +15,7 @@ class SimpleWSClient {
     private let httpPOSTMethod = "POST"
     private let timeoutInSeconds = 15.0
     
-    func executeHTTPSPOSTCall(#baseURL:String, params:[String:String], orderedParamKeys:[String],
+    func executeHTTPSPOSTCall(#baseURL:String, params:[String],
         successHandler:([String:NSMutableString]) -> Void, failureHandler: () -> ()) {
         var urlAsString = baseURL
        
@@ -24,10 +24,8 @@ class SimpleWSClient {
         let urlRequest = NSMutableURLRequest(URL: url!, cachePolicy: .ReloadIgnoringLocalAndRemoteCacheData, timeoutInterval: timeoutInSeconds)
         urlRequest.HTTPMethod = httpPOSTMethod
         
-        var postParamString = ""
-        for paramKey in orderedParamKeys {
-            postParamString += "&\(paramKey)=\(params[paramKey]!)"
-        }
+        let postParamString = (params as NSArray).componentsJoinedByString("&")
+            
         Logger.debug("URL BODY: \(postParamString)")
         let body = postParamString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         urlRequest.HTTPBody = body
