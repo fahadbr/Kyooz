@@ -222,57 +222,9 @@ class LastFmScrobbler {
             orderedParamKeys.append(key)
         }
         orderedParamKeys.sort { (val1:String, val2:String) -> Bool in
-            
-//            var isArrayComponent = val1[val1.endIndex.predecessor()] == "]"
-//            if(isArrayComponent) {
-//                let parsedString1 = self.parseString(val1)
-//                let parsedString2 = self.parseString(val2)
-//                if(parsedString1.name == parsedString2.name) {
-//                    return self.isInASCIIOrder(parsedString1.numberString, val2: parsedString2.numberString)
-//                }
-//            }
-            
             return val1.caseInsensitiveCompare(val2) == NSComparisonResult.OrderedAscending
         }
         return orderedParamKeys
-    }
-    
-    private func isInASCIIOrder(val1:String, val2:String) -> Bool{
-        let lastChar1 = val1[val1.endIndex.predecessor()]
-        let lastChar2 = val2[val2.endIndex.predecessor()]
-        if(lastChar1 == lastChar2) {
-            let count1 = count(val1)
-            let count2 = count(val2)
-            if(count1 == count2) {
-                let range1 = val1.startIndex..<val1.endIndex
-                let range2 = val2.startIndex..<val2.endIndex
-                return isInASCIIOrder(val1[range1], val2: val2[range2])
-            } else {
-                return count1 < count2
-            }
-        } else {
-            return (lastChar1 < lastChar2)
-        }
-    }
-
-    
-    private func parseString(string:String) -> (name:String, numberString:String) {
-        var finishedName = false
-        var name = ""
-        var numberString = ""
-        for char in string {
-            if(char == "[") {
-                finishedName = true
-                continue
-            } else if (char == "]") {
-                continue
-            } else if (finishedName) {
-                numberString.append(char)
-            } else {
-                name.append(char)
-            }
-        }
-        return (name, numberString)
     }
     
     
