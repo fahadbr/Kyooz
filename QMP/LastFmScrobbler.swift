@@ -38,6 +38,7 @@ class LastFmScrobbler {
     
     let error_key = "error"
     let error_code_key = "error.code"
+    let httpFailure = "httpFailure" as NSMutableString
     
     let USER_DEFAULTS_SESSION_KEY = "SESSION_KEY"
     let USER_DEFAULTS_USERNAME_KEY = "USERNAME_KEY"
@@ -51,7 +52,7 @@ class LastFmScrobbler {
     var password_value = "facaliber1"
     var session:String!
 
-    var shouldCache = true
+    var shouldCache = false
     let cacheMax = 5
     let BATCH_SIZE = 50
     var scrobbleCache = [(MPMediaItem, NSTimeInterval)]()
@@ -60,8 +61,17 @@ class LastFmScrobbler {
     
     //MARK: FUNCTIONS
     
+    init() {
+        if let scrobbles = TempDataDAO.instance.getLastFmScrobbleCacheFromFile() {
+            Logger.debug("restoring scrobble cache")
+            self.scrobbleCache = scrobbles
+        }
+    }
+    
     func initializeScrobbler() {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self] in
+            if(self.validSessionObtained) { return }
+            
             self.session = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_SESSION_KEY)
             self.username_value = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_USERNAME_KEY)!.lowercaseString
             
@@ -108,10 +118,6 @@ class LastFmScrobbler {
     func scrobbleMediaItem(mediaItem:MPMediaItem) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self]() -> Void in
             let timeStampToScrobble = NSDate().timeIntervalSince1970
-            if(self.shouldCache) {
-                self.addToScrobbleCache(mediaItem, timeStampToScrobble:timeStampToScrobble)
-                return
-            }
             
             var params:[String:String] = [
                 self.track:mediaItem.title,
@@ -132,11 +138,15 @@ class LastFmScrobbler {
                 Logger.debug("scrobble was successful for mediaItem: \(mediaItem.title)")
             },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
                 Logger.debug("scrobble failed for mediaItem: \(mediaItem.title) with error: \(info[self.error_key])")
+                if(info[self.error_key] != nil && info[self.error_key]! == self.httpFailure) {
+                    self.addToScrobbleCache(mediaItem, timeStampToScrobble: timeStampToScrobble)
+                }
             })
         }
     }
     
     func submitCachedScrobbles() {
+        if(scrobbleCache.isEmpty) { return }
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [unowned self]() -> Void in
             Logger.debug("submitting the scrobble cache")
             var params = [String:String]()
@@ -158,7 +168,7 @@ class LastFmScrobbler {
                 let mediaItem = scrobbleBatch[i].0
                 let timestamp_value = scrobbleBatch[i].1
                 params[self.track + "[\(i)]" ] = mediaItem.title
-                params[self.artist + "[\(i)]" ] = mediaItem.albumArtist
+                params[self.artist + "[\(i)]" ] = mediaItem.albumArtist //this is different (using albumArtist) from the single api call above intentionally
                 params[self.album + "[\(i)]" ] = mediaItem.albumTitle
                 params[self.duration + "[\(i)]" ] = "\(Int(mediaItem.playbackDuration))"
                 params[self.timestamp + "[\(i)]" ] = "\(Int(timestamp_value))"
@@ -173,7 +183,9 @@ class LastFmScrobbler {
                 self.scrobbleCache.removeAll(keepCapacity: true)
                 }, failureHandler: { [unowned self](info:[String : NSMutableString]) -> () in
                     Logger.debug("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
-                    self.scrobbleCache.removeAll(keepCapacity: true)
+                    if(info[self.error_key] != nil && info[self.error_key]! != self.httpFailure) {
+                        self.scrobbleCache.removeAll(keepCapacity: true)
+                    }
                 })
             })
     }
@@ -181,9 +193,6 @@ class LastFmScrobbler {
     private func addToScrobbleCache(mediaItemToScrobble: MPMediaItem, timeStampToScrobble:NSTimeInterval) {
         Logger.debug("caching the scrobble")
         scrobbleCache.append((mediaItemToScrobble, timeStampToScrobble))
-        if(scrobbleCache.count >= cacheMax) {
-            submitCachedScrobbles()
-        }
     }
     
     private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:NSMutableString]) -> Void, failureHandler lastFmFailureHandler: ([String:NSMutableString]) -> ()) {
@@ -209,7 +218,8 @@ class LastFmScrobbler {
                 }
                 
             },  failureHandler: { [unowned self]() -> () in
-                Logger.debug("http failure occured")
+                Logger.debug("http failure occured, caching scrobble for now")
+                lastFmFailureHandler([self.error_key:self.httpFailure])
         })
     }
     

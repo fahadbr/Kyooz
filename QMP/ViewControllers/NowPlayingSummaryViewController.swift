@@ -153,24 +153,17 @@ class NowPlayingSummaryViewController: UIViewController {
         updatePlaybackStatus(nil)
     }
     
-    func updatePlaybackProgressTimer() {
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds)
-        let queue = dispatch_get_main_queue()
-        dispatch_after(dispatchTime, queue, { [weak self] ()  in
-            if(self == nil) {
-                return
-            }
-            if(self!.queueBasedMusicPlayer.musicIsPlaying && self!.playbackProgressTimer == nil) {
-                Logger.debug("initiating playbackProgressTimer")
-                self!.playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
-                    target: self!,
-                    selector: "updatePlaybackProgressBar:",
-                    userInfo: nil,
-                    repeats: true)
-            } else if(!self!.queueBasedMusicPlayer.musicIsPlaying && self!.playbackProgressTimer != nil){
-                self!.invalidateTimer(nil)
-            }
-        })
+    @IBAction func updatePlaybackProgressTimer() {
+        if(queueBasedMusicPlayer.musicIsPlaying && playbackProgressTimer == nil) {
+            Logger.debug("initiating playbackProgressTimer")
+            playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
+                target: self,
+                selector: "updatePlaybackProgressBar:",
+                userInfo: nil,
+                repeats: true)
+        } else if(!queueBasedMusicPlayer.musicIsPlaying && playbackProgressTimer != nil){
+            invalidateTimer(nil)
+        }
     }
     
     func invalidateTimer(sender:AnyObject?) {

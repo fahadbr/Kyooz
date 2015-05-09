@@ -184,6 +184,7 @@
                                 <connections>
                                     <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpInside" id="4Ts-nL-rVY"/>
                                     <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpOutside" id="MQE-ja-bOT"/>
+                                    <action selector="updatePlaybackProgressTimer" destination="igl-8i-tSd" eventType="touchCancel" id="SJN-U1-EM2"/>
                                     <action selector="updatePlaybackTime:forEvent:" destination="igl-8i-tSd" eventType="valueChanged" id="Ecq-Bz-uZG"/>
                                 </connections>
                             </slider>
