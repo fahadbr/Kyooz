@@ -113,7 +113,6 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     }
     
     func skipForwards() {
-        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1)
     }
     
@@ -157,16 +156,14 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         var indicies = indiciesToRemove
         if(indicies.count > 1) {
             //if removing more than 1 element, sort the array otherwise we will run into index out of bounds issues
-            indicies.sort { $0 < $1 }
+            indicies.sort { $0 > $1 }
         }
-        var indiciesRemoved = 0
         var nowPlayingItemRemoved = false
         for index in indicies {
-            let adjustedIndexToRemove = index - indiciesRemoved++
-            nowPlayingQueue.removeAtIndex(adjustedIndexToRemove)
-            if(adjustedIndexToRemove < indexOfNowPlayingItem) {
+            nowPlayingQueue.removeAtIndex(index)
+            if(index < indexOfNowPlayingItem) {
                 updateNowPlayingStateToIndex(indexOfNowPlayingItem - 1, shouldLoadAfterUpdate: false)
-            } else if (adjustedIndexToRemove == indexOfNowPlayingItem) {
+            } else if (index == indexOfNowPlayingItem) {
                 nowPlayingItemRemoved = true
             }
         }
@@ -235,6 +232,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     }
     
     func scrobbleAndLoadNextTrack() {
+        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         skipForwards()
     }
     

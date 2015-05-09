@@ -26,7 +26,7 @@ class SimpleWSClient {
         
         let postParamString = (params as NSArray).componentsJoinedByString("&")
             
-        Logger.debug("URL BODY: \(postParamString)")
+//        Logger.debug("URL BODY: \(postParamString)")
         let body = postParamString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         urlRequest.HTTPBody = body
         let queue = NSOperationQueue()
@@ -39,7 +39,7 @@ class SimpleWSClient {
                 var parserDelegate = SimpleXMLParserDelegate()
                 parser.delegate = parserDelegate
                 parser.parse()
-                Logger.debug("html response = \(html)")
+//                Logger.debug("html response = \(html)")
                 Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
                 
                 successHandler(parserDelegate.xmlInfo)
