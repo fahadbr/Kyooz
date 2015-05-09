@@ -55,7 +55,7 @@ class LastFmScrobbler {
     var shouldCache = false
     let cacheMax = 5
     let BATCH_SIZE = 50
-    var scrobbleCache = [(MPMediaItem, NSTimeInterval)]()
+    var scrobbleCache = [[String:String]]()
 
     var validSessionObtained:Bool = false
     
@@ -160,19 +160,14 @@ class LastFmScrobbler {
         })
     }
     
-    private func submitBatchOfScrobbles(scrobbleBatch:ArraySlice<(MPMediaItem, NSTimeInterval)>) {
+    private func submitBatchOfScrobbles(scrobbleBatch:ArraySlice<([String:String])>) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [unowned self]() -> Void in
             Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
             var params = [String:String]()
-            for i in 0..<scrobbleBatch.count {
-                let mediaItem = scrobbleBatch[i].0
-                let timestamp_value = scrobbleBatch[i].1
-                params[self.track + "[\(i)]" ] = mediaItem.title
-                params[self.artist + "[\(i)]" ] = mediaItem.albumArtist //this is different (using albumArtist) from the single api call above intentionally
-                params[self.album + "[\(i)]" ] = mediaItem.albumTitle
-                params[self.duration + "[\(i)]" ] = "\(Int(mediaItem.playbackDuration))"
-                params[self.timestamp + "[\(i)]" ] = "\(Int(timestamp_value))"
-
+            for scrobbleDict in scrobbleBatch {
+                for(key, value) in scrobbleDict {
+                    params[key] = value
+                }
             }
             params[self.method] = self.method_scrobble
             params[self.api_key] = self.api_key_value
@@ -192,7 +187,14 @@ class LastFmScrobbler {
     
     private func addToScrobbleCache(mediaItemToScrobble: MPMediaItem, timeStampToScrobble:NSTimeInterval) {
         Logger.debug("caching the scrobble")
-        scrobbleCache.append((mediaItemToScrobble, timeStampToScrobble))
+        let i = scrobbleCache.count
+        var scrobbleDict = [String:String]()
+        scrobbleDict[self.track + "[\(i)]" ] = mediaItemToScrobble.title
+        scrobbleDict[self.artist + "[\(i)]" ] = mediaItemToScrobble.albumArtist //this is different (using albumArtist) from the single api call above intentionally
+        scrobbleDict[self.album + "[\(i)]" ] = mediaItemToScrobble.albumTitle
+        scrobbleDict[self.duration + "[\(i)]" ] = "\(Int(mediaItemToScrobble.playbackDuration))"
+        scrobbleDict[self.timestamp + "[\(i)]" ] = "\(Int(timeStampToScrobble))"
+        scrobbleCache.append(scrobbleDict)
     }
     
     private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:NSMutableString]) -> Void, failureHandler lastFmFailureHandler: ([String:NSMutableString]) -> ()) {

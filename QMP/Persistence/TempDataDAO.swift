@@ -35,9 +35,9 @@ class TempDataDAO : NSObject {
     
     func persistData(notification:NSNotification) {
         let musicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+        persistLastFmScrobbleCache(LastFmScrobbler.instance.scrobbleCache)
         persistNowPlayingQueueToTempStorage(musicPlayer.getNowPlayingQueue())
         persistCurrentPlaybackStateToTempStorage(musicPlayer.indexOfNowPlayingItem, currentPlaybackTime: musicPlayer.currentPlaybackTime)
-        persistLastFmScrobbleCache(LastFmScrobbler.instance.scrobbleCache)
     }
     
     func persistNowPlayingQueueToTempStorage(mediaItems:[MPMediaItem]?) {
@@ -46,17 +46,21 @@ class TempDataDAO : NSObject {
     
     func persistMediaItemsToTempStorageFile(fileName:String, mediaItems:[MPMediaItem]?) {
         if(mediaItems == nil || mediaItems!.count == 0) {
+            removeFile(fileName)
             return
         }
         
         var persistentIds = [NSNumber]()
         for mediaItem in mediaItems! {
-            Logger.debug("persisting mediaItem with persistentID:\(mediaItem.persistentID)")
             persistentIds.append(NSNumber(unsignedLongLong: mediaItem.persistentID))
         }
         
         let nsPersistentIds = persistentIds as NSArray
-        nsPersistentIds.writeToFile(fileName, atomically: true)
+        if(nsPersistentIds.writeToFile(fileName, atomically: true)) {
+            Logger.debug("successfully persisted \(nsPersistentIds.count) mediaItem persistentIDs to temp data")
+        } else {
+            Logger.debug("failed to persist \(nsPersistentIds.count) mediaItem persistentIDs to temp data")
+        }
     }
     
     func getNowPlayingQueueFromTempStorage() -> [MPMediaItem]? {
@@ -79,8 +83,11 @@ class TempDataDAO : NSObject {
         currentPlaybackState[TempDataDAO.CURRENT_PLAYBACK_TIME_KEY] = NSNumber(float: currentPlaybackTime)
         
         let nsCurrentPlaybackState = currentPlaybackState as NSDictionary
-        Logger.debug("persisting playback state \(currentPlaybackState.description)")
-        nsCurrentPlaybackState.writeToFile(TempDataDAO.playbackStateFileName, atomically: true)
+        if(nsCurrentPlaybackState.writeToFile(TempDataDAO.playbackStateFileName, atomically: true)) {
+            Logger.debug("persisting playback state \(currentPlaybackState.description)")
+        } else {
+            Logger.debug("failed to persist playback state")
+        }
     }
     
     func getPlaybackStateFromTempStorage() -> (indexOfNowPlayingItem:Int, currentPlaybackTime:Float)? {
@@ -100,27 +107,38 @@ class TempDataDAO : NSObject {
         return nil
     }
     
-    func persistLastFmScrobbleCache(cacheItems:[(MPMediaItem, NSTimeInterval)]) {
-        if(cacheItems.isEmpty) { return }
-        var idsToPersist = [NSNumber:NSNumber]()
-        for cacheItem in cacheItems {
-            idsToPersist[NSNumber(unsignedLongLong: cacheItem.0.persistentID)] = NSNumber(double: cacheItem.1 as Double)
+    func persistLastFmScrobbleCache(cacheItems:[[String:String]]) {
+        if(cacheItems.isEmpty) {
+            removeFile(TempDataDAO.lastFmScrobbleCacheFileName)
+            return
         }
-        let nsDict = idsToPersist as NSDictionary
-        nsDict.writeToFile(TempDataDAO.lastFmScrobbleCacheFileName, atomically: true)
+        let nsCacheItems = cacheItems as NSArray
+        
+        if(nsCacheItems.writeToFile(TempDataDAO.lastFmScrobbleCacheFileName, atomically: true)) {
+            Logger.debug("saved \(nsCacheItems.count) last.fm cached scrobbles to temp data");
+        } else {
+            Logger.debug("failed to save \(nsCacheItems.count) last.fm cached scrobbles to temp data");
+        }
     }
     
-    func getLastFmScrobbleCacheFromFile() -> [(MPMediaItem, NSTimeInterval)]? {
+    func getLastFmScrobbleCacheFromFile() -> [[String:String]]? {
         if(!NSFileManager.defaultManager().fileExistsAtPath(TempDataDAO.lastFmScrobbleCacheFileName)) {
             return nil
         }
         
-        let persistedCache = NSDictionary(contentsOfFile: TempDataDAO.playbackStateFileName) as! [NSNumber:NSNumber]
-        var returnItems = [(MPMediaItem, NSTimeInterval)]()
-        for (mediaId, timestamp) in persistedCache {
-            returnItems.append(IPodLibraryDAO.queryMediaItemFromId(mediaId)!, timestamp as! NSTimeInterval)
+        let persistedCache = NSArray(contentsOfFile: TempDataDAO.lastFmScrobbleCacheFileName)
+        Logger.debug("loading lastfm cache from temp data: \(persistedCache)")
+        return persistedCache as? [[String:String]]
+    }
+    
+    private func removeFile(filePath:String) {
+        if(NSFileManager.defaultManager().fileExistsAtPath(filePath)) {
+            var error:NSError?
+            NSFileManager.defaultManager().removeItemAtPath(filePath, error: &error)
+            if let errorMessage = error?.description {
+                Logger.debug("could not remove file for reason: \(errorMessage)")
+            }
         }
-        return returnItems
     }
     
     //MARK:Notification Registration
