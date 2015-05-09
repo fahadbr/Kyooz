@@ -40,8 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(application: UIApplication) {
-        lastFmScrobbler.initializeScrobbler()
-        lastFmScrobbler.submitCachedScrobbles()
+        
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
@@ -78,12 +77,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
+        lastFmScrobbler.initializeScrobbler()
         lastFmScrobbler.submitCachedScrobbles()
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        lastFmScrobbler.initializeScrobbler()
-        lastFmScrobbler.submitCachedScrobbles()
         queueBasedMusicPlayer.executePreBackgroundTasks()
     }
     

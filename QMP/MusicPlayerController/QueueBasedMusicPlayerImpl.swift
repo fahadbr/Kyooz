@@ -12,7 +12,7 @@ import AVFoundation
 
 typealias KVOContext=UInt8
 
-class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
+class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDelegate {
     
     //MARK: STATIC INSTANCE
     static let instance:QueueBasedMusicPlayerImpl = QueueBasedMusicPlayerImpl()
@@ -22,13 +22,8 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     let nowPlayingInfoHelper = NowPlayingInfoHelper.instance
     let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
     
-    var observationContext = KVOContext()
-    var avPlayer:AVPlayer?
-    var timeObserver:AnyObject?
-    var avPlayerItem:AVPlayerItem?
-    var avPlayerItemObserverRemoved:Bool = false
     var shouldPlayAfterLoading:Bool = false
-    var restoredPlaybackTime:Float?
+    var avAudioPlayer:AVAudioPlayer?
     
     var nowPlayingQueue:[MPMediaItem] = [MPMediaItem]() {
         didSet {
@@ -48,7 +43,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
         if let playbackState = TempDataDAO.instance.getPlaybackStateFromTempStorage() {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 self.updateNowPlayingStateToIndex(playbackState.indexOfNowPlayingItem)
-                self.restoredPlaybackTime = playbackState.currentPlaybackTime
+                self.currentPlaybackTime = playbackState.currentPlaybackTime
             })
         }
         registerForNotifications()
@@ -65,11 +60,6 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     
     var musicIsPlaying:Bool = false {
         didSet {
-            if(musicIsPlaying) {
-                addTimeObserver()
-            } else {
-                removeTimeObserver()
-            }
             shouldPlayAfterLoading = musicIsPlaying
             QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
             TempDataDAO.instance.persistCurrentPlaybackStateToTempStorage(indexOfNowPlayingItem, currentPlaybackTime: currentPlaybackTime)
@@ -78,20 +68,19 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
             }
         }
     }
+
     var currentPlaybackTime:Float {
         get {
-            if let player = avPlayer {
-                return player.currentTime().seconds
+            if let player = avAudioPlayer {
+                return Float(player.currentTime)
             }
             return 0.0
         } set {
-            avPlayer?.seekToTime(CMTime.fromSeconds(newValue), completionHandler: { (finished:Bool) -> Void in
-                if(finished) {
-                    self.nowPlayingInfoHelper.updateElapsedPlaybackTime(self.nowPlayingItem!, elapsedTime:newValue)
-                    QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
-                }
-            })
-
+            if let player = avAudioPlayer {
+                player.currentTime = Double(newValue)
+                nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime:newValue)
+                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+            }
         }
     }
     var indexOfNowPlayingItem:Int = 0
@@ -99,20 +88,21 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     //MARK: QueueBasedMusicPlayer - Functions
     
     func play() {
-        if(avPlayer != nil) {
-            avPlayer!.play()
+        if let player = avAudioPlayer {
+            player.play()
             musicIsPlaying = true
         }
     }
     
     func pause() {
-        if(avPlayer != nil) {
-            avPlayer!.pause()
+        if let player = avAudioPlayer {
+            player.pause()
             musicIsPlaying = false
         }
     }
     
     func skipForwards() {
+        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1)
     }
     
@@ -212,73 +202,27 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     
     //MARK: Class Functions
     private func loadMediaItem(mediaItem:MPMediaItem) {
-        removeTimeObserver()
         var url:NSURL = mediaItem.valueForProperty(MPMediaItemPropertyAssetURL) as! NSURL
-        var songAsset = AVURLAsset(URL: url, options: nil)
-        let tracksKey = "tracks"
-        var error:NSErrorPointer = NSErrorPointer()
-        songAsset.loadValuesAsynchronouslyForKeys([tracksKey], completionHandler: { [unowned self]() in
-            let status = songAsset.statusOfValueForKey(tracksKey, error: error)
-            if(status == AVKeyValueStatus.Loaded) {
-                if(!self.avPlayerItemObserverRemoved && self.avPlayerItem != nil && self.avPlayer != nil) {
-                    self.avPlayerItem?.removeObserver(self, forKeyPath: "status")
-                }
-                self.avPlayerItem = AVPlayerItem(asset: songAsset)
-                self.avPlayerItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
-                self.avPlayerItemObserverRemoved = false
-                self.avPlayer = AVPlayer(playerItem: self.avPlayerItem!)
-            }
-        })
+        var error:NSError?
+        avAudioPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
+        if error != nil {
+            Logger.debug("Error occured with loading audio for media item \(mediaItem.title): \(error!.description)")
+            return
+        }
+        avAudioPlayer!.delegate = self
+        avAudioPlayer!.prepareToPlay()
+        if(shouldPlayAfterLoading) {
+            play()
+            nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
+        }
+        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
     
     func scrobbleAndLoadNextTrack() {
-        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
+//        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         skipForwards()
     }
     
-    func addTimeObserver() {
-        if(timeObserver == nil) {
-            let playbackDuration = NSValue(CMTime: CMTime.fromSeconds(Float(nowPlayingItem!.playbackDuration)))
-            timeObserver = avPlayer!.addBoundaryTimeObserverForTimes([playbackDuration],
-                queue: dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), usingBlock: self.scrobbleAndLoadNextTrack)
-            Logger.debug("adding time observer \(timeObserver)")
-        } else {
-            fatalError("tried to add time observer before previous one was removed")
-        }
-    }
-    
-    func removeTimeObserver() {
-        if(timeObserver != nil) {
-            Logger.debug("removing time observer \(timeObserver)")
-            avPlayer?.removeTimeObserver(timeObserver!)
-            timeObserver = nil
-        }
-    }
-    
-
-    //MARK: KVO function
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        switch(keyPath) {
-        case("status"):
-            Logger.debug("status has changed to \(change)")
-            if(avPlayer?.currentItem?.status != nil && avPlayer?.currentItem?.status == AVPlayerItemStatus.ReadyToPlay) {
-                if(shouldPlayAfterLoading) {
-                    play()
-                    nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
-                }
-                avPlayer?.currentItem?.removeObserver(self, forKeyPath: "status")
-                avPlayerItemObserverRemoved = true
-                Logger.debug("Media item \(nowPlayingItem!.title) is ready to play")
-                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
-                if let playbackTime = restoredPlaybackTime {
-                    currentPlaybackTime = playbackTime
-                    restoredPlaybackTime = nil
-                }
-            }
-        default:
-            Logger.debug("non observed property has changed")
-        }
-    }
     
     //MARK: Remote Command Center Registration
     private func registerForRemoteCommands() {
@@ -319,12 +263,20 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer {
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
-        
-        
     }
     
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    //MARK: AVAudioPlayerDelegate functions
+    
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
+        if(flag) {
+            scrobbleAndLoadNextTrack()
+        } else {
+            Logger.debug("audio player did not finish playing successfully")
+        }
     }
 }
 

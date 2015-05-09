@@ -26,7 +26,7 @@ struct IPodLibraryDAO {
     }
     
     static func queryMediaItemFromId(persistentId:AnyObject) -> MPMediaItem? {
-        Logger.debug("querying for mediaItem with persistentID:\(persistentId)")
+//        Logger.debug("querying for mediaItem with persistentID:\(persistentId)")
         var query = MPMediaQuery()
         query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentId,
             forProperty: MPMediaItemPropertyPersistentID, comparisonType: MPMediaPredicateComparison.EqualTo))
