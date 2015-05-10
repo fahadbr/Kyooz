@@ -9,13 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ArtistTableViewController: UITableViewController {
-    
-    @IBOutlet weak var nowPlayingItem: UIBarButtonItem!
-    
-    @IBAction func unwindToBrowser(segue : UIStoryboardSegue)  {
-        
-    }
+class ArtistTableViewController: QueableMediaItemTableViewController {
     
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     
@@ -72,17 +66,7 @@ class ArtistTableViewController: UITableViewController {
         return titles
     }
     
-//    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        var cell = tableView.dequeueReusableCellWithIdentifier( "artistSectionCell") as! UITableViewCell
-//        tableView.ins
-//        cell.textLabel?.font = ThemeHelper.defaultFont
-//        return cell
-//    }
-    
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-//        var section = albumArtistsSections[index]
-//        return section.range.location
-
         return index
     }
     
@@ -155,44 +139,14 @@ class ArtistTableViewController: UITableViewController {
         }
     }
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the specified item to be editable.
-        return true
+    
+    //MARK: Overriding QueableMediaItemTableViewController methods
+    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [MPMediaItem] {
+        if let items = albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)].items as? [MPMediaItem] {
+            return items
+        }
+        return [MPMediaItem]()
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-*/
 
 
 }

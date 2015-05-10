@@ -32,6 +32,8 @@ protocol QueueBasedMusicPlayer:class {
     
     func enqueue(itemsToEnque:[MPMediaItem])
     
+    func insertItemsAtIndex(itemsToInsert:[MPMediaItem], index:Int)
+    
     func deleteItemsAtIndices(indicies:[Int])
     
     func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int)

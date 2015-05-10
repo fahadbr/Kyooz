@@ -102,7 +102,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     }
     
     func skipForwards() {
-        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
+//        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1)
     }
     
@@ -140,6 +140,16 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     
     func enqueue(itemsToEnqueue:[MPMediaItem]) {
         nowPlayingQueue.extend(itemsToEnqueue)
+    }
+    
+    func insertItemsAtIndex(itemsToInsert:[MPMediaItem], index:Int) {
+        var indexToInsertAt = index
+        for mediaItem in itemsToInsert {
+            nowPlayingQueue.insert(mediaItem, atIndex: indexToInsertAt++)
+            if(index < indexOfNowPlayingItem) {
+                updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1, shouldLoadAfterUpdate: false)
+            }
+        }
     }
     
     func deleteItemsAtIndices(indiciesToRemove:[Int]) {
@@ -219,7 +229,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     }
     
     func scrobbleAndLoadNextTrack() {
-//        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
+        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         skipForwards()
     }
     

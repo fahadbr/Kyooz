@@ -11,6 +11,8 @@ import MediaPlayer
 
 class ContainerViewController : UIViewController {
     
+    static let instance:ContainerViewController = ContainerViewController()
+    
     let centerPanelExpandedOffset:CGFloat = 60
     
     var tapGestureRecognizer:UITapGestureRecognizer!
@@ -141,6 +143,13 @@ class ContainerViewController : UIViewController {
             nowPlayingViewController = nil
             nowPlayingNavigationController = nil
         }
+    }
+    
+    func showNowPlayingControllerInsertMode(mediaItems:[MPMediaItem]) {
+        addSidePanelViewController()
+        animateSidePanel(shouldExpand: true)
+        nowPlayingViewController?.itemsToInsert = mediaItems
+        nowPlayingViewController?.insertMode = true
     }
     
     private func registerForNotifications() {
