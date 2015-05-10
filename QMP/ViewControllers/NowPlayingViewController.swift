@@ -16,11 +16,30 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     let notificationCenter = NSNotificationCenter.defaultCenter()
     let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.defaultCenter()
+    let timeDelayInNanoSeconds = Int64(0.50 * Double(NSEC_PER_SEC))
     
     var tempImageCache = [MPMediaEntityPersistentID:UIImage]()
     var noAlbumArtCellImage:UIImage!
     var playingImage:UIImage!
     var pausedImage:UIImage!
+    
+    
+    
+    var insertMode:Bool = false {
+        didSet {
+            if(insertMode) {
+                for item in toolbarItems! {
+                    (item as? UIBarButtonItem)?.enabled = false
+                }
+            } else {
+                itemsToInsert = nil
+                for item in toolbarItems! {
+                    (item as? UIBarButtonItem)?.enabled = true
+                }
+            }
+        }
+    }
+    var itemsToInsert:[MPMediaItem]?
     
     var indexPathsToDelete:[NSIndexPath]?
     var multipleDeleteButton:UIBarButtonItem!
@@ -32,6 +51,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
                 reloadTableData(nil)
             } else {
                 editing = false
+                insertMode = false
             }
         }
     }
@@ -41,8 +61,9 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
-        
-        toolbarItems?[0] = editButtonItem()
+        var editButton = editButtonItem()
+        editButton.tintColor = UIColor.blackColor()
+        toolbarItems?[0] = editButton
         registerForNotifications()
     }
     
@@ -116,6 +137,23 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if(tableView.editing) {
             indexPathsToDelete?.append(indexPath)
+            return
+        }
+        
+        if (insertMode && itemsToInsert != nil) {
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            var indexPaths = [NSIndexPath]()
+            let startingIndex = indexPath.row+1
+            for index in (startingIndex)..<(startingIndex+itemsToInsert!.count)  {
+                indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
+            }
+            queueBasedMusicPlayer.insertItemsAtIndex(itemsToInsert!, index: startingIndex)
+            tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Automatic)
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [weak self]() in
+                self?.insertMode = false
+                ContainerViewController.instance.animateSidePanel(shouldExpand: false)
+            }
             return
         }
         

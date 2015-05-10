@@ -29,6 +29,7 @@ struct ThemeHelper {
         uiBarButtonTextAttributes[NSFontAttributeName] = defaultFont
         UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: UIControlState.Normal)
         UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: UIControlState.Highlighted)
+        UIBarButtonItem.appearance().tintColor = UIColor.blackColor()
         
         UITableView.appearance().tintColor = UIColor.blackColor()
         

@@ -9,16 +9,13 @@
 import UIKit
 import MediaPlayer
 
-class FilteredSongTableViewController: UITableViewController {
+class FilteredSongTableViewController: QueableMediaItemTableViewController {
     
     let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     
     var songs:MPMediaItemCollection!
     
-    @IBAction func unwindToBrowser(segue : UIStoryboardSegue)  {
-        
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +63,7 @@ class FilteredSongTableViewController: UITableViewController {
         var nowPlayingItem = songs.items[index] as! MPMediaItem
         queueBasedMusicPlayer.playNowWithCollection(mediaCollection: songs,
             itemToPlay: nowPlayingItem)
-        RootViewController.instance.animatePullablePanel(shouldExpand: true)
+//        RootViewController.instance.animatePullablePanel(shouldExpand: true)
     }
     
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -94,32 +91,14 @@ class FilteredSongTableViewController: UITableViewController {
     }
     
 
-
+    //MARK: Overriding QueableMediaItemTableViewController methods
+    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [MPMediaItem] {
+        if let items = songs.items as? [MPMediaItem] {
+            let mediaItem = items[indexPath.row]
+            return [mediaItem]
+        }
+        return [MPMediaItem]()
+    }
     
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
