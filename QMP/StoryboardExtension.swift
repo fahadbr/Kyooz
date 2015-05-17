@@ -1,6 +1,6 @@
 //
 //  StoryboardExtension.swift
-//  QMP
+//  Kyooz
 //
 //  Created by FAHAD RIAZ on 4/24/15.
 //  Copyright (c) 2015 FAHAD RIAZ. All rights reserved.
@@ -13,6 +13,10 @@ extension UIStoryboard {
 
     class func mainStoryboard() -> UIStoryboard {
         return UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+    }
+    
+    class func settingsStoryboard() -> UIStoryboard {
+        return UIStoryboard(name: "Settings", bundle:NSBundle.mainBundle())
     }
     
     
@@ -30,5 +34,9 @@ extension UIStoryboard {
     
     class func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
+    }
+    
+    class func settingsViewController() -> UINavigationController {
+        return settingsStoryboard().instantiateInitialViewController() as! UINavigationController
     }
 }

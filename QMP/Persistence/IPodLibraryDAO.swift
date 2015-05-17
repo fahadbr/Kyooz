@@ -1,6 +1,6 @@
 //
 //  IPodLibraryDAO.swift
-//  QMP
+//  Kyooz
 //
 //  Created by FAHAD RIAZ on 5/3/15.
 //  Copyright (c) 2015 FAHAD RIAZ. All rights reserved.

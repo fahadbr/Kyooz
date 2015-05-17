@@ -1,6 +1,6 @@
 //
-//  QMPTests.swift
-//  QMPTests
+//  KyoozTests.swift
+//  KyoozTests
 //
 //  Created by FAHAD RIAZ on 4/21/15.
 //  Copyright (c) 2015 FAHAD RIAZ. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class QMPTests: XCTestCase {
+class KyoozTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
