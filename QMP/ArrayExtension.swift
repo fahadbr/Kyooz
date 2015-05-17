@@ -18,6 +18,11 @@ extension Array {
             return
         }
         
+        if(itemsToInsert.count == 1) {
+            self.insert(itemsToInsert[0], atIndex: index)
+            return
+        }
+        
         //create a new array and place items in it accordingly, as it is much more efficient
         //than calling the insert function on the array multiple times
         let originalArray = self
