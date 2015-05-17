@@ -11,7 +11,7 @@
 		0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */; };
 		0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */; };
 		0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C91AE6F80E00CC5C01 /* LaunchScreen.xib */; };
-		0B13D9D71AE6F80E00CC5C01 /* QMPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9D61AE6F80E00CC5C01 /* QMPTests.swift */; };
+		0B13D9D71AE6F80E00CC5C01 /* KyoozTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9D61AE6F80E00CC5C01 /* KyoozTests.swift */; };
 		0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9F91AE6FA9A00CC5C01 /* AudioSessionManager.swift */; };
 		0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */; };
 		0B13DA131AE6FA9A00CC5C01 /* QueueBasedMusicPlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FB1AE6FA9A00CC5C01 /* QueueBasedMusicPlayerImpl.swift */; };
@@ -45,6 +45,10 @@
 		0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */; };
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
+		0BD11B611B077F5600565471 /* TableViewScrollPositionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B601B077F5600565471 /* TableViewScrollPositionController.swift */; };
+		0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BD11B621B0829FA00565471 /* Settings.storyboard */; };
+		0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */; };
+		0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B671B08FB2B00565471 /* ArrayExtension.swift */; };
 		0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,15 +63,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0B13D9BB1AE6F80E00CC5C01 /* QMP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QMP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kyooz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B13D9BF1AE6F80E00CC5C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9C51AE6F80E00CC5C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0B13D9CA1AE6F80E00CC5C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		0B13D9D01AE6F80E00CC5C01 /* QMPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QMPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B13D9D01AE6F80E00CC5C01 /* KyoozTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B13D9D51AE6F80E00CC5C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0B13D9D61AE6F80E00CC5C01 /* QMPTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QMPTests.swift; sourceTree = "<group>"; };
+		0B13D9D61AE6F80E00CC5C01 /* KyoozTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyoozTests.swift; sourceTree = "<group>"; };
 		0B13D9F91AE6FA9A00CC5C01 /* AudioSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioSessionManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingInfoHelper.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FB1AE6FA9A00CC5C01 /* QueueBasedMusicPlayerImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueBasedMusicPlayerImpl.swift; sourceTree = "<group>"; };
@@ -100,8 +104,12 @@
 		0B5123A11AFE969E00D941DC /* QueableMediaItemTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QueableMediaItemTableViewController.swift; path = QMP/QueableMediaItemTableViewController.swift; sourceTree = SOURCE_ROOT; };
 		0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleWSClient.swift; sourceTree = "<group>"; };
 		0BBE15F91AF5BE20007C6189 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
-		0BBE15FB1AF5BECF007C6189 /* QMPBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QMPBridge.h; sourceTree = "<group>"; };
+		0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KyoozBridge.h; sourceTree = "<group>"; };
 		0BBE16011AF6AC9B007C6189 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Logger.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BD11B601B077F5600565471 /* TableViewScrollPositionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewScrollPositionController.swift; sourceTree = "<group>"; };
+		0BD11B621B0829FA00565471 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastfmLoginViewController.swift; sourceTree = "<group>"; };
+		0BD11B671B08FB2B00565471 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPodLibraryDAO.swift; sourceTree = "<group>"; };
 		0BD43F6B1AF8560500D5B2D4 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -130,8 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				0BD43F6A1AF855E200D5B2D4 /* Frameworks */,
-				0B13D9BD1AE6F80E00CC5C01 /* QMP */,
-				0B13D9D31AE6F80E00CC5C01 /* QMPTests */,
+				0B13D9BD1AE6F80E00CC5C01 /* Kyooz */,
+				0B13D9D31AE6F80E00CC5C01 /* KyoozTests */,
 				0B13D9BC1AE6F80E00CC5C01 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -139,16 +147,16 @@
 		0B13D9BC1AE6F80E00CC5C01 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0B13D9BB1AE6F80E00CC5C01 /* QMP.app */,
-				0B13D9D01AE6F80E00CC5C01 /* QMPTests.xctest */,
+				0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */,
+				0B13D9D01AE6F80E00CC5C01 /* KyoozTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0B13D9BD1AE6F80E00CC5C01 /* QMP */ = {
+		0B13D9BD1AE6F80E00CC5C01 /* Kyooz */ = {
 			isa = PBXGroup;
 			children = (
-				0BBE15FB1AF5BECF007C6189 /* QMPBridge.h */,
+				0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */,
 				0BBE16001AF6AC80007C6189 /* Logger */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
 				0B1BFD491AF30A4C009838A5 /* LastFm */,
@@ -163,10 +171,12 @@
 				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
 				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
 				0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */,
+				0BD11B621B0829FA00565471 /* Settings.storyboard */,
 				0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */,
 				0B13D9C91AE6F80E00CC5C01 /* LaunchScreen.xib */,
 				0B13D9BE1AE6F80E00CC5C01 /* Supporting Files */,
 			);
+			name = Kyooz;
 			path = QMP;
 			sourceTree = "<group>";
 		};
@@ -178,12 +188,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		0B13D9D31AE6F80E00CC5C01 /* QMPTests */ = {
+		0B13D9D31AE6F80E00CC5C01 /* KyoozTests */ = {
 			isa = PBXGroup;
 			children = (
-				0B13D9D61AE6F80E00CC5C01 /* QMPTests.swift */,
+				0B13D9D61AE6F80E00CC5C01 /* KyoozTests.swift */,
 				0B13D9D41AE6F80E00CC5C01 /* Supporting Files */,
 			);
+			name = KyoozTests;
 			path = QMPTests;
 			sourceTree = "<group>";
 		};
@@ -223,6 +234,7 @@
 		0B13D9FE1AE6FA9A00CC5C01 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				0BD11B641B082C1000565471 /* Settings */,
 				0B13D9FF1AE6FA9A00CC5C01 /* ArtistTableViewController.swift */,
 				0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */,
 				0B13DA001AE6FA9A00CC5C01 /* FilteredAlbumTableViewController.swift */,
@@ -231,6 +243,7 @@
 				0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */,
 				0B5123A11AFE969E00D941DC /* QueableMediaItemTableViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
+				0BD11B601B077F5600565471 /* TableViewScrollPositionController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -260,6 +273,7 @@
 			children = (
 				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
 				0BBE15F91AF5BE20007C6189 /* StringExtension.swift */,
+				0BD11B671B08FB2B00565471 /* ArrayExtension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -270,6 +284,14 @@
 				0BBE16011AF6AC9B007C6189 /* Logger.swift */,
 			);
 			name = Logger;
+			sourceTree = "<group>";
+		};
+		0BD11B641B082C1000565471 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */,
+			);
+			name = Settings;
 			sourceTree = "<group>";
 		};
 		0BD43F6A1AF855E200D5B2D4 /* Frameworks */ = {
@@ -285,9 +307,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0B13D9BA1AE6F80E00CC5C01 /* QMP */ = {
+		0B13D9BA1AE6F80E00CC5C01 /* Kyooz */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B13D9DA1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "QMP" */;
+			buildConfigurationList = 0B13D9DA1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "Kyooz" */;
 			buildPhases = (
 				0B13D9B71AE6F80E00CC5C01 /* Sources */,
 				0B13D9B81AE6F80E00CC5C01 /* Frameworks */,
@@ -297,14 +319,14 @@
 			);
 			dependencies = (
 			);
-			name = QMP;
+			name = Kyooz;
 			productName = QMP;
-			productReference = 0B13D9BB1AE6F80E00CC5C01 /* QMP.app */;
+			productReference = 0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0B13D9CF1AE6F80E00CC5C01 /* QMPTests */ = {
+		0B13D9CF1AE6F80E00CC5C01 /* KyoozTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "QMPTests" */;
+			buildConfigurationList = 0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "KyoozTests" */;
 			buildPhases = (
 				0B13D9CC1AE6F80E00CC5C01 /* Sources */,
 				0B13D9CD1AE6F80E00CC5C01 /* Frameworks */,
@@ -315,9 +337,9 @@
 			dependencies = (
 				0B13D9D21AE6F80E00CC5C01 /* PBXTargetDependency */,
 			);
-			name = QMPTests;
+			name = KyoozTests;
 			productName = QMPTests;
-			productReference = 0B13D9D01AE6F80E00CC5C01 /* QMPTests.xctest */;
+			productReference = 0B13D9D01AE6F80E00CC5C01 /* KyoozTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -343,7 +365,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0B13D9B61AE6F80E00CC5C01 /* Build configuration list for PBXProject "QMP" */;
+			buildConfigurationList = 0B13D9B61AE6F80E00CC5C01 /* Build configuration list for PBXProject "Kyooz" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -357,8 +379,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0B13D9BA1AE6F80E00CC5C01 /* QMP */,
-				0B13D9CF1AE6F80E00CC5C01 /* QMPTests */,
+				0B13D9BA1AE6F80E00CC5C01 /* Kyooz */,
+				0B13D9CF1AE6F80E00CC5C01 /* KyoozTests */,
 			);
 		};
 /* End PBXProject section */
@@ -371,6 +393,7 @@
 				0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */,
 				0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */,
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
+				0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */,
 				0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */,
 				0B13DA1C1AE6FA9A00CC5C01 /* AlbumTableViewCell.xib in Resources */,
 			);
@@ -391,6 +414,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
+				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
@@ -403,6 +427,8 @@
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
 				0B13DA231AE6FA9A00CC5C01 /* QueueBasedMusicPlayer.swift in Sources */,
 				0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */,
+				0BD11B611B077F5600565471 /* TableViewScrollPositionController.swift in Sources */,
+				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
 				0B13DA161AE6FA9A00CC5C01 /* FilteredAlbumTableViewController.swift in Sources */,
 				0B13DA151AE6FA9A00CC5C01 /* ArtistTableViewController.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
@@ -428,7 +454,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B13D9D71AE6F80E00CC5C01 /* QMPTests.swift in Sources */,
+				0B13D9D71AE6F80E00CC5C01 /* KyoozTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,7 +463,7 @@
 /* Begin PBXTargetDependency section */
 		0B13D9D21AE6F80E00CC5C01 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0B13D9BA1AE6F80E00CC5C01 /* QMP */;
+			target = 0B13D9BA1AE6F80E00CC5C01 /* Kyooz */;
 			targetProxy = 0B13D9D11AE6F80E00CC5C01 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -562,9 +588,9 @@
 				INFOPLIST_FILE = QMP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Kyooz;
 				SWIFT_INCLUDE_PATHS = "";
-				SWIFT_OBJC_BRIDGING_HEADER = QMP/QMPBridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
 			};
 			name = Debug;
 		};
@@ -587,8 +613,8 @@
 				INFOPLIST_FILE = QMP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = QMP/QMPBridge.h;
+				PRODUCT_NAME = Kyooz;
+				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
 			};
 			name = Release;
 		};
@@ -606,7 +632,7 @@
 				);
 				INFOPLIST_FILE = QMPTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = KyoozTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QMP.app/QMP";
 			};
 			name = Debug;
@@ -621,7 +647,7 @@
 				);
 				INFOPLIST_FILE = QMPTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = KyoozTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QMP.app/QMP";
 			};
 			name = Release;
@@ -629,7 +655,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0B13D9B61AE6F80E00CC5C01 /* Build configuration list for PBXProject "QMP" */ = {
+		0B13D9B61AE6F80E00CC5C01 /* Build configuration list for PBXProject "Kyooz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B13D9D81AE6F80E00CC5C01 /* Debug */,
@@ -638,7 +664,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B13D9DA1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "QMP" */ = {
+		0B13D9DA1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "Kyooz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B13D9DB1AE6F80E00CC5C01 /* Debug */,
@@ -647,7 +673,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "QMPTests" */ = {
+		0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "KyoozTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B13D9DE1AE6F80E00CC5C01 /* Debug */,

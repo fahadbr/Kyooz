@@ -143,13 +143,9 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     }
     
     func insertItemsAtIndex(itemsToInsert:[MPMediaItem], index:Int) {
-        var indexToInsertAt = index
-        for mediaItem in itemsToInsert {
-            nowPlayingQueue.insert(mediaItem, atIndex: indexToInsertAt)
-            
-            indexToInsertAt++
-        }
-        if(indexToInsertAt <= indexOfNowPlayingItem) {
+        nowPlayingQueue.insertAtIndex(itemsToInsert, index: index, placeHolderItem: MPMediaItem())
+        
+        if(index <= indexOfNowPlayingItem) {
             updateNowPlayingStateToIndex(indexOfNowPlayingItem + itemsToInsert.count, shouldLoadAfterUpdate: false)
         }
     }

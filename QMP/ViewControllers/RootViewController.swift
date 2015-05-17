@@ -38,7 +38,6 @@ class RootViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        view.autoresizingMask = UIViewAutoresizing.
         libraryNavigationController = UIStoryboard.libraryNavigationController()
 
         
@@ -122,6 +121,13 @@ class RootViewController: UIViewController {
         if(!pullableViewExpanded) {
             animatePullablePanel(shouldExpand: true)
         }
+    }
+    
+    func presentSettingsViewController() {
+        if(pullableViewExpanded) {
+            animatePullablePanel(shouldExpand: false)
+        }
+        libraryNavigationController.showViewController(UIStoryboard.settingsViewController(), sender: self)
     }
     
     func animatePullablePanel(#shouldExpand:Bool) {

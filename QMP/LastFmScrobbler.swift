@@ -1,6 +1,6 @@
 //
 //  LasFmScrobbler.swift
-//  QMP
+//  Kyooz
 //
 //  Created by FAHAD RIAZ on 4/30/15.
 //  Copyright (c) 2015 FAHAD RIAZ. All rights reserved.
@@ -48,8 +48,7 @@ class LastFmScrobbler {
     let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
     let api_secret = "a0444ceba4d9f49eedc519699cec2624"
     
-    var username_value = "crazyfingrs"
-    var password_value = "facaliber1"
+    var username_value:String!
     var session:String!
 
     var shouldCache = false
@@ -72,8 +71,14 @@ class LastFmScrobbler {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self] in
             if(self.validSessionObtained) { return }
             
-            self.session = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_SESSION_KEY)
-            self.username_value = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_USERNAME_KEY)!.lowercaseString
+            if let session = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_SESSION_KEY),
+                let username_value = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_USERNAME_KEY) {
+                    self.session = session
+                    self.username_value = username_value.lowercaseString
+
+            } else {
+                return
+            }
             
             var params:[String:String] = [
                 self.api_key:self.api_key_value,
@@ -86,17 +91,17 @@ class LastFmScrobbler {
                     self.validSessionObtained = true
             },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
                     Logger.debug("could not validate existing session because of error: \(info[self.error_key]), will attempt to get a new one")
-                    self.initializeSession()
             })
         }
     }
     
-    func initializeSession() {
+    func initializeSession(#usernameForSession:String, password:String, completionHandler:(String, logInSuccessful:Bool) -> Void) {
+        Logger.debug("attempting to log in as \(usernameForSession)")
         var params:[String:String] = [
             api_key:api_key_value,
-            authToken: "\(username_value)\(password_value.md5)".md5,
+            authToken: "\(usernameForSession)\(password.md5)".md5,
             method: method_getUserSession,
-            username: username_value
+            username: usernameForSession
         ]
         
         
@@ -108,11 +113,20 @@ class LastFmScrobbler {
                 self.session = key as String
                 self.username_value = name as String
                 self.validSessionObtained = true
+                completionHandler("Logged in as \(self.username_value)", logInSuccessful:true)
             }
         },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
                 Logger.debug("failed to retrieve session because of error: \(info[self.error_key])")
+            completionHandler("Failed to log in: \(info[self.error_key])", logInSuccessful:false)
         })
 
+    }
+    
+    func removeSession() {
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_SESSION_KEY)
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_USERNAME_KEY)
+        username_value = nil
+        validSessionObtained = false
     }
     
     func scrobbleMediaItem(mediaItem:MPMediaItem) {

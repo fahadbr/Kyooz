@@ -40,11 +40,6 @@ class ContainerViewController : UIViewController {
         }
     }
     
-    
-    @IBAction func unwindToBrowser(segue : UIStoryboardSegue)  {
-        
-    }
-    
     deinit {
         unregisterForNotifications()
     }
@@ -145,12 +140,31 @@ class ContainerViewController : UIViewController {
         }
     }
     
-    func showNowPlayingControllerInsertMode(mediaItems:[MPMediaItem]) {
+    func presentSettingsViewController() {
+        animateSidePanel(shouldExpand: false)
+        rootViewController.presentSettingsViewController()
+    }
+    
+    //MARK: INSERT MODE DELEGATION METHODS
+    func showNowPlayingControllerInsertMode(mediaItems:[MPMediaItem], sender:UILongPressGestureRecognizer) {
         addSidePanelViewController()
         animateSidePanel(shouldExpand: true)
-        nowPlayingViewController?.itemsToInsert = mediaItems
-        nowPlayingViewController?.insertMode = true
+        if(!nowPlayingViewController!.laidOutSubviews) {
+            dispatch_async(dispatch_get_main_queue()) { self.showNowPlayingControllerInsertMode(mediaItems, sender: sender) }
+            return
+        }
+        nowPlayingViewController?.initiateInsertMode(mediaItems, sender: sender)
     }
+    
+    func endInsertMode(sender:UILongPressGestureRecognizer) {
+        nowPlayingViewController?.endInsertMode(sender)
+    }
+    
+    func handleInsertPositionChanged(sender:UILongPressGestureRecognizer) {
+        nowPlayingViewController?.handleInsertPositionChanged(sender)
+    }
+    
+    //MARK: NOTIFICATION REGISTRATIONS
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -9,7 +9,7 @@
         <!--Artists-->
         <scene sceneID="jFp-IJ-iTI">
             <objects>
-                <tableViewController title="Artists" id="r19-5Y-R1W" customClass="ArtistTableViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Artists" id="r19-5Y-R1W" customClass="ArtistTableViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="SVv-HR-1xv">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -40,7 +40,7 @@
         <!--Albums-->
         <scene sceneID="FGp-b4-m2Y">
             <objects>
-                <tableViewController title="Albums" id="HQW-hx-zTb" customClass="FilteredAlbumTableViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Albums" id="HQW-hx-zTb" customClass="FilteredAlbumTableViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="72" sectionHeaderHeight="22" sectionFooterHeight="22" id="bFA-dr-TGZ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -62,7 +62,7 @@
         <!--Filtered Song Table View Controller-->
         <scene sceneID="oNV-7i-jJB">
             <objects>
-                <tableViewController id="sUt-9Z-Udd" customClass="FilteredSongTableViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="sUt-9Z-Udd" customClass="FilteredSongTableViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="ihN-Pn-ElJ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -111,7 +111,7 @@
         <!--NowPlayingQueue-->
         <scene sceneID="6XA-XL-1q0">
             <objects>
-                <viewController storyboardIdentifier="nowPlayingViewController" title="NowPlayingQueue" useStoryboardIdentifierAsRestorationIdentifier="YES" id="A5d-sE-21l" customClass="NowPlayingViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="nowPlayingViewController" title="NowPlayingQueue" useStoryboardIdentifierAsRestorationIdentifier="YES" id="A5d-sE-21l" customClass="NowPlayingViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1rR-fS-5dP"/>
                         <viewControllerLayoutGuide type="bottom" id="OWI-ym-SDW"/>
@@ -138,11 +138,21 @@
                         </constraints>
                     </view>
                     <toolbarItems>
-                        <barButtonItem tag="1" systemItem="edit" id="QSr-oK-Xkg"/>
+                        <barButtonItem tag="1" systemItem="edit" id="QSr-oK-Xkg">
+                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="wt3-gB-nn2"/>
                         <barButtonItem systemItem="trash" id="37S-xH-KYy">
+                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="commitDeletionOfIndexPaths:" destination="A5d-sE-21l" id="Vep-mB-8eT"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="v8t-C7-NI9"/>
+                        <barButtonItem title="Settings" id="4co-KO-mEY">
+                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="showSettings:" destination="A5d-sE-21l" id="oVy-GG-wEf"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -159,7 +169,7 @@
         <!--NowPlayingSummaryView-->
         <scene sceneID="hrQ-wI-PHv">
             <objects>
-                <viewController storyboardIdentifier="nowPlayingSummaryViewController" title="NowPlayingSummaryView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="igl-8i-tSd" customClass="NowPlayingSummaryViewController" customModule="QMP" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="nowPlayingSummaryViewController" title="NowPlayingSummaryView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="igl-8i-tSd" customClass="NowPlayingSummaryViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="PC2-mG-M0S"/>
                         <viewControllerLayoutGuide type="bottom" id="4hG-pS-V2Q"/>
