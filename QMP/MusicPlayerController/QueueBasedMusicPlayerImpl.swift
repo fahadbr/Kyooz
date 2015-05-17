@@ -145,10 +145,12 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     func insertItemsAtIndex(itemsToInsert:[MPMediaItem], index:Int) {
         var indexToInsertAt = index
         for mediaItem in itemsToInsert {
-            nowPlayingQueue.insert(mediaItem, atIndex: indexToInsertAt++)
-            if(index < indexOfNowPlayingItem) {
-                updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1, shouldLoadAfterUpdate: false)
-            }
+            nowPlayingQueue.insert(mediaItem, atIndex: indexToInsertAt)
+            
+            indexToInsertAt++
+        }
+        if(indexToInsertAt <= indexOfNowPlayingItem) {
+            updateNowPlayingStateToIndex(indexOfNowPlayingItem + itemsToInsert.count, shouldLoadAfterUpdate: false)
         }
     }
     
@@ -188,7 +190,10 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     }
     
     func clearUpcomingItems(#fromIndex:Int) {
-        nowPlayingQueue.removeRange(Range<Int>(start: fromIndex + 1, end: nowPlayingQueue.count))
+        nowPlayingQueue.removeRange((fromIndex + 1)..<nowPlayingQueue.count)
+        if(fromIndex < indexOfNowPlayingItem) {
+            updateNowPlayingStateToIndex(0, shouldLoadAfterUpdate: true)
+        }
     }
     
     func moreBackgroundTimeIsNeeded() -> Bool {
