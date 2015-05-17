@@ -84,7 +84,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         toolbarItems?[0] = editButton
         
         longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "handleLongPressGesture:")
-        menuButtonTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "presentMenuItems:")
+        menuButtonTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
         tableView.addGestureRecognizer(longPressGestureRecognizer)
         tableView.addGestureRecognizer(menuButtonTapGestureRecognizer)
         registerForNotifications()
@@ -147,6 +147,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
         indexPathsToDelete = !editing ? nil : [NSIndexPath]()
+        menuButtonTapGestureRecognizer.enabled = !editing
+        longPressGestureRecognizer.enabled = !editing
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -372,14 +374,17 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     //MARK: gesture recognizer handlers
-    func presentMenuItems(sender:UITapGestureRecognizer) {
+    func handleTapGesture(sender:UITapGestureRecognizer) {
         let location = sender.locationInView(tableView)
         let indexPath = tableView.indexPathForRowAtPoint(location)
         if(indexPath == nil) { return }
         
         let touchedCell = tableView.cellForRowAtIndexPath(indexPath!)! as! SongDetailsTableViewCell
         let locationInMenuButton = sender.locationInView(touchedCell.menuButton)
-        if(!touchedCell.menuButton.pointInside(locationInMenuButton, withEvent: nil)) { return }
+        if(!touchedCell.menuButton.pointInside(locationInMenuButton, withEvent: nil)) {
+            tableView(tableView, didSelectRowAtIndexPath: indexPath!)
+            return
+        }
         
         let index = indexPath!.row
         
