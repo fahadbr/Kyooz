@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ArtistTableViewController: QueableMediaItemTableViewController {
+class ArtistTableViewController: MediaItemTableViewController {
     
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     

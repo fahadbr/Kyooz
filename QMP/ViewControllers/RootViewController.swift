@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class RootViewController: UIViewController {
+class RootViewController: UIViewController, DragSource {
     
     static let instance:RootViewController = RootViewController()
     
@@ -24,6 +24,13 @@ class RootViewController: UIViewController {
             nowPlayingTapGestureRecognizer.enabled = !newValue
             UIApplication.sharedApplication().setStatusBarStyle(newValue ? UIStatusBarStyle.LightContent : UIStatusBarStyle.Default, animated: true)
         }
+    }
+    
+    var sourceTableView:UITableView? {
+        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewController {
+            return mediaItemViewController.tableView
+        }
+        return nil
     }
     
     var libraryNavigationController:UINavigationController!
@@ -115,6 +122,14 @@ class RootViewController: UIViewController {
             break
         }
         
+    }
+    
+    func getItemsToDrag(indexPath:NSIndexPath) -> [MPMediaItem]? {
+        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewController {
+            return mediaItemViewController.getMediaItemsForIndexPath(indexPath)
+        }
+        Logger.debug("Couldnt get a view controller with media items, returning nil")
+        return nil
     }
     
     func handleTapGesture(recognizer: UITapGestureRecognizer) {

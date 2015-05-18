@@ -18,18 +18,16 @@ class TableViewScrollPositionController :NSObject {
     private let maxTimeDelay = 0.01
     private let minTimeDelay = 0.0005
     private let scrollSpeed:CGFloat = 2
-    private let delegate:TableViewScollPositionControllerDelegate
-    private let updatesDataSource:Bool
+    private let delegate:TableViewScrollPositionControllerDelegate
     
     private var visiblePosition:CGFloat!
     private var timeDelayInSeconds:Double!
     private var timer:NSTimer!
     private var gestureRecognizer:UILongPressGestureRecognizer!
 
-    init(tableView:UITableView, delegate:TableViewScollPositionControllerDelegate, updatesDataSource:Bool) {
+    init(tableView:UITableView, delegate:TableViewScrollPositionControllerDelegate) {
         self.tableView = tableView
         self.delegate = delegate
-        self.updatesDataSource = updatesDataSource
         self.yTopOffset = tableView.contentInset.top + offset
         self.yBottomOffset = tableView.frame.height - offset - tableView.contentInset.bottom
         Logger.debug("contentInset top: \(tableView.contentInset.top) bottom:\(tableView.contentInset.bottom)")
@@ -83,7 +81,7 @@ class TableViewScrollPositionController :NSObject {
         
         if(newOffset != nil) {
             tableView.setContentOffset(newOffset, animated: false)
-            delegate.handlePositionChange(gestureRecognizer, updateDataSource:updatesDataSource)
+            delegate.handlePositionChange(gestureRecognizer)
         } else {
             timer?.invalidate()
         }
@@ -91,7 +89,7 @@ class TableViewScrollPositionController :NSObject {
     
 }
 
-protocol TableViewScollPositionControllerDelegate {
-    func handlePositionChange(sender:UILongPressGestureRecognizer, updateDataSource:Bool) -> CGPoint?
+protocol TableViewScrollPositionControllerDelegate {
+    func handlePositionChange(sender:UILongPressGestureRecognizer) -> CGPoint?
 }
 

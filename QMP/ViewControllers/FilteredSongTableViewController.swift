@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class FilteredSongTableViewController: QueableMediaItemTableViewController {
+class FilteredSongTableViewController: MediaItemTableViewController {
     
     let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
