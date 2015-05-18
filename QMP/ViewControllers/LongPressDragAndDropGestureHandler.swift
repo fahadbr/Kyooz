@@ -13,11 +13,16 @@ import MediaPlayer
 
 class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     
-    let dragSource:DragSource
-    let dropDestination:DropDestination
+    var dragSource:DragSource
+    var dropDestination:DropDestination
     
     var itemsToDrag:[MPMediaItem]!
 
+    override var indexPathOfMovingItem:NSIndexPath! {
+        didSet {
+            dropDestination.indexPathOfMovingItem = indexPathOfMovingItem
+        }
+    }
     
     init(dragSource:DragSource, dropDestination:DropDestination) {
         self.dragSource = dragSource
@@ -101,6 +106,8 @@ protocol DragSource {
 }
 
 protocol DropDestination {
+    
+    var indexPathOfMovingItem:NSIndexPath! { get set }
     
     var destinationTableView:UITableView { get }
     

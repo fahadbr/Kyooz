@@ -61,7 +61,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, TableViewScrollP
                 }
                 return
             }
-            
+            gestureActivated = false
             gestureDidEnd(sender)
             
             tableViewScrollPositionController?.invalidateTimer()
