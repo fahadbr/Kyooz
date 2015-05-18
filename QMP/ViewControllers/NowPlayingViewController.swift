@@ -55,9 +55,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //MARK: GESTURE PROPERTIES
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
-    private (set) var indexPathOfMovingItem:NSIndexPath!
-    private var snapshot:UIView!
-    private var itemsToInsert:[MPMediaItem]?
+    
+    var indexPathOfMovingItem:NSIndexPath!
     var insertMode:Bool = false {
         didSet {
             if(insertMode) {
@@ -67,7 +66,6 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             } else {
                 longPressGestureRecognizer.enabled = true
-                itemsToInsert = nil
                 indexPathOfMovingItem = nil
                 for item in toolbarItems! {
                     (item as? UIBarButtonItem)?.enabled = true
@@ -259,60 +257,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         queueBasedMusicPlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
     }
     
-//    func endInsertMode(sender:UILongPressGestureRecognizer) {
-//        let location = sender.locationInView(tableView)
-//        let insideTableView = tableView.pointInside(location, withEvent: nil)
-//        let localItemsToInsert = itemsToInsert!
-//        let localIndexPathForInserting = indexPathOfMovingItem
-//        
-//        insertMode = false
-//        tableViewScrollPositionController?.invalidateTimer()
-//        tableViewScrollPositionController = nil
-//        tableView.deleteRowsAtIndexPaths([localIndexPathForInserting], withRowAnimation: UITableViewRowAnimation.Fade)
-//        
-//        if(insideTableView) {
-//            var indexPaths = [NSIndexPath]()
-//            let startingIndex = localIndexPathForInserting.row
-//            for index in (startingIndex)..<(startingIndex+localItemsToInsert.count)  {
-//                indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
-//            }
-//
-//            queueBasedMusicPlayer.insertItemsAtIndex(localItemsToInsert, index: startingIndex)
-//            tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
-//        }
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [weak self]() in
-//            Logger.debug("ending insert mode and clearing data")
-//            self?.insertMode = false
-//            ContainerViewController.instance.animateSidePanel(shouldExpand: false)
-//        }
-//        
-//    }
-    
-//    func handleInsertPositionChanged(sender:UILongPressGestureRecognizer) {
-//        if let location = handlePositionChange(sender) {
-//            tableViewScrollPositionController?.startScrollingWithLocation(location, gestureRecognizer:sender)
-//        }
-//    }
-//    
-//    func handlePositionChange(sender: UILongPressGestureRecognizer) -> CGPoint? {
-//        let location = sender.locationInView(tableView)
-//        let insideTableView = tableView.pointInside(location, withEvent: nil)
-//        if(insideTableView) {
-//            snapshot?.center.y = location.y
-//            let indexPath = tableView.indexPathForRowAtPoint(location)
-//            if(indexPath != nil && !indexPathOfMovingItem.isEqual(indexPath)) {
-//                tableView.moveRowAtIndexPath(indexPathOfMovingItem, toIndexPath: indexPath!)
-//                indexPathOfMovingItem = indexPath!
-//            }
-//            return location
-//        } else {
-//            tableViewScrollPositionController?.invalidateTimer()
-//        }
-//        return nil
-//    }
-    
 
-    
     //MARK: CLASS Functions
     func reloadTableData(notification:NSNotification?) {
         if(viewExpanded) {

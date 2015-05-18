@@ -256,62 +256,9 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         }
     }
     
-//    func handleLongPressGesture(sender:UILongPressGestureRecognizer) {
-//        let state:UIGestureRecognizerState = sender.state
-//
-//        
-//        
-//        //since we're looking up the index path from a point location on the screen
-//        //send by the gesture recognizer, the indexPath may possibly be nil
-//        switch(state) {
-//        case .Began:
-//            let tableView = UITableView()
-//            let locationInSourceTable = sender.locationInView(tableView)
-//            let indexPath:NSIndexPath? = tableView.indexPathForRowAtPoint(locationInSourceTable)
-//            
-//            if let sourceIndexPath = indexPath {
-//                gestureActivated = true
-//                let cell = tableView.cellForRowAtIndexPath(sourceIndexPath)!
-//                cell.highlighted = false
-//                
-//                snapshot = ImageHelper.customSnapshotFromView(cell)
-//                snapshot.center = location
-//                snapshot.alpha = 0.0
-//                
-//                containerView.addSubview(snapshot)
-//                let mediaItems = self.getMediaItemsForIndexPath(sourceIndexPath)
-//                self.containerViewController.showNowPlayingControllerInsertMode(mediaItems, sender:sender)
-//                UIView.animateWithDuration(0.25, animations: { [unowned self]() -> Void in
-//                    self.snapshot.center = location
-//                    self.snapshot.transform = CGAffineTransformMakeScale(1.10, 1.10)
-//                    self.snapshot.alpha = 0.90
-//                    })
-//            }
-//        case .Changed:
-//            if(gestureActivated) {
-//                snapshot?.center = location
-//                containerViewController.handleInsertPositionChanged(sender)
-//            }
-//        default:
-//            if(gestureActivated) {
-//                gestureActivated = false
-//                UIView.animateWithDuration(0.25, animations: { [weak self]() -> Void in
-//                    self?.snapshot.alpha = 0.0
-//                    }, completion: {[weak self](finished:Bool) in
-//                        self?.snapshot.removeFromSuperview()
-//                        self?.snapshot = nil
-//
-//                    })
-//                containerViewController.endInsertMode(sender)
-//            }
-//        }
-//        
-//        
-//    }
-    
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if(gestureRecognizer.isEqual(longPressGestureRecognizer)) {
-            return !rootViewController.pullableViewExpanded
+            return (!rootViewController.pullableViewExpanded && !sidePanelExpanded)
         }
         return true
     }
