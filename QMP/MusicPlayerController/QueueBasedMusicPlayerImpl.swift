@@ -291,16 +291,4 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     }
 }
 
-extension CMTime {
-    
-    static func fromSeconds(seconds:Float) -> CMTime {
-        return CMTimeMakeWithSeconds(Double(seconds), Int32(1))
-    }
-    
-    var seconds:Float {
-        if(value == 0) {
-            return 0.0
-        }
-        return Float(value)/Float(timescale)
-    }
-}
+

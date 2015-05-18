@@ -9,7 +9,7 @@
 
 import MediaPlayer
 
-class FilteredAlbumTableViewController: QueableMediaItemTableViewController {
+class FilteredAlbumTableViewController: MediaItemTableViewController {
 
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     let cellTableIdentifier = "albumTableViewCell"

@@ -19,11 +19,6 @@ extension UIStoryboard {
         return UIStoryboard(name: "Settings", bundle:NSBundle.mainBundle())
     }
     
-    
-//    class func rootViewController() -> RootViewController {
-//        return mainStoryboard().instantiateViewControllerWithIdentifier("rootViewController") as! RootViewController
-//    }
-    
     class func libraryNavigationController() -> UINavigationController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("libraryNavigationController") as! UINavigationController
     }

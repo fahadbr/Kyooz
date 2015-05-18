@@ -9,11 +9,15 @@
 import UIKit
 import MediaPlayer
 
-class ContainerViewController : UIViewController {
+class ContainerViewController : UIViewController , GestureHandlerDelegate {
     
     static let instance:ContainerViewController = ContainerViewController()
     
-    let centerPanelExpandedOffset:CGFloat = 60
+    private let centerPanelExpandedOffset:CGFloat = 60
+    private let timeDelayInNanoSeconds = Int64(0.50 * Double(NSEC_PER_SEC))
+    
+    var longPressGestureRecognizer:UILongPressGestureRecognizer!
+    var dragAndDropHandler:LongPressDragAndDropGestureHandler!
     
     var tapGestureRecognizer:UITapGestureRecognizer!
     var panGestureRecognizer:UIPanGestureRecognizer!
@@ -68,6 +72,13 @@ class ContainerViewController : UIViewController {
         self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
         self.panGestureRecognizer.enabled = sidePanelExpanded
         self.rootViewController.view.addGestureRecognizer(panGestureRecognizer)
+        
+        addSidePanelViewController()
+        dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: rootViewController, dropDestination: nowPlayingViewController!)
+        dragAndDropHandler.delegate = self
+        longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragAndDropHandler, action: "handleGesture:")
+        longPressGestureRecognizer.delegate = self
+        view.addGestureRecognizer(longPressGestureRecognizer)
         
     }
     
@@ -132,12 +143,12 @@ class ContainerViewController : UIViewController {
     }
     
     func deinitializeSideViewController(notification:NSNotification) {
-        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
-            Logger.debug("deinitializing side view controller")
-            nowPlayingNavigationController!.view.removeFromSuperview()
-            nowPlayingViewController = nil
-            nowPlayingNavigationController = nil
-        }
+//        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
+//            Logger.debug("deinitializing side view controller")
+//            nowPlayingNavigationController!.view.removeFromSuperview()
+//            nowPlayingViewController = nil
+//            nowPlayingNavigationController = nil
+//        }
     }
     
     func presentSettingsViewController() {
@@ -145,24 +156,7 @@ class ContainerViewController : UIViewController {
         rootViewController.presentSettingsViewController()
     }
     
-    //MARK: INSERT MODE DELEGATION METHODS
-    func showNowPlayingControllerInsertMode(mediaItems:[MPMediaItem], sender:UILongPressGestureRecognizer) {
-        addSidePanelViewController()
-        animateSidePanel(shouldExpand: true)
-        if(!nowPlayingViewController!.laidOutSubviews) {
-            dispatch_async(dispatch_get_main_queue()) { self.showNowPlayingControllerInsertMode(mediaItems, sender: sender) }
-            return
-        }
-        nowPlayingViewController?.initiateInsertMode(mediaItems, sender: sender)
-    }
-    
-    func endInsertMode(sender:UILongPressGestureRecognizer) {
-        nowPlayingViewController?.endInsertMode(sender)
-    }
-    
-    func handleInsertPositionChanged(sender:UILongPressGestureRecognizer) {
-        nowPlayingViewController?.handleInsertPositionChanged(sender)
-    }
+
     
     //MARK: NOTIFICATION REGISTRATIONS
     
@@ -237,6 +231,89 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
             break
         }
         
+    }
+
+    
+    //MARK: INSERT MODE DELEGATION METHODS
+
+    func gestureDidBegin(sender: UIGestureRecognizer) {
+        if(sender == longPressGestureRecognizer) {
+            addSidePanelViewController()
+            animateSidePanel(shouldExpand: true)
+            if(!nowPlayingViewController!.laidOutSubviews) {
+                dispatch_async(dispatch_get_main_queue()) { self.gestureDidBegin(sender) }
+                return
+            }
+            nowPlayingViewController!.insertMode = true
+        }
+    }
+    
+    func gestureDidEnd(sender: UIGestureRecognizer) {
+        nowPlayingViewController!.insertMode = false
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [unowned self]() in
+            Logger.debug("ending insert mode and clearing data")
+            self.animateSidePanel(shouldExpand: false)
+        }
+    }
+    
+//    func handleLongPressGesture(sender:UILongPressGestureRecognizer) {
+//        let state:UIGestureRecognizerState = sender.state
+//
+//        
+//        
+//        //since we're looking up the index path from a point location on the screen
+//        //send by the gesture recognizer, the indexPath may possibly be nil
+//        switch(state) {
+//        case .Began:
+//            let tableView = UITableView()
+//            let locationInSourceTable = sender.locationInView(tableView)
+//            let indexPath:NSIndexPath? = tableView.indexPathForRowAtPoint(locationInSourceTable)
+//            
+//            if let sourceIndexPath = indexPath {
+//                gestureActivated = true
+//                let cell = tableView.cellForRowAtIndexPath(sourceIndexPath)!
+//                cell.highlighted = false
+//                
+//                snapshot = ImageHelper.customSnapshotFromView(cell)
+//                snapshot.center = location
+//                snapshot.alpha = 0.0
+//                
+//                containerView.addSubview(snapshot)
+//                let mediaItems = self.getMediaItemsForIndexPath(sourceIndexPath)
+//                self.containerViewController.showNowPlayingControllerInsertMode(mediaItems, sender:sender)
+//                UIView.animateWithDuration(0.25, animations: { [unowned self]() -> Void in
+//                    self.snapshot.center = location
+//                    self.snapshot.transform = CGAffineTransformMakeScale(1.10, 1.10)
+//                    self.snapshot.alpha = 0.90
+//                    })
+//            }
+//        case .Changed:
+//            if(gestureActivated) {
+//                snapshot?.center = location
+//                containerViewController.handleInsertPositionChanged(sender)
+//            }
+//        default:
+//            if(gestureActivated) {
+//                gestureActivated = false
+//                UIView.animateWithDuration(0.25, animations: { [weak self]() -> Void in
+//                    self?.snapshot.alpha = 0.0
+//                    }, completion: {[weak self](finished:Bool) in
+//                        self?.snapshot.removeFromSuperview()
+//                        self?.snapshot = nil
+//
+//                    })
+//                containerViewController.endInsertMode(sender)
+//            }
+//        }
+//        
+//        
+//    }
+    
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if(gestureRecognizer.isEqual(longPressGestureRecognizer)) {
+            return !rootViewController.pullableViewExpanded
+        }
+        return true
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
