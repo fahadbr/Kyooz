@@ -38,7 +38,7 @@ class AudioSessionManager : NSObject {
     }
     
     func handleAudioSessionChange(notification:NSNotification) {
-        MusicPlayerContainer.queueBasedMusicPlayer.pause()
+        ApplicationDefaults.audioQueuePlayer.pause()
     }
     
     private func registerForNotifications() {

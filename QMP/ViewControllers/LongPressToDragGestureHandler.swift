@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-class LongPressToDragGestureHandler : NSObject, GestureHandler, TableViewScrollPositionControllerDelegate{
+class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrollingControllerDelegate{
     
     private let tableView:UITableView
     
     private var snapshot:UIView!
-    private var tableViewScrollPositionController:TableViewScrollPositionController!
+    private var dragGestureScrollingController:DragGestureScrollingController!
 
     private var beginningAnimationEnded = false
     private var gestureActivated = false
@@ -39,7 +39,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, TableViewScrollP
                 indexPathOfMovingItem = result.indexPath
                 
                 gestureDidBegin(sender)
-                tableViewScrollPositionController = getTableViewScrollController()
+                dragGestureScrollingController = getScrollingController()
                 
                 //take a snapshot of the selected row using a helper method
                 createSnapshotFromView(result.cell, sender: sender)
@@ -48,7 +48,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, TableViewScrollP
             if(!gestureActivated) { return }
             gestureDidChange(sender)
             if let location = handlePositionChange(sender) {
-                tableViewScrollPositionController?.startScrollingWithLocation(location, gestureRecognizer: sender)
+                dragGestureScrollingController?.startScrollingWithLocation(location, gestureRecognizer: sender)
             }
         default:
             if(!gestureActivated) { return }
@@ -64,8 +64,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, TableViewScrollP
             gestureActivated = false
             gestureDidEnd(sender)
             
-            tableViewScrollPositionController?.invalidateTimer()
-            tableViewScrollPositionController = nil
+            dragGestureScrollingController?.invalidateTimer()
+            dragGestureScrollingController = nil
             
             let cell = tableView.cellForRowAtIndexPath(indexPathOfMovingItem)!
             removeSnapshotFromView(cell, viewToFadeOut: snapshot, completionHandler: { (finished:Bool) -> Void in
@@ -91,29 +91,30 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, TableViewScrollP
     func handlePositionChange(sender: UILongPressGestureRecognizer) -> CGPoint? {
         let location = sender.locationInView(tableView)
         let insideTableView = tableView.pointInside(location, withEvent: nil)
-        if(insideTableView) {
-            updateSnapshotPosition(snapshot, sender:sender, locationInDestinationTableView: location)
-            let indexPath = tableView.indexPathForRowAtPoint(location)
-            if(indexPath != nil && !indexPathOfMovingItem.isEqual(indexPath)) {
-                if(positionChangeUpdatesDataSource) {
-                    if let canMove = tableView.dataSource?.tableView?(tableView, canMoveRowAtIndexPath: indexPathOfMovingItem) {
-                        if(canMove) {
-                            tableView.dataSource?.tableView?(tableView, moveRowAtIndexPath: indexPathOfMovingItem, toIndexPath: indexPath!)
-                        }
+    
+        updateSnapshotPosition(snapshot, sender:sender, locationInDestinationTableView: location)
+        let indexPath = tableView.indexPathForRowAtPoint(insideTableView ? location : CGPoint(x: 0, y: location.y))
+        if(indexPath != nil && !indexPathOfMovingItem.isEqual(indexPath)) {
+            if(positionChangeUpdatesDataSource) {
+                if let canMove = tableView.dataSource?.tableView?(tableView, canMoveRowAtIndexPath: indexPathOfMovingItem) {
+                    if(canMove) {
+                        tableView.dataSource?.tableView?(tableView, moveRowAtIndexPath: indexPathOfMovingItem, toIndexPath: indexPath!)
                     }
                 }
-                tableView.moveRowAtIndexPath(indexPathOfMovingItem, toIndexPath: indexPath!)
-                indexPathOfMovingItem = indexPath!
             }
+            tableView.moveRowAtIndexPath(indexPathOfMovingItem, toIndexPath: indexPath!)
+            indexPathOfMovingItem = indexPath!
+        }
+        if(insideTableView) {
             return location
         } else {
-            tableViewScrollPositionController?.invalidateTimer()
+            dragGestureScrollingController?.invalidateTimer()
+            return nil
         }
-        return nil
     }
     
-    func getTableViewScrollController() -> TableViewScrollPositionController {
-        return TableViewScrollPositionController(tableView: tableView, delegate: self)
+    func getScrollingController() -> DragGestureScrollingController {
+        return DragGestureScrollingController(scrollView: tableView, delegate: self)
     }
     
     func getCellForSnapshot(sender:UIGestureRecognizer, tableView:UITableView) -> (cell:UITableViewCell, indexPath:NSIndexPath)? {

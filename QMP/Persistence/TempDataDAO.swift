@@ -34,9 +34,9 @@ class TempDataDAO : NSObject {
     //MARK:CLASS FUNCTIONS
     
     func persistData(notification:NSNotification) {
-        let musicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+        let musicPlayer = ApplicationDefaults.audioQueuePlayer
         persistLastFmScrobbleCache(LastFmScrobbler.instance.scrobbleCache)
-        persistNowPlayingQueueToTempStorage(musicPlayer.getNowPlayingQueue())
+        persistNowPlayingQueueToTempStorage(musicPlayer.nowPlayingQueue)
         persistCurrentPlaybackStateToTempStorage(musicPlayer.indexOfNowPlayingItem, currentPlaybackTime: musicPlayer.currentPlaybackTime)
     }
     

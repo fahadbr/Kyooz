@@ -11,7 +11,7 @@ import MediaPlayer
 
 class MusicPlayerTableViewActionFactory: NSObject {
     
-    let musicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+    let musicPlayer = ApplicationDefaults.audioQueuePlayer
     
     class var instance : MusicPlayerTableViewActionFactory {
         struct Static {

@@ -29,7 +29,7 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBOutlet weak var nowPlayingCollapsedBar: UIView!
     @IBOutlet weak var playbackProgressCollapsedBar: UIProgressView!
     
-    private let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+    private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private let timeDelayInNanoSeconds = Int64(0.5 * Double(NSEC_PER_SEC))
     
     private var playbackProgressTimer:NSTimer?
@@ -59,7 +59,7 @@ class NowPlayingSummaryViewController: UIViewController {
 
     
     @IBAction func commitUpdateOfPlaybackTime(sender: AnyObject) {
-        queueBasedMusicPlayer.currentPlaybackTime = sender.value
+        audioQueuePlayer.currentPlaybackTime = sender.value
         playbackProgressBar.value = sender.value
         //leave the timer invalidated because changing the value will trigger a notification from the music player
         //causing the view to reload and the timer to be reinitialized
@@ -69,25 +69,25 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
         invalidateTimer(sender)
         let sliderValue = sender.value
-        let remainingPlaybackTime = Float(queueBasedMusicPlayer.nowPlayingItem?.playbackDuration ?? 0.0) - sliderValue
+        let remainingPlaybackTime = Float(audioQueuePlayer.nowPlayingItem?.playbackDuration ?? 0.0) - sliderValue
         updatePlaybackProgressBarTimeLabels(currentPlaybackTime: sliderValue, remainingPlaybackTime: remainingPlaybackTime)
     }
 
     
     @IBAction func skipBackward(sender: AnyObject) {
-        queueBasedMusicPlayer.skipBackwards()
+        audioQueuePlayer.skipBackwards()
         updatePlaybackProgressBar(nil)
     }
     @IBAction func skipForward(sender: AnyObject) {
-        queueBasedMusicPlayer.skipForwards()
+        audioQueuePlayer.skipForwards()
     }
     
     
     @IBAction func playPauseAction(sender: AnyObject) {
-        if(queueBasedMusicPlayer.musicIsPlaying) {
-            self.queueBasedMusicPlayer.pause()
+        if(audioQueuePlayer.musicIsPlaying) {
+            self.audioQueuePlayer.pause()
         } else {
-            self.queueBasedMusicPlayer.play()
+            self.audioQueuePlayer.play()
         }
     }
     
@@ -119,7 +119,7 @@ class NowPlayingSummaryViewController: UIViewController {
     }
     
     func reloadData(notification:NSNotification?) {
-        var nowPlayingItem = queueBasedMusicPlayer.nowPlayingItem;
+        var nowPlayingItem = audioQueuePlayer.nowPlayingItem;
         self.songTitleLabel.text = nowPlayingItem?.title ?? "Nothing"
         self.songTitleCollapsedLabel.text = self.songTitleLabel.text
         
@@ -154,14 +154,14 @@ class NowPlayingSummaryViewController: UIViewController {
     }
     
     @IBAction func updatePlaybackProgressTimer() {
-        if(queueBasedMusicPlayer.musicIsPlaying && playbackProgressTimer == nil) {
+        if(audioQueuePlayer.musicIsPlaying && playbackProgressTimer == nil) {
             Logger.debug("initiating playbackProgressTimer")
             playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
                 target: self,
                 selector: "updatePlaybackProgressBar:",
                 userInfo: nil,
                 repeats: true)
-        } else if(!queueBasedMusicPlayer.musicIsPlaying && playbackProgressTimer != nil){
+        } else if(!audioQueuePlayer.musicIsPlaying && playbackProgressTimer != nil){
             invalidateTimer(nil)
         }
     }
@@ -177,15 +177,15 @@ class NowPlayingSummaryViewController: UIViewController {
     
     func updatePlaybackProgressBar(sender:NSTimer?) {
         dispatch_async(dispatch_get_main_queue(), { [unowned self]() in
-            if(self.queueBasedMusicPlayer.nowPlayingItem == nil) {
+            if(self.audioQueuePlayer.nowPlayingItem == nil) {
                 self.totalPlaybackTimeLabel.text = MediaItemUtils.zeroTime
                 self.currentPlaybackTimeLabel.text = MediaItemUtils.zeroTime
                 self.playbackProgressBar.setValue(0.0, animated: false)
                 self.playbackProgressCollapsedBar.progress = 0.0
                 return
             }
-            var currentPlaybackTime = self.queueBasedMusicPlayer.currentPlaybackTime
-            var totalPlaybackTime = Float(self.queueBasedMusicPlayer.nowPlayingItem!.playbackDuration)
+            var currentPlaybackTime = self.audioQueuePlayer.currentPlaybackTime
+            var totalPlaybackTime = Float(self.audioQueuePlayer.nowPlayingItem!.playbackDuration)
             var remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
             
             self.updatePlaybackProgressBarTimeLabels(currentPlaybackTime:currentPlaybackTime, remainingPlaybackTime:remainingPlaybackTime)
@@ -201,7 +201,7 @@ class NowPlayingSummaryViewController: UIViewController {
     }
     
     func updatePlaybackStatus(sender:AnyObject?) {
-        if(queueBasedMusicPlayer.musicIsPlaying) {
+        if(audioQueuePlayer.musicIsPlaying) {
             self.playPauseButton.setImage(pauseButtonImage, forState: UIControlState.Normal)
             self.playPauseButton.setImage(pauseButtonHighlightedImage, forState: UIControlState.Highlighted)
             self.playPauseCollapsedButton.setImage(pauseButtonImage, forState: UIControlState.Normal)
@@ -245,9 +245,9 @@ class NowPlayingSummaryViewController: UIViewController {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: "reloadData:",
-            name: QueueBasedMusicPlayerUpdate.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
+            name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadData:",
-            name: QueueBasedMusicPlayerUpdate.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
+            name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
         
         notificationCenter.addObserver(self, selector: "invalidateTimer:",
             name: UIApplicationDidEnterBackgroundNotification, object: application)

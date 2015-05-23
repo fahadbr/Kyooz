@@ -44,8 +44,8 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         return nil
     }
     
-    override func getTableViewScrollController() -> TableViewScrollPositionController {
-        return TableViewScrollPositionController(tableView: dropDestination.destinationTableView, delegate: self)
+    override func getScrollingController() -> DragGestureScrollingController {
+        return DragGestureScrollingController(scrollView: dropDestination.destinationTableView, delegate: self)
     }
     
     override func updateSnapshotPosition(snapshot: UIView, sender: UIGestureRecognizer, locationInDestinationTableView: CGPoint) {

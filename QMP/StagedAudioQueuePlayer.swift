@@ -10,33 +10,33 @@ import Foundation
 import MediaPlayer
 import AVFoundation
 
-class StagedQueueBasedMusicPlayer : NSObject{
+class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
     
-    class var instance : StagedQueueBasedMusicPlayer {
+    class var instance : StagedAudioQueuePlayer {
         struct Static {
-            static let instance:StagedQueueBasedMusicPlayer = StagedQueueBasedMusicPlayer()
+            static let instance:StagedAudioQueuePlayer = StagedAudioQueuePlayer()
         }
         return Static.instance
     }
     
     //MARK: PROPERTIES
-    private let musicPlayer = MusicPlayerContainer.defaultMusicPlayerController
+    private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let playbackStateManager = PlaybackStateManager.instance
     private let timeDelayInNanoSeconds = Int64(1.0 * Double(NSEC_PER_SEC))
     
-    private var nowPlayingQueue:[MPMediaItem]? = [MPMediaItem]() {
+    private var persistedQueue:[MPMediaItem] = [MPMediaItem]() {
         didSet {
-            if(nowPlayingQueue!.count > oldValue!.count) {
+            if(persistedQueue.count > oldValue.count) {
                 Logger.debug("publishing notification for queue change")
-//                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
+//                AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
     }
-    private var stagedQueue:[MPMediaItem]? = [MPMediaItem]() {
+    private var stagedQueue:[MPMediaItem] = [MPMediaItem]() {
         didSet {
-            if(stagedQueue!.count > oldValue!.count) {
+            if(stagedQueue.count > oldValue.count) {
                 Logger.debug("publishing notification for queue change")
-//                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
+//                AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender:self)
             }
         }
     }
@@ -52,6 +52,14 @@ class StagedQueueBasedMusicPlayer : NSObject{
     
     var musicIsPlaying:Bool {
         return playbackStateManager.musicIsPlaying()
+    }
+    
+    var nowPlayingQueue:[MPMediaItem] {
+        if(stagedQueueIsEmpty()) {
+            return persistedQueue
+        } else {
+            return stagedQueue
+        }
     }
     
     var currentPlaybackTime:Float {
@@ -71,7 +79,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
             indexToReturn = musicPlayer.indexOfNowPlayingItem
         } else {
             var i = 0
-            for mediaItem in getNowPlayingQueue()! {
+            for mediaItem in nowPlayingQueue {
                 if((self.nowPlayingItem?.persistentID ?? 0) == mediaItem.persistentID) {
                     indexToReturn = i
                     break
@@ -87,14 +95,14 @@ class StagedQueueBasedMusicPlayer : NSObject{
     override init() {
         super.init()
         registerForMediaPlayerNotifications()
-        
+        registerForRemoteCommands()
         if let queueFromTempStorage = TempDataDAO.instance.getNowPlayingQueueFromTempStorage(){
             if let nowPlayingItem = musicPlayer.nowPlayingItem {
                 let index = musicPlayer.indexOfNowPlayingItem
                 //check if the queue from temp storage matches with the queue in the current music player
                 if(index < queueFromTempStorage.count && queueFromTempStorage[index].persistentID == nowPlayingItem.persistentID) {
                     Logger.debug("restoring now playing queue from temp storage")
-                    self.nowPlayingQueue = queueFromTempStorage
+                    self.persistedQueue = queueFromTempStorage
                     return
                 }
             }
@@ -105,16 +113,16 @@ class StagedQueueBasedMusicPlayer : NSObject{
                 forProperty: MPMediaItemPropertyAlbumPersistentID,
                 comparisonType: MPMediaPredicateComparison.EqualTo))
             Logger.debug("assuming now playing queue to be album")
-            self.nowPlayingQueue = query.items as? [MPMediaItem]
+            self.persistedQueue = query.items as! [MPMediaItem]
         }
     }
     
     deinit {
-        TempDataDAO.instance.persistNowPlayingQueueToTempStorage(getNowPlayingQueue())
         unregisterForMediaPlayerNotifications()
+        unregisterForRemoteCommands()
     }
     
-    //MARK:QueueBasedMusicPlayer Functions
+    //MARK:AudioQueuePlayer Functions
     func play() {
         promoteStagedQueueWithCurrentNowPlayingItem()
         musicPlayer.play()
@@ -137,17 +145,8 @@ class StagedQueueBasedMusicPlayer : NSObject{
         }
     }
     
-    func getNowPlayingQueue() -> [MPMediaItem]? {
-        if(stagedQueueIsEmpty()) {
-            return nowPlayingQueue
-        } else {
-            return stagedQueue
-        }
-        
-    }
-    
     func moreBackgroundTimeIsNeeded() -> Bool {
-        return !stagedQueueIsEmpty()
+        return false
     }
     
     func executePreBackgroundTasks() {
@@ -156,15 +155,13 @@ class StagedQueueBasedMusicPlayer : NSObject{
     
     func enqueue(itemsToEnqueue:[MPMediaItem]) {
 
-        var queue = getNowPlayingQueue()
+        var queue = nowPlayingQueue
         
-        if(queue != nil) {
-            queue?.extend(itemsToEnqueue)
-        } else {
-            queue = itemsToEnqueue
-        }
+
+        queue.extend(itemsToEnqueue)
+        
         let playbackState = getPlaybackState()
-        setQueueInternal(queue!, itemToPlay:playbackState.nowPlayingItem)
+        setQueueInternal(queue, itemToPlay:playbackState.nowPlayingItem)
         restorePlaybackState(playbackState, override: false, restoreFullState:true)
         evaluateNextStagedMediaItem(playbackState)
         
@@ -178,8 +175,8 @@ class StagedQueueBasedMusicPlayer : NSObject{
     }
     
     func playItemWithIndexInCurrentQueue(#index:Int) {
-        let queue = getNowPlayingQueue()
-        let itemToPlay = queue?[index]
+        let queue = nowPlayingQueue
+        let itemToPlay = queue[index]
                 
         promoteStagedQueueToNowPlaying(itemToPlay, restoreFullState: false)
         musicPlayer.nowPlayingItem = itemToPlay
@@ -188,7 +185,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
     }
     
     func clearUpcomingItems(#fromIndex:Int) {
-        var queue = self.getNowPlayingQueue()!
+        var queue = nowPlayingQueue
         
         
         Logger.debug("clearing now playing queue from index \(fromIndex)")
@@ -219,18 +216,26 @@ class StagedQueueBasedMusicPlayer : NSObject{
     }
     
     func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int) {
-        var queue = getNowPlayingQueue()
+        var queue = nowPlayingQueue
         
-        if(queue == nil || fromIndexPath > (queue!.count - 1) || toIndexPath > (queue!.count - 1)) {
+        if(fromIndexPath > (queue.count - 1) || toIndexPath > (queue.count - 1)) {
             return
         }
         
         let playbackState = getPlaybackState()
-        let mediaItem = queue![fromIndexPath]
-        queue!.removeAtIndex(fromIndexPath)
-        queue!.insert(mediaItem, atIndex: toIndexPath)
-        setQueueInternal(queue!, itemToPlay: playbackState.nowPlayingItem)
+        let mediaItem = queue[fromIndexPath]
+        queue.removeAtIndex(fromIndexPath)
+        queue.insert(mediaItem, atIndex: toIndexPath)
+        setQueueInternal(queue, itemToPlay: playbackState.nowPlayingItem)
         restorePlaybackState(playbackState, override: false, restoreFullState: true)
+        evaluateNextStagedMediaItem(playbackState)
+    }
+    
+    func insertItemsAtIndex(itemsToInsert: [MPMediaItem], index: Int) {
+        var queue = nowPlayingQueue
+        var playbackState = getPlaybackState()
+        queue.insertAtIndex(itemsToInsert, index: index, placeHolderItem: MPMediaItem())
+        setQueueInternal(queue, itemToPlay: playbackState.nowPlayingItem)
         evaluateNextStagedMediaItem(playbackState)
     }
    
@@ -249,7 +254,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
         }
         Logger.debug(message)
         promoteStagedQueueToNowPlaying(nextStagedMediaItem, restoreFullState: false)
-//        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender:self)
+        AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender:self)
     }
     
     func handlePlaybackStateChanged(notification:NSNotification) {
@@ -269,12 +274,12 @@ class StagedQueueBasedMusicPlayer : NSObject{
                 }
             }
         }
-//        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender:self)
+        AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender:self)
     }
     
     
     private func stagedQueueIsEmpty() -> Bool {
-        return (stagedQueue == nil || stagedQueue!.isEmpty)
+        return (stagedQueue.isEmpty)
     }
     
     private func promoteStagedQueueWithCurrentNowPlayingItem() {
@@ -294,7 +299,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
         if(mediaCollection.items != nil) {
             Logger.debug("Setting now playing queue")
             
-            nowPlayingQueue = mediaCollection.items as? [MPMediaItem]
+            persistedQueue = mediaCollection.items as! [MPMediaItem]
             musicPlayer.setQueueWithItemCollection(mediaCollection)
             if(itemToPlay != nil) {
                 musicPlayer.nowPlayingItem = itemToPlay!
@@ -303,7 +308,7 @@ class StagedQueueBasedMusicPlayer : NSObject{
     }
     
     private func resetAllStagedObjects() {
-        stagedQueue?.removeAll(keepCapacity: false)
+        stagedQueue.removeAll(keepCapacity: false)
         nextStagedMediaItem = nil
         indexOfNextStagedItemExceedsNowPlayingQueueLength = false
     }
@@ -314,10 +319,10 @@ class StagedQueueBasedMusicPlayer : NSObject{
         }
         
         let unwrappedMediaItem = playbackState.nowPlayingItem!
-        let unwrappedQueue = getNowPlayingQueue()!
+        let unwrappedQueue = nowPlayingQueue
         for var i=0 ; i<unwrappedQueue.count ; i++ {
             if(unwrappedMediaItem.persistentID == unwrappedQueue[i].persistentID) {
-                if(i >= (nowPlayingQueue!.count - 1) && i >= playbackState.nowPlayingIndex!) {
+                if(i >= (nowPlayingQueue.count - 1) && i >= playbackState.nowPlayingIndex!) {
                     indexOfNextStagedItemExceedsNowPlayingQueueLength = true
                 }
                 let nextIndex = i+1
@@ -392,5 +397,40 @@ class StagedQueueBasedMusicPlayer : NSObject{
         musicPlayer.endGeneratingPlaybackNotifications()
     }
     
+    private func registerForRemoteCommands() {
+        let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
+        remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+            self.play()
+            return MPRemoteCommandHandlerStatus.Success
+        }
+        remoteCommandCenter.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+            self.pause()
+            return MPRemoteCommandHandlerStatus.Success
+        }
+        remoteCommandCenter.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+            if(self.musicIsPlaying) {
+                self.pause()
+            } else {
+                self.play()
+            }
+            return MPRemoteCommandHandlerStatus.Success
+        }
+        remoteCommandCenter.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+            self.skipBackwards()
+            return MPRemoteCommandHandlerStatus.Success
+        }
+        remoteCommandCenter.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+            self.skipForwards()
+            return MPRemoteCommandHandlerStatus.Success
+        }
+    }
+    private func unregisterForRemoteCommands() {
+        let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
+        remoteCommandCenter.playCommand.removeTarget(self)
+        remoteCommandCenter.pauseCommand.removeTarget(self)
+        remoteCommandCenter.togglePlayPauseCommand.removeTarget(self)
+        remoteCommandCenter.previousTrackCommand.removeTarget(self)
+        remoteCommandCenter.nextTrackCommand.removeTarget(self)
+    }
     
 }

@@ -11,7 +11,7 @@ import MediaPlayer
 
 class FilteredSongTableViewController: MediaItemTableViewController {
     
-    let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+    let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     
     var songs:MPMediaItemCollection!
@@ -61,7 +61,7 @@ class FilteredSongTableViewController: MediaItemTableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         var index = indexPath.row
         var nowPlayingItem = songs.items[index] as! MPMediaItem
-        queueBasedMusicPlayer.playNowWithCollection(mediaCollection: songs,
+        audioQueuePlayer.playNowWithCollection(mediaCollection: songs,
             itemToPlay: nowPlayingItem)
 //        RootViewController.instance.animatePullablePanel(shouldExpand: true)
     }

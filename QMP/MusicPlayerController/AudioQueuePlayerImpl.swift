@@ -1,5 +1,5 @@
 //
-//  QueueBasedMusicPlayerController.swift
+//  AudioQueuePlayerController.swift
 //  MediaPlayer
 //
 //  Created by FAHAD RIAZ on 3/16/15.
@@ -12,10 +12,10 @@ import AVFoundation
 
 typealias KVOContext=UInt8
 
-class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDelegate {
+class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioPlayerDelegate {
     
     //MARK: STATIC INSTANCE
-    static let instance:QueueBasedMusicPlayerImpl = QueueBasedMusicPlayerImpl()
+    static let instance:AudioQueuePlayerImpl = AudioQueuePlayerImpl()
     
     
     //MARK: Class Properties
@@ -23,17 +23,18 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
     
     var shouldPlayAfterLoading:Bool = false
-    var avAudioPlayer:AVAudioPlayer?
+    var audioPlayer:AudioPlayer = ApplicationDefaults.audioPlayer
     
     var nowPlayingQueue:[MPMediaItem] = [MPMediaItem]() {
         didSet {
-            QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender: self)
+            AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender: self)
         }
     }
     
     //MARK: Init/Deinit
     override init() {
         super.init()
+        audioPlayer.delegate = self
         if let queue = TempDataDAO.instance.getNowPlayingQueueFromTempStorage() {
             nowPlayingQueue = queue
             dispatch_async(dispatch_get_main_queue(), { [unowned self]() -> Void in
@@ -55,13 +56,13 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
         unregisterForRemoteCommands()
     }
     
-    //MARK: QueueBasedMusicPlayer - Properties
+    //MARK: AudioQueuePlayer - Properties
     var nowPlayingItem:MPMediaItem?
     
     var musicIsPlaying:Bool = false {
         didSet {
             shouldPlayAfterLoading = musicIsPlaying
-            QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+            AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
             TempDataDAO.instance.persistCurrentPlaybackStateToTempStorage(indexOfNowPlayingItem, currentPlaybackTime: currentPlaybackTime)
             if nowPlayingItem != nil {
                 nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime: currentPlaybackTime)
@@ -71,32 +72,27 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
 
     var currentPlaybackTime:Float {
         get {
-            if let player = avAudioPlayer {
-                return Float(player.currentTime)
-            }
-            return 0.0
+            return Float(audioPlayer.currentPlaybackTime)
         } set {
-            if let player = avAudioPlayer {
-                player.currentTime = Double(newValue)
+            if(audioPlayer.audioTrackIsLoaded) {
+                audioPlayer.currentPlaybackTime = Double(newValue)
                 nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime:newValue)
-                QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+                AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
             }
         }
     }
     var indexOfNowPlayingItem:Int = 0
     
-    //MARK: QueueBasedMusicPlayer - Functions
+    //MARK: AudioQueuePlayer - Functions
     
     func play() {
-        if let player = avAudioPlayer {
-            player.play()
+        if audioPlayer.play() {
             musicIsPlaying = true
         }
     }
     
     func pause() {
-        if let player = avAudioPlayer {
-            player.pause()
+        if audioPlayer.pause() {
             musicIsPlaying = false
         }
     }
@@ -112,10 +108,6 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
         } else {
             currentPlaybackTime = 0.0
         }
-    }
-    
-    func getNowPlayingQueue() -> [MPMediaItem]? {
-        return nowPlayingQueue
     }
     
     func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem) {
@@ -214,19 +206,15 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
     //MARK: Class Functions
     private func loadMediaItem(mediaItem:MPMediaItem) {
         var url:NSURL = mediaItem.valueForProperty(MPMediaItemPropertyAssetURL) as! NSURL
-        var error:NSError?
-        avAudioPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
-        if error != nil {
-            Logger.debug("Error occured with loading audio for media item \(mediaItem.title): \(error!.description)")
-            return
-        }
-        avAudioPlayer!.delegate = self
-        avAudioPlayer!.prepareToPlay()
+
+        let audioPlayerDidLoadItem = audioPlayer.loadItem(url)
+        if(!audioPlayerDidLoadItem) { return }
+        
         if(shouldPlayAfterLoading) {
             play()
             nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
         }
-        QueueBasedMusicPlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
     
     func scrobbleAndLoadNextTrack() {
@@ -262,6 +250,7 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
             return MPRemoteCommandHandlerStatus.Success
         }
     }
+    
     private func unregisterForRemoteCommands() {
         remoteCommandCenter.playCommand.removeTarget(self)
         remoteCommandCenter.pauseCommand.removeTarget(self)
@@ -280,9 +269,9 @@ class QueueBasedMusicPlayerImpl: NSObject,QueueBasedMusicPlayer,AVAudioPlayerDel
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    //MARK: AVAudioPlayerDelegate functions
+    //MARK: AudioPlayerDelegate functions
     
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(player: AudioPlayer, successfully flag: Bool) {
         if(flag) {
             scrobbleAndLoadNextTrack()
         } else {

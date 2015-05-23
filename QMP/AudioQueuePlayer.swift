@@ -1,5 +1,5 @@
 //
-//  QueueBasedMusicPlayer.swift
+//  AudioQueuePlayer.swift
 //  MediaPlayer
 //
 //  Created by FAHAD RIAZ on 3/17/15.
@@ -9,12 +9,13 @@
 import Foundation
 import MediaPlayer
 
-protocol QueueBasedMusicPlayer:class {
+protocol AudioQueuePlayer:class {
     
     var nowPlayingItem:MPMediaItem? { get }
     var musicIsPlaying:Bool { get }
     var currentPlaybackTime:Float { get set }
     var indexOfNowPlayingItem:Int { get }
+    var nowPlayingQueue:[MPMediaItem] { get }
     
     func play()
     
@@ -23,8 +24,6 @@ protocol QueueBasedMusicPlayer:class {
     func skipBackwards()
     
     func skipForwards()
-    
-    func getNowPlayingQueue() -> [MPMediaItem]?
     
     func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem)
     
@@ -46,15 +45,15 @@ protocol QueueBasedMusicPlayer:class {
     
 }
 
-enum QueueBasedMusicPlayerUpdate : String {
-    case QueueUpdate = "QueueBasedMusicPlayerQueueUpdate"
-    case PlaybackStateUpdate = "QueueBasedMusicPlayerPlaybackStatusUpdate"
-    case NowPlayingItemChanged = "QueueBasedMusicPlayerNowPlayingItemChanged"
+enum AudioQueuePlayerUpdate : String {
+    case QueueUpdate = "AudioQueuePlayerQueueUpdate"
+    case PlaybackStateUpdate = "AudioQueuePlayerPlaybackStatusUpdate"
+    case NowPlayingItemChanged = "AudioQueuePlayerNowPlayingItemChanged"
 }
 
-struct QueueBasedMusicPlayerNotificationPublisher {
+struct AudioQueuePlayerNotificationPublisher {
     
-    static func publishNotification(#updateType:QueueBasedMusicPlayerUpdate, sender:QueueBasedMusicPlayer) {
+    static func publishNotification(#updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
         let notificationPublication = {() -> Void in
             let notification = NSNotification(name: updateType.rawValue, object: sender)
             NSNotificationCenter.defaultCenter().postNotification(notification)
