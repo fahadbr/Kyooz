@@ -14,7 +14,7 @@ import AVFoundation
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-    let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+    let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     let tempDataDAO = TempDataDAO.instance
     let lastFmScrobbler = LastFmScrobbler.instance
     
@@ -45,11 +45,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(application: UIApplication) {
         if(!isMultiTaskingSupported()) {
-            queueBasedMusicPlayer.executePreBackgroundTasks()
+            audioQueuePlayer.executePreBackgroundTasks()
             return
         }
 
-        if( !queueBasedMusicPlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
+        if( !audioQueuePlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
             return
         }
         
@@ -63,14 +63,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Logger.debug("Starting background task: " + taskName)
         backgroundTaskIdentifier = application.beginBackgroundTaskWithName(taskName,
             expirationHandler: { [weak self]() in
-            self!.queueBasedMusicPlayer.executePreBackgroundTasks()
+            self!.audioQueuePlayer.executePreBackgroundTasks()
             self!.endBackgroundTask()
         })
 
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-
         if(backgroundTaskIdentifier != UIBackgroundTaskInvalid) {
             endBackgroundTask()
         }
@@ -82,7 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        queueBasedMusicPlayer.executePreBackgroundTasks()
+        audioQueuePlayer.executePreBackgroundTasks()
     }
     
     func endBackgroundTask() {
@@ -101,7 +100,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func waitForStagedQueuePromotion(sender: NSTimer) {
-        if(!queueBasedMusicPlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
+        if(!audioQueuePlayer.moreBackgroundTimeIsNeeded() || PlaybackStateManager.instance.otherMusicIsPlaying()) {
             self.endBackgroundTask()
         } else {
             Logger.debug("Staged queue is not yet promoted")

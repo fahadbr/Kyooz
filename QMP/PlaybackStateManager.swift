@@ -21,7 +21,7 @@ class PlaybackStateManager: NSObject {
     
     static let PlaybackStateCorrectedNotification = "PlaybackStateCorrectedNotification"
    
-    private let musicPlayer = MusicPlayerContainer.defaultMusicPlayerController
+    private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let audioSession = AVAudioSession.sharedInstance()
     private let timeDelayInNanoSeconds = Int64((1.0/4.0) * Double(NSEC_PER_SEC))
     private var musicPlaybackState:MPMusicPlaybackState

@@ -14,13 +14,11 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
     
     private let notificationCenter = NSNotificationCenter.defaultCenter()
-    private let queueBasedMusicPlayer = MusicPlayerContainer.queueBasedMusicPlayer
+    private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private let nowPlayingInfoCenter = MPNowPlayingInfoCenter.defaultCenter()
-    private let timeDelayInNanoSeconds = Int64(0.50 * Double(NSEC_PER_SEC))
     
     private var longPressGestureRecognizer:UILongPressGestureRecognizer!
     private var menuButtonTapGestureRecognizer:UITapGestureRecognizer!
-    private var tableViewScrollPositionController:TableViewScrollPositionController?
     
     private var tempImageCache = [MPMediaEntityPersistentID:UIImage]()
     private var noAlbumArtCellImage:UIImage!
@@ -98,6 +96,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         laidOutSubviews = true
     }
     
@@ -117,19 +116,19 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             for indexPath in indexPathsToDelete! {
                 indicies.append(indexPath.row)
             }
-            queueBasedMusicPlayer.deleteItemsAtIndices(indicies)
+            audioQueuePlayer.deleteItemsAtIndices(indicies)
             tableView.deleteRowsAtIndexPaths(indexPathsToDelete!, withRowAnimation: UITableViewRowAnimation.Automatic)
             indexPathsToDelete!.removeAll(keepCapacity: false)
-        } else if (!tableView.editing && queueBasedMusicPlayer.getNowPlayingQueue() != nil) {
+        } else if (!tableView.editing && !audioQueuePlayer.nowPlayingQueue.isEmpty) {
             var indicies = [Int]()
             var indexPaths = [NSIndexPath]()
-            for var i=0 ; i < queueBasedMusicPlayer.getNowPlayingQueue()!.count; i++ {
-                if(i != queueBasedMusicPlayer.indexOfNowPlayingItem) {
+            for var i=0 ; i < audioQueuePlayer.nowPlayingQueue.count; i++ {
+                if(i != audioQueuePlayer.indexOfNowPlayingItem) {
                     indicies.append(i)
                     indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
                 }
             }
-            queueBasedMusicPlayer.deleteItemsAtIndices(indicies)
+            audioQueuePlayer.deleteItemsAtIndices(indicies)
             tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Automatic)
         }
     }
@@ -141,13 +140,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let nowPlayingQueue = queueBasedMusicPlayer.getNowPlayingQueue()
-        if(nowPlayingQueue != nil) {
-            var count = nowPlayingQueue!.count
-            return insertMode ? (count + 1) : count
-        } else {
-            return 0
-        }
+        var count = audioQueuePlayer.nowPlayingQueue.count
+        return insertMode ? (count + 1) : count
     }
 
     override func setEditing(editing: Bool, animated: Bool) {
@@ -171,8 +165,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             indexToUse--
         }
     
-        let mediaItem = queueBasedMusicPlayer.getNowPlayingQueue()![indexToUse]
-        let isNowPlayingItem = (indexToUse == queueBasedMusicPlayer.indexOfNowPlayingItem)
+        let mediaItem = audioQueuePlayer.nowPlayingQueue[indexToUse]
+        let isNowPlayingItem = (indexToUse == audioQueuePlayer.indexOfNowPlayingItem)
         cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
         cell.albumArtImageView.image = getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
         
@@ -186,7 +180,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         
-        queueBasedMusicPlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
+        audioQueuePlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
@@ -208,24 +202,6 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-
-    
-    private func getSongForIndex(index: Int) -> MPMediaItem? {
-        var queue = queueBasedMusicPlayer.getNowPlayingQueue()
-        if(queue == nil) {
-            return nil
-        }
-        
-        return queue?[index]
-    }
-    
-    private func isNowPlayingItem(#mediaItemToCompare:MPMediaItem) -> Bool{
-        if let nowPlayingItem = self.queueBasedMusicPlayer.nowPlayingItem {
-            return nowPlayingItem.persistentID == mediaItemToCompare.persistentID
-        } else {
-            return false
-        }
-    }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
@@ -238,13 +214,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
-            queueBasedMusicPlayer.deleteItemsAtIndices([indexPath.row])
+            audioQueuePlayer.deleteItemsAtIndices([indexPath.row])
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        queueBasedMusicPlayer.moveMediaItem(fromIndexPath:sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
+        audioQueuePlayer.moveMediaItem(fromIndexPath:sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -254,7 +230,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     //MARK: INSERT MODE FUNCITONS
     
     func setDropItems(dropItems: [MPMediaItem], atIndex:NSIndexPath) {
-        queueBasedMusicPlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
+        audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
     }
     
 
@@ -271,9 +247,9 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: "reloadTableData:",
-            name: QueueBasedMusicPlayerUpdate.NowPlayingItemChanged.rawValue, object: queueBasedMusicPlayer)
+            name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",
-            name: QueueBasedMusicPlayerUpdate.PlaybackStateUpdate.rawValue, object: queueBasedMusicPlayer)
+            name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
     }
     
     private func unregisterForNotifications() {
@@ -282,7 +258,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:MPMediaItem, isNowPlayingItem:Bool) -> UIImage! {
         if(isNowPlayingItem) {
-            if(!queueBasedMusicPlayer.musicIsPlaying) {
+            if(!audioQueuePlayer.musicIsPlaying) {
                 if(playingImage == nil) {
                     playingImage = ImageContainer.resizeImage(ImageContainer.currentlyPlayingImage, toSize: cellImageSize)
                 }
@@ -329,22 +305,22 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let index = indexPath!.row
         
-        let mediaItem = queueBasedMusicPlayer.getNowPlayingQueue()![index]
+        let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
         let controller = UIAlertController(title: mediaItem.title + "\n" + mediaItem.albumArtist + " - " + mediaItem.albumTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
         
-        let indexOfNowPlayingItem = queueBasedMusicPlayer.indexOfNowPlayingItem
-        let lastIndex = queueBasedMusicPlayer.getNowPlayingQueue()!.count - 1
+        let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
+        let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
         
-        if((!queueBasedMusicPlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
+        if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
             let clearUpcomingItemsAction = UIAlertAction(title: "Clear Upcoming Tracks", style: UIAlertActionStyle.Default) { action in
                 var indicesToDelete = [NSIndexPath]()
                 for var i=index + 1; i <= lastIndex; i++ {
                     indicesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
                 
-                self.queueBasedMusicPlayer.clearUpcomingItems(fromIndex: index)
+                self.audioQueuePlayer.clearUpcomingItems(fromIndex: index)
                 self.tableView.deleteRowsAtIndexPaths(indicesToDelete, withRowAnimation: UITableViewRowAnimation.Bottom)
             }
             controller.addAction(clearUpcomingItemsAction)
