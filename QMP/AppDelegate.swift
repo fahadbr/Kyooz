@@ -33,7 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
         
         AudioSessionManager.instance.initializeAudioSession()
-        lastFmScrobbler.initializeScrobbler()
         ThemeHelper.applyGlobalAppearanceSettings()
         
         return true

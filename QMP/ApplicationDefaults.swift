@@ -21,7 +21,8 @@ struct ApplicationDefaults {
         return MPMusicPlayerController.applicationMusicPlayer()
     }
     
-    static let audioPlayer:AudioPlayer = AVAPAudioPlayer.instance
+//    static let audioController:AudioController = SimpleAudioController.instance
+    static let audioController:AudioController = AudioEngineController.instance
     
 }
 

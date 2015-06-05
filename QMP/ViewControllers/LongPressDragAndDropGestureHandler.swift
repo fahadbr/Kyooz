@@ -17,6 +17,8 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     var dropDestination:DropDestination
     
     var itemsToDrag:[MPMediaItem]!
+    var cancelView:CancelView
+    var cancelViewVisible:Bool = false
 
     override var indexPathOfMovingItem:NSIndexPath! {
         didSet {
@@ -27,6 +29,13 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     init(dragSource:DragSource, dropDestination:DropDestination) {
         self.dragSource = dragSource
         self.dropDestination = dropDestination
+
+        let originalTableBounds = dropDestination.destinationTableView.bounds
+        let frame = CGRect(origin: CGPoint(x: 0, y: -dropDestination.destinationTableView.contentInset.top),
+            size: originalTableBounds.size)
+        
+        cancelView = CancelView(frame: frame)
+        
         super.init(tableView: dropDestination.destinationTableView)
         self.positionChangeUpdatesDataSource = false
         self.shouldHideSourceView = false
@@ -67,12 +76,41 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         }
         indexPathOfMovingItem = destinationIndexPath
         tableView.insertRowsAtIndexPaths([destinationIndexPath!], withRowAnimation: UITableViewRowAnimation.Automatic)
-        
-
+    }
+    
+    override func gestureDidChange(sender: UIGestureRecognizer, newLocationInsideTableView: CGPoint?) {
+        super.gestureDidChange(sender, newLocationInsideTableView: newLocationInsideTableView)
+        if newLocationInsideTableView == nil && !cancelViewVisible {
+            cancelView.alpha = 0
+            cancelViewVisible = true
+            let tableView = dropDestination.destinationTableView
+            tableView.addSubview(cancelView)
+            cancelView.center.x = tableView.center.x
+            cancelView.frame.origin.y = tableView.contentOffset.y + tableView.contentInset.top
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                self.cancelView.alpha = 1.0
+            })
+        } else if newLocationInsideTableView != nil && cancelViewVisible {
+            removeCancelView()
+        }
+    }
+    
+    private func removeCancelView() {
+        cancelView.alpha = 1.0
+        cancelViewVisible = false
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.cancelView.alpha = 0.0
+            }, completion: { (finished:Bool) -> Void in
+                self.cancelView.removeFromSuperview()
+        })
     }
     
     override func gestureDidEnd(sender: UIGestureRecognizer) {
         super.gestureDidEnd(sender)
+        
+        if(cancelViewVisible) {
+            removeCancelView()
+        }
         
         let tableView = dropDestination.destinationTableView
         let location = sender.locationInView(tableView)

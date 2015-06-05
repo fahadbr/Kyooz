@@ -1,5 +1,5 @@
 //
-//  AVAPAudioPlayer.swift
+//  SimpleAudioController.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 5/23/15.
@@ -9,17 +9,29 @@
 import Foundation
 import AVFoundation
 
-class AVAPAudioPlayer : NSObject, AudioPlayer, AVAudioPlayerDelegate{
+class SimpleAudioController : NSObject, AudioController, AVAudioPlayerDelegate{
     
-    static let instance = AVAPAudioPlayer()
+    static let instance = SimpleAudioController()
     
-    var avAudioPlayer:AVAudioPlayer?
+    private var scrobbleTime:NSTimeInterval = 0
     
-    //MARK: AudioPlayer Protocol items
-    var delegate:AudioPlayerDelegate?
+    var avAudioPlayer:AVAudioPlayer? {
+        didSet {
+            if(avAudioPlayer == nil) { return }
+            scrobbleTime = avAudioPlayer!.duration / 2
+        }
+    }
+    
+    //MARK: AudioController Protocol items
+    var delegate:AudioControllerDelegate!
 
     var audioTrackIsLoaded:Bool {
         return avAudioPlayer != nil
+    }
+    
+    var canScrobble:Bool {
+        if(avAudioPlayer == nil) { return false }
+        return currentPlaybackTime >= scrobbleTime
     }
     
     var currentPlaybackTime:Double {
@@ -64,6 +76,6 @@ class AVAPAudioPlayer : NSObject, AudioPlayer, AVAudioPlayerDelegate{
     }
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
-        delegate?.audioPlayerDidFinishPlaying(self, successfully: flag)
+        delegate.audioPlayerDidFinishPlaying(self, successfully: flag)
     }
 }

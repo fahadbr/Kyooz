@@ -58,6 +58,8 @@ class LastFmScrobbler {
 
     var validSessionObtained:Bool = false
     
+    var mediaItemToScrobble:MPMediaItem!
+    
     //MARK: FUNCTIONS
     
     init() {
@@ -129,7 +131,11 @@ class LastFmScrobbler {
         validSessionObtained = false
     }
     
-    func scrobbleMediaItem(mediaItem:MPMediaItem) {
+    func scrobbleMediaItem() {
+        if(mediaItemToScrobble == nil) { return }
+        
+        let mediaItem = mediaItemToScrobble
+        mediaItemToScrobble = nil
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self]() -> Void in
             let timeStampToScrobble = NSDate().timeIntervalSince1970
             

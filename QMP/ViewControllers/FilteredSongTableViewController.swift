@@ -15,7 +15,7 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     
     var songs:MPMediaItemCollection!
-    
+    var albumArt:UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,14 +36,10 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
         return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
         return songs.count
     }
 
@@ -52,8 +48,16 @@ class FilteredSongTableViewController: MediaItemTableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("songCell", forIndexPath: indexPath) as! UITableViewCell
 
         let song = songs.items[indexPath.row] as! MPMediaItem
-        cell.textLabel?.text = song.title
+        cell.textLabel?.text = "\(song.albumTrackNumber)  \(song.title)"
         cell.textLabel?.font = ThemeHelper.defaultFont
+        cell.detailTextLabel?.text = MediaItemUtils.getTimeRepresentation(Float(song.playbackDuration))
+        cell.detailTextLabel?.font = ThemeHelper.defaultFont
+        
+        if(albumArt == nil && cell.imageView != nil) {
+            albumArt = song.artwork?.imageWithSize(cell.imageView!.frame.size)
+        }
+        cell.imageView?.image = albumArt
+        
         return cell
     }
     
