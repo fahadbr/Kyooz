@@ -43,7 +43,7 @@ struct ImageHelper {
         snapshot.layer.cornerRadius = 0.0
         snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0)
         snapshot.layer.shadowRadius = 5.0
-        snapshot.layer.shadowRadius = 0.4
+        snapshot.layer.shadowOpacity = 0.4
         
         return snapshot
     }

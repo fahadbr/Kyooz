@@ -14,9 +14,14 @@ struct MediaItemUtils {
 
     static func getTimeRepresentation(timevalue:Float) -> String {
         if(timevalue == Float.NaN || timevalue == Float.infinity || timevalue < 1) {
-            return self.zeroTime
+            return zeroTime
         }
-               
+        
+        //not sure why the above checks dont work for NaN but this one does
+        if(!timevalue.isNormal) {
+            return zeroTime
+        }
+        
         var min:String = "\(Int(timevalue)/60)"
         var secValue = Int(timevalue)%60
         var sec = secValue < 10 ? "0\(secValue)" : "\(secValue)"

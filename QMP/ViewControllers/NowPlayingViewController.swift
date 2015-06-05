@@ -155,7 +155,11 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if(insertMode && indexPath.row == indexPathOfMovingItem.row) {
             var cell = UITableViewCell()
-            cell.backgroundColor = UIColor.lightGrayColor()
+            cell.backgroundColor = UIColor(white: 0.9, alpha: 0.5)
+            cell.textLabel?.text = "Insert Here"
+            cell.textLabel?.textAlignment = NSTextAlignment.Center
+            cell.textLabel?.font = ThemeHelper.defaultFont
+            cell.textLabel?.textColor = UIColor(white: 0.1, alpha: 0.5)
             return cell
         }
         

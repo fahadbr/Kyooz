@@ -73,10 +73,8 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         self.panGestureRecognizer.enabled = sidePanelExpanded
         self.rootViewController.view.addGestureRecognizer(panGestureRecognizer)
         
-        addSidePanelViewController()
-        dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: rootViewController, dropDestination: nowPlayingViewController!)
-        dragAndDropHandler.delegate = self
-        longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragAndDropHandler, action: "handleGesture:")
+
+        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "handleLongPressGesture:")
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
         
@@ -143,12 +141,12 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
     }
     
     func deinitializeSideViewController(notification:NSNotification) {
-//        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
-//            Logger.debug("deinitializing side view controller")
-//            nowPlayingNavigationController!.view.removeFromSuperview()
-//            nowPlayingViewController = nil
-//            nowPlayingNavigationController = nil
-//        }
+        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
+            Logger.debug("deinitializing side view controller")
+            nowPlayingNavigationController!.view.removeFromSuperview()
+            nowPlayingViewController = nil
+            nowPlayingNavigationController = nil
+        }
     }
     
     func presentSettingsViewController() {
@@ -232,18 +230,29 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         }
         
     }
+    
+    func handleLongPressGesture(recognizer:UILongPressGestureRecognizer) {
+        if (recognizer.state == UIGestureRecognizerState.Began) {
+            //initialize the drag and drop handler and all the resources necessary for the drag and drop handler
+            addSidePanelViewController()
+            if(!nowPlayingViewController!.laidOutSubviews) {
+                dispatch_async(dispatch_get_main_queue()) { self.handleLongPressGesture(recognizer) }
+                return
+            }
+            if(dragAndDropHandler == nil) {
+                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: rootViewController, dropDestination: nowPlayingViewController!)
+                dragAndDropHandler.delegate = self
+            }
+        }
+        dragAndDropHandler.handleGesture(recognizer)
+    }
 
     
     //MARK: INSERT MODE DELEGATION METHODS
 
     func gestureDidBegin(sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
-            addSidePanelViewController()
             animateSidePanel(shouldExpand: true)
-            if(!nowPlayingViewController!.laidOutSubviews) {
-                dispatch_async(dispatch_get_main_queue()) { self.gestureDidBegin(sender) }
-                return
-            }
             nowPlayingViewController!.insertMode = true
         }
     }
@@ -251,8 +260,8 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     func gestureDidEnd(sender: UIGestureRecognizer) {
         nowPlayingViewController!.insertMode = false
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [unowned self]() in
-            Logger.debug("ending insert mode and clearing data")
             self.animateSidePanel(shouldExpand: false)
+            self.dragAndDropHandler = nil
         }
     }
     

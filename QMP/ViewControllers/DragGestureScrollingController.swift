@@ -12,7 +12,7 @@ import UIKit
 class DragGestureScrollingController :NSObject {
     
     private let scrollView:UIScrollView
-    private let offset:CGFloat = 100.0
+    private let offset:CGFloat = 50
     private let yTopOffset:CGFloat
     private let yBottomOffset:CGFloat
     
@@ -31,13 +31,11 @@ class DragGestureScrollingController :NSObject {
         self.delegate = delegate
         self.yTopOffset = scrollView.contentInset.top + offset
         self.yBottomOffset = scrollView.frame.height - offset - scrollView.contentInset.bottom
-        Logger.debug("contentInset top: \(scrollView.contentInset.top) bottom:\(scrollView.contentInset.bottom)")
         scrollSpeed = minScrollSpeed
     }
     
     deinit {
         timer?.invalidate()
-        Logger.debug("deinitializing table view scroll position controller")
     }
     
     func startScrollingWithLocation(location: CGPoint, gestureRecognizer:UILongPressGestureRecognizer) {

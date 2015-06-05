@@ -138,7 +138,7 @@ class NowPlayingSummaryViewController: UIViewController {
         
         if(albumTitleForCurrentAlbumArt == nil || albumTitleForCurrentAlbumArt! != albumArtTitle) {
             Logger.debug("loading new album art image")
-            var albumArtImage = artwork?.imageWithSize(CGSize(width: self.albumArtwork.frame.width, height: self.albumArtwork.frame.height))
+            var albumArtImage = artwork?.imageWithSize(albumArtwork.frame.size)
             if(albumArtImage == nil) {
                 albumArtImage = ImageContainer.defaultAlbumArtworkImage
             }

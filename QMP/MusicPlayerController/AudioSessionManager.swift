@@ -27,6 +27,7 @@ class AudioSessionManager : NSObject {
         unregisterForNotifications()
     }
     
+    private (set) var deviceSampleRate:Double!
     var observationContext = KVOContext()
     
     private let audioSession = AVAudioSession.sharedInstance()
@@ -34,7 +35,9 @@ class AudioSessionManager : NSObject {
     
     func initializeAudioSession() {
         Logger.debug("initializing audio session")
-        self.audioSession.setCategory(AVAudioSessionCategoryPlayback, error: NSErrorPointer())
+        audioSession.setCategory(AVAudioSessionCategoryPlayback, error: NSErrorPointer())
+//        audioSession.setActive(true, error: NSErrorPointer())
+        deviceSampleRate = audioSession.sampleRate
     }
     
     func handleAudioSessionChange(notification:NSNotification) {

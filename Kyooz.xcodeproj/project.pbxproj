@@ -41,19 +41,25 @@
 		0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA651AED584700CC5C01 /* ImageContainer.swift */; };
 		0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */; };
 		0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */; };
+		0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
+		0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C711B21FA5400626810 /* AudioTrack.swift */; };
 		0B5123A21AFE969E00D941DC /* MediaItemTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5123A11AFE969E00D941DC /* MediaItemTableViewController.swift */; };
 		0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */; };
 		0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */; };
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
-		0BCE218A1B10D78E0074DA47 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE21891B10D78E0074DA47 /* AudioPlayer.swift */; };
-		0BCE218C1B10DB6C0074DA47 /* AVAPAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE218B1B10DB6C0074DA47 /* AVAPAudioPlayer.swift */; };
-		0BCE218E1B10E5D20074DA47 /* AVAQAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE218D1B10E5D20074DA47 /* AVAQAudioPlayer.swift */; };
+		0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE21891B10D78E0074DA47 /* AudioController.swift */; };
+		0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE218B1B10DB6C0074DA47 /* SimpleAudioController.swift */; };
+		0BCE218E1B10E5D20074DA47 /* AudioGraphController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE218D1B10E5D20074DA47 /* AudioGraphController.swift */; };
+		0BCE21921B1213D00074DA47 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BCE21911B1213D00074DA47 /* AudioToolbox.framework */; };
+		0BCE21941B122D420074DA47 /* CAExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE21931B122D420074DA47 /* CAExtensions.swift */; };
+		0BCE21971B12C5300074DA47 /* Track1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 0BCE21951B12C5300074DA47 /* Track1.mp4 */; };
+		0BCE21981B12C5300074DA47 /* Track2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 0BCE21961B12C5300074DA47 /* Track2.mp4 */; };
+		0BCE21A31B1403C70074DA47 /* AudioEngineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE21A21B1403C70074DA47 /* AudioEngineController.swift */; };
 		0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B601B077F5600565471 /* DragGestureScrollingController.swift */; };
 		0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BD11B621B0829FA00565471 /* Settings.storyboard */; };
 		0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */; };
 		0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B671B08FB2B00565471 /* ArrayExtension.swift */; };
-		0BD11B6A1B09201200565471 /* CMTimeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B691B09201200565471 /* CMTimeExtension.swift */; };
 		0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B6C1B09236900565471 /* GestureHandler.swift */; };
 		0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */; };
 		0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */; };
@@ -92,7 +98,7 @@
 		0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0B13DA061AE6FA9A00CC5C01 /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AlbumTableViewCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA071AE6FA9A00CC5C01 /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
-		0B13DA091AE6FA9A00CC5C01 /* ApplicationDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationDefaults.swift; sourceTree = "<group>"; };
+		0B13DA091AE6FA9A00CC5C01 /* ApplicationDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ApplicationDefaults.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPlayerTableViewActionFactory.swift; sourceTree = "<group>"; };
 		0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibContainer.swift; sourceTree = "<group>"; };
 		0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlaybackStateDTO.swift; path = ../PlaybackStateDTO.swift; sourceTree = "<group>"; };
@@ -109,20 +115,26 @@
 		0B13DA651AED584700CC5C01 /* ImageContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainer.swift; sourceTree = "<group>"; };
 		0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItemUtils.swift; sourceTree = "<group>"; };
 		0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LastFmScrobbler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0B476C6E1B1BFE5700626810 /* CancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelView.swift; sourceTree = "<group>"; };
+		0B476C711B21FA5400626810 /* AudioTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrack.swift; sourceTree = "<group>"; };
 		0B5123A11AFE969E00D941DC /* MediaItemTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItemTableViewController.swift; path = QMP/MediaItemTableViewController.swift; sourceTree = SOURCE_ROOT; };
 		0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPMediaItemExtension.swift; sourceTree = "<group>"; };
 		0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleWSClient.swift; sourceTree = "<group>"; };
 		0BBE15F91AF5BE20007C6189 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KyoozBridge.h; sourceTree = "<group>"; };
 		0BBE16011AF6AC9B007C6189 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Logger.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0BCE21891B10D78E0074DA47 /* AudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
-		0BCE218B1B10DB6C0074DA47 /* AVAPAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAPAudioPlayer.swift; sourceTree = "<group>"; };
-		0BCE218D1B10E5D20074DA47 /* AVAQAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAQAudioPlayer.swift; sourceTree = "<group>"; };
+		0BCE21891B10D78E0074DA47 /* AudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BCE218B1B10DB6C0074DA47 /* SimpleAudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SimpleAudioController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BCE218D1B10E5D20074DA47 /* AudioGraphController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioGraphController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BCE21911B1213D00074DA47 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		0BCE21931B122D420074DA47 /* CAExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAExtensions.swift; sourceTree = "<group>"; };
+		0BCE21951B12C5300074DA47 /* Track1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = Track1.mp4; path = MusicPlayerController/Track1.mp4; sourceTree = "<group>"; };
+		0BCE21961B12C5300074DA47 /* Track2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = Track2.mp4; path = MusicPlayerController/Track2.mp4; sourceTree = "<group>"; };
+		0BCE21A21B1403C70074DA47 /* AudioEngineController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioEngineController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD11B601B077F5600565471 /* DragGestureScrollingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DragGestureScrollingController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD11B621B0829FA00565471 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastfmLoginViewController.swift; sourceTree = "<group>"; };
 		0BD11B671B08FB2B00565471 /* ArrayExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
-		0BD11B691B09201200565471 /* CMTimeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMTimeExtension.swift; sourceTree = "<group>"; };
 		0BD11B6C1B09236900565471 /* GestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GestureHandler.swift; sourceTree = "<group>"; };
 		0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressToDragGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressDragAndDropGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -135,6 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BCE21921B1213D00074DA47 /* AudioToolbox.framework in Frameworks */,
 				0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */,
 				0B13DA271AE6FB0400CC5C01 /* MediaPlayer.framework in Frameworks */,
 			);
@@ -172,6 +185,7 @@
 		0B13D9BD1AE6F80E00CC5C01 /* Kyooz */ = {
 			isa = PBXGroup;
 			children = (
+				0B476C701B21FA1F00626810 /* MediaObjects */,
 				0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */,
 				0BBE16001AF6AC80007C6189 /* Logger */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
@@ -200,6 +214,8 @@
 		0B13D9BE1AE6F80E00CC5C01 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0BCE21951B12C5300074DA47 /* Track1.mp4 */,
+				0BCE21961B12C5300074DA47 /* Track2.mp4 */,
 				0B13D9BF1AE6F80E00CC5C01 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -226,16 +242,15 @@
 		0B13D9F81AE6FA9A00CC5C01 /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				0BCE218B1B10DB6C0074DA47 /* AVAPAudioPlayer.swift */,
-				0BCE218D1B10E5D20074DA47 /* AVAQAudioPlayer.swift */,
-				0BCE21891B10D78E0074DA47 /* AudioPlayer.swift */,
+				0BCE21901B120DE10074DA47 /* StagedQueueAudioPlayer */,
+				0BCE21A21B1403C70074DA47 /* AudioEngineController.swift */,
+				0BCE218D1B10E5D20074DA47 /* AudioGraphController.swift */,
+				0BCE21891B10D78E0074DA47 /* AudioController.swift */,
 				0B13DA0E1AE6FA9A00CC5C01 /* AudioQueuePlayer.swift */,
 				0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */,
 				0B13D9F91AE6FA9A00CC5C01 /* AudioSessionManager.swift */,
 				0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */,
-				0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */,
-				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
-				0B13DA0F1AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift */,
+				0BCE218B1B10DB6C0074DA47 /* SimpleAudioController.swift */,
 			);
 			name = AudioPlayer;
 			path = MusicPlayerController;
@@ -275,6 +290,7 @@
 				0B13DA071AE6FA9A00CC5C01 /* AlbumTableViewCell.xib */,
 				0B13DA601AED49AF00CC5C01 /* SongDetailsTableViewCell.swift */,
 				0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */,
+				0B476C6E1B1BFE5700626810 /* CancelView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -294,10 +310,18 @@
 				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
 				0BBE15F91AF5BE20007C6189 /* StringExtension.swift */,
 				0BD11B671B08FB2B00565471 /* ArrayExtension.swift */,
-				0BD11B691B09201200565471 /* CMTimeExtension.swift */,
 				0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */,
+				0BCE21931B122D420074DA47 /* CAExtensions.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		0B476C701B21FA1F00626810 /* MediaObjects */ = {
+			isa = PBXGroup;
+			children = (
+				0B476C711B21FA5400626810 /* AudioTrack.swift */,
+			);
+			name = MediaObjects;
 			sourceTree = "<group>";
 		};
 		0BBE16001AF6AC80007C6189 /* Logger */ = {
@@ -306,6 +330,16 @@
 				0BBE16011AF6AC9B007C6189 /* Logger.swift */,
 			);
 			name = Logger;
+			sourceTree = "<group>";
+		};
+		0BCE21901B120DE10074DA47 /* StagedQueueAudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */,
+				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
+				0B13DA0F1AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift */,
+			);
+			name = StagedQueueAudioPlayer;
 			sourceTree = "<group>";
 		};
 		0BD11B641B082C1000565471 /* Settings */ = {
@@ -330,6 +364,7 @@
 		0BD43F6A1AF855E200D5B2D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0BCE21911B1213D00074DA47 /* AudioToolbox.framework */,
 				0BD43F6B1AF8560500D5B2D4 /* Spotify.framework */,
 				0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */,
 				0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */,
@@ -423,9 +458,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BCE21981B12C5300074DA47 /* Track2.mp4 in Resources */,
 				0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */,
 				0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */,
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
+				0BCE21971B12C5300074DA47 /* Track1.mp4 in Resources */,
 				0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */,
 				0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */,
 				0B13DA1C1AE6FA9A00CC5C01 /* AlbumTableViewCell.xib in Resources */,
@@ -446,17 +483,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BCE21941B122D420074DA47 /* CAExtensions.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
-				0BD11B6A1B09201200565471 /* CMTimeExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
 				0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */,
+				0BCE21A31B1403C70074DA47 /* AudioEngineController.swift in Sources */,
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
 				0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
+				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0B5123A21AFE969E00D941DC /* MediaItemTableViewController.swift in Sources */,
@@ -468,14 +507,14 @@
 				0B13DA161AE6FA9A00CC5C01 /* FilteredAlbumTableViewController.swift in Sources */,
 				0B13DA151AE6FA9A00CC5C01 /* ArtistTableViewController.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
-				0BCE218E1B10E5D20074DA47 /* AVAQAudioPlayer.swift in Sources */,
+				0BCE218E1B10E5D20074DA47 /* AudioGraphController.swift in Sources */,
 				0B13DA1F1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
-				0BCE218C1B10DB6C0074DA47 /* AVAPAudioPlayer.swift in Sources */,
+				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B13DA211AE6FA9A00CC5C01 /* PlaybackStateDTO.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
-				0BCE218A1B10D78E0074DA47 /* AudioPlayer.swift in Sources */,
+				0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */,
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
 				0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */,
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
@@ -485,6 +524,7 @@
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,
 				0B13DA171AE6FA9A00CC5C01 /* FilteredSongTableViewController.swift in Sources */,
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
+				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
 				0B13DA241AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift in Sources */,
 				0B13DA1B1AE6FA9A00CC5C01 /* AlbumTableViewCell.swift in Sources */,

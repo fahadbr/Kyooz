@@ -52,8 +52,6 @@ class ArtistTableViewController: MediaItemTableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
         return albumArtistsSections[section].range.length
     }
     
@@ -75,7 +73,9 @@ class ArtistTableViewController: MediaItemTableViewController {
         var artist = albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)]
         cell.textLabel?.text = artist.representativeItem.albumArtist
         cell.textLabel?.font = ThemeHelper.defaultFont
-
+        let pluralText = artist.count > 1 ? "s" : ""
+        cell.detailTextLabel?.text = "\(artist.count) Track\(pluralText)"
+        cell.detailTextLabel?.textColor = UIColor.darkGrayColor()
         return cell
     }
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

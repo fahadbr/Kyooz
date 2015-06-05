@@ -29,6 +29,10 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         self.tableView = tableView
     }
     
+    deinit {
+        Logger.debug("deinitializing long press to drag gesture handler")
+    }
+    
     func handleGesture(sender: UILongPressGestureRecognizer) {
         let state:UIGestureRecognizerState = sender.state
         
@@ -46,10 +50,11 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
             }
         case .Changed:
             if(!gestureActivated) { return }
-            gestureDidChange(sender)
-            if let location = handlePositionChange(sender) {
-                dragGestureScrollingController?.startScrollingWithLocation(location, gestureRecognizer: sender)
+            let location = handlePositionChange(sender)
+            if let locationInsideTableView = location {
+                dragGestureScrollingController?.startScrollingWithLocation(locationInsideTableView, gestureRecognizer: sender)
             }
+            gestureDidChange(sender, newLocationInsideTableView: location)
         default:
             if(!gestureActivated) { return }
             
@@ -67,7 +72,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
             dragGestureScrollingController?.invalidateTimer()
             dragGestureScrollingController = nil
             
-            let cell = tableView.cellForRowAtIndexPath(indexPathOfMovingItem)!
+            let cell = tableView.cellForRowAtIndexPath(indexPathOfMovingItem)
             removeSnapshotFromView(cell, viewToFadeOut: snapshot, completionHandler: { (finished:Bool) -> Void in
                 self.snapshot.removeFromSuperview()
                 self.snapshot = nil
@@ -80,7 +85,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         delegate?.gestureDidBegin?(sender)
     }
     
-    func gestureDidChange(sender:UIGestureRecognizer) {
+    func gestureDidChange(sender:UIGestureRecognizer, newLocationInsideTableView:CGPoint?) {
         delegate?.gestureDidChange?(sender)
     }
     
@@ -119,8 +124,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
     
     func getCellForSnapshot(sender:UIGestureRecognizer, tableView:UITableView) -> (cell:UITableViewCell, indexPath:NSIndexPath)? {
         let location = sender.locationInView(tableView)
-        if let indexPath = tableView.indexPathForRowAtPoint(location) {
-            let cell = tableView.cellForRowAtIndexPath(indexPath)!
+        if let indexPath = tableView.indexPathForRowAtPoint(location), let cell = tableView.cellForRowAtIndexPath(indexPath) {
             cell.highlighted = false
             return (cell, indexPath)
         }
