@@ -17,7 +17,7 @@ class MediaItemTableViewController: UITableViewController  {
 
     }
     
-    func getMediaItemsForIndexPath(indexPath:NSIndexPath) -> [MPMediaItem] {
+    func getMediaItemsForIndexPath(indexPath:NSIndexPath) -> [AudioTrack] {
         fatalError("This method needs to be implemented by a subclass")
     }
     

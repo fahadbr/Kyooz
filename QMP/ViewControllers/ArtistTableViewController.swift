@@ -23,6 +23,7 @@ class ArtistTableViewController: MediaItemTableViewController {
         query.addFilterPredicate(MPMediaPropertyPredicate(
             value: MPMediaType.Music.rawValue,
             forProperty: MPMediaItemPropertyMediaType))
+        query.addFilterPredicate(MPMediaPropertyPredicate(value: false, forProperty: MPMediaItemPropertyIsCloudItem))
         
         var sectionResultSet = query.collectionSections
         if(sectionResultSet != nil) {
@@ -33,11 +34,7 @@ class ArtistTableViewController: MediaItemTableViewController {
         if(resultSet != nil){
             albumArtists = resultSet! as! [MPMediaItemCollection]
         }
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -124,7 +121,7 @@ class ArtistTableViewController: MediaItemTableViewController {
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var albumSongs = self.albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)].items as! [MPMediaItem]
+        var albumSongs = self.albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)].items as! [AudioTrack]
         var enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction(albumSongs, tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
         return [enqueueAction]
     }
@@ -141,11 +138,11 @@ class ArtistTableViewController: MediaItemTableViewController {
 
     
     //MARK: Overriding QueableMediaItemTableViewController methods
-    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [MPMediaItem] {
-        if let items = albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)].items as? [MPMediaItem] {
+    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+        if let items = albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)].items as? [AudioTrack] {
             return items
         }
-        return [MPMediaItem]()
+        return [AudioTrack]()
     }
 
 

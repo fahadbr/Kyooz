@@ -124,7 +124,7 @@ class RootViewController: UIViewController, DragSource {
         
     }
     
-    func getItemsToDrag(indexPath:NSIndexPath) -> [MPMediaItem]? {
+    func getItemsToDrag(indexPath:NSIndexPath) -> [AudioTrack]? {
         if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewController {
             return mediaItemViewController.getMediaItemsForIndexPath(indexPath)
         }

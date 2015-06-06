@@ -233,7 +233,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //MARK: INSERT MODE FUNCITONS
     
-    func setDropItems(dropItems: [MPMediaItem], atIndex:NSIndexPath) {
+    func setDropItems(dropItems: [AudioTrack], atIndex:NSIndexPath) {
         audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
     }
     
@@ -260,7 +260,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:MPMediaItem, isNowPlayingItem:Bool) -> UIImage! {
+    private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:AudioTrack, isNowPlayingItem:Bool) -> UIImage! {
         if(isNowPlayingItem) {
             if(!audioQueuePlayer.musicIsPlaying) {
                 if(playingImage == nil) {
@@ -277,11 +277,11 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         
         
         if let albumArtworkObject = mediaItem.artwork {
-            var albumArtwork = tempImageCache[mediaItem.albumPersistentID]
+            var albumArtwork = tempImageCache[mediaItem.albumId]
             if(albumArtwork == nil) {
                 Logger.debug("loading artwork into temp cache")
                 albumArtwork = albumArtworkObject.imageWithSize(cellImageSize)
-                tempImageCache[mediaItem.albumPersistentID] = albumArtwork
+                tempImageCache[mediaItem.albumId] = albumArtwork
             }
             
             return albumArtwork
@@ -310,7 +310,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         let index = indexPath!.row
         
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
-        let controller = UIAlertController(title: mediaItem.title + "\n" + mediaItem.albumArtist + " - " + mediaItem.albumTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let controller = UIAlertController(title: mediaItem.trackTitle + "\n" + mediaItem.albumArtist + " - " + mediaItem.albumTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
         

@@ -20,7 +20,7 @@ class MusicPlayerTableViewActionFactory: NSObject {
         return Static.instance
     }
     
-    func createEnqueueAction(itemsToEnqueue:[MPMediaItem], tableViewDelegate:UITableViewDelegate, tableView:UITableView, indexPath: NSIndexPath) -> UITableViewRowAction {
+    func createEnqueueAction(itemsToEnqueue:[AudioTrack], tableViewDelegate:UITableViewDelegate, tableView:UITableView, indexPath: NSIndexPath) -> UITableViewRowAction {
         return UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Enqueue",
             handler: {action, index in
                 self.musicPlayer.enqueue(itemsToEnqueue)

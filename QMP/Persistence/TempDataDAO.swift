@@ -40,11 +40,11 @@ class TempDataDAO : NSObject {
         persistCurrentPlaybackStateToTempStorage(musicPlayer.indexOfNowPlayingItem, currentPlaybackTime: musicPlayer.currentPlaybackTime)
     }
     
-    func persistNowPlayingQueueToTempStorage(mediaItems:[MPMediaItem]?) {
+    func persistNowPlayingQueueToTempStorage(mediaItems:[AudioTrack]?) {
        persistMediaItemsToTempStorageFile(TempDataDAO.nowPlayingQueueFileName, mediaItems: mediaItems)
     }
     
-    func persistMediaItemsToTempStorageFile(fileName:String, mediaItems:[MPMediaItem]?) {
+    func persistMediaItemsToTempStorageFile(fileName:String, mediaItems:[AudioTrack]?) {
         if(mediaItems == nil || mediaItems!.count == 0) {
             removeFile(fileName)
             return
@@ -52,7 +52,7 @@ class TempDataDAO : NSObject {
         
         var persistentIds = [NSNumber]()
         for mediaItem in mediaItems! {
-            persistentIds.append(NSNumber(unsignedLongLong: mediaItem.persistentID))
+            persistentIds.append(NSNumber(unsignedLongLong: mediaItem.id))
         }
         
         let nsPersistentIds = persistentIds as NSArray
@@ -63,11 +63,11 @@ class TempDataDAO : NSObject {
         }
     }
     
-    func getNowPlayingQueueFromTempStorage() -> [MPMediaItem]? {
+    func getNowPlayingQueueFromTempStorage() -> [AudioTrack]? {
         return getMediaItemsFromTempStorage(TempDataDAO.nowPlayingQueueFileName)
     }
     
-    func getMediaItemsFromTempStorage(fileName:String) -> [MPMediaItem]? {
+    func getMediaItemsFromTempStorage(fileName:String) -> [AudioTrack]? {
         if(!NSFileManager.defaultManager().fileExistsAtPath(fileName)) {
             return nil
         }

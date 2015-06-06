@@ -47,8 +47,8 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("songCell", forIndexPath: indexPath) as! UITableViewCell
 
-        let song = songs.items[indexPath.row] as! MPMediaItem
-        cell.textLabel?.text = "\(song.albumTrackNumber)  \(song.title)"
+        let song = songs.items[indexPath.row] as! AudioTrack
+        cell.textLabel?.text = "\(song.albumTrackNumber)  \(song.trackTitle)"
         cell.textLabel?.font = ThemeHelper.defaultFont
         cell.detailTextLabel?.text = MediaItemUtils.getTimeRepresentation(Float(song.playbackDuration))
         cell.detailTextLabel?.font = ThemeHelper.defaultFont
@@ -64,7 +64,7 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         var index = indexPath.row
-        var nowPlayingItem = songs.items[index] as! MPMediaItem
+        var nowPlayingItem = songs.items[index] as! AudioTrack
         audioQueuePlayer.playNowWithCollection(mediaCollection: songs,
             itemToPlay: nowPlayingItem)
 //        RootViewController.instance.animatePullablePanel(shouldExpand: true)
@@ -75,7 +75,7 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var song = self.songs.items[indexPath.row] as! MPMediaItem
+        var song = self.songs.items[indexPath.row] as! AudioTrack
         var enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction([song], tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
         return [enqueueAction]
     }
@@ -96,12 +96,12 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     
 
     //MARK: Overriding QueableMediaItemTableViewController methods
-    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [MPMediaItem] {
-        if let items = songs.items as? [MPMediaItem] {
+    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+        if let items = songs.items as? [AudioTrack] {
             let mediaItem = items[indexPath.row]
             return [mediaItem]
         }
-        return [MPMediaItem]()
+        return [AudioTrack]()
     }
     
 

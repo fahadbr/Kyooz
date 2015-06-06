@@ -7,15 +7,29 @@
 //
 
 import Foundation
+import MediaPlayer
 
-protocol AudioTrack {
+@objc protocol AudioTrack : AnyObject {
     
-    var trackTitle:String
-    var albumArtist:String
-    var albumTitle:String
-    var id:Int
+    var albumArtist:String! { get }
+    var albumId:UInt64 { get }
+    var albumTitle:String! { get }
+    var albumTrackNumber:Int { get }
+    var assetURL:NSURL! { get }
+    var artist:String! { get }
+    var id:UInt64 { get }
+    var playbackDuration:NSTimeInterval { get }
+    var trackTitle:String! { get }
+    var artwork:MPMediaItemArtwork! { get }
     
+    func enumerateValuesForProperties(properties: Set<NSObject>!, usingBlock block: ((String!, AnyObject!, UnsafeMutablePointer<ObjCBool>) -> Void)!)
     
+}
+
+extension MPMediaItem : AudioTrack {
     
+    var trackTitle:String! { return title }
+    var id:UInt64 { return persistentID }
+    var albumId:UInt64 { return albumPersistentID }
     
 }

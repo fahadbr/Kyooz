@@ -11,7 +11,7 @@ import MediaPlayer
 
 class PlaybackStateDTO {
     let musicIsPlaying:Bool
-    let nowPlayingItem:MPMediaItem?
+    let nowPlayingItem:AudioTrack?
     let nowPlayingIndex:Int?
     let currentPlaybackTime:NSTimeInterval?
     
@@ -20,7 +20,7 @@ class PlaybackStateDTO {
             + ",nowPlayingIndex:\(nowPlayingIndex)"
     }
     
-    init(musicIsPlaying:Bool, nowPlayingItem:MPMediaItem?, nowPlayingIndex:Int?, currentPlaybackTime:NSTimeInterval?) {
+    init(musicIsPlaying:Bool, nowPlayingItem:AudioTrack?, nowPlayingIndex:Int?, currentPlaybackTime:NSTimeInterval?) {
         self.musicIsPlaying = musicIsPlaying
         self.nowPlayingItem = nowPlayingItem
         self.nowPlayingIndex = nowPlayingIndex
@@ -29,9 +29,9 @@ class PlaybackStateDTO {
     
 
     
-    private func getMediaItemDescription(mediaItem:MPMediaItem?) -> String {
+    private func getMediaItemDescription(mediaItem:AudioTrack?) -> String {
         if(mediaItem != nil) {
-            return mediaItem!.title + " Artist:" + mediaItem!.albumArtist
+            return mediaItem!.trackTitle + " Artist:" + mediaItem!.albumArtist
         } else {
             return "null"
         }
