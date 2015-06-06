@@ -11,11 +11,11 @@ import MediaPlayer
 
 protocol AudioQueuePlayer:class {
     
-    var nowPlayingItem:MPMediaItem? { get }
+    var nowPlayingItem:AudioTrack? { get }
     var musicIsPlaying:Bool { get }
     var currentPlaybackTime:Float { get set }
     var indexOfNowPlayingItem:Int { get }
-    var nowPlayingQueue:[MPMediaItem] { get }
+    var nowPlayingQueue:[AudioTrack] { get }
     
     func play()
     
@@ -25,13 +25,13 @@ protocol AudioQueuePlayer:class {
     
     func skipForwards()
     
-    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem)
+    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack)
     
     func playItemWithIndexInCurrentQueue(#index:Int)
     
-    func enqueue(itemsToEnque:[MPMediaItem])
+    func enqueue(itemsToEnque:[AudioTrack])
     
-    func insertItemsAtIndex(itemsToInsert:[MPMediaItem], index:Int)
+    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int)
     
     func deleteItemsAtIndices(indicies:[Int])
     

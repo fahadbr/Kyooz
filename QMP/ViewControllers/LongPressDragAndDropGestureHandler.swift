@@ -16,7 +16,7 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     var dragSource:DragSource
     var dropDestination:DropDestination
     
-    var itemsToDrag:[MPMediaItem]!
+    var itemsToDrag:[AudioTrack]!
     var cancelView:CancelView
     var cancelViewVisible:Bool = false
 
@@ -139,7 +139,7 @@ protocol DragSource {
 
     var sourceTableView:UITableView? { get }
     
-    func getItemsToDrag(indexPath:NSIndexPath) -> [MPMediaItem]?
+    func getItemsToDrag(indexPath:NSIndexPath) -> [AudioTrack]?
     
 }
 
@@ -149,6 +149,6 @@ protocol DropDestination {
     
     var destinationTableView:UITableView { get }
     
-    func setDropItems(dropItems:[MPMediaItem], atIndex:NSIndexPath)
+    func setDropItems(dropItems:[AudioTrack], atIndex:NSIndexPath)
     
 }

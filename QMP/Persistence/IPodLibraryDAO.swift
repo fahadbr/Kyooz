@@ -11,7 +11,7 @@ import MediaPlayer
 
 struct IPodLibraryDAO {
     
-    static func queryMediaItemsFromIds(persistentIds:[AnyObject]) -> [MPMediaItem]? {
+    static func queryMediaItemsFromIds(persistentIds:[AnyObject]) -> [AudioTrack]? {
         var queriedMediaItems = [AnyObject]()
         for mediaId in persistentIds {
             let mediaItem = queryMediaItemFromId(mediaId)
@@ -22,10 +22,10 @@ struct IPodLibraryDAO {
             queriedMediaItems.append(mediaItem!)
         }
         
-        return queriedMediaItems as? [MPMediaItem]
+        return queriedMediaItems as? [AudioTrack]
     }
     
-    static func queryMediaItemFromId(persistentId:AnyObject) -> MPMediaItem? {
+    static func queryMediaItemFromId(persistentId:AnyObject) -> AudioTrack? {
 //        Logger.debug("querying for mediaItem with persistentID:\(persistentId)")
         var query = MPMediaQuery()
         query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentId,
@@ -34,7 +34,7 @@ struct IPodLibraryDAO {
         if(tempQueryItems == nil || tempQueryItems!.isEmpty) {
             return nil
         } else {
-            return tempQueryItems[0] as? MPMediaItem
+            return tempQueryItems[0] as? AudioTrack
         }
     }
     

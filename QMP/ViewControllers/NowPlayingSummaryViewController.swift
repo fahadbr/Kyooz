@@ -120,7 +120,7 @@ class NowPlayingSummaryViewController: UIViewController {
     
     func reloadData(notification:NSNotification?) {
         var nowPlayingItem = audioQueuePlayer.nowPlayingItem;
-        self.songTitleLabel.text = nowPlayingItem?.title ?? "Nothing"
+        self.songTitleLabel.text = nowPlayingItem?.trackTitle ?? "Nothing"
         self.songTitleCollapsedLabel.text = self.songTitleLabel.text
         
         let albumArtist = nowPlayingItem?.albumArtist ?? "To"

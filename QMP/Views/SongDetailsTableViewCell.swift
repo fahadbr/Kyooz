@@ -34,8 +34,8 @@ class SongDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    func configureTextLabelsForMediaItem(mediaItem:MPMediaItem, isNowPlayingItem:Bool) {
-        songTitleLabel.text = mediaItem.title
+    func configureTextLabelsForMediaItem(mediaItem:AudioTrack, isNowPlayingItem:Bool) {
+        songTitleLabel.text = mediaItem.trackTitle
         albumArtistAndAlbumLabel.text = mediaItem.albumArtist + " - " + mediaItem.albumTitle
         totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(Float(mediaItem.playbackDuration))
         songTitleLabel.font = isNowPlayingItem ? SongDetailsTableViewCell.boldFont : SongDetailsTableViewCell.normalFont

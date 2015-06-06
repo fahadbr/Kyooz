@@ -81,7 +81,7 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     }
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var albumSongs = self.albums[indexPath.row].items as! [MPMediaItem]
+        var albumSongs = self.albums[indexPath.row].items as! [AudioTrack]
         var enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction(albumSongs, tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
         return [enqueueAction]
     }
@@ -97,11 +97,11 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     }
     
     //MARK: Overriding QueableMediaItemTableViewController methods
-    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [MPMediaItem] {
-        if let items = albums[indexPath.row].items as? [MPMediaItem] {
+    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+        if let items = albums[indexPath.row].items as? [AudioTrack] {
             return items
         }
-        return [MPMediaItem]()
+        return [AudioTrack]()
     }
     
   

@@ -24,7 +24,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
     private let playbackStateManager = PlaybackStateManager.instance
     private let timeDelayInNanoSeconds = Int64(1.0 * Double(NSEC_PER_SEC))
     
-    private var persistedQueue:[MPMediaItem] = [MPMediaItem]() {
+    private var persistedQueue:[AudioTrack] = [AudioTrack]() {
         didSet {
             if(persistedQueue.count > oldValue.count) {
                 Logger.debug("publishing notification for queue change")
@@ -32,7 +32,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
             }
         }
     }
-    private var stagedQueue:[MPMediaItem] = [MPMediaItem]() {
+    private var stagedQueue:[AudioTrack] = [AudioTrack]() {
         didSet {
             if(stagedQueue.count > oldValue.count) {
                 Logger.debug("publishing notification for queue change")
@@ -41,12 +41,12 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         }
     }
     
-    private var nextStagedMediaItem:MPMediaItem?
+    private var nextStagedMediaItem:AudioTrack?
     private var indexOfNextStagedItemExceedsNowPlayingQueueLength:Bool = false
     
 
     //MARK: COMPUTED PROPERTIES
-    var nowPlayingItem:MPMediaItem? {
+    var nowPlayingItem:AudioTrack? {
         return musicPlayer.nowPlayingItem
     }
     
@@ -54,7 +54,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         return playbackStateManager.musicIsPlaying()
     }
     
-    var nowPlayingQueue:[MPMediaItem] {
+    var nowPlayingQueue:[AudioTrack] {
         if(stagedQueueIsEmpty()) {
             return persistedQueue
         } else {
@@ -80,7 +80,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         } else {
             var i = 0
             for mediaItem in nowPlayingQueue {
-                if((self.nowPlayingItem?.persistentID ?? 0) == mediaItem.persistentID) {
+                if((self.nowPlayingItem?.id ?? 0) == mediaItem.id) {
                     indexToReturn = i
                     break
                 }
@@ -100,7 +100,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
             if let nowPlayingItem = musicPlayer.nowPlayingItem {
                 let index = musicPlayer.indexOfNowPlayingItem
                 //check if the queue from temp storage matches with the queue in the current music player
-                if(index < queueFromTempStorage.count && queueFromTempStorage[index].persistentID == nowPlayingItem.persistentID) {
+                if(index < queueFromTempStorage.count && queueFromTempStorage[index].id == nowPlayingItem.id) {
                     Logger.debug("restoring now playing queue from temp storage")
                     self.persistedQueue = queueFromTempStorage
                     return
@@ -113,7 +113,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
                 forProperty: MPMediaItemPropertyAlbumPersistentID,
                 comparisonType: MPMediaPredicateComparison.EqualTo))
             Logger.debug("assuming now playing queue to be album")
-            self.persistedQueue = query.items as! [MPMediaItem]
+            self.persistedQueue = query.items as! [AudioTrack]
         }
     }
     
@@ -153,7 +153,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         promoteStagedQueueWithCurrentNowPlayingItem()
     }
     
-    func enqueue(itemsToEnqueue:[MPMediaItem]) {
+    func enqueue(itemsToEnqueue:[AudioTrack]) {
 
         var queue = nowPlayingQueue
         
@@ -167,7 +167,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         
     }
     
-    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem) {
+    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
         resetAllStagedObjects()
         setNowPlayingQueue(mediaCollection, itemToPlay: itemToPlay)
         musicPlayer.play()
@@ -179,7 +179,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         let itemToPlay = queue[index]
                 
         promoteStagedQueueToNowPlaying(itemToPlay, restoreFullState: false)
-        musicPlayer.nowPlayingItem = itemToPlay
+        musicPlayer.nowPlayingItem = itemToPlay as! MPMediaItem
         musicPlayer.play()
         playbackStateManager.correctPlaybackState()
     }
@@ -194,7 +194,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         let playbackState = getPlaybackState()
         let mediaItemToPlay = queue[fromIndex]
         setQueueInternal(queue, itemToPlay: mediaItemToPlay)
-        if(mediaItemToPlay.persistentID == playbackState.nowPlayingItem!.persistentID) {
+        if(mediaItemToPlay.id == playbackState.nowPlayingItem!.id) {
             restorePlaybackState(playbackState, override: false, restoreFullState: true)
         }
     }
@@ -231,7 +231,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         evaluateNextStagedMediaItem(playbackState)
     }
     
-    func insertItemsAtIndex(itemsToInsert: [MPMediaItem], index: Int) {
+    func insertItemsAtIndex(itemsToInsert: [AudioTrack], index: Int) {
         var queue = nowPlayingQueue
         var playbackState = getPlaybackState()
         queue.insertAtIndex(itemsToInsert, index: index, placeHolderItem: MPMediaItem())
@@ -248,8 +248,8 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
             query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentIDObj, forProperty: MPMediaItemPropertyPersistentID))
             let items = query.items;
             if(items != nil && !items.isEmpty) {
-                let song = (query.items as! [MPMediaItem])[0]
-                message += song.title + ", Artist: " + song.albumArtist
+                let song = (query.items as! [AudioTrack])[0]
+                message += song.trackTitle + ", Artist: " + song.albumArtist
             }
         }
         Logger.debug(message)
@@ -286,23 +286,23 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         self.promoteStagedQueueToNowPlaying(musicPlayer.nowPlayingItem, restoreFullState: true)
     }
     
-    private func setQueueInternal(mediaItems:[MPMediaItem], itemToPlay:MPMediaItem?) {
+    private func setQueueInternal(mediaItems:[AudioTrack], itemToPlay:AudioTrack?) {
         if(playbackStateManager.musicIsPlaying() || playbackStateManager.otherMusicIsPlaying()) {
             Logger.debug("Setting staged queue")
             stagedQueue = mediaItems
         } else {
-            setNowPlayingQueue(MPMediaItemCollection(items: mediaItems), itemToPlay: itemToPlay)
+            setNowPlayingQueue(MPMediaItemCollection(items: mediaItems as! [MPMediaItem] ), itemToPlay: itemToPlay)
         }
     }
     
-    private func setNowPlayingQueue(mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem?) {
+    private func setNowPlayingQueue(mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack?) {
         if(mediaCollection.items != nil) {
             Logger.debug("Setting now playing queue")
             
-            persistedQueue = mediaCollection.items as! [MPMediaItem]
+            persistedQueue = mediaCollection.items as! [AudioTrack]
             musicPlayer.setQueueWithItemCollection(mediaCollection)
             if(itemToPlay != nil) {
-                musicPlayer.nowPlayingItem = itemToPlay!
+                musicPlayer.nowPlayingItem = itemToPlay! as! MPMediaItem
             }
         }
     }
@@ -321,7 +321,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         let unwrappedMediaItem = playbackState.nowPlayingItem!
         let unwrappedQueue = nowPlayingQueue
         for var i=0 ; i<unwrappedQueue.count ; i++ {
-            if(unwrappedMediaItem.persistentID == unwrappedQueue[i].persistentID) {
+            if(unwrappedMediaItem.id == unwrappedQueue[i].id) {
                 if(i >= (nowPlayingQueue.count - 1) && i >= playbackState.nowPlayingIndex!) {
                     indexOfNextStagedItemExceedsNowPlayingQueueLength = true
                 }
@@ -334,13 +334,13 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         }
     }
     
-    private func promoteStagedQueueToNowPlaying(itemToPlay:MPMediaItem?, restoreFullState:Bool) {
+    private func promoteStagedQueueToNowPlaying(itemToPlay:AudioTrack?, restoreFullState:Bool) {
         if(stagedQueueIsEmpty()) {
             return
         }
         Logger.debug("PROMOTING STAGED QUEUE")
         let playbackState = getPlaybackState()
-        setNowPlayingQueue(MPMediaItemCollection(items: stagedQueue), itemToPlay: itemToPlay)
+        setNowPlayingQueue(MPMediaItemCollection(items: stagedQueue as! [MPMediaItem]), itemToPlay: itemToPlay)
         
         restorePlaybackState(playbackState, override: true, restoreFullState:restoreFullState)
         resetAllStagedObjects()
@@ -367,7 +367,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         
         Logger.debug("Restoring playback state: " + originalPlaybackState.description)
         if(restoreFullState) {
-            musicPlayer.nowPlayingItem = originalPlaybackState.nowPlayingItem
+            musicPlayer.nowPlayingItem = originalPlaybackState.nowPlayingItem as! MPMediaItem
             musicPlayer.currentPlaybackTime = originalPlaybackState.currentPlaybackTime!
         }
         

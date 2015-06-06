@@ -58,7 +58,7 @@ class LastFmScrobbler {
 
     var validSessionObtained:Bool = false
     
-    var mediaItemToScrobble:MPMediaItem!
+    var mediaItemToScrobble:AudioTrack!
     
     //MARK: FUNCTIONS
     
@@ -140,7 +140,7 @@ class LastFmScrobbler {
             let timeStampToScrobble = NSDate().timeIntervalSince1970
             
             var params:[String:String] = [
-                self.track:mediaItem.title,
+                self.track:mediaItem.trackTitle,
                 self.artist:mediaItem.artist,
                 self.album:mediaItem.albumTitle,
                 self.duration:"\(Int(mediaItem.playbackDuration))",
@@ -155,9 +155,9 @@ class LastFmScrobbler {
             }
             
             self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:NSMutableString]) in
-                Logger.debug("scrobble was successful for mediaItem: \(mediaItem.title)")
+                Logger.debug("scrobble was successful for mediaItem: \(mediaItem.trackTitle)")
             },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
-                Logger.debug("scrobble failed for mediaItem: \(mediaItem.title) with error: \(info[self.error_key])")
+                Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[self.error_key])")
                 if(info[self.error_key] != nil && info[self.error_key]! == self.httpFailure) {
                     self.addToScrobbleCache(mediaItem, timeStampToScrobble: timeStampToScrobble)
                 }
@@ -205,11 +205,11 @@ class LastFmScrobbler {
             })
     }
     
-    private func addToScrobbleCache(mediaItemToScrobble: MPMediaItem, timeStampToScrobble:NSTimeInterval) {
+    private func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
         Logger.debug("caching the scrobble")
         let i = scrobbleCache.count
         var scrobbleDict = [String:String]()
-        scrobbleDict[self.track + "[\(i)]" ] = mediaItemToScrobble.title
+        scrobbleDict[self.track + "[\(i)]" ] = mediaItemToScrobble.trackTitle
         scrobbleDict[self.artist + "[\(i)]" ] = mediaItemToScrobble.albumArtist //this is different (using albumArtist) from the single api call above intentionally
         scrobbleDict[self.album + "[\(i)]" ] = mediaItemToScrobble.albumTitle
         scrobbleDict[self.duration + "[\(i)]" ] = "\(Int(mediaItemToScrobble.playbackDuration))"

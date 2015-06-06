@@ -35,18 +35,18 @@ class NowPlayingInfoHelper {
         MPNowPlayingInfoPropertyElapsedPlaybackTime
         )
     
-    func publishNowPlayingInfo(mediaItem: MPMediaItem) {
+    func publishNowPlayingInfo(mediaItem: AudioTrack) {
         let mediaInfoToPublish = getDictionaryForMediaItem(mediaItem)
         nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
     }
     
-    func updateElapsedPlaybackTime(mediaItem:MPMediaItem, elapsedTime:Float) {
+    func updateElapsedPlaybackTime(mediaItem:AudioTrack, elapsedTime:Float) {
         var mediaInfoToPublish = getDictionaryForMediaItem(mediaItem)
         mediaInfoToPublish[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
         nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
     }
     
-    private func getDictionaryForMediaItem(mediaItem:MPMediaItem) -> Dictionary<NSObject, AnyObject> {
+    private func getDictionaryForMediaItem(mediaItem:AudioTrack) -> Dictionary<NSObject, AnyObject> {
         var mediaInfoToPublish = Dictionary<NSObject,AnyObject>()
         mediaItem.enumerateValuesForProperties(mpMediaItemPropertyList) { (property:String!, value:AnyObject!, UnsafeMutablePointer) -> Void in
             mediaInfoToPublish[property] = value

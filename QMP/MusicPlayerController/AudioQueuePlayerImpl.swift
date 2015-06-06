@@ -26,7 +26,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     var audioController:AudioController = ApplicationDefaults.audioController
     var lastFmScrobbler = LastFmScrobbler.instance
     
-    var nowPlayingQueue:[MPMediaItem] = [MPMediaItem]() {
+    var nowPlayingQueue:[AudioTrack] = [AudioTrack]() {
         didSet {
             AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender: self)
         }
@@ -56,7 +56,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     }
     
     //MARK: AudioQueuePlayer - Properties
-    var nowPlayingItem:MPMediaItem? {
+    var nowPlayingItem:AudioTrack? {
         willSet {
             if(audioController.canScrobble) {
                 lastFmScrobbler.scrobbleMediaItem()
@@ -121,12 +121,12 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:MPMediaItem) {
-        nowPlayingQueue = mediaCollection.items as! [MPMediaItem]
+    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
+        nowPlayingQueue = mediaCollection.items as! [AudioTrack]
         shouldPlayAfterLoading = true
         var i = 0
         for mediaItem in nowPlayingQueue {
-            if(mediaItem.persistentID == itemToPlay.persistentID) {
+            if(mediaItem.id == itemToPlay.id) {
                 updateNowPlayingStateToIndex(i)
             }
             i++
@@ -141,11 +141,11 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         updateNowPlayingStateToIndex(index)
     }
     
-    func enqueue(itemsToEnqueue:[MPMediaItem]) {
+    func enqueue(itemsToEnqueue:[AudioTrack]) {
         nowPlayingQueue.extend(itemsToEnqueue)
     }
     
-    func insertItemsAtIndex(itemsToInsert:[MPMediaItem], index:Int) {
+    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) {
         nowPlayingQueue.insertAtIndex(itemsToInsert, index: index, placeHolderItem: MPMediaItem())
         
         if(index <= indexOfNowPlayingItem) {
@@ -217,9 +217,8 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     }
     
 
-    private func loadMediaItem(mediaItem:MPMediaItem) {
-        var url:NSURL = mediaItem.valueForProperty(MPMediaItemPropertyAssetURL) as! NSURL
-
+    private func loadMediaItem(mediaItem:AudioTrack) {
+        var url:NSURL = mediaItem.assetURL
         let audioPlayerDidLoadItem = audioController.loadItem(url)
         if(!audioPlayerDidLoadItem) { return }
         
@@ -293,8 +292,8 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     
     func audioPlayerDidRequestNextItemToBuffer(player:AudioController) -> NSURL? {
         let nextIndex = indexOfNowPlayingItem + 1
-        let nextItem:MPMediaItem? = (nextIndex >= nowPlayingQueue.count) ?  nil : nowPlayingQueue[nextIndex]
-        if let url = nextItem?.valueForKey(MPMediaItemPropertyAssetURL) as? NSURL {
+        let nextItem:AudioTrack? = (nextIndex >= nowPlayingQueue.count) ?  nil : nowPlayingQueue[nextIndex]
+        if let url = nextItem?.assetURL {
             return url
         }
         return nil
