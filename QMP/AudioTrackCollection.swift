@@ -14,3 +14,8 @@ protocol AudioTrackCollection {
     var titleForCollection:String! { get }
     
 }
+
+enum AudioTrackCollectionGroupingLevel {
+    case AlbumArtist
+    case Album
+}

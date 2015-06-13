@@ -48,4 +48,10 @@ extension String {
         return substringWithRange(Range(start: advance(startIndex, r.startIndex), end: advance(startIndex, r.endIndex)))
     }
     
+    func containsIgnoreCase(stringToCheck:String) -> (doesContain:Bool, rangeOfString:Range<String.Index>?) {
+        if let range = self.rangeOfString(stringToCheck, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) {
+            return (true, range)
+        }
+        return (false, nil)
+    }
 }

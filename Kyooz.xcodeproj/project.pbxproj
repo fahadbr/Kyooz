@@ -44,7 +44,16 @@
 		0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
 		0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C711B21FA5400626810 /* AudioTrack.swift */; };
 		0B476C741B2273E500626810 /* AudioTrackCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C731B2273E500626810 /* AudioTrackCollection.swift */; };
+		0B476C781B228AE400626810 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B476C771B228AE400626810 /* Spotify.framework */; };
+		0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C791B22921800626810 /* SpotifySettingsViewController.swift */; };
+		0B476C7C1B2295EA00626810 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B476C7B1B2295EA00626810 /* SystemConfiguration.framework */; };
+		0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C7E1B2350FE00626810 /* SpotifyController.swift */; };
 		0B5123A21AFE969E00D941DC /* MediaItemTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5123A11AFE969E00D941DC /* MediaItemTableViewController.swift */; };
+		0B83FE161B23C2E200746A9E /* AudioEntityIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B83FE151B23C2E200746A9E /* AudioEntityIdentifier.swift */; };
+		0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */; };
+		0B83FE1A1B24BBFC00746A9E /* MusicLibraryDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B83FE191B24BBFC00746A9E /* MusicLibraryDAO.swift */; };
+		0B83FE1C1B24BD6C00746A9E /* AudioTrackCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B83FE1B1B24BD6C00746A9E /* AudioTrackCollectionViewController.swift */; };
+		0B83FE1E1B24CA1E00746A9E /* log_in-mobile.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */; };
 		0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */; };
 		0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */; };
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
@@ -119,7 +128,16 @@
 		0B476C6E1B1BFE5700626810 /* CancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelView.swift; sourceTree = "<group>"; };
 		0B476C711B21FA5400626810 /* AudioTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioTrack.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B476C731B2273E500626810 /* AudioTrackCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackCollection.swift; sourceTree = "<group>"; };
+		0B476C771B228AE400626810 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
+		0B476C791B22921800626810 /* SpotifySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifySettingsViewController.swift; sourceTree = "<group>"; };
+		0B476C7B1B2295EA00626810 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		0B476C7E1B2350FE00626810 /* SpotifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
 		0B5123A11AFE969E00D941DC /* MediaItemTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItemTableViewController.swift; path = QMP/MediaItemTableViewController.swift; sourceTree = SOURCE_ROOT; };
+		0B83FE151B23C2E200746A9E /* AudioEntityIdentifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityIdentifier.swift; sourceTree = "<group>"; };
+		0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyDAO.swift; sourceTree = "<group>"; };
+		0B83FE191B24BBFC00746A9E /* MusicLibraryDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicLibraryDAO.swift; sourceTree = "<group>"; };
+		0B83FE1B1B24BD6C00746A9E /* AudioTrackCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackCollectionViewController.swift; sourceTree = "<group>"; };
+		0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "log_in-mobile.png"; sourceTree = "<group>"; };
 		0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MPMediaItemExtension.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleWSClient.swift; sourceTree = "<group>"; };
 		0BBE15F91AF5BE20007C6189 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
@@ -141,7 +159,6 @@
 		0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressToDragGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressDragAndDropGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = IPodLibraryDAO.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0BD43F6B1AF8560500D5B2D4 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +166,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B476C7C1B2295EA00626810 /* SystemConfiguration.framework in Frameworks */,
+				0B476C781B228AE400626810 /* Spotify.framework in Frameworks */,
 				0BCE21921B1213D00074DA47 /* AudioToolbox.framework in Frameworks */,
 				0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */,
 				0B13DA271AE6FB0400CC5C01 /* MediaPlayer.framework in Frameworks */,
@@ -191,22 +210,19 @@
 				0BBE16001AF6AC80007C6189 /* Logger */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
 				0B1BFD491AF30A4C009838A5 /* LastFm */,
+				0B476C7D1B2350F000626810 /* Spotify */,
 				0B13D9F81AE6FA9A00CC5C01 /* AudioPlayer */,
 				0B476C701B21FA1F00626810 /* MediaObjects */,
 				0B13D9FC1AE6FA9A00CC5C01 /* DataAccess */,
 				0B13DA051AE6FA9A00CC5C01 /* Views */,
 				0B13D9FE1AE6FA9A00CC5C01 /* ViewControllers */,
+				0B83FE1F1B24EC8B00746A9E /* Utils */,
 				0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */,
 				0B13DA091AE6FA9A00CC5C01 /* ApplicationDefaults.swift */,
-				0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */,
-				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
-				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
-				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
-				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
 				0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */,
 				0BD11B621B0829FA00565471 /* Settings.storyboard */,
-				0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */,
 				0B13D9C91AE6F80E00CC5C01 /* LaunchScreen.xib */,
+				0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */,
 				0B13D9BE1AE6F80E00CC5C01 /* Supporting Files */,
 			);
 			name = Kyooz;
@@ -216,6 +232,7 @@
 		0B13D9BE1AE6F80E00CC5C01 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */,
 				0BCE21951B12C5300074DA47 /* Track1.mp4 */,
 				0BCE21961B12C5300074DA47 /* Track2.mp4 */,
 				0B13D9BF1AE6F80E00CC5C01 /* Info.plist */,
@@ -263,6 +280,7 @@
 			children = (
 				0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */,
 				0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */,
+				0B83FE191B24BBFC00746A9E /* MusicLibraryDAO.swift */,
 			);
 			name = DataAccess;
 			path = Persistence;
@@ -281,6 +299,7 @@
 				0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */,
 				0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
+				0B83FE1B1B24BD6C00746A9E /* AudioTrackCollectionViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -323,8 +342,30 @@
 			children = (
 				0B476C711B21FA5400626810 /* AudioTrack.swift */,
 				0B476C731B2273E500626810 /* AudioTrackCollection.swift */,
+				0B83FE151B23C2E200746A9E /* AudioEntityIdentifier.swift */,
 			);
 			name = MediaObjects;
+			sourceTree = "<group>";
+		};
+		0B476C7D1B2350F000626810 /* Spotify */ = {
+			isa = PBXGroup;
+			children = (
+				0B476C7E1B2350FE00626810 /* SpotifyController.swift */,
+				0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */,
+			);
+			name = Spotify;
+			sourceTree = "<group>";
+		};
+		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				0B13DA0A1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift */,
+				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
+				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
+				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
+				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 		0BBE16001AF6AC80007C6189 /* Logger */ = {
@@ -349,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */,
+				0B476C791B22921800626810 /* SpotifySettingsViewController.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -367,8 +409,9 @@
 		0BD43F6A1AF855E200D5B2D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B476C7B1B2295EA00626810 /* SystemConfiguration.framework */,
+				0B476C771B228AE400626810 /* Spotify.framework */,
 				0BCE21911B1213D00074DA47 /* AudioToolbox.framework */,
-				0BD43F6B1AF8560500D5B2D4 /* Spotify.framework */,
 				0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */,
 				0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */,
 			);
@@ -464,6 +507,7 @@
 				0BCE21981B12C5300074DA47 /* Track2.mp4 in Resources */,
 				0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */,
 				0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */,
+				0B83FE1E1B24CA1E00746A9E /* log_in-mobile.png in Resources */,
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
 				0BCE21971B12C5300074DA47 /* Track1.mp4 in Resources */,
 				0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */,
@@ -490,8 +534,11 @@
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
+				0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
 				0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */,
+				0B83FE161B23C2E200746A9E /* AudioEntityIdentifier.swift in Sources */,
+				0B83FE1A1B24BBFC00746A9E /* MusicLibraryDAO.swift in Sources */,
 				0BCE21A31B1403C70074DA47 /* AudioEngineController.swift in Sources */,
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
@@ -500,6 +547,7 @@
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
+				0B83FE1C1B24BD6C00746A9E /* AudioTrackCollectionViewController.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0B5123A21AFE969E00D941DC /* MediaItemTableViewController.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
@@ -507,6 +555,7 @@
 				0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */,
 				0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
+				0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */,
 				0B13DA161AE6FA9A00CC5C01 /* FilteredAlbumTableViewController.swift in Sources */,
 				0B13DA151AE6FA9A00CC5C01 /* ArtistTableViewController.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
@@ -516,6 +565,7 @@
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B13DA211AE6FA9A00CC5C01 /* PlaybackStateDTO.swift in Sources */,
+				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
 				0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */,
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
@@ -662,7 +712,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/fahadr/Documents/xcode/libraries/spotify-ios-sdk-beta-7",
 					"$(PROJECT_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -673,6 +722,7 @@
 				INFOPLIST_FILE = QMP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Kyooz;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
@@ -688,7 +738,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/fahadr/Documents/xcode/libraries/spotify-ios-sdk-beta-7",
 					"$(PROJECT_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -699,6 +748,7 @@
 				INFOPLIST_FILE = QMP/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Kyooz;
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
 				TARGETED_DEVICE_FAMILY = 1;
