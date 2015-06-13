@@ -11,6 +11,6 @@
 
 #include <CommonCrypto/CommonDigest.h>
 
-//#import <Spotify/Spotify.h>
+#import <Spotify/Spotify.h>
 
 #endif

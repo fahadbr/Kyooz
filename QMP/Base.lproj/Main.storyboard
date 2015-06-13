@@ -51,6 +51,32 @@
             </objects>
             <point key="canvasLocation" x="3046" y="-1163"/>
         </scene>
+        <!--Spotify Artists-->
+        <scene sceneID="V1R-6f-fOo">
+            <objects>
+                <tableViewController title="Spotify Artists" id="uh8-A8-vbO" customClass="AudioTrackCollectionViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="uXN-Oj-w6S">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="spotifyCell" id="pXb-IZ-I6K">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pXb-IZ-I6K" id="tRi-uA-F4a">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="uh8-A8-vbO" id="RwD-p8-Zen"/>
+                            <outlet property="delegate" destination="uh8-A8-vbO" id="9t6-4N-0iI"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SW4-RU-g5k" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3040" y="-426"/>
+        </scene>
         <!--Albums-->
         <scene sceneID="FGp-b4-m2Y">
             <objects>
@@ -129,12 +155,72 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
-                        <segue destination="r19-5Y-R1W" kind="relationship" relationship="rootViewController" id="d9a-F7-D6r"/>
+                        <segue destination="COK-iq-rk1" kind="relationship" relationship="rootViewController" id="Qlg-jx-pyQ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9IG-fU-Ugh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2234" y="-1163"/>
+            <point key="canvasLocation" x="1560" y="-1163"/>
+        </scene>
+        <!--Music Library-->
+        <scene sceneID="Ji2-AJ-DHg">
+            <objects>
+                <tableViewController title="Music Library" id="COK-iq-rk1" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="bhY-e6-w4Y">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <sections>
+                            <tableViewSection id="i5i-da-pDV">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="yjs-Q3-17V" style="IBUITableViewCellStyleDefault" id="VdB-BP-vtz">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VdB-BP-vtz" id="cof-SR-xPf">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="iPod Music Library" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yjs-Q3-17V">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="r19-5Y-R1W" kind="show" id="9CU-1m-IB9"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="lUh-7Q-FbO" style="IBUITableViewCellStyleDefault" id="c1p-ql-7KA">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="c1p-ql-7KA" id="hyW-Ba-EZE">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Spotify Music Library" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lUh-7Q-FbO">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.55294117649999996" green="0.74117647060000003" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <size key="shadowOffset" width="0.0" height="0.0"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="uh8-A8-vbO" kind="show" id="tf6-O1-RmH"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="COK-iq-rk1" id="HmV-KK-TvL"/>
+                            <outlet property="delegate" destination="COK-iq-rk1" id="ZZr-yp-V8b"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Music Library" id="3Mf-3A-QAy"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CK6-nC-LJ2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2282" y="-1174"/>
         </scene>
         <!--NowPlayingQueue-->
         <scene sceneID="6XA-XL-1q0">
