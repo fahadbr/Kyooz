@@ -42,12 +42,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
     
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
-        if SpotifyController.instance.handleAuthenticationCallback(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation) {
-            return true
-        }
-        return false
-    }
+//    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+//        if SpotifyController.instance.handleAuthenticationCallback(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation) {
+//            return true
+//        }
+//        return false
+//    }
 
     func applicationDidEnterBackground(application: UIApplication) {
         if(!isMultiTaskingSupported()) {

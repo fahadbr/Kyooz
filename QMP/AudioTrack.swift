@@ -40,55 +40,55 @@ extension MPMediaItem : AudioTrack {
     var audioTrackSource:AudioTrackSource { return AudioTrackSource.iPodLibrary }
 }
 
-extension SPTPartialTrack : AudioTrack {
-    
-    var albumArtist:String! {
-        if(artists == nil || artists.isEmpty) { return "Null" }
-        if let firstArtist = (artists[0] as? SPTPartialArtist)?.name {
-
-            let result = firstArtist.containsIgnoreCase(" feat. ")
-            if(result.doesContain && result.rangeOfString != nil) {
-                return firstArtist.substringToIndex(result.rangeOfString!.startIndex)
-            }
-            return firstArtist
-        }
-        return "Null"
-        
-    }
-    var albumId:UInt64 {
-        
-        return 0
-    }
-    var albumTitle:String! {
-        return album?.name
-    }
-    var albumTrackNumber:Int { return trackNumber }
-    var assetURL:NSURL! { return playableUri }
-    
-    var artist:String! {
-        var artistString = ""
-        if artists == nil { return "Null" }
-        var isFirst = true
-        for artistObj in artists {
-            if let artist = artistObj as? SPTPartialArtist {
-                if(!isFirst) { artistString += ", " }
-                artistString += artist.name
-                
-                isFirst = false
-            }
-        }
-        
-        return artistString
-    }
-    
-    var id:UInt64 { return 0 }
-    var playbackDuration:NSTimeInterval { return duration }
-    var trackTitle:String! { return name }
-    var artwork:MPMediaItemArtwork! { return nil }
-    var audioTrackSource:AudioTrackSource { return AudioTrackSource.Spotify }
-    
-    func enumerateValuesForProperties(properties: Set<NSObject>!, usingBlock block: ((String!, AnyObject!, UnsafeMutablePointer<ObjCBool>) -> Void)!) {
-        
-    }
-    
-}
+//extension SPTPartialTrack : AudioTrack {
+//    
+//    var albumArtist:String! {
+//        if(artists == nil || artists.isEmpty) { return "Null" }
+//        if let firstArtist = (artists[0] as? SPTPartialArtist)?.name {
+//
+//            let result = firstArtist.containsIgnoreCase(" feat. ")
+//            if(result.doesContain && result.rangeOfString != nil) {
+//                return firstArtist.substringToIndex(result.rangeOfString!.startIndex)
+//            }
+//            return firstArtist
+//        }
+//        return "Null"
+//        
+//    }
+//    var albumId:UInt64 {
+//        
+//        return 0
+//    }
+//    var albumTitle:String! {
+//        return album?.name
+//    }
+//    var albumTrackNumber:Int { return trackNumber }
+//    var assetURL:NSURL! { return playableUri }
+//    
+//    var artist:String! {
+//        var artistString = ""
+//        if artists == nil { return "Null" }
+//        var isFirst = true
+//        for artistObj in artists {
+//            if let artist = artistObj as? SPTPartialArtist {
+//                if(!isFirst) { artistString += ", " }
+//                artistString += artist.name
+//                
+//                isFirst = false
+//            }
+//        }
+//        
+//        return artistString
+//    }
+//    
+//    var id:UInt64 { return 0 }
+//    var playbackDuration:NSTimeInterval { return duration }
+//    var trackTitle:String! { return name }
+//    var artwork:MPMediaItemArtwork! { return nil }
+//    var audioTrackSource:AudioTrackSource { return AudioTrackSource.Spotify }
+//    
+//    func enumerateValuesForProperties(properties: Set<NSObject>!, usingBlock block: ((String!, AnyObject!, UnsafeMutablePointer<ObjCBool>) -> Void)!) {
+//        
+//    }
+//    
+//}
