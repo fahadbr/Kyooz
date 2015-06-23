@@ -15,6 +15,7 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
     
     private let centerPanelExpandedOffset:CGFloat = 60
     private let timeDelayInNanoSeconds = Int64(0.50 * Double(NSEC_PER_SEC))
+    private var centerPanelExpandedXPosition:CGFloat!
     
     var longPressGestureRecognizer:UILongPressGestureRecognizer!
     var dragAndDropHandler:LongPressDragAndDropGestureHandler!
@@ -23,7 +24,12 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
     var panGestureRecognizer:UIPanGestureRecognizer!
     var screenEdgePanGestureRecognizer:UIScreenEdgePanGestureRecognizer!
     
-    var rootViewController:RootViewController!
+    var rootViewController:RootViewController! {
+        didSet {
+            if rootViewController == nil { return }
+            centerPanelExpandedXPosition = -CGRectGetWidth(rootViewController.view.frame) + centerPanelExpandedOffset
+        }
+    }
     
     var nowPlayingNavigationController:UINavigationController?
     var nowPlayingViewController:NowPlayingViewController?
@@ -102,16 +108,17 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
             let originalFrame = nowPlayingViewController!.view.bounds
             let newWidth = CGRectGetWidth(self.view.bounds) - centerPanelExpandedOffset
             let newHeight = originalFrame.height
-            let newX = originalFrame.origin.x + centerPanelExpandedOffset
-            let newY = originalFrame.origin.y
+            let newX:CGFloat = CGRectGetWidth(view.bounds)
+            let newY:CGFloat = 0.0
             
-//            nowPlayingViewController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
             nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
             nowPlayingNavigationController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
             nowPlayingNavigationController!.toolbarHidden = false
             view.insertSubview(nowPlayingNavigationController!.view, atIndex: 0)
             addChildViewController(nowPlayingNavigationController!)
             nowPlayingNavigationController!.didMoveToParentViewController(self)
+            
+            nowPlayingNavigationController!.view.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
         }
     }
     
@@ -120,13 +127,26 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
             sidePanelExpanded = true
             
             animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                centerPanelExpandedOffset)
+                centerPanelExpandedOffset) { finished in Logger.debug("\(self.nowPlayingNavigationController!.view.frame.origin.x)") }
             
         } else {
             animateCenterPanelXPosition(targetPosition: 0) { finished in
                 self.sidePanelExpanded = false
+                Logger.debug("\(self.nowPlayingNavigationController!.view.frame.origin.x)")
             }
         }
+    }
+    
+    private func transformForFraction(fraction:CGFloat) -> CATransform3D{
+        var identity = CATransform3DIdentity
+        identity.m34 = -1.0/1000
+        let angle = Double(1.0 - fraction) * M_PI_2
+        let xOffset = CGRectGetWidth(nowPlayingNavigationController!.view.bounds) * 0.5
+        
+        let rotateTransform = CATransform3DRotate(identity, CGFloat(angle), 0.0, 1.0, 0.0)
+
+        let translateTransform = CATransform3DMakeTranslation(-xOffset, 0.0, 0.0)
+        return CATransform3DConcat(rotateTransform, translateTransform)
     }
     
     func animateCenterPanelXPosition(#targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
@@ -135,7 +155,12 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
             usingSpringWithDamping: 0.8,
             initialSpringVelocity: 0,
             options: .CurveEaseInOut,
-            animations: {self.rootViewController.view.frame.origin.x = targetPosition},
+            animations: {
+                self.rootViewController.view.frame.origin.x = targetPosition
+                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
+                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
+                self.nowPlayingNavigationController?.view.frame.origin.x = CGRectGetWidth(self.rootViewController.view.frame) + targetPosition
+            },
             completion: completion)
         
     }
@@ -200,8 +225,7 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
             
             showShadowForCenterViewController(true)
         case .Changed:
-            recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
-            recognizer.setTranslation(CGPointZero, inView: view)
+            applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
             if(nowPlayingViewController != nil) {
                 let hasMovedEnoughLeftOfCenter = recognizer.view!.center.x < (self.view.center.x * 0.90)
@@ -213,13 +237,21 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         
     }
     
+    private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
+        recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
+        nowPlayingNavigationController!.view.center.x = nowPlayingNavigationController!.view!.center.x + recognizer.translationInView(view).x
+        var fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
+        let transform = transformForFraction(fraction)
+        nowPlayingNavigationController?.view.layer.transform = transform
+        recognizer.setTranslation(CGPointZero, inView: view)
+    }
+    
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
         
         switch(recognizer.state) {
         case .Changed:
-            recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
-            recognizer.setTranslation(CGPointZero, inView: view)
+            applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
             if(nowPlayingViewController != nil) {
                 let hasMovedEnoughRightOfScreenEdge = recognizer.view!.center.x < -(self.view.center.x * 0.90)
