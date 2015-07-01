@@ -127,12 +127,11 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
             sidePanelExpanded = true
             
             animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                centerPanelExpandedOffset) { finished in Logger.debug("\(self.nowPlayingNavigationController!.view.frame.origin.x)") }
+                centerPanelExpandedOffset)
             
         } else {
             animateCenterPanelXPosition(targetPosition: 0) { finished in
                 self.sidePanelExpanded = false
-                Logger.debug("\(self.nowPlayingNavigationController!.view.frame.origin.x)")
             }
         }
     }
@@ -141,7 +140,8 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         var identity = CATransform3DIdentity
         identity.m34 = -1.0/1000
         let angle = Double(1.0 - fraction) * M_PI_2
-        let xOffset = CGRectGetWidth(nowPlayingNavigationController!.view.bounds) * 0.5
+        let width = CGRectGetWidth(nowPlayingNavigationController!.view.bounds)
+        let xOffset = width * (fraction + 0.5)
         
         let rotateTransform = CATransform3DRotate(identity, CGFloat(angle), 0.0, 1.0, 0.0)
 
@@ -149,7 +149,7 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         return CATransform3DConcat(rotateTransform, translateTransform)
     }
     
-    func animateCenterPanelXPosition(#targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
+    private func animateCenterPanelXPosition(#targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
         UIView.animateWithDuration(0.5,
             delay: 0,
             usingSpringWithDamping: 0.8,
@@ -159,7 +159,7 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
                 self.rootViewController.view.frame.origin.x = targetPosition
                 let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
                 self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
-                self.nowPlayingNavigationController?.view.frame.origin.x = CGRectGetWidth(self.rootViewController.view.frame) + targetPosition
+                self.nowPlayingNavigationController?.view.alpha = fraction
             },
             completion: completion)
         
@@ -239,10 +239,10 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     
     private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
         recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
-        nowPlayingNavigationController!.view.center.x = nowPlayingNavigationController!.view!.center.x + recognizer.translationInView(view).x
         var fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
         let transform = transformForFraction(fraction)
         nowPlayingNavigationController?.view.layer.transform = transform
+        nowPlayingNavigationController?.view.alpha = fraction
         recognizer.setTranslation(CGPointZero, inView: view)
     }
     
