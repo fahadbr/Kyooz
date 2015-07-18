@@ -240,10 +240,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
 
     //MARK: CLASS Functions
     func reloadTableData(notification:NSNotification?) {
-        if(viewExpanded) {
-            Logger.debug("reloading now playing queue table view")
-            tableView.reloadData()
-        }
+        tableView.reloadData()
     }
     
     

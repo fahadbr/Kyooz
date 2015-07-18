@@ -95,7 +95,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
     override init() {
         super.init()
         registerForMediaPlayerNotifications()
-        registerForRemoteCommands()
+//        registerForRemoteCommands()
         if let queueFromTempStorage = TempDataDAO.instance.getNowPlayingQueueFromTempStorage(){
             if let nowPlayingItem = musicPlayer.nowPlayingItem {
                 let index = musicPlayer.indexOfNowPlayingItem
@@ -119,7 +119,7 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
     
     deinit {
         unregisterForMediaPlayerNotifications()
-        unregisterForRemoteCommands()
+//        unregisterForRemoteCommands()
     }
     
     //MARK:AudioQueuePlayer Functions
@@ -199,20 +199,30 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         }
     }
     
-    func deleteItemsAtIndices(index:[Int]) {
-//        var queue = getNowPlayingQueue()
-//
-//
-//        if(queue == nil || index > (queue!.count - 1)) {
-//            return
-//        }
-//        
-//        let playbackState = getPlaybackState()
-//        queue!.removeAtIndex(index)
-//        setQueueInternal(queue!, itemToPlay: playbackState.nowPlayingItem)
-//        restorePlaybackState(playbackState, override: false, restoreFullState: true)
-//        evaluateNextStagedMediaItem(playbackState)
+    func deleteItemsAtIndices(indiciesToRemove:[Int]) {
+        var indicies = indiciesToRemove
+        if(indicies.count > 1) {
+            //if removing more than 1 element, sort the array otherwise we will run into index out of bounds issues
+            indicies.sort { $0 > $1 }
+        }
         
+        var queue = nowPlayingQueue
+        var nowPlayingItemRemoved = false
+        for index in indicies {
+            queue.removeAtIndex(index)
+            if (index == indexOfNowPlayingItem) {
+                nowPlayingItemRemoved = true
+            }
+        }
+        
+        if(nowPlayingItemRemoved) {
+            setNowPlayingQueue(MPMediaItemCollection(items: queue), itemToPlay: queue[0])
+        }
+        
+        let playbackState = getPlaybackState()
+        setQueueInternal(queue, itemToPlay: nil)
+        restorePlaybackState(playbackState, override: false, restoreFullState: true)
+        evaluateNextStagedMediaItem(playbackState)
     }
     
     func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int) {
@@ -277,6 +287,9 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender:self)
     }
     
+    func handleApplicationDidResignActive(notification:NSNotification) {
+        promoteStagedQueueWithCurrentNowPlayingItem()
+    }
     
     private func stagedQueueIsEmpty() -> Bool {
         return (stagedQueue.isEmpty)
@@ -376,6 +389,8 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         }
     }
     
+    private var observationContext:Int8 = 123
+    
     private func registerForMediaPlayerNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "handleNowPlayingItemChanged:",
@@ -387,50 +402,60 @@ class StagedAudioQueuePlayer : NSObject, AudioQueuePlayer{
         notificationCenter.addObserver(self, selector: "handlePlaybackStateChanged:",
             name:PlaybackStateManager.PlaybackStateCorrectedNotification,
             object: PlaybackStateManager.instance)
+        
+        musicPlayer.addObserver(self, forKeyPath: "nowPlayingItem", options: NSKeyValueObservingOptions.New, context: &observationContext)
+        musicPlayer.addObserver(self, forKeyPath: "indexOfNowPlayingItem", options: NSKeyValueObservingOptions.New, context: &observationContext)
+        
         musicPlayer.beginGeneratingPlaybackNotifications()
+        
+        let application = UIApplication.sharedApplication()
+        notificationCenter.addObserver(self, selector: "handleApplicationDidResignActive:",
+            name: UIApplicationWillResignActiveNotification, object: application)
+    }
+    
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        Logger.debug("keyPath:\(keyPath) has changed to \(change)")
     }
     
     private func unregisterForMediaPlayerNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.removeObserver(self, name: MPMusicPlayerControllerNowPlayingItemDidChangeNotification, object: musicPlayer)
-        notificationCenter.removeObserver(self, name: MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
-        musicPlayer.endGeneratingPlaybackNotifications()
+        notificationCenter.removeObserver(self)
     }
     
-    private func registerForRemoteCommands() {
-        let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
-        remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-            self.play()
-            return MPRemoteCommandHandlerStatus.Success
-        }
-        remoteCommandCenter.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-            self.pause()
-            return MPRemoteCommandHandlerStatus.Success
-        }
-        remoteCommandCenter.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-            if(self.musicIsPlaying) {
-                self.pause()
-            } else {
-                self.play()
-            }
-            return MPRemoteCommandHandlerStatus.Success
-        }
-        remoteCommandCenter.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-            self.skipBackwards()
-            return MPRemoteCommandHandlerStatus.Success
-        }
-        remoteCommandCenter.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-            self.skipForwards()
-            return MPRemoteCommandHandlerStatus.Success
-        }
-    }
-    private func unregisterForRemoteCommands() {
-        let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
-        remoteCommandCenter.playCommand.removeTarget(self)
-        remoteCommandCenter.pauseCommand.removeTarget(self)
-        remoteCommandCenter.togglePlayPauseCommand.removeTarget(self)
-        remoteCommandCenter.previousTrackCommand.removeTarget(self)
-        remoteCommandCenter.nextTrackCommand.removeTarget(self)
-    }
+//    private func registerForRemoteCommands() {
+//        let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
+//        remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//            self.play()
+//            return MPRemoteCommandHandlerStatus.Success
+//        }
+//        remoteCommandCenter.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//            self.pause()
+//            return MPRemoteCommandHandlerStatus.Success
+//        }
+//        remoteCommandCenter.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//            if(self.musicIsPlaying) {
+//                self.pause()
+//            } else {
+//                self.play()
+//            }
+//            return MPRemoteCommandHandlerStatus.Success
+//        }
+//        remoteCommandCenter.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//            self.skipBackwards()
+//            return MPRemoteCommandHandlerStatus.Success
+//        }
+//        remoteCommandCenter.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//            self.skipForwards()
+//            return MPRemoteCommandHandlerStatus.Success
+//        }
+//    }
+//    private func unregisterForRemoteCommands() {
+//        let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
+//        remoteCommandCenter.playCommand.removeTarget(self)
+//        remoteCommandCenter.pauseCommand.removeTarget(self)
+//        remoteCommandCenter.togglePlayPauseCommand.removeTarget(self)
+//        remoteCommandCenter.previousTrackCommand.removeTarget(self)
+//        remoteCommandCenter.nextTrackCommand.removeTarget(self)
+//    }
     
 }

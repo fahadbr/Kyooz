@@ -14,11 +14,12 @@ struct ApplicationDefaults {
     
     static var audioQueuePlayer:AudioQueuePlayer {
 //        return StagedAudioQueuePlayer.instance
-        return AudioQueuePlayerImpl.instance
+        return DRMAudioQueuePlayer.instance
+//        return AudioQueuePlayerImpl.instance
     }
     
     static var defaultMusicPlayerController:MPMusicPlayerController {
-        return MPMusicPlayerController.applicationMusicPlayer()
+        return MPMusicPlayerController.systemMusicPlayer()
     }
     
 //    static let audioController:AudioController = SimpleAudioController.instance
