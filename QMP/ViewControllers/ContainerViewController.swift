@@ -166,12 +166,12 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
     }
     
     func deinitializeSideViewController(notification:NSNotification) {
-        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
-            Logger.debug("deinitializing side view controller")
-            nowPlayingNavigationController!.view.removeFromSuperview()
-            nowPlayingViewController = nil
-            nowPlayingNavigationController = nil
-        }
+//        if(!sidePanelExpanded && self.nowPlayingViewController != nil) {
+//            Logger.debug("deinitializing side view controller")
+//            nowPlayingNavigationController!.view.removeFromSuperview()
+//            nowPlayingViewController = nil
+//            nowPlayingNavigationController = nil
+//        }
     }
     
     func presentSettingsViewController() {

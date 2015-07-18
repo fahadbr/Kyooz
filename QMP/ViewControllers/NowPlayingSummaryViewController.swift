@@ -119,6 +119,8 @@ class NowPlayingSummaryViewController: UIViewController {
     }
     
     func reloadData(notification:NSNotification?) {
+        if(UIApplication.sharedApplication().applicationState != UIApplicationState.Active) { return }
+        
         var nowPlayingItem = audioQueuePlayer.nowPlayingItem;
         self.songTitleLabel.text = nowPlayingItem?.trackTitle ?? "Nothing"
         self.songTitleCollapsedLabel.text = self.songTitleLabel.text

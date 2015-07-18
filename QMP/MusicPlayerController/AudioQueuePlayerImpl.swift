@@ -194,14 +194,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
             updateNowPlayingStateToIndex(0, shouldLoadAfterUpdate: true)
         }
     }
-    
-    func moreBackgroundTimeIsNeeded() -> Bool {
-        return false
-    }
-    
-    func executePreBackgroundTasks() {
-        
-    }
+
     
     //MARK: Class Functions
     

@@ -38,11 +38,6 @@ protocol AudioQueuePlayer:class {
     func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int)
     
     func clearUpcomingItems(#fromIndex:Int)
-    
-    func moreBackgroundTimeIsNeeded() -> Bool
-    
-    func executePreBackgroundTasks()
-    
 }
 
 enum AudioQueuePlayerUpdate : String {
