@@ -40,14 +40,8 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! AlbumTableViewCell
         var album = albums[indexPath.row]
-        cell.albumTitle.text = album.representativeItem.albumTitle
-        cell.albumDetails.text = "\(album.count) Tracks"
-        let albumArtwork = album.representativeItem?.artwork?.imageWithSize(cell.albumArtwork.frame.size)
-        if(albumArtwork == nil) {
-            cell.albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
-        } else {
-            cell.albumArtwork?.image = albumArtwork
-        }
+        cell.configureCellForItems(album, collectionTitleProperty: MPMediaItemPropertyAlbumTitle)
+        
         return cell
     }
     
@@ -63,7 +57,7 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
                 var album = albums[indexPathUnwrapped.row]
                 var albumName = album.representativeItem.albumTitle
                 vc.songs = album
-                vc.title = albumName
+//                vc.title = albumName
                 vc.tableView.reloadData()
             }
         }

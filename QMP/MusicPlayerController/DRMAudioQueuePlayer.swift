@@ -8,6 +8,7 @@
 
 import UIKit
 import MediaPlayer
+import Foundation
 
 class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
@@ -22,6 +23,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     override init() {
         super.init()
+        
         registerForMediaPlayerNotifications()
         if let queueFromTempStorage = TempDataDAO.instance.getNowPlayingQueueFromTempStorage(){
             if let nowPlayingItem = musicPlayer.nowPlayingItem {
@@ -73,6 +75,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         } set {
             if(nowPlayingItem != nil) {
                 musicPlayer.currentPlaybackTime = NSTimeInterval(newValue)
+                AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
             }
         }
     }
@@ -100,7 +103,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func skipBackwards() {
-        if(currentPlaybackTime < 2.0) {
+        if(currentPlaybackTime > 2.0) {
             musicPlayer.skipToBeginning()
         } else {
             if !persistQueueToAudioController(indexOfNowPlayingItem - 1) {
@@ -187,6 +190,8 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             resetQueueStateToBeginning()
         }
     }
+    
+    //MARK: - Class functions
     
     private func resetQueueStateToBeginning() {
         let musicWasPlaying = musicIsPlaying
@@ -286,11 +291,17 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         playbackStateManager.correctPlaybackState()
     }
     
+    func handleApplicationWillTerminate(notification:NSNotification) {
+        if !persistQueueToAudioController(indexOfNowPlayingItem, completionHandler: endBackgroundTask) {
+            endBackgroundTask()
+        }
+    }
+    
     func persistQueueWithCurrentItem() {
         persistQueueToAudioController(indexOfNowPlayingItem)
     }
     
-    
+    var obsContext:UInt8 = 0
     private func registerForMediaPlayerNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "handleNowPlayingItemChanged:",
@@ -303,7 +314,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             name:PlaybackStateManager.PlaybackStateCorrectedNotification,
             object: playbackStateManager)
         
-        
+        musicPlayer.addObserver(self, forKeyPath: "nowPlayingItem", options: NSKeyValueObservingOptions.New, context: &obsContext)
         musicPlayer.beginGeneratingPlaybackNotifications()
         
         let application = UIApplication.sharedApplication()
@@ -311,11 +322,18 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             name: UIApplicationWillResignActiveNotification, object: application)
         notificationCenter.addObserver(self, selector: "handleApplicationDidBecomeActive:",
             name: UIApplicationDidBecomeActiveNotification, object: application)
+        notificationCenter.addObserver(self, selector: "handleApplicationWillTerminate:",
+            name: UIApplicationWillTerminateNotification, object: application)
+        
     }
     
     private func unregisterForMediaPlayerNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.removeObserver(self)
+    }
+    
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        Logger.debug("keyPath changed: \(keyPath)")
     }
     
     //MARK: - Background Handling Functions
@@ -343,7 +361,6 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
     func isMultiTaskingSupported() -> Bool {
         return UIDevice.currentDevice().multitaskingSupported
-//        return false
     }
     
 }

@@ -22,7 +22,7 @@ class RootViewController: UIViewController, DragSource {
         } set {
             nowPlayingSummaryViewController.expanded = newValue
             nowPlayingTapGestureRecognizer.enabled = !newValue
-            UIApplication.sharedApplication().setStatusBarStyle(newValue ? UIStatusBarStyle.LightContent : UIStatusBarStyle.Default, animated: true)
+//            UIApplication.sharedApplication().setStatusBarStyle(newValue ? UIStatusBarStyle.LightContent : UIStatusBarStyle.Default, animated: true)
         }
     }
     

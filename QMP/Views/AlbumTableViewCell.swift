@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MediaPlayer
 
-class AlbumTableViewCell: UITableViewCell {
+class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
     
     
     @IBOutlet weak var albumArtwork: UIImageView!
@@ -17,8 +18,7 @@ class AlbumTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        Logger.debug("loading AlbumTableViewCell from nib")
-        // Initialization code
+        albumDetails?.textColor = UIColor.lightGrayColor()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -27,6 +27,18 @@ class AlbumTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-
+    func configureCellForItems(collection:MPMediaItemCollection, collectionTitleProperty:String) {
+        albumTitle?.text = collection.representativeItem.albumTitle
+        
+        let pluralText = collection.count > 1 ? "s" : ""
+        albumDetails?.text = "\(collection.count) Track\(pluralText)"
+        
+        let albumArtworkTemp = collection.representativeItem?.artwork?.imageWithSize(albumArtwork.frame.size)
+        if(albumArtworkTemp == nil) {
+            albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
+        } else {
+            albumArtwork?.image = albumArtworkTemp
+        }
+    }
     
 }

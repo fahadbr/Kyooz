@@ -35,6 +35,8 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     //MARK: Init/Deinit
     override init() {
         super.init()
+        AudioSessionManager.instance.initializeAudioSession()
+        
         audioController.delegate = self
         if let queue = TempDataDAO.instance.getNowPlayingQueueFromTempStorage() {
             nowPlayingQueue = queue

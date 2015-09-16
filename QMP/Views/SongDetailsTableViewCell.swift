@@ -18,7 +18,8 @@ class SongDetailsTableViewCell: UITableViewCell {
     @IBOutlet weak var songTitleLabel: UILabel!
     @IBOutlet weak var albumArtistAndAlbumLabel: UILabel!
     @IBOutlet weak var totalPlaybackTImeLabel: UILabel!
-    @IBOutlet weak var menuButton: UIView!
+    @IBOutlet weak var menuButtonActionArea: UIView!
+    @IBOutlet weak var menuButtonVisualView: UILabel!
     
     override var alpha:CGFloat {
         didSet {
@@ -26,21 +27,23 @@ class SongDetailsTableViewCell: UITableViewCell {
             songTitleLabel?.alpha = alpha
             albumArtistAndAlbumLabel?.alpha = alpha
             totalPlaybackTImeLabel?.alpha = alpha
-            menuButton?.alpha = alpha
+            menuButtonActionArea?.alpha = alpha
+            menuButtonVisualView?.alpha = alpha
         }
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        songTitleLabel.font = SongDetailsTableViewCell.boldFont
+        albumArtistAndAlbumLabel.font =  SongDetailsTableViewCell.normalFont
+        menuButtonVisualView.textColor = UIColor.lightGrayColor()
     }
     
     func configureTextLabelsForMediaItem(mediaItem:AudioTrack, isNowPlayingItem:Bool) {
         songTitleLabel.text = mediaItem.trackTitle
         albumArtistAndAlbumLabel.text = mediaItem.albumArtist + " - " + mediaItem.albumTitle
-        totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(Float(mediaItem.playbackDuration))
-        songTitleLabel.font = isNowPlayingItem ? SongDetailsTableViewCell.boldFont : SongDetailsTableViewCell.normalFont
-        albumArtistAndAlbumLabel.font = isNowPlayingItem ? SongDetailsTableViewCell.boldFont : SongDetailsTableViewCell.normalFont
-
+        totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(mediaItem.playbackDuration)
+        songTitleLabel.textColor = isNowPlayingItem ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
     }
     
 }
