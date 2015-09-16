@@ -213,11 +213,12 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     }
     
     func handleScreenEdgePanGesture(recognizer: UIPanGestureRecognizer) {
-        let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
+
         
         
         switch(recognizer.state) {
         case .Began:
+            let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
             Logger.debug("NPVC Screen Edge Pan Gesture Began")
             if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
                 addSidePanelViewController()

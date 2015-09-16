@@ -15,4 +15,6 @@ struct NibContainer {
     
     static let songTableViewCellNib = UINib(nibName: "SongDetailsTableViewCell", bundle:nil)
     
+    static let albumTrackTableViewCellNib = UINib(nibName: "AlbumTrackTableViewCell", bundle: nil)
+    
 }

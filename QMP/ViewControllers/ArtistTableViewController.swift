@@ -35,6 +35,8 @@ class ArtistTableViewController: MediaItemTableViewController {
             albumArtists = resultSet! as! [MPMediaItemCollection]
         }
         
+        tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: "artistCell")
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,13 +68,10 @@ class ArtistTableViewController: MediaItemTableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("artistCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("artistCell", forIndexPath: indexPath) as! MediaCollectionTableViewCell
         var artist = albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)]
-        cell.textLabel?.text = artist.representativeItem.albumArtist
-        cell.textLabel?.font = ThemeHelper.defaultFont
-        let pluralText = artist.count > 1 ? "s" : ""
-        cell.detailTextLabel?.text = "\(artist.count) Track\(pluralText)"
-        cell.detailTextLabel?.textColor = UIColor.darkGrayColor()
+        cell.configureCellForItems(artist, collectionTitleProperty: MPMediaItemPropertyAlbumArtist)
+        
         return cell
     }
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -80,8 +79,8 @@ class ArtistTableViewController: MediaItemTableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("albumArtistToAlbumSegue", sender: self)
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        
     }
     
     

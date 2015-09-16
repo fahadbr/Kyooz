@@ -23,8 +23,8 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBOutlet weak var totalPlaybackTimeLabel: UILabel!
     @IBOutlet weak var currentPlaybackTimeLabel: UILabel!
     
-    @IBOutlet weak var playPauseButton: UIButton!
-    @IBOutlet weak var playPauseCollapsedButton: UIButton!
+    @IBOutlet weak var playPauseButton: PlayPauseButtonView!
+    @IBOutlet weak var playPauseCollapsedButton: PlayPauseButtonView!
     
     @IBOutlet weak var nowPlayingCollapsedBar: UIView!
     @IBOutlet weak var playbackProgressCollapsedBar: UIProgressView!
@@ -56,11 +56,15 @@ class NowPlayingSummaryViewController: UIViewController {
         self.unregisterForNotifications()
     }
     
+    @IBAction func newPlayButtonPressed(sender: AnyObject) {
+        Logger.debug("play button pressed")
+    }
 
     
-    @IBAction func commitUpdateOfPlaybackTime(sender: AnyObject) {
+    @IBAction func commitUpdateOfPlaybackTime(sender: UISlider) {
         audioQueuePlayer.currentPlaybackTime = sender.value
         playbackProgressBar.value = sender.value
+        playbackProgressCollapsedBar.progress = sender.value
         //leave the timer invalidated because changing the value will trigger a notification from the music player
         //causing the view to reload and the timer to be reinitialized
         //this is preferred because we dont want the timer to start until after the seeking to the time has completed
@@ -204,15 +208,11 @@ class NowPlayingSummaryViewController: UIViewController {
     
     func updatePlaybackStatus(sender:AnyObject?) {
         if(audioQueuePlayer.musicIsPlaying) {
-            self.playPauseButton.setImage(pauseButtonImage, forState: UIControlState.Normal)
-            self.playPauseButton.setImage(pauseButtonHighlightedImage, forState: UIControlState.Highlighted)
-            self.playPauseCollapsedButton.setImage(pauseButtonImage, forState: UIControlState.Normal)
-            self.playPauseCollapsedButton.setImage(pauseButtonHighlightedImage, forState: UIControlState.Highlighted)
+            playPauseButton.isPlayButton = false
+            playPauseCollapsedButton.isPlayButton = false
         } else {
-            self.playPauseButton.setImage(playButtonImage, forState: UIControlState.Normal)
-            self.playPauseButton.setImage(playButtonHighlightedImage, forState: UIControlState.Highlighted)
-            self.playPauseCollapsedButton.setImage(playButtonImage, forState: UIControlState.Normal)
-            self.playPauseCollapsedButton.setImage(playButtonHighlightedImage, forState: UIControlState.Highlighted)
+            playPauseButton.isPlayButton = true
+            playPauseCollapsedButton.isPlayButton = true
         }
     }
     

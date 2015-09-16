@@ -258,19 +258,19 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:AudioTrack, isNowPlayingItem:Bool) -> UIImage! {
-        if(isNowPlayingItem) {
-            if(!audioQueuePlayer.musicIsPlaying) {
-                if(playingImage == nil) {
-                    playingImage = ImageContainer.resizeImage(ImageContainer.currentlyPlayingImage, toSize: cellImageSize)
-                }
-                return playingImage
-            } else {
-                if(pausedImage == nil) {
-                    pausedImage = ImageContainer.resizeImage(ImageContainer.currentlyPausedImage, toSize: cellImageSize)
-                }
-                return pausedImage
-            }
-        }
+//        if(isNowPlayingItem) {
+//            if(!audioQueuePlayer.musicIsPlaying) {
+//                if(playingImage == nil) {
+//                    playingImage = ImageContainer.resizeImage(ImageContainer.currentlyPlayingImage, toSize: cellImageSize)
+//                }
+//                return playingImage
+//            } else {
+//                if(pausedImage == nil) {
+//                    pausedImage = ImageContainer.resizeImage(ImageContainer.currentlyPausedImage, toSize: cellImageSize)
+//                }
+//                return pausedImage
+//            }
+//        }
         
         
         if let albumArtworkObject = mediaItem.artwork {
@@ -298,8 +298,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         if(indexPath == nil) { return }
         
         let touchedCell = tableView.cellForRowAtIndexPath(indexPath!)! as! SongDetailsTableViewCell
-        let locationInMenuButton = sender.locationInView(touchedCell.menuButton)
-        if(!touchedCell.menuButton.pointInside(locationInMenuButton, withEvent: nil)) {
+        let locationInMenuButton = sender.locationInView(touchedCell.menuButtonActionArea)
+        if(!touchedCell.menuButtonActionArea.pointInside(locationInMenuButton, withEvent: nil)) {
             tableView(tableView, didSelectRowAtIndexPath: indexPath!)
             return
         }

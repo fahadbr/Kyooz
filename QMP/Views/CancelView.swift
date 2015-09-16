@@ -21,7 +21,7 @@ class CancelView : UIView {
         cancelLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50))
         cancelLabel.text = "Cancel Insert"
         cancelLabel.font = UIFont(name: ThemeHelper.defaultFontName, size: 22)
-        cancelLabel.textColor = UIColor.darkGrayColor()
+        cancelLabel.textColor = UIColor.lightGrayColor()
         cancelLabel.textAlignment = NSTextAlignment.Center
         
         super.init(frame: frame)

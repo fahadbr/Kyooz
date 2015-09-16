@@ -29,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.rootViewController = containerViewController
         window!.makeKeyAndVisible()
         
-        AudioSessionManager.instance.initializeAudioSession()
         ThemeHelper.applyGlobalAppearanceSettings()
         
         return true
