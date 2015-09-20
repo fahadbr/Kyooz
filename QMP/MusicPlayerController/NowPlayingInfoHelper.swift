@@ -19,7 +19,7 @@ class NowPlayingInfoHelper {
     }
     
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.defaultCenter()
-    let mpMediaItemPropertyList = Set<NSObject>(arrayLiteral:
+    let mpMediaItemPropertyList = Set<String>(arrayLiteral:
         MPMediaItemPropertyAlbumTitle,
         MPMediaItemPropertyAlbumTrackCount,
         MPMediaItemPropertyAlbumTrackNumber,
@@ -46,9 +46,9 @@ class NowPlayingInfoHelper {
         nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
     }
     
-    private func getDictionaryForMediaItem(mediaItem:AudioTrack) -> Dictionary<NSObject, AnyObject> {
-        var mediaInfoToPublish = Dictionary<NSObject,AnyObject>()
-        mediaItem.enumerateValuesForProperties(mpMediaItemPropertyList) { (property:String!, value:AnyObject!, UnsafeMutablePointer) -> Void in
+    private func getDictionaryForMediaItem(mediaItem:AudioTrack) -> Dictionary<String, AnyObject> {
+        var mediaInfoToPublish = Dictionary<String,AnyObject>()
+        mediaItem.enumerateValuesForProperties(mpMediaItemPropertyList) { (property:String, value:AnyObject, UnsafeMutablePointer) -> Void in
             mediaInfoToPublish[property] = value
         }
         

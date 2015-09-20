@@ -123,8 +123,8 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
-        nowPlayingQueue = mediaCollection.items as! [AudioTrack]
+    func playNowWithCollection(mediaCollection mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
+        nowPlayingQueue = mediaCollection.items
         shouldPlayAfterLoading = true
         var i = 0
         for mediaItem in nowPlayingQueue {
@@ -135,7 +135,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func playItemWithIndexInCurrentQueue(#index:Int) {
+    func playItemWithIndexInCurrentQueue(index index:Int) {
         if(index == indexOfNowPlayingItem) {
             return
         }
@@ -144,7 +144,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     }
     
     func enqueue(itemsToEnqueue:[AudioTrack]) {
-        nowPlayingQueue.extend(itemsToEnqueue)
+        nowPlayingQueue.appendContentsOf(itemsToEnqueue)
     }
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) {
@@ -159,7 +159,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         var indicies = indiciesToRemove
         if(indicies.count > 1) {
             //if removing more than 1 element, sort the array otherwise we will run into index out of bounds issues
-            indicies.sort { $0 > $1 }
+            indicies.sortInPlace { $0 > $1 }
         }
         var nowPlayingItemRemoved = false
         for index in indicies {
@@ -176,7 +176,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int) {
+    func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
         let tempMediaItem = nowPlayingQueue[fromIndexPath]
         nowPlayingQueue.removeAtIndex(fromIndexPath)
         nowPlayingQueue.insert(tempMediaItem, atIndex: toIndexPath)
@@ -190,7 +190,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func clearUpcomingItems(#fromIndex:Int) {
+    func clearUpcomingItems(fromIndex fromIndex:Int) {
         nowPlayingQueue.removeRange((fromIndex + 1)..<nowPlayingQueue.count)
         if(fromIndex < indexOfNowPlayingItem) {
             updateNowPlayingStateToIndex(0, shouldLoadAfterUpdate: true)
@@ -213,7 +213,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     
 
     private func loadMediaItem(mediaItem:AudioTrack) {
-        var url:NSURL = mediaItem.assetURL
+        let url:NSURL = mediaItem.assetURL
         let audioPlayerDidLoadItem = audioController.loadItem(url)
         if(!audioPlayerDidLoadItem) { return }
         
@@ -267,8 +267,8 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     
     //MARK: Notification Center Registration
     private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
+//        let notificationCenter = NSNotificationCenter.defaultCenter()
+//        let application = UIApplication.sharedApplication()
     }
     
     private func unregisterForNotifications() {

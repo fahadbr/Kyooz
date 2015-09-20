@@ -35,7 +35,11 @@ class AudioSessionManager : NSObject {
     
     func initializeAudioSession() {
         Logger.debug("initializing audio session")
-        audioSession.setCategory(AVAudioSessionCategoryPlayback, error: NSErrorPointer())
+        do {
+            try audioSession.setCategory(AVAudioSessionCategoryPlayback)
+        } catch let error as NSError {
+            NSErrorPointer().memory = error
+        }
 //        audioSession.setActive(true, error: NSErrorPointer())
         deviceSampleRate = audioSession.sampleRate
     }

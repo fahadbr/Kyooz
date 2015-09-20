@@ -20,9 +20,9 @@ struct ImageContainer {
     static func resizeImage(image:UIImage, toSize newSize:CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         
-        image.drawInRect(CGRect(origin: CGPoint.zeroPoint, size: newSize))
+        image.drawInRect(CGRect(origin: CGPoint.zero, size: newSize))
         
-        var newImage = UIGraphicsGetImageFromCurrentImageContext()
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage;
     }
@@ -33,7 +33,7 @@ struct ImageHelper {
     static func customSnapshotFromView(inputView:UIView) -> UIView {
         //Make an image from the input view
         UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0)
-        inputView.layer.renderInContext(UIGraphicsGetCurrentContext())
+        inputView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         

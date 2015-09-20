@@ -39,7 +39,7 @@ class SkipTrackButtonView: UIButton {
         path.appendPath(CGUtils.drawTriangleWithCurvedEdges(rightRect, isPointingRight: isForwardButton))
         
         let strokePath = UIBezierPath()
-        strokePath.lineCapStyle = kCGLineCapRound
+        strokePath.lineCapStyle = CGLineCap.Round
         strokePath.lineWidth = sideLength * 0.10
         let strokeEndX = isForwardButton ? path.bounds.maxX : path.bounds.minX
         strokePath.moveToPoint(CGPoint(x: strokeEndX, y: path.bounds.minY))

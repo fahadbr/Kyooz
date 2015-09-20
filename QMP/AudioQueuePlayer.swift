@@ -25,9 +25,9 @@ protocol AudioQueuePlayer:class {
     
     func skipForwards()
     
-    func playNowWithCollection(#mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack)
+    func playNowWithCollection(mediaCollection mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack)
     
-    func playItemWithIndexInCurrentQueue(#index:Int)
+    func playItemWithIndexInCurrentQueue(index index:Int)
     
     func enqueue(itemsToEnque:[AudioTrack])
     
@@ -35,9 +35,9 @@ protocol AudioQueuePlayer:class {
     
     func deleteItemsAtIndices(indicies:[Int])
     
-    func moveMediaItem(#fromIndexPath:Int, toIndexPath:Int)
+    func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int)
     
-    func clearUpcomingItems(#fromIndex:Int)
+    func clearUpcomingItems(fromIndex fromIndex:Int)
 }
 
 enum AudioQueuePlayerUpdate : String {
@@ -48,7 +48,7 @@ enum AudioQueuePlayerUpdate : String {
 
 struct AudioQueuePlayerNotificationPublisher {
     
-    static func publishNotification(#updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
+    static func publishNotification(updateType updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
         let notificationPublication = {() -> Void in
             let notification = NSNotification(name: updateType.rawValue, object: sender)
             NSNotificationCenter.defaultCenter().postNotification(notification)

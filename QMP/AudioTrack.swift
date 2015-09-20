@@ -23,7 +23,7 @@ import MediaPlayer
     var artwork:MPMediaItemArtwork! { get }
     var audioTrackSource:AudioTrackSource { get }
     
-    func enumerateValuesForProperties(properties: Set<NSObject>!, usingBlock block: ((String!, AnyObject!, UnsafeMutablePointer<ObjCBool>) -> Void)!)
+    func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
     
 }
 
@@ -38,6 +38,7 @@ extension MPMediaItem : AudioTrack {
     var id:UInt64 { return persistentID }
     var albumId:UInt64 { return albumPersistentID }
     var audioTrackSource:AudioTrackSource { return AudioTrackSource.iPodLibrary }
+    
 }
 
 //extension SPTPartialTrack : AudioTrack {

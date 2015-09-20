@@ -31,7 +31,7 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
     }
     
-    class func settingsViewController() -> UINavigationController {
-        return settingsStoryboard().instantiateInitialViewController() as! UINavigationController
+    class func settingsViewController() -> UIViewController {
+        return settingsStoryboard().instantiateInitialViewController()!
     }
 }

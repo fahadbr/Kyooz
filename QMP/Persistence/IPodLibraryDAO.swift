@@ -27,14 +27,14 @@ struct IPodLibraryDAO {
     
     static func queryMediaItemFromId(persistentId:AnyObject) -> AudioTrack? {
 //        Logger.debug("querying for mediaItem with persistentID:\(persistentId)")
-        var query = MPMediaQuery()
+        let query = MPMediaQuery()
         query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentId,
             forProperty: MPMediaItemPropertyPersistentID, comparisonType: MPMediaPredicateComparison.EqualTo))
         let tempQueryItems = query.items
         if(tempQueryItems == nil || tempQueryItems!.isEmpty) {
             return nil
         } else {
-            return tempQueryItems[0] as? AudioTrack
+            return tempQueryItems![0]
         }
     }
     

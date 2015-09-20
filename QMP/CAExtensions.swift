@@ -79,7 +79,7 @@ struct CoreAudioHelper {
     static func checkError(error:OSStatus) -> String{
         if error == 0 {return ""}
         
-        switch(Int(error)) {
+        switch(error) {
             // AudioToolbox
         case kAUGraphErr_NodeNotFound:
             return "Error:kAUGraphErr_NodeNotFound \n"

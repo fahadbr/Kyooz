@@ -65,7 +65,12 @@ class SimpleAudioController : NSObject, AudioController, AVAudioPlayerDelegate{
     
     func loadItem(url:NSURL) -> Bool {
         var error:NSError?
-        avAudioPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
+        do {
+            avAudioPlayer = try AVAudioPlayer(contentsOfURL: url)
+        } catch let error1 as NSError {
+            error = error1
+            avAudioPlayer = nil
+        }
         if error != nil {
             Logger.debug("Error occured with loading audio for url \(url.description): \(error!.description)")
             return false
@@ -75,7 +80,7 @@ class SimpleAudioController : NSObject, AudioController, AVAudioPlayerDelegate{
         return true
     }
     
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
         delegate.audioPlayerDidFinishPlaying(self, successfully: flag)
     }
 }

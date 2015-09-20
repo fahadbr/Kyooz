@@ -9,9 +9,9 @@
 import Foundation
 import MediaPlayer
 
-extension MPMediaItem :Equatable {
-    
-}
+//extension MPMediaItem :Equatable {
+//    
+//}
 
 public func ==(lhs:MPMediaItem, rhs:MPMediaItem) -> Bool {
     return lhs.persistentID == rhs.persistentID

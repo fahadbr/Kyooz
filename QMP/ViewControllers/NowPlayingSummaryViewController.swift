@@ -98,7 +98,6 @@ class NowPlayingSummaryViewController: UIViewController {
     //MARK: - FUNCTIONS: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        var i = 0
         
         self.playButtonImage = playPauseButton.imageForState(UIControlState.Normal)
         self.playButtonHighlightedImage = playPauseButton.imageForState(UIControlState.Highlighted)
@@ -125,7 +124,7 @@ class NowPlayingSummaryViewController: UIViewController {
     func reloadData(notification:NSNotification?) {
         if(UIApplication.sharedApplication().applicationState != UIApplicationState.Active) { return }
         
-        var nowPlayingItem = audioQueuePlayer.nowPlayingItem;
+        let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
         self.songTitleLabel.text = nowPlayingItem?.trackTitle ?? "Nothing"
         self.songTitleCollapsedLabel.text = self.songTitleLabel.text
         
@@ -190,9 +189,9 @@ class NowPlayingSummaryViewController: UIViewController {
                 self.playbackProgressCollapsedBar.progress = 0.0
                 return
             }
-            var currentPlaybackTime = self.audioQueuePlayer.currentPlaybackTime
-            var totalPlaybackTime = Float(self.audioQueuePlayer.nowPlayingItem!.playbackDuration)
-            var remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
+            let currentPlaybackTime = self.audioQueuePlayer.currentPlaybackTime
+            let totalPlaybackTime = Float(self.audioQueuePlayer.nowPlayingItem!.playbackDuration)
+            let remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
             
             self.updatePlaybackProgressBarTimeLabels(currentPlaybackTime:currentPlaybackTime, remainingPlaybackTime:remainingPlaybackTime)
             let progress = currentPlaybackTime
@@ -201,7 +200,7 @@ class NowPlayingSummaryViewController: UIViewController {
         })
     }
     
-    func updatePlaybackProgressBarTimeLabels(#currentPlaybackTime:Float, remainingPlaybackTime:Float) {
+    func updatePlaybackProgressBarTimeLabels(currentPlaybackTime currentPlaybackTime:Float, remainingPlaybackTime:Float) {
         totalPlaybackTimeLabel.text = "-" + MediaItemUtils.getTimeRepresentation(remainingPlaybackTime)
         currentPlaybackTimeLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
     }
@@ -217,8 +216,8 @@ class NowPlayingSummaryViewController: UIViewController {
     }
     
     //MARK: - FUNCTIONS: - KVOFunction
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        switch(keyPath) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        switch(keyPath!) {
         case "frame","center":
             updateAlphaLevels()
         default:

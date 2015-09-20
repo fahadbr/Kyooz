@@ -60,13 +60,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             if(insertMode) {
                 longPressGestureRecognizer.enabled = false
                 for item in toolbarItems! {
-                    (item as? UIBarButtonItem)?.enabled = false
+                    item.enabled = false
                 }
             } else {
                 longPressGestureRecognizer.enabled = true
                 indexPathOfMovingItem = nil
                 for item in toolbarItems! {
-                    (item as? UIBarButtonItem)?.enabled = true
+                    item.enabled = true
                 }
             }
         }
@@ -81,7 +81,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
-        var editButton = editButtonItem()
+        let editButton = editButtonItem()
         editButton.tintColor = UIColor.blackColor()
         toolbarItems?[0] = editButton
         
@@ -140,7 +140,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var count = audioQueuePlayer.nowPlayingQueue.count
+        let count = audioQueuePlayer.nowPlayingQueue.count
         return insertMode ? (count + 1) : count
     }
 
@@ -154,7 +154,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if(insertMode && indexPath.row == indexPathOfMovingItem.row) {
-            var cell = UITableViewCell()
+            let cell = UITableViewCell()
             cell.backgroundColor = UIColor(white: 0.9, alpha: 0.5)
             cell.textLabel?.text = "Insert Here"
             cell.textLabel?.textAlignment = NSTextAlignment.Center
@@ -246,7 +246,6 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",

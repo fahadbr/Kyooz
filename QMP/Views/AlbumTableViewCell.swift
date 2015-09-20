@@ -28,7 +28,7 @@ class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
     }
     
     func configureCellForItems(collection:MPMediaItemCollection, collectionTitleProperty:String) {
-        albumTitle?.text = collection.representativeItem.albumTitle
+        albumTitle?.text = collection.representativeItem!.albumTitle
         
         let pluralText = collection.count > 1 ? "s" : ""
         albumDetails?.text = "\(collection.count) Track\(pluralText)"

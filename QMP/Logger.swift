@@ -15,7 +15,7 @@ class Logger {
     class func debug(message:String) {
         let date = NSDate()
         dispatch_async(loggerQueue) {
-            println("\(date.description) [DEBUG]:  \(message)")
+            print("\(date.description) [DEBUG]:  \(message)")
         }
     }
     

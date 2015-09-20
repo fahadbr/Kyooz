@@ -17,7 +17,7 @@ extension String {
         let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
         
         CC_MD5(str!, strLen, result)
-        var hash = NSMutableString()
+        let hash = NSMutableString()
         for i in 0..<digestLen {
             hash.appendFormat("%02x", result[i])
         }
@@ -28,7 +28,7 @@ extension String {
     }
     
     var urlEncodedString:String! {
-        var encodedString = CFURLCreateStringByAddingPercentEscapes(nil,
+        let encodedString = CFURLCreateStringByAddingPercentEscapes(nil,
             self as CFString,
             nil,
             "!*'();:@&=+$,/?%#[]" as CFString,
@@ -37,7 +37,7 @@ extension String {
     }
     
     subscript (i: Int) -> Character {
-        return self[advance(self.startIndex, i)]
+        return self[self.startIndex.advancedBy(i)]
     }
     
     subscript (i: Int) -> String {
@@ -45,7 +45,7 @@ extension String {
     }
     
     subscript (r: Range<Int>) -> String {
-        return substringWithRange(Range(start: advance(startIndex, r.startIndex), end: advance(startIndex, r.endIndex)))
+        return substringWithRange(Range(start: startIndex.advancedBy(r.startIndex), end: startIndex.advancedBy(r.endIndex)))
     }
     
     func containsIgnoreCase(stringToCheck:String) -> (doesContain:Bool, rangeOfString:Range<String.Index>?) {

@@ -39,7 +39,7 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! AlbumTableViewCell
-        var album = albums[indexPath.row]
+        let album = albums[indexPath.row]
         cell.configureCellForItems(album, collectionTitleProperty: MPMediaItemPropertyAlbumTitle)
         
         return cell
@@ -49,15 +49,13 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if(segue.identifier != nil && segue.identifier! == albumToSongSegueIdentifier) {
-            var vc = segue.destinationViewController as! FilteredSongTableViewController
+            let vc = segue.destinationViewController as! FilteredSongTableViewController
             //var vc = nc.topViewController as FilteredAlbumTableViewController
-            var indexPath = self.tableView.indexPathForSelectedRow()
+            let indexPath = self.tableView.indexPathForSelectedRow
             if(indexPath != nil) {
-                var indexPathUnwrapped = indexPath!
-                var album = albums[indexPathUnwrapped.row]
-                var albumName = album.representativeItem.albumTitle
+                let indexPathUnwrapped = indexPath!
+                let album = albums[indexPathUnwrapped.row]
                 vc.songs = album
-//                vc.title = albumName
                 vc.tableView.reloadData()
             }
         }
@@ -74,9 +72,9 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
         return true;
     }
     
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var albumSongs = self.albums[indexPath.row].items as! [AudioTrack]
-        var enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction(albumSongs, tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
+    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let albumSongs = albums[indexPath.row].items
+        let enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction(albumSongs, tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
         return [enqueueAction]
     }
     
@@ -92,8 +90,8 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     
     //MARK: Overriding QueableMediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        if let items = albums[indexPath.row].items as? [AudioTrack] {
-            return items
+        if indexPath.row < albums.count {
+            return albums[indexPath.row].items
         }
         return [AudioTrack]()
     }

@@ -10,11 +10,11 @@ import Foundation
 
 extension Array {
     
-    mutating func insertAtIndex(itemsToInsert:[T], index:Int, placeHolderItem:T) {
+    mutating func insertAtIndex(itemsToInsert:[Element], index:Int, placeHolderItem:Element) {
         if(itemsToInsert.isEmpty) { return }
         
         if(index == self.count) {
-            self.extend(itemsToInsert)
+            self.appendContentsOf(itemsToInsert)
             return
         }
         
@@ -29,7 +29,7 @@ extension Array {
         let endIndexOfInsertedItems = index + itemsToInsert.count
         let newArraySize = originalArray.count + itemsToInsert.count
         
-        var newArray = [T](count:newArraySize, repeatedValue:placeHolderItem)
+        var newArray = [Element](count:newArraySize, repeatedValue:placeHolderItem)
         
         for i in 0..<newArraySize {
             if(index <= i && i < endIndexOfInsertedItems) {

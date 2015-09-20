@@ -47,7 +47,10 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
-        let song = songs.representativeItem
+        guard let song = songs.representativeItem else {
+            Logger.debug("couldnt representitive item of songs array")
+            return nil
+        }
         cell.textLabel?.text = song.albumTitle
         cell.textLabel?.font = ThemeHelper.defaultFont
         cell.textLabel?.textColor = UIColor.whiteColor()
@@ -75,7 +78,7 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(AlbumTrackTableViewCell.reuseIdentifier, forIndexPath: indexPath) as! AlbumTrackTableViewCell
 
-        let track = songs.items[indexPath.row] as! AudioTrack
+        let track = songs.items[indexPath.row] as AudioTrack
         cell.configureCellForItem(track)
         
         if let currentTrack = audioQueuePlayer.nowPlayingItem {
@@ -87,8 +90,8 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        var index = indexPath.row
-        var nowPlayingItem = songs.items[index] as! AudioTrack
+        let index = indexPath.row
+        let nowPlayingItem = songs.items[index] as AudioTrack
         audioQueuePlayer.playNowWithCollection(mediaCollection: songs,
             itemToPlay: nowPlayingItem)
 //        RootViewController.instance.animatePullablePanel(shouldExpand: true)
@@ -98,9 +101,9 @@ class FilteredSongTableViewController: MediaItemTableViewController {
         return true;
     }
     
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        var song = self.songs.items[indexPath.row] as! AudioTrack
-        var enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction([song], tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
+    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let song = self.songs.items[indexPath.row] as AudioTrack
+        let enqueueAction = musicPlayerTableViewActionFactory.createEnqueueAction([song], tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
         return [enqueueAction]
     }
     
@@ -112,7 +115,7 @@ class FilteredSongTableViewController: MediaItemTableViewController {
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         } else {
-            var cell = tableView.cellForRowAtIndexPath(indexPath)
+            let cell = tableView.cellForRowAtIndexPath(indexPath)
             cell?.endEditing(true)
         }
         
@@ -121,8 +124,8 @@ class FilteredSongTableViewController: MediaItemTableViewController {
 
     //MARK: Overriding QueableMediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        if let items = songs.items as? [AudioTrack] {
-            let mediaItem = items[indexPath.row]
+        if songs.count > 0 {
+            let mediaItem = songs.items[indexPath.row]
             return [mediaItem]
         }
         return [AudioTrack]()
@@ -135,7 +138,6 @@ class FilteredSongTableViewController: MediaItemTableViewController {
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",

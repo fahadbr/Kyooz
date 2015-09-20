@@ -38,7 +38,7 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         didSet {
             showShadowForCenterViewController(sidePanelExpanded)
             for gestureRecognizerObject in rootViewController.view.gestureRecognizers! {
-                let gestureRecognizer = gestureRecognizerObject as! UIGestureRecognizer
+                let gestureRecognizer = gestureRecognizerObject 
                 if(gestureRecognizer == tapGestureRecognizer || gestureRecognizer == panGestureRecognizer) {
                     gestureRecognizer.enabled = sidePanelExpanded
                 } else {
@@ -122,7 +122,7 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         }
     }
     
-    func animateSidePanel(#shouldExpand: Bool) {
+    func animateSidePanel(shouldExpand shouldExpand: Bool) {
         if(shouldExpand) {
             sidePanelExpanded = true
             
@@ -136,7 +136,14 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         }
     }
     
-    private func transformForFraction(fraction:CGFloat) -> CATransform3D{
+    private func transformForFraction(var fraction:CGFloat) -> CATransform3D{
+        //make sure that the fraction does not go past the 1 or 0 bounds
+        if fraction < 0 {
+            fraction = 0
+        } else if fraction > 1 {
+            fraction = 1
+        }
+        
         var identity = CATransform3DIdentity
         identity.m34 = -1.0/1000
         let angle = Double(1.0 - fraction) * M_PI_2
@@ -149,19 +156,13 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         return CATransform3DConcat(rotateTransform, translateTransform)
     }
     
-    private func animateCenterPanelXPosition(#targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
-        UIView.animateWithDuration(0.5,
-            delay: 0,
-            usingSpringWithDamping: 0.8,
-            initialSpringVelocity: 0,
-            options: .CurveEaseInOut,
-            animations: {
-                self.rootViewController.view.frame.origin.x = targetPosition
-                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
-                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
-                self.nowPlayingNavigationController?.view.alpha = fraction
-            },
-            completion: completion)
+    private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.rootViewController.view.frame.origin.x = targetPosition
+            let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
+            self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
+            self.nowPlayingNavigationController?.view.alpha = fraction
+            }, completion: completion)
         
     }
     
@@ -239,8 +240,18 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     }
     
     private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
-        recognizer.view!.center.x = recognizer.view!.center.x + recognizer.translationInView(view).x
-        var fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
+        var newOriginX = recognizer.view!.frame.origin.x + recognizer.translationInView(view).x
+        
+        if newOriginX < centerPanelExpandedXPosition {
+            newOriginX = centerPanelExpandedXPosition
+        } else if newOriginX > 0 {
+            newOriginX = 0
+        }
+        
+        recognizer.view!.frame.origin.x = newOriginX
+        
+        //the fraction is the percentage the center view controller has moved with respect to its final position (centerPanelExpandedXPosition)
+        let fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
         let transform = transformForFraction(fraction)
         nowPlayingNavigationController?.view.layer.transform = transform
         nowPlayingNavigationController?.view.alpha = fraction
@@ -248,7 +259,6 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     }
     
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
-        let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
         
         switch(recognizer.state) {
         case .Changed:

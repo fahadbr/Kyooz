@@ -53,7 +53,7 @@ class AudioEngineController : AudioController {
     
     private func initializeAudioEngine() {
         audioEngine.attachNode(playerNode)
-        var mixer = audioEngine.mainMixerNode
+        let mixer = audioEngine.mainMixerNode
         audioEngine.connect(playerNode, to: mixer, format: mixer.outputFormatForBus(0))
         audioEngine.prepare()
         
@@ -68,7 +68,14 @@ class AudioEngineController : AudioController {
     func play() -> Bool {
         if(!audioEngine.running) {
             var error:NSError?
-            let successful = audioEngine.startAndReturnError(&error)
+            let successful: Bool
+            do {
+                try audioEngine.start()
+                successful = true
+            } catch let error1 as NSError {
+                error = error1
+                successful = false
+            }
             if(!successful || error != nil) {
                 Logger.debug("Error with starting audio engine: \(error?.description)")
                 return false
@@ -99,13 +106,16 @@ class AudioEngineController : AudioController {
     
     private func getAudioFile(url:NSURL) -> AVAudioFile! {
         var error:NSError?
-        if let audioFile = AVAudioFile(forReading: url, error: &error){
+        do {
+            let audioFile = try AVAudioFile(forReading: url)
             if(error != nil) {
                 Logger.debug("Error with loading audio file: \(error!.localizedDescription)")
                 return nil
             }
             
             return audioFile
+        } catch let error1 as NSError {
+            error = error1
         }
         return nil
     }
@@ -133,8 +143,14 @@ class AudioEngineController : AudioController {
             for i in 0..<numberOfBuffersToSchedule {
                 var error:NSError? = nil
                 
-                var bufferToUse = AVAudioPCMBuffer(PCMFormat: self.audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: self.audioToBuffer.defaultBufferCapacity)
-                self.audioToBuffer.sourceAudioFile.readIntoBuffer(bufferToUse, error: &error)
+                let bufferToUse = AVAudioPCMBuffer(PCMFormat: self.audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: self.audioToBuffer.defaultBufferCapacity)
+                do {
+                    try self.audioToBuffer.sourceAudioFile.readIntoBuffer(bufferToUse)
+                } catch let error1 as NSError {
+                    error = error1
+                } catch {
+                    fatalError()
+                }
         
                 if(error != nil) {
                     Logger.debug("Error with reading audio file into buffer: \(error!.localizedDescription)")
