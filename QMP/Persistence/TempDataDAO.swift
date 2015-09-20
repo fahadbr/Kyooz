@@ -11,10 +11,10 @@ import MediaPlayer
 
 class TempDataDAO : NSObject {
     //MARK: STATIC PROPERTIES
-    private static let tempDirectory = NSTemporaryDirectory()
-    private static let nowPlayingQueueFileName = tempDirectory.stringByAppendingPathComponent("nowPlayingQueue.txt")
-    private static let playbackStateFileName = tempDirectory.stringByAppendingPathComponent("playbackState.txt")
-    private static let lastFmScrobbleCacheFileName = tempDirectory.stringByAppendingPathComponent("lastFmScrobbleCache.txt")
+    private static let tempDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory())
+    private static let nowPlayingQueueFileName = tempDirectory.URLByAppendingPathComponent("nowPlayingQueue.txt").path!
+    private static let playbackStateFileName = tempDirectory.URLByAppendingPathComponent("playbackState.txt").path!
+    private static let lastFmScrobbleCacheFileName = tempDirectory.URLByAppendingPathComponent("lastFmScrobbleCache.txt").path!
     
     private static let INDEX_OF_NOW_PLAYING_ITEM_KEY = "indexOfNowPlayingItem"
     private static let CURRENT_PLAYBACK_TIME_KEY = "currentPlaybackTime"
@@ -134,7 +134,11 @@ class TempDataDAO : NSObject {
     private func removeFile(filePath:String) {
         if(NSFileManager.defaultManager().fileExistsAtPath(filePath)) {
             var error:NSError?
-            NSFileManager.defaultManager().removeItemAtPath(filePath, error: &error)
+            do {
+                try NSFileManager.defaultManager().removeItemAtPath(filePath)
+            } catch let error1 as NSError {
+                error = error1
+            }
             if let errorMessage = error?.description {
                 Logger.debug("could not remove file for reason: \(errorMessage)")
             }

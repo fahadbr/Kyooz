@@ -29,7 +29,7 @@ struct ThemeHelper {
     static let barsAreTranslucent = true
     
     static func applyGlobalAppearanceSettings() {
-        var titleTextAttributes = [NSObject : AnyObject]()
+        var titleTextAttributes = [String : AnyObject]()
         titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontName, size:CGFloat(18.0))
         
         UINavigationBar.appearance().titleTextAttributes = titleTextAttributes
@@ -37,7 +37,7 @@ struct ThemeHelper {
         UINavigationBar.appearance().barStyle = defaultBarStyle
         UINavigationBar.appearance().translucent = barsAreTranslucent
         
-        var uiBarButtonTextAttributes = [NSObject : AnyObject]()
+        var uiBarButtonTextAttributes = [String : AnyObject]()
         uiBarButtonTextAttributes[NSFontAttributeName] = defaultFont
         UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: UIControlState.Normal)
         UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: UIControlState.Highlighted)

@@ -30,7 +30,6 @@
 		0B13DA211AE6FA9A00CC5C01 /* PlaybackStateDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */; };
 		0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */; };
 		0B13DA231AE6FA9A00CC5C01 /* AudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA0E1AE6FA9A00CC5C01 /* AudioQueuePlayer.swift */; };
-		0B13DA241AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA0F1AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift */; };
 		0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */; };
 		0B13DA271AE6FB0400CC5C01 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */; };
 		0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */; };
@@ -65,7 +64,6 @@
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
 		0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE21891B10D78E0074DA47 /* AudioController.swift */; };
 		0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE218B1B10DB6C0074DA47 /* SimpleAudioController.swift */; };
-		0BCE218E1B10E5D20074DA47 /* AudioGraphController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE218D1B10E5D20074DA47 /* AudioGraphController.swift */; };
 		0BCE21921B1213D00074DA47 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BCE21911B1213D00074DA47 /* AudioToolbox.framework */; };
 		0BCE21941B122D420074DA47 /* CAExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCE21931B122D420074DA47 /* CAExtensions.swift */; };
 		0BCE21971B12C5300074DA47 /* Track1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 0BCE21951B12C5300074DA47 /* Track1.mp4 */; };
@@ -121,7 +119,6 @@
 		0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlaybackStateDTO.swift; path = ../PlaybackStateDTO.swift; sourceTree = "<group>"; };
 		0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = PlaybackStateManager.swift; path = ../PlaybackStateManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA0E1AE6FA9A00CC5C01 /* AudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = AudioQueuePlayer.swift; path = ../AudioQueuePlayer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0B13DA0F1AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = StagedAudioQueuePlayer.swift; path = ../StagedAudioQueuePlayer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeHelper.swift; sourceTree = "<group>"; };
 		0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -157,7 +154,6 @@
 		0BBE16011AF6AC9B007C6189 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Logger.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BCE21891B10D78E0074DA47 /* AudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BCE218B1B10DB6C0074DA47 /* SimpleAudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SimpleAudioController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0BCE218D1B10E5D20074DA47 /* AudioGraphController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioGraphController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BCE21911B1213D00074DA47 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		0BCE21931B122D420074DA47 /* CAExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAExtensions.swift; sourceTree = "<group>"; };
 		0BCE21951B12C5300074DA47 /* Track1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = Track1.mp4; path = MusicPlayerController/Track1.mp4; sourceTree = "<group>"; };
@@ -276,7 +272,6 @@
 			children = (
 				0BCE21901B120DE10074DA47 /* StagedQueueAudioPlayer */,
 				0BCE21A21B1403C70074DA47 /* AudioEngineController.swift */,
-				0BCE218D1B10E5D20074DA47 /* AudioGraphController.swift */,
 				0BCE21891B10D78E0074DA47 /* AudioController.swift */,
 				0B13DA0E1AE6FA9A00CC5C01 /* AudioQueuePlayer.swift */,
 				0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */,
@@ -401,7 +396,6 @@
 			children = (
 				0B13DA0C1AE6FA9A00CC5C01 /* PlaybackStateDTO.swift */,
 				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
-				0B13DA0F1AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift */,
 				0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */,
 			);
 			name = StagedQueueAudioPlayer;
@@ -482,7 +476,9 @@
 		0B13D9B31AE6F80E00CC5C01 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "FAHAD RIAZ";
 				TargetAttributes = {
 					0B13D9BA1AE6F80E00CC5C01 = {
@@ -584,7 +580,6 @@
 				0B13DA161AE6FA9A00CC5C01 /* FilteredAlbumTableViewController.swift in Sources */,
 				0B13DA151AE6FA9A00CC5C01 /* ArtistTableViewController.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
-				0BCE218E1B10E5D20074DA47 /* AudioGraphController.swift in Sources */,
 				0B13DA1F1AE6FA9A00CC5C01 /* MusicPlayerTableViewActionFactory.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
 				0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */,
@@ -608,7 +603,6 @@
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
 				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
-				0B13DA241AE6FA9A00CC5C01 /* StagedAudioQueuePlayer.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioTrackCollection.swift in Sources */,
 				0B13DA1B1AE6FA9A00CC5C01 /* AlbumTableViewCell.swift in Sources */,
 			);
@@ -673,6 +667,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -738,7 +733,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -754,6 +748,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "";
@@ -767,7 +762,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -783,6 +777,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
@@ -804,6 +799,7 @@
 				);
 				INFOPLIST_FILE = QMPTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = KyoozTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QMP.app/QMP";
 			};
@@ -819,6 +815,7 @@
 				);
 				INFOPLIST_FILE = QMPTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = KyoozTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QMP.app/QMP";
 			};

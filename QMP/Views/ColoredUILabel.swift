@@ -19,7 +19,7 @@ class ColoredUILabel : UILabel {
         textColor = labelColor
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         textColor = labelColor
     }

@@ -26,9 +26,9 @@ struct MediaItemUtils {
             return zeroTime
         }
         
-        var min:String = "\(Int(timevalue)/60)"
-        var secValue = Int(timevalue)%60
-        var sec = secValue < 10 ? "0\(secValue)" : "\(secValue)"
+        let min:String = "\(Int(timevalue)/60)"
+        let secValue = Int(timevalue)%60
+        let sec = secValue < 10 ? "0\(secValue)" : "\(secValue)"
         
         return "\(min):\(sec)"
     }

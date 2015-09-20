@@ -89,8 +89,8 @@ class RootViewController: UIViewController, DragSource {
         pullableViewExpanded = false
     }
 
-    func enableGesturesInSubViews(#shouldEnable:Bool) {
-        self.libraryNavigationController.interactivePopGestureRecognizer.enabled = shouldEnable
+    func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
+        self.libraryNavigationController.interactivePopGestureRecognizer!.enabled = shouldEnable
         self.nowPlayingPanGestureRecognizer.enabled = shouldEnable
         self.nowPlayingTapGestureRecognizer.enabled = shouldEnable
     }
@@ -142,10 +142,10 @@ class RootViewController: UIViewController, DragSource {
         if(pullableViewExpanded) {
             animatePullablePanel(shouldExpand: false)
         }
-        libraryNavigationController.showViewController(UIStoryboard.settingsViewController(), sender: self)
+        libraryNavigationController.pushViewController(UIStoryboard.settingsViewController(), animated: true)
     }
     
-    func animatePullablePanel(#shouldExpand:Bool) {
+    func animatePullablePanel(shouldExpand shouldExpand:Bool) {
         if(shouldExpand) {
             pullableViewExpanded = true
             
@@ -160,7 +160,7 @@ class RootViewController: UIViewController, DragSource {
     }
     
     
-    func animatePullablePanelYPosition(#targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
+    func animatePullablePanelYPosition(targetPosition targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
         UIView.animateWithDuration(0.5,
             delay: 0,
             usingSpringWithDamping: 1,

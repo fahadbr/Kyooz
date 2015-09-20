@@ -29,11 +29,12 @@ class LastfmLoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         updateViewBasedOnSession()
+        view.backgroundColor = ThemeHelper.defaultTableCellColor
         errorLabel.hidden = true
     }
     
     @IBAction func doLogIn(sender: AnyObject) {
-        lastFmScrobbler.initializeSession(usernameForSession: usernameField.text, password: passwordField.text) { [weak self](response:String, logInSuccessful:Bool) in
+        lastFmScrobbler.initializeSession(usernameForSession: usernameField.text!, password: passwordField.text!) { [weak self](response:String, logInSuccessful:Bool) in
             dispatch_async(dispatch_get_main_queue()) {
                 self?.updateViewBasedOnSession()
                 self?.loggedInFailed = !logInSuccessful

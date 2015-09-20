@@ -88,10 +88,10 @@ class PlaybackStateManager: NSObject {
     
     func handlePlaybackStateChanged(notification:NSNotification){
         if(notification.userInfo != nil) {
-            var object: AnyObject? = notification.userInfo!["MPMusicPlayerControllerPlaybackStateKey"]
+            let object: AnyObject? = notification.userInfo!["MPMusicPlayerControllerPlaybackStateKey"]
             if(object != nil) {
-                var stateRawValue = object! as! Int
-                var stateToSet = MPMusicPlaybackState(rawValue: stateRawValue)
+                let stateRawValue = object! as! Int
+                let stateToSet = MPMusicPlaybackState(rawValue: stateRawValue)
                 if(stateToSet != nil) {
                     self.musicPlaybackState = stateToSet!
                     Logger.debug("CurrentPlaybackState: " + self.musicPlaybackState.rawValue.description)

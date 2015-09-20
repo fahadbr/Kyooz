@@ -24,12 +24,12 @@ class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell 
         detailTextLabel?.textColor = UIColor.lightGrayColor()
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     func configureCellForItems(collection:MPMediaItemCollection, collectionTitleProperty:String) {
-        textLabel?.text = collection.representativeItem.valueForProperty(collectionTitleProperty) as? String
+        textLabel?.text = collection.representativeItem!.valueForProperty(collectionTitleProperty) as? String
 
         let pluralText = collection.count > 1 ? "s" : ""
         detailTextLabel?.text = "\(collection.count) Track\(pluralText)"

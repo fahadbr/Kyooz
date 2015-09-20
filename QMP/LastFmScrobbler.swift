@@ -38,7 +38,7 @@ class LastFmScrobbler {
     
     let error_key = "error"
     let error_code_key = "error.code"
-    let httpFailure = "httpFailure" as NSMutableString
+    let httpFailure = "httpFailure"
     
     let USER_DEFAULTS_SESSION_KEY = "SESSION_KEY"
     let USER_DEFAULTS_USERNAME_KEY = "USERNAME_KEY"
@@ -82,24 +82,24 @@ class LastFmScrobbler {
                 return
             }
             
-            var params:[String:String] = [
+            let params:[String:String] = [
                 self.api_key:self.api_key_value,
                 self.sk : self.session,
                 self.method: self.method_getSessionInfo,
                 self.username: self.username_value
             ]
-            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:NSMutableString]) in
+            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
                     Logger.debug("logging into lastfm was a SUCCESS")
                     self.validSessionObtained = true
-            },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
+            },  failureHandler: { [unowned self](info:[String:String]) -> () in
                     Logger.debug("could not validate existing session because of error: \(info[self.error_key]), will attempt to get a new one")
             })
         }
     }
     
-    func initializeSession(#usernameForSession:String, password:String, completionHandler:(String, logInSuccessful:Bool) -> Void) {
+    func initializeSession(usernameForSession usernameForSession:String, password:String, completionHandler:(String, logInSuccessful:Bool) -> Void) {
         Logger.debug("attempting to log in as \(usernameForSession)")
-        var params:[String:String] = [
+        let params:[String:String] = [
             api_key:api_key_value,
             authToken: "\(usernameForSession)\(password.md5)".md5,
             method: method_getUserSession,
@@ -107,7 +107,7 @@ class LastFmScrobbler {
         ]
         
         
-        buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:NSMutableString]) in
+        buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
             if let key = info["key"], let name = info["name"] {
                 Logger.debug("successfully retrieved session for user \(name)")
                 NSUserDefaults.standardUserDefaults().setObject(key, forKey: self.USER_DEFAULTS_SESSION_KEY)
@@ -117,7 +117,7 @@ class LastFmScrobbler {
                 self.validSessionObtained = true
                 completionHandler("Logged in as \(self.username_value)", logInSuccessful:true)
             }
-        },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
+        },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("failed to retrieve session because of error: \(info[self.error_key])")
             completionHandler("Failed to log in: \(info[self.error_key])", logInSuccessful:false)
         })
@@ -154,9 +154,9 @@ class LastFmScrobbler {
                 params[self.albumArtist] = mediaItem.albumArtist
             }
             
-            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:NSMutableString]) in
+            self.buildApiSigAndCallWS(params, successHandler: { (info:[String:String]) in
                 Logger.debug("scrobble was successful for mediaItem: \(mediaItem.trackTitle)")
-            },  failureHandler: { [unowned self](info:[String:NSMutableString]) -> () in
+            },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[self.error_key])")
                 if(info[self.error_key] != nil && info[self.error_key]! == self.httpFailure) {
                     self.addToScrobbleCache(mediaItem, timeStampToScrobble: timeStampToScrobble)
@@ -169,7 +169,6 @@ class LastFmScrobbler {
         if(scrobbleCache.isEmpty) { return }
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [unowned self]() -> Void in
             Logger.debug("submitting the scrobble cache")
-            var params = [String:String]()
             let maxValue = self.scrobbleCache.count
             for var i=0 ; i < maxValue ;  {
                 let nextIncrement = i + self.BATCH_SIZE
@@ -193,10 +192,10 @@ class LastFmScrobbler {
             params[self.api_key] = self.api_key_value
             params[self.sk] = self.session
             
-            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String : NSMutableString]) -> Void in
+            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String : String]) -> Void in
                 Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
                 self.scrobbleCache.removeAll(keepCapacity: true)
-                }, failureHandler: { [unowned self](info:[String : NSMutableString]) -> () in
+                }, failureHandler: { [unowned self](info:[String : String]) -> () in
                     Logger.debug("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
                     if(info[self.error_key] != nil && info[self.error_key]! != self.httpFailure) {
                         self.scrobbleCache.removeAll(keepCapacity: true)
@@ -217,10 +216,10 @@ class LastFmScrobbler {
         scrobbleCache.append(scrobbleDict)
     }
     
-    private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:NSMutableString]) -> Void, failureHandler lastFmFailureHandler: ([String:NSMutableString]) -> ()) {
+    private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:String]) -> Void, failureHandler lastFmFailureHandler: ([String:String]) -> ()) {
 
         
-        var orderedParamKeys = getOrderedParamKeys(params)
+        let orderedParamKeys = getOrderedParamKeys(params)
         let apiSig = buildApiSig(params, orderedParamKeys: orderedParamKeys)
         
         var newParams = [String]()
@@ -232,7 +231,7 @@ class LastFmScrobbler {
         newParams.append("\(api_sig)=\(apiSig)")
         
         SimpleWSClient.instance.executeHTTPSPOSTCall(baseURL: API_URL, params: newParams,
-            successHandler: { [unowned self](info:[String:NSMutableString]) in
+            successHandler: { [unowned self](info:[String:String]) in
                 if(info[self.status_key]! == self.status_ok) {
                     lastFmSuccessHandler(info)
                 } else if (info[self.status_key]! == self.status_failed) {
@@ -250,10 +249,10 @@ class LastFmScrobbler {
     
     private func getOrderedParamKeys(params:[String:String]) -> [String] {
         var orderedParamKeys = [String]()
-        for (key, value) in params {
+        for (key, _) in params {
             orderedParamKeys.append(key)
         }
-        orderedParamKeys.sort { (val1:String, val2:String) -> Bool in
+        orderedParamKeys.sortInPlace { (val1:String, val2:String) -> Bool in
             return val1.caseInsensitiveCompare(val2) == NSComparisonResult.OrderedAscending
         }
         return orderedParamKeys
@@ -261,7 +260,7 @@ class LastFmScrobbler {
     
     
     private func buildApiSig(params:[String:String], orderedParamKeys:[String]) -> String {
-        var apiSig = NSMutableString()
+        let apiSig = NSMutableString()
         for paramKey in orderedParamKeys {
             apiSig.appendString("\(paramKey)\(params[paramKey]!)")
         }

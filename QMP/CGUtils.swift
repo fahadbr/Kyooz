@@ -25,11 +25,10 @@ struct CGUtils {
         let pointB = CGPoint(x: baseX, y: center.y + sideLength/2)
         let pointC = CGPoint(x: tipX, y: center.y)
         
-        let invertedFactor:CGFloat = isPointingRight ? 1 : -1
         let inset = min(rect.height * 0.03, rect.width * 0.03)
         let insetX = isPointingRight ? inset : inset * -1
         
-        var path = UIBezierPath()
+        let path = UIBezierPath()
         path.moveToPoint(CGPoint(x: pointA.x, y: pointA.y + inset))
         path.addLineToPoint(CGPoint(x: pointB.x, y: pointB.y - inset))
         path.addQuadCurveToPoint(CGPoint(x: pointB.x + insetX, y: pointB.y), controlPoint: pointB)

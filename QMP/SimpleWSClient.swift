@@ -15,9 +15,9 @@ class SimpleWSClient {
     private let httpPOSTMethod = "POST"
     private let timeoutInSeconds = 15.0
     
-    func executeHTTPSPOSTCall(#baseURL:String, params:[String],
-        successHandler:([String:NSMutableString]) -> Void, failureHandler: () -> ()) {
-        var urlAsString = baseURL
+    func executeHTTPSPOSTCall(baseURL baseURL:String, params:[String],
+        successHandler:([String:String]) -> Void, failureHandler: () -> ()) {
+        let urlAsString = baseURL
        
         
         let url = NSURL(string: urlAsString)
@@ -26,17 +26,17 @@ class SimpleWSClient {
         
         let postParamString = (params as NSArray).componentsJoinedByString("&")
             
-//        Logger.debug("URL BODY: \(postParamString)")
         let body = postParamString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         urlRequest.HTTPBody = body
+        Logger.debug("URL: \(urlRequest.URL?.absoluteString)")
         let queue = NSOperationQueue()
         queue.qualityOfService = NSQualityOfService.Background
         
-        NSURLConnection.sendAsynchronousRequest(urlRequest, queue: queue) { (response:NSURLResponse!, data:NSData!, error:NSError!) -> Void in
-            if data != nil && data.length > 0 && error == nil {
-                let html = NSString(data: data, encoding: NSUTF8StringEncoding)
-                var parser = NSXMLParser(data: data)
-                var parserDelegate = SimpleXMLParserDelegate()
+        NSURLConnection.sendAsynchronousRequest(urlRequest, queue: queue) { (response:NSURLResponse?, returnData:NSData?, error:NSError?) -> Void in
+            if let data = returnData where data.length > 0 && error == nil {
+//                let html = NSString(data: data, encoding: NSUTF8StringEncoding)
+                let parser = NSXMLParser(data: data)
+                let parserDelegate = SimpleXMLParserDelegate()
                 parser.delegate = parserDelegate
                 parser.parse()
 //                Logger.debug("html response = \(html)")
@@ -44,7 +44,7 @@ class SimpleWSClient {
                 
                 successHandler(parserDelegate.xmlInfo)
                 
-            } else if data != nil && data.length == 0 && error == nil {
+            } else if let data = returnData where data.length == 0 && error == nil {
                 Logger.debug("nothing was downloaded")
             } else if error != nil {
                 Logger.debug("Error occurred: \(error)")
@@ -60,29 +60,29 @@ class SimpleWSClient {
  //MARK: NSXMLParserDelegate properties and methods
 class SimpleXMLParserDelegate : NSObject, NSXMLParserDelegate {
     
-    var xmlInfo:[String:NSMutableString] = [String:NSMutableString]()
+    var xmlInfo:[String:String] = [String:String]()
     var elements:[String] = [String]()
     
     
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?,
-        qualifiedName qName: String?, attributes attributeDict: [NSObject : AnyObject]) {
-            xmlInfo[elementName] = NSMutableString()
+        qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+            xmlInfo[elementName] = ""
             elements.append(elementName)
             
             if attributeDict.count > 0 {
                 for (cObj, sObj) in attributeDict {
-                    let key = cObj as? String
-                    let value = sObj as? NSMutableString
-                    if(key != nil && value != nil) {
-                        xmlInfo["\(elementName).\(key!)"] = value!
-                    }
+                    let key = cObj
+                    let value = sObj
+
+                    xmlInfo["\(elementName).\(key)"] = value
+
                 }
             }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String?) {
+    func parser(parser: NSXMLParser, foundCharacters string: String) {
         if let elementName = elements.last {
-            xmlInfo[elementName]?.appendString(string!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()))
+            xmlInfo[elementName]?.appendContentsOf(string.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()))
         }
     }
     

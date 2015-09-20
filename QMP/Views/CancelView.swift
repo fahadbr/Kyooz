@@ -32,7 +32,7 @@ class CancelView : UIView {
         cancelLabel.center = center
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("Coder initializer for CancelView is not implemented")
     }
     
