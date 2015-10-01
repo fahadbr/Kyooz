@@ -46,7 +46,7 @@ class PlayPauseButtonView: UIButton {
         
         if hasOuterFrame {
             let outerRect = CGRectInset(rect, rect.width * 0.01, rect.height * 0.01)
-            let outerRectPath = drawRectWithCurvedEdges(outerRect)
+            let outerRectPath = CGUtils.drawRectWithCurvedEdges(outerRect)
             outerRectPath.stroke()
         }
     }
@@ -84,42 +84,15 @@ class PlayPauseButtonView: UIButton {
             y: center.y - pauseButtonRectHeight/2)
         let firstRect = CGRect(origin: firstRectOrigin, size: pauseButtonRectSize)
         
-        let firstRectPath = drawRectWithCurvedEdges(firstRect)
+        let firstRectPath = CGUtils.drawRectWithCurvedEdges(firstRect)
         
         let secondRectOrigin = CGPoint(
             x: center.x + gap/2,
             y: center.y - pauseButtonRectHeight/2)
         let secondRect = CGRect(origin: secondRectOrigin, size: pauseButtonRectSize)
-        firstRectPath.appendPath(drawRectWithCurvedEdges(secondRect))
+        firstRectPath.appendPath(CGUtils.drawRectWithCurvedEdges(secondRect))
         
         return firstRectPath
     }
-    
-    private func drawRectWithCurvedEdges(rect:CGRect) -> UIBezierPath {
-        let path = UIBezierPath()
-        let origin = rect.origin
-        let point2 = CGPoint(x:rect.maxX, y:rect.minY)
-        let point3 = CGPoint(x:rect.maxX, y:rect.maxY)
-        let point4 = CGPoint(x:rect.minX, y:rect.maxY)
-        
-        let inset = min(rect.width * 0.15, rect.height * 0.15)
-        
-        path.moveToPoint(CGPoint(x: origin.x + inset, y: origin.y))
-
-        path.addLineToPoint(CGPoint(x: point2.x - inset, y: point2.y))
-        path.addQuadCurveToPoint(CGPoint(x: point2.x, y: point2.y + inset), controlPoint: point2)
-        path.addLineToPoint(CGPoint(x: point3.x, y: point3.y - inset))
-        path.addQuadCurveToPoint(CGPoint(x: point3.x - inset , y: point3.y), controlPoint: point3)
-        path.addLineToPoint(CGPoint(x: point4.x + inset, y: point4.y))
-        path.addQuadCurveToPoint(CGPoint(x: point4.x, y: point4.y - inset), controlPoint: point4)
-        path.addLineToPoint(CGPoint(x: origin.x, y: origin.y + inset))
-        path.addQuadCurveToPoint(CGPoint(x: origin.x + inset, y: origin.y), controlPoint: origin)
-        
-        return path
-    }
-    
-    
-
-    
 
 }

@@ -201,20 +201,8 @@
                                 </view>
                                 <blurEffect style="dark"/>
                             </visualEffectView>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="QGr-jm-hSe">
-                                <rect key="frame" x="47" y="375" width="506" height="31"/>
-                                <color key="minimumTrackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="maximumTrackTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpInside" id="4Ts-nL-rVY"/>
-                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpOutside" id="MQE-ja-bOT"/>
-                                    <action selector="updatePlaybackProgressTimer" destination="igl-8i-tSd" eventType="touchCancel" id="SJN-U1-EM2"/>
-                                    <action selector="updatePlaybackTime:forEvent:" destination="igl-8i-tSd" eventType="valueChanged" id="Ecq-Bz-uZG"/>
-                                </connections>
-                            </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Album Artist - Album Title" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="P3f-4Y-yeg">
-                                <rect key="frame" x="16" y="450" width="568" height="20"/>
+                                <rect key="frame" x="16" y="424" width="568" height="20"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -226,11 +214,23 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7CN-wi-b5a" userLabel="CurrentPlaybackTimeLabel">
-                                <rect key="frame" x="16" y="384" width="29" height="12"/>
+                                <rect key="frame" x="136" y="379" width="29" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="QGr-jm-hSe">
+                                <rect key="frame" x="126" y="349" width="348" height="31"/>
+                                <color key="minimumTrackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="maximumTrackTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpInside" id="4Ts-nL-rVY"/>
+                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpOutside" id="MQE-ja-bOT"/>
+                                    <action selector="updatePlaybackProgressTimer" destination="igl-8i-tSd" eventType="touchCancel" id="SJN-U1-EM2"/>
+                                    <action selector="updatePlaybackTime:forEvent:" destination="igl-8i-tSd" eventType="valueChanged" id="Ecq-Bz-uZG"/>
+                                </connections>
+                            </slider>
                             <view opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qD5-cn-9cR">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="55"/>
                                 <subviews>
@@ -290,51 +290,57 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="a9l-ER-3zv">
-                                <rect key="frame" x="16" y="420" width="568" height="22"/>
+                                <rect key="frame" x="16" y="394" width="568" height="22"/>
                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8bf-Dc-sUH" userLabel="TotalPlaybackTimeLabel">
-                                <rect key="frame" x="555" y="384" width="29" height="12"/>
+                                <rect key="frame" x="435" y="379" width="29" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-vG-UDM" userLabel="forwardButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="373" y="525" width="30" height="30"/>
+                                <rect key="frame" x="373" y="499" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="MjA-9E-WAK"/>
-                                    <constraint firstAttribute="width" constant="30" id="dB2-VA-rIr"/>
+                                    <constraint firstAttribute="height" constant="40" id="MjA-9E-WAK"/>
+                                    <constraint firstAttribute="width" constant="40" id="dB2-VA-rIr"/>
                                 </constraints>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isForwardButton" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="scale">
+                                        <real key="value" value="0.90000000000000002"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="skipForward:" destination="igl-8i-tSd" eventType="touchUpInside" id="0zl-e5-V9r"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mo-6h-cpk" userLabel="skipBackButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="193" y="525" width="30" height="30"/>
+                                <rect key="frame" x="183" y="499" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="rdO-mC-1Eh"/>
-                                    <constraint firstAttribute="width" constant="30" id="uy8-Fl-XrB"/>
+                                    <constraint firstAttribute="height" constant="40" id="rdO-mC-1Eh"/>
+                                    <constraint firstAttribute="width" constant="40" id="uy8-Fl-XrB"/>
                                 </constraints>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isForwardButton" value="NO"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="scale">
+                                        <real key="value" value="0.90000000000000002"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="skipBackward:" destination="igl-8i-tSd" eventType="touchUpInside" id="sZy-g3-OxI"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ljA-ne-tuv" userLabel="playPauseButton" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="270" y="510" width="60" height="60"/>
+                                <rect key="frame" x="270" y="489" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="1nV-tZ-gZs"/>
                                     <constraint firstAttribute="height" constant="60" id="uBI-Eq-gle"/>
@@ -353,39 +359,45 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="a9l-ER-3zv" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="07x-bt-Gxr"/>
-                            <constraint firstItem="7CN-wi-b5a" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="20" id="1I7-AF-5hB"/>
+                            <constraint firstItem="7CN-wi-b5a" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="15" id="1I7-AF-5hB"/>
                             <constraint firstAttribute="centerX" secondItem="P3f-4Y-yeg" secondAttribute="centerX" id="31X-ML-EEi"/>
                             <constraint firstAttribute="centerX" secondItem="LL1-x0-BD9" secondAttribute="centerX" id="3oE-D7-peV"/>
                             <constraint firstItem="LL1-x0-BD9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-16" id="57Z-Jb-YMH"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="6oY-Bb-zqJ"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="LL1-x0-BD9" secondAttribute="trailing" constant="-16" id="7AZ-IR-J3k"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="8bf-Dc-sUH" secondAttribute="trailing" constant="-4" id="BYq-Ng-TA8"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="R1l-bh-GSp" secondAttribute="bottom" constant="-44" id="BmD-ye-22M"/>
+                            <constraint firstItem="QGr-jm-hSe" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" id="Csd-jr-CWQ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="R1l-bh-GSp" secondAttribute="trailing" constant="-20" id="H2m-LZ-eCi"/>
                             <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="HkR-T6-EkT"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="leading" secondItem="ljA-ne-tuv" secondAttribute="trailing" constant="43" id="Hkh-HE-SAS"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="Iow-5t-KVW"/>
-                            <constraint firstItem="QGr-jm-hSe" firstAttribute="leading" secondItem="7CN-wi-b5a" secondAttribute="trailing" constant="4" id="Kyl-MH-qmS"/>
+                            <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" constant="8" id="KH0-xr-sI4"/>
                             <constraint firstItem="LL1-x0-BD9" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" id="Mt9-Ti-0km"/>
                             <constraint firstAttribute="trailingMargin" secondItem="qD5-cn-9cR" secondAttribute="trailing" constant="-20" id="OT0-dI-Pq9"/>
+                            <constraint firstItem="8bf-Dc-sUH" firstAttribute="trailing" secondItem="LL1-x0-BD9" secondAttribute="trailing" constant="-8" id="QyC-TX-VqA"/>
                             <constraint firstAttribute="centerX" secondItem="ljA-ne-tuv" secondAttribute="centerX" id="Scg-US-eWu"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-20" id="UXx-RF-4fx"/>
                             <constraint firstItem="a9l-ER-3zv" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="15" id="VL0-QA-XUk"/>
                             <constraint firstAttribute="centerX" secondItem="a9l-ER-3zv" secondAttribute="centerX" id="VU2-Sn-87T"/>
+                            <constraint firstItem="QGr-jm-hSe" firstAttribute="trailing" secondItem="LL1-x0-BD9" secondAttribute="trailing" id="XxE-if-D1s"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-20" id="Ytu-f0-KS4"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="ZvZ-RQ-QnE"/>
-                            <constraint firstItem="8bf-Dc-sUH" firstAttribute="leading" secondItem="QGr-jm-hSe" secondAttribute="trailing" constant="4" id="abb-th-PVq"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
                             <constraint firstItem="a9l-ER-3zv" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="dRa-HY-yc6"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="47" id="eUA-OX-4N8"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="fYD-bp-79n"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="top" secondItem="a9l-ER-3zv" secondAttribute="bottom" constant="8" id="fYe-5q-j9G"/>
-                            <constraint firstItem="8bf-Dc-sUH" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="20" id="jWe-St-rAz"/>
+                            <constraint firstItem="8bf-Dc-sUH" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="15" id="jWe-St-rAz"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" priority="900" constant="236" id="mHO-C2-WDN"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="mm3-Jf-oCR"/>
-                            <constraint firstItem="QGr-jm-hSe" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="11" id="rGs-dT-aTr"/>
+                            <constraint firstItem="QGr-jm-hSe" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="-15" id="rGs-dT-aTr"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="t0h-ZW-ReY"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="HkR-T6-EkT"/>
+                            </mask>
+                        </variation>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="Xee-zB-nFN"/>

@@ -36,7 +36,6 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
     
     var sidePanelExpanded:Bool = false {
         didSet {
-            showShadowForCenterViewController(sidePanelExpanded)
             for gestureRecognizerObject in rootViewController.view.gestureRecognizers! {
                 let gestureRecognizer = gestureRecognizerObject 
                 if(gestureRecognizer == tapGestureRecognizer || gestureRecognizer == panGestureRecognizer) {
@@ -91,14 +90,6 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
             self.addSidePanelViewController()
         }
         animateSidePanel(shouldExpand: !sidePanelExpanded)
-    }
-    
-    func showShadowForCenterViewController(shouldShowShadow:Bool) {
-        if(shouldShowShadow) {
-            self.rootViewController.view.layer.shadowOpacity = 0.8
-        } else {
-            self.rootViewController.view.layer.shadowOpacity = 0.0
-        }
     }
     
     func addSidePanelViewController() {
@@ -157,12 +148,25 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
     }
     
     private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
-            self.rootViewController.view.frame.origin.x = targetPosition
-            let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
-            self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
-            self.nowPlayingNavigationController?.view.alpha = fraction
-            }, completion: completion)
+//        UIView.animateWithDuration(0.25, animations: { () -> Void in
+//            self.rootViewController.view.frame.origin.x = targetPosition
+//            let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
+//            self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
+//            self.nowPlayingNavigationController?.view.alpha = fraction
+//            }, completion: completion)
+        UIView.animateWithDuration(0.4,
+            delay: 0,
+            usingSpringWithDamping: 1.0,
+            initialSpringVelocity: 0,
+            options: .CurveEaseInOut,
+            animations: {
+                self.rootViewController.view.frame.origin.x = targetPosition
+                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
+                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
+                self.nowPlayingNavigationController?.view.alpha = fraction
+            },
+            completion: completion)
+
         
     }
     
@@ -225,7 +229,6 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
                 addSidePanelViewController()
             }
             
-            showShadowForCenterViewController(true)
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
