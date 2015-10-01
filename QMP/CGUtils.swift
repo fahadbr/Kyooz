@@ -39,4 +39,27 @@ struct CGUtils {
         
         return path
     }
+    
+    static func drawRectWithCurvedEdges(rect:CGRect) -> UIBezierPath {
+        let path = UIBezierPath()
+        let origin = rect.origin
+        let point2 = CGPoint(x:rect.maxX, y:rect.minY)
+        let point3 = CGPoint(x:rect.maxX, y:rect.maxY)
+        let point4 = CGPoint(x:rect.minX, y:rect.maxY)
+        
+        let inset = min(rect.width * 0.15, rect.height * 0.15)
+        
+        path.moveToPoint(CGPoint(x: origin.x + inset, y: origin.y))
+        
+        path.addLineToPoint(CGPoint(x: point2.x - inset, y: point2.y))
+        path.addQuadCurveToPoint(CGPoint(x: point2.x, y: point2.y + inset), controlPoint: point2)
+        path.addLineToPoint(CGPoint(x: point3.x, y: point3.y - inset))
+        path.addQuadCurveToPoint(CGPoint(x: point3.x - inset , y: point3.y), controlPoint: point3)
+        path.addLineToPoint(CGPoint(x: point4.x + inset, y: point4.y))
+        path.addQuadCurveToPoint(CGPoint(x: point4.x, y: point4.y - inset), controlPoint: point4)
+        path.addLineToPoint(CGPoint(x: origin.x, y: origin.y + inset))
+        path.addQuadCurveToPoint(CGPoint(x: origin.x + inset, y: origin.y), controlPoint: origin)
+        
+        return path
+    }
 }

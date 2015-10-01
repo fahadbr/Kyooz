@@ -25,6 +25,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
     var positionChangeUpdatesDataSource = true
     var shouldHideSourceView = true
     
+    var snapshotScale:CGFloat = 1.10
+    
     init(tableView:UITableView) {
         self.tableView = tableView
     }
@@ -143,7 +145,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
             
             //Offest for gesture location
             self.updateSnapshotPosition(self.snapshot, sender: sender, locationInDestinationTableView: viewForSnapshot.center)
-            self.snapshot.transform = CGAffineTransformMakeScale(1.10, 1.10)
+            self.snapshot.transform = CGAffineTransformMakeScale(self.snapshotScale, self.snapshotScale)
             self.snapshot.alpha = 0.80
             
             if(self.shouldHideSourceView) {

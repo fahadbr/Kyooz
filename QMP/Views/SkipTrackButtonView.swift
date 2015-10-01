@@ -20,18 +20,28 @@ class SkipTrackButtonView: UIButton {
     @IBInspectable
     var isForwardButton:Bool = false
     
+    @IBInspectable
+    var scale:CGFloat = 1 {
+        didSet {
+            scaleFactor = 0.5 * scale
+        }
+    }
+    
+    var scaleFactor:CGFloat = 0.5
+    var offsetFactor:CGFloat = 0.8
+    
     
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect) {
         
-        let scaleFactor:CGFloat = 0.5
         let smallerSide = min(rect.width, rect.height)
         let sideLength:CGFloat = smallerSide * scaleFactor
         let triangleHeight:CGFloat = pow(3, 0.5)/2 * sideLength
+        let offsetAmount = triangleHeight * offsetFactor
         
-        let leftRect = CGRect(x: rect.midX - triangleHeight, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
-        let rightRect = CGRect(x: rect.midX, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
+        let leftRect = CGRect(x: rect.midX - triangleHeight + offsetAmount, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
+        let rightRect = CGRect(x: rect.midX - offsetAmount, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
         
         
         let path = UIBezierPath()

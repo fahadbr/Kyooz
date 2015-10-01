@@ -11,7 +11,7 @@ import UIKit
 
 struct ImageContainer {
     
-    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "headphones")!
+    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "blueplayicon")!
     
     static let currentlyPlayingImage:UIImage = UIImage(named: "play_button_highlighted")!
     

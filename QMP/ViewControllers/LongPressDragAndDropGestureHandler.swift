@@ -39,6 +39,7 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         super.init(tableView: dropDestination.destinationTableView)
         self.positionChangeUpdatesDataSource = false
         self.shouldHideSourceView = false
+        self.snapshotScale = 0.8
     }
     
 
