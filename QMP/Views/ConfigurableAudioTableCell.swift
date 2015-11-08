@@ -11,6 +11,20 @@ import MediaPlayer
 
 protocol ConfigurableAudioTableCell {
     
-    func configureCellForItems(collection:MPMediaItemCollection, collectionTitleProperty:String)
+    var isNowPlayingItem:Bool { get set }
     
+    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping)
+
+}
+
+extension MediaCollectionTableViewCell {
+    
+
+    
+
+}
+
+extension  AlbumTableViewCell {
+    
+
 }

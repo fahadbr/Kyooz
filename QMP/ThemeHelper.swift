@@ -12,10 +12,10 @@ import UIKit
 struct ThemeHelper {
     
     static let defaultFontName = "Avenir"
-    static let defaultFontNameBold = defaultFontName + "-Heavy"
+    static let defaultFontNameBold = defaultFontName + "-Medium"
     static let defaultFontSize = CGFloat(15.0)
     
-    static let defaultFont = UIFont(name: defaultFontName + "-Heavy", size: defaultFontSize)
+    static let defaultFont = UIFont(name: defaultFontName + "-Medium", size: defaultFontSize)
     
     static let defaultTintColor = UIColor(white: 0.7, alpha: 1.0)
     

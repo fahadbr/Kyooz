@@ -29,6 +29,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     private (set) var laidOutSubviews:Bool = false
     private var indexPathsToDelete:[NSIndexPath]?
     private var multipleDeleteButton:UIBarButtonItem!
+    private var insertCellView:UITableViewCell!
     
     var menuButtonTouched:Bool = false
     var viewExpanded:Bool = false {
@@ -55,6 +56,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
     
     var indexPathOfMovingItem:NSIndexPath!
+    var insertModeCount:Int!
     var insertMode:Bool = false {
         didSet {
             if(insertMode) {
@@ -62,6 +64,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
                 for item in toolbarItems! {
                     item.enabled = false
                 }
+                insertModeCount = audioQueuePlayer.nowPlayingQueue.count + 1
             } else {
                 longPressGestureRecognizer.enabled = true
                 indexPathOfMovingItem = nil
@@ -91,6 +94,15 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         menuButtonTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
         tableView.addGestureRecognizer(longPressGestureRecognizer)
         tableView.addGestureRecognizer(menuButtonTapGestureRecognizer)
+        
+        let cell = UITableViewCell()
+        cell.backgroundColor = UIColor(white: 0.1, alpha: 0.5)
+        cell.textLabel?.text = "Insert Here"
+        cell.textLabel?.textAlignment = NSTextAlignment.Center
+        cell.textLabel?.font = ThemeHelper.defaultFont
+        cell.textLabel?.textColor = UIColor(white: 0.9, alpha: 0.5)
+        insertCellView = cell
+        
         registerForNotifications()
 
     }
@@ -141,7 +153,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = audioQueuePlayer.nowPlayingQueue.count
-        return insertMode ? (count + 1) : count
+        return insertMode ? insertModeCount : count
     }
 
     override func setEditing(editing: Bool, animated: Bool) {
@@ -154,13 +166,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if(insertMode && indexPath.row == indexPathOfMovingItem.row) {
-            let cell = UITableViewCell()
-            cell.backgroundColor = UIColor(white: 0.9, alpha: 0.5)
-            cell.textLabel?.text = "Insert Here"
-            cell.textLabel?.textAlignment = NSTextAlignment.Center
-            cell.textLabel?.font = ThemeHelper.defaultFont
-            cell.textLabel?.textColor = UIColor(white: 0.1, alpha: 0.5)
-            return cell
+            return insertCellView
         }
         
         let cell = tableView.dequeueReusableCellWithIdentifier("songDetailsTableViewCell", forIndexPath: indexPath) as! SongDetailsTableViewCell

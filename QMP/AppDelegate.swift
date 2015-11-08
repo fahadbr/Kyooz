@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     let tempDataDAO = TempDataDAO.instance
     let lastFmScrobbler = LastFmScrobbler.instance
+//    var remoteCommandHandler:RemoteCommandHandler = RemoteCommandHandler()
     
     var window: UIWindow?
 
@@ -30,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
         
         ThemeHelper.applyGlobalAppearanceSettings()
-        
+        MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         return true
     }
 
@@ -53,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(application: UIApplication) {
-
+        MPMediaLibrary.defaultMediaLibrary().endGeneratingLibraryChangeNotifications()
     }
 
 }

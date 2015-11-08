@@ -15,6 +15,18 @@ class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
     @IBOutlet weak var albumArtwork: UIImageView!
     @IBOutlet weak var albumTitle: UILabel!
     @IBOutlet weak var albumDetails: UILabel!
+    
+    var isNowPlayingItem:Bool = false {
+        didSet {
+            if isNowPlayingItem != oldValue {
+                if isNowPlayingItem {
+                    albumTitle.textColor = ThemeHelper.defaultVividColor
+                } else {
+                    albumTitle.textColor = ThemeHelper.defaultFontColor
+                }
+            }
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,13 +39,14 @@ class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
         // Configure the view for the selected state
     }
     
-    func configureCellForItems(collection:MPMediaItemCollection, collectionTitleProperty:String) {
-        albumTitle?.text = collection.representativeItem!.albumTitle
+    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
         
-        let pluralText = collection.count > 1 ? "s" : ""
-        albumDetails?.text = "\(collection.count) Track\(pluralText)"
+        albumTitle?.text = entity.titleForGrouping(mediaGroupingType)
         
-        let albumArtworkTemp = collection.representativeItem?.artwork?.imageWithSize(albumArtwork.frame.size)
+        let pluralText = entity.count > 1 ? "s" : ""
+        albumDetails?.text = "\(entity.count) Track\(pluralText)"
+        
+        let albumArtworkTemp = entity.representativeItem?.artwork?.imageWithSize(albumArtwork.frame.size)
         if(albumArtworkTemp == nil) {
             albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
         } else {

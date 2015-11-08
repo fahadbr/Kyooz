@@ -31,6 +31,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         self.tableView = tableView
     }
     
+    
     deinit {
         Logger.debug("deinitializing long press to drag gesture handler")
     }

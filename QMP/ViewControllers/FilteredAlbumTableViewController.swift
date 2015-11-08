@@ -9,7 +9,7 @@
 
 import MediaPlayer
 
-class FilteredAlbumTableViewController: MediaItemTableViewController {
+class FilteredAlbumTableViewController: UITableViewController, MediaItemTableViewControllerProtocol {
 
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     let cellTableIdentifier = "albumTableViewCell"
@@ -40,7 +40,7 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellTableIdentifier, forIndexPath: indexPath) as! AlbumTableViewCell
         let album = albums[indexPath.row]
-        cell.configureCellForItems(album, collectionTitleProperty: MPMediaItemPropertyAlbumTitle)
+        cell.configureCellForItems(album, mediaGroupingType: MPMediaGrouping.Album)
         
         return cell
     }
@@ -49,13 +49,13 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if(segue.identifier != nil && segue.identifier! == albumToSongSegueIdentifier) {
-            let vc = segue.destinationViewController as! FilteredSongTableViewController
+            let vc = segue.destinationViewController as! AlbumTrackTableViewController
             //var vc = nc.topViewController as FilteredAlbumTableViewController
             let indexPath = self.tableView.indexPathForSelectedRow
             if(indexPath != nil) {
                 let indexPathUnwrapped = indexPath!
                 let album = albums[indexPathUnwrapped.row]
-                vc.songs = album
+                vc.albumCollection = album
                 vc.tableView.reloadData()
             }
         }
@@ -89,7 +89,7 @@ class FilteredAlbumTableViewController: MediaItemTableViewController {
     }
     
     //MARK: Overriding QueableMediaItemTableViewController methods
-    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+    func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
         if indexPath.row < albums.count {
             return albums[indexPath.row].items
         }

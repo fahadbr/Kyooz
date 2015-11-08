@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ArtistTableViewController: MediaItemTableViewController {
+class ArtistTableViewController: UITableViewController, MediaItemTableViewControllerProtocol {
     
     let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
     
@@ -70,7 +70,7 @@ class ArtistTableViewController: MediaItemTableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("artistCell", forIndexPath: indexPath) as! MediaCollectionTableViewCell
         let artist = albumArtists[getAbsoluteIndexForAlbumArtist(indexPath: indexPath)]
-        cell.configureCellForItems(artist, collectionTitleProperty: MPMediaItemPropertyAlbumArtist)
+        cell.configureCellForItems(artist, mediaGroupingType: MPMediaGrouping.AlbumArtist)
         
         return cell
     }
@@ -136,7 +136,7 @@ class ArtistTableViewController: MediaItemTableViewController {
 
     
     //MARK: Overriding QueableMediaItemTableViewController methods
-    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+    func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
         let absoluteIndex = getAbsoluteIndexForAlbumArtist(indexPath: indexPath)
         if absoluteIndex < albumArtists.count {
             return albumArtists[absoluteIndex].items
