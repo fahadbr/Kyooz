@@ -27,7 +27,7 @@ class RootViewController: UIViewController, DragSource {
     }
     
     var sourceTableView:UITableView? {
-        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewController {
+        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewControllerProtocol {
             return mediaItemViewController.tableView
         }
         return nil
@@ -125,7 +125,7 @@ class RootViewController: UIViewController, DragSource {
     }
     
     func getItemsToDrag(indexPath:NSIndexPath) -> [AudioTrack]? {
-        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewController {
+        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewControllerProtocol {
             return mediaItemViewController.getMediaItemsForIndexPath(indexPath)
         }
         Logger.debug("Couldnt get a view controller with media items, returning nil")

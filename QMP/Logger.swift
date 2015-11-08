@@ -14,8 +14,17 @@ class Logger {
     
     class func debug(message:String) {
         let date = NSDate()
+        let threadId = NSThread.currentThread().isMainThread ? "main" : NSThread.currentThread().description
         dispatch_async(loggerQueue) {
-            print("\(date.description) [DEBUG]:  \(message)")
+            print("\(date.description) [DEBUG] [\(threadId)]:  \(message)")
+        }
+    }
+    
+    class func error(message:String) {
+        let date = NSDate()
+        let threadId = NSThread.currentThread().isMainThread ? "main" : NSThread.currentThread().description
+        dispatch_async(loggerQueue) {
+            print("\(date.description) [ERROR] [\(threadId)]:  \(message)")
         }
     }
     

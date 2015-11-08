@@ -19,7 +19,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private var timer: NSTimer?
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
-    private var queueIsPersisted:Bool = false
+    private var queueIsPersisted:Bool = true
     
     override init() {
         super.init()
@@ -234,7 +234,9 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             })
         }
         
-        if playAfterPersisting {
+        Logger.debug("playAfterPersisting=\(playAfterPersisting)")
+        if playAfterPersisting ||
+            (playbackStateManager.musicPlaybackState == MPMusicPlaybackState.Stopped && !reachedEndOfQueue) {
             musicPlayer.play()
         }
         
@@ -301,7 +303,6 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         persistQueueToAudioController(indexOfNowPlayingItem)
     }
     
-    var obsContext:UInt8 = 0
     private func registerForMediaPlayerNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "handleNowPlayingItemChanged:",
@@ -314,7 +315,6 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             name:PlaybackStateManager.PlaybackStateCorrectedNotification,
             object: playbackStateManager)
         
-        musicPlayer.addObserver(self, forKeyPath: "nowPlayingItem", options: NSKeyValueObservingOptions.New, context: &obsContext)
         musicPlayer.beginGeneratingPlaybackNotifications()
         
         let application = UIApplication.sharedApplication()
@@ -332,9 +332,6 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         notificationCenter.removeObserver(self)
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        Logger.debug("keyPath changed: \(keyPath)")
-    }
     
     //MARK: - Background Handling Functions
     

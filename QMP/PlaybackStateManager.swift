@@ -24,7 +24,8 @@ class PlaybackStateManager: NSObject {
     private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let audioSession = AVAudioSession.sharedInstance()
     private let timeDelayInNanoSeconds = Int64((1.0/4.0) * Double(NSEC_PER_SEC))
-    private var musicPlaybackState:MPMusicPlaybackState
+    private (set) var musicPlaybackState:MPMusicPlaybackState
+    
     
     override init(){
         self.musicPlaybackState = musicPlayer.playbackState

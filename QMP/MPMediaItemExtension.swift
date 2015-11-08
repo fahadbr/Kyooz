@@ -9,9 +9,14 @@
 import Foundation
 import MediaPlayer
 
-//extension MPMediaItem :Equatable {
-//    
-//}
+extension MPMediaItem : AudioTrack {
+    
+    var trackTitle:String! { return title }
+    var id:UInt64 { return persistentID }
+    var albumId:UInt64 { return albumPersistentID }
+    var audioTrackSource:AudioTrackSource { return AudioTrackSource.iPodLibrary }
+    
+}
 
 public func ==(lhs:MPMediaItem, rhs:MPMediaItem) -> Bool {
     return lhs.persistentID == rhs.persistentID

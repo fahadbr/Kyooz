@@ -11,6 +11,18 @@ import MediaPlayer
 
 class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell {
 
+    var isNowPlayingItem:Bool = false {
+        didSet {
+            if isNowPlayingItem != oldValue {
+                if isNowPlayingItem {
+                    textLabel?.textColor = ThemeHelper.defaultVividColor
+                } else {
+                    textLabel?.textColor = ThemeHelper.defaultFontColor
+                }
+            }
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -28,12 +40,17 @@ class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell 
         super.init(coder: aDecoder)
     }
     
-    func configureCellForItems(collection:MPMediaItemCollection, collectionTitleProperty:String) {
-        textLabel?.text = collection.representativeItem!.valueForProperty(collectionTitleProperty) as? String
-
-        let pluralText = collection.count > 1 ? "s" : ""
-        detailTextLabel?.text = "\(collection.count) Track\(pluralText)"
-        detailTextLabel?.textColor = UIColor.lightGrayColor()
+    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
+        
+        textLabel?.text =  entity.titleForGrouping(mediaGroupingType)
+        if let mediaItem = entity as? MPMediaItem {
+            let artist:String = mediaItem.artist == nil ?  "" : mediaItem.artist!
+            let album:String = mediaItem.albumTitle == nil ?  "" : mediaItem.albumTitle!
+            detailTextLabel?.text = "\(artist) - \(album)"
+        } else {
+            let pluralText = entity.count > 1 ? "s" : ""
+            detailTextLabel?.text = "\(entity.count) Track\(pluralText)"
+        }
     }
     
 }
