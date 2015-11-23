@@ -11,8 +11,6 @@ import MediaPlayer
 
 class AlbumTrackTableViewController: AbstractMediaEntityTableViewController {
     
-    let musicPlayerTableViewActionFactory = MusicPlayerTableViewActionFactory.instance
-    
     var albumCollection:MPMediaItemCollection!
     private var albumArt:UIImage?
     private var albumArtView:UIImageView?

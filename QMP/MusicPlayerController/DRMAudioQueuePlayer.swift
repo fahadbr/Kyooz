@@ -13,6 +13,14 @@ import Foundation
 class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
     
+    private static let drmAudioControllerQueue:NSOperationQueue = {
+        let queue = NSOperationQueue()
+        queue.qualityOfService = NSQualityOfService.UserInitiated
+        queue.name = "com.riaz.fahad.Kyooz.DRMAudioControllerQueue"
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+    
     private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let playbackStateManager = PlaybackStateManager.instance
     
@@ -92,7 +100,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     func pause() {
         musicPlayer.pause()
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.25 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), { () -> Void in
-            self.persistQueueToAudioController(indexOfNowPlayingItem)
+            self.persistQueueToAudioController(self.indexOfNowPlayingItem)
         })
     }
     
@@ -114,14 +122,16 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func playNowWithCollection(mediaCollection mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
         let mediaItems = mediaCollection.items
-        nowPlayingQueue = mediaItems
-        musicPlayer.setQueueWithItemCollection(mediaCollection)
-        musicPlayer.nowPlayingItem = itemToPlay as? MPMediaItem
-        musicPlayer.play()
-        playbackStateManager.correctPlaybackState()
-        
-        queueIsPersisted = true
-        indexOfNowPlayingItem = 0
+        DRMAudioQueuePlayer.drmAudioControllerQueue.addOperationWithBlock() {
+            self.nowPlayingQueue = mediaItems
+            self.musicPlayer.setQueueWithItemCollection(mediaCollection)
+            self.musicPlayer.nowPlayingItem = itemToPlay as? MPMediaItem
+            self.musicPlayer.play()
+            self.playbackStateManager.correctPlaybackState()
+            
+            self.queueIsPersisted = true
+            self.indexOfNowPlayingItem = 0
+        }
         
     }
     
@@ -207,42 +217,45 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private func persistQueueToAudioController(var indexToPlay:Int, completionHandler:()->() = { }) -> Bool {
         if(queueIsPersisted || nowPlayingQueue.isEmpty) { return false }
         
-        Logger.debug("** PERSISTING NOW PLAYING QUEUE **")
+        DRMAudioQueuePlayer.drmAudioControllerQueue.addOperationWithBlock() {
         
-        let reachedEndOfQueue = indexToPlay >= nowPlayingQueue.count
-        if reachedEndOfQueue { indexToPlay = 0 }
-        let willPlayNewItem = (indexToPlay != indexOfNowPlayingItem) || reachedEndOfQueue
-        let playAfterPersisting = musicIsPlaying && !reachedEndOfQueue
-        
-        let currentPlaybackTime:NSTimeInterval? = willPlayNewItem ? nil : musicPlayer.currentPlaybackTime
-        let trackToPlay:AudioTrack? = willPlayNewItem ? nowPlayingQueue[indexToPlay] : musicPlayer.nowPlayingItem
-
-        musicPlayer.pause()
-        musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: (nowPlayingQueue as! [MPMediaItem])))
-        musicPlayer.nowPlayingItem = trackToPlay as? MPMediaItem
-
-        if let playbackTime = currentPlaybackTime {
-            Logger.debug("restoring currentPlaybackTime to \(playbackTime)")
-            musicPlayer.currentPlaybackTime = playbackTime
+            Logger.debug("** PERSISTING NOW PLAYING QUEUE **")
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.25 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), { () -> Void in
-                if(indexToPlay == self.indexOfNowPlayingItem && self.musicPlayer.currentPlaybackTime < 2) {
-                    Logger.debug("** CORRECTING PLAYBACK TIME **")
-                    self.musicPlayer.currentPlaybackTime = playbackTime
-                }
-                completionHandler()
-            })
+            let reachedEndOfQueue = indexToPlay >= self.nowPlayingQueue.count
+            if reachedEndOfQueue { indexToPlay = 0 }
+            let willPlayNewItem = (indexToPlay != self.indexOfNowPlayingItem) || reachedEndOfQueue
+            let playAfterPersisting = self.musicIsPlaying && !reachedEndOfQueue
+            
+            let currentPlaybackTime:NSTimeInterval? = willPlayNewItem ? nil : self.musicPlayer.currentPlaybackTime
+            let trackToPlay:AudioTrack? = willPlayNewItem ? self.nowPlayingQueue[indexToPlay] : self.musicPlayer.nowPlayingItem
+
+            self.musicPlayer.pause()
+            self.musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: (self.nowPlayingQueue as! [MPMediaItem])))
+            self.musicPlayer.nowPlayingItem = trackToPlay as? MPMediaItem
+
+            if let playbackTime = currentPlaybackTime {
+                Logger.debug("restoring currentPlaybackTime to \(playbackTime)")
+                self.musicPlayer.currentPlaybackTime = playbackTime
+                
+                dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.25), dispatch_get_main_queue(), { () -> Void in
+                    if(indexToPlay == self.indexOfNowPlayingItem && self.musicPlayer.currentPlaybackTime < 2) {
+                        Logger.debug("** CORRECTING PLAYBACK TIME **")
+                        self.musicPlayer.currentPlaybackTime = playbackTime
+                    }
+                    completionHandler()
+                })
+            }
+            
+            Logger.debug("playAfterPersisting=\(playAfterPersisting)")
+            if playAfterPersisting ||
+                (self.playbackStateManager.musicPlaybackState == MPMusicPlaybackState.Stopped && !reachedEndOfQueue) {
+                self.musicPlayer.play()
+            }
+            
+            self.playbackStateManager.correctPlaybackState()
+            
+            self.queueIsPersisted = true
         }
-        
-        Logger.debug("playAfterPersisting=\(playAfterPersisting)")
-        if playAfterPersisting ||
-            (playbackStateManager.musicPlaybackState == MPMusicPlaybackState.Stopped && !reachedEndOfQueue) {
-            musicPlayer.play()
-        }
-        
-        playbackStateManager.correctPlaybackState()
-        
-        queueIsPersisted = true
         return true
     }
     

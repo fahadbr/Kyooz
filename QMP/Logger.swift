@@ -12,9 +12,13 @@ class Logger {
     
     static let loggerQueue = dispatch_queue_create("com.riaz.fahad.Kyooz.Logger", DISPATCH_QUEUE_SERIAL)
     
+    private static var threadName:String {
+        return NSOperationQueue.currentQueue()?.name ?? "null"
+    }
+    
     class func debug(message:String) {
         let date = NSDate()
-        let threadId = NSThread.currentThread().isMainThread ? "main" : NSThread.currentThread().description
+        let threadId = threadName
         dispatch_async(loggerQueue) {
             print("\(date.description) [DEBUG] [\(threadId)]:  \(message)")
         }
@@ -22,7 +26,7 @@ class Logger {
     
     class func error(message:String) {
         let date = NSDate()
-        let threadId = NSThread.currentThread().isMainThread ? "main" : NSThread.currentThread().description
+        let threadId = threadName
         dispatch_async(loggerQueue) {
             print("\(date.description) [ERROR] [\(threadId)]:  \(message)")
         }

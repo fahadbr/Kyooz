@@ -119,6 +119,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        tempImageCache.removeAll()
         // Dispose of any resources that can be recreated.
     }
     
@@ -263,25 +264,10 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:AudioTrack, isNowPlayingItem:Bool) -> UIImage! {
-//        if(isNowPlayingItem) {
-//            if(!audioQueuePlayer.musicIsPlaying) {
-//                if(playingImage == nil) {
-//                    playingImage = ImageContainer.resizeImage(ImageContainer.currentlyPlayingImage, toSize: cellImageSize)
-//                }
-//                return playingImage
-//            } else {
-//                if(pausedImage == nil) {
-//                    pausedImage = ImageContainer.resizeImage(ImageContainer.currentlyPausedImage, toSize: cellImageSize)
-//                }
-//                return pausedImage
-//            }
-//        }
-        
         
         if let albumArtworkObject = mediaItem.artwork {
             var albumArtwork = tempImageCache[mediaItem.albumId]
             if(albumArtwork == nil) {
-                Logger.debug("loading artwork into temp cache")
                 albumArtwork = albumArtworkObject.imageWithSize(cellImageSize)
                 tempImageCache[mediaItem.albumId] = albumArtwork
             }

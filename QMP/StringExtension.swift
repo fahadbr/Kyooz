@@ -36,6 +36,16 @@ extension String {
         return encodedString as String
     }
     
+    var normalizedString:String {
+        var stringToNormalize = self
+        if stringToNormalize.characters.count > 1 {
+            let charsToRemove = NSCharacterSet.punctuationCharacterSet()
+            stringToNormalize = stringToNormalize.componentsSeparatedByCharactersInSet(charsToRemove).joinWithSeparator("")
+        }
+        stringToNormalize = stringToNormalize.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        return stringToNormalize.stringByFoldingWithOptions(.DiacriticInsensitiveSearch, locale: NSLocale.currentLocale())
+    }
+    
     subscript (i: Int) -> Character {
         return self[self.startIndex.advancedBy(i)]
     }

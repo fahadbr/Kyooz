@@ -11,10 +11,12 @@ import UIKit
 
 struct NibContainer {
     
-    static let albumTableViewCellNib = UINib(nibName: "AlbumTableViewCell", bundle: nil)
+    static let imageTableViewCellNib = UINib(nibName: "ImageTableViewCell", bundle: nil)
     
     static let songTableViewCellNib = UINib(nibName: "SongDetailsTableViewCell", bundle:nil)
     
     static let albumTrackTableViewCellNib = UINib(nibName: "AlbumTrackTableViewCell", bundle: nil)
+    
+    static let searchResultsHeaderViewNib = UINib(nibName: "SearchResultsHeaderView", bundle: nil)
     
 }

@@ -9,15 +9,17 @@
 import Foundation
 import MediaPlayer
 
-class LibraryGrouping {
+class LibraryGrouping : Hashable {
     
     static let Songs = LibraryGrouping(name: "Songs",
         baseQuery: MPMediaQuery.songsQuery(),
-        groupingType:MPMediaGrouping.Title)
+        groupingType:MPMediaGrouping.Title,
+        additionalSearchKeyGroups:[MPMediaGrouping.AlbumArtist, MPMediaGrouping.Album])
     static let Albums = LibraryGrouping(name: "Albums",
         baseQuery: MPMediaQuery.albumsQuery(),
         groupingType:MPMediaGrouping.Album,
-        nextGroupLevel:Songs)
+        nextGroupLevel:Songs,
+        additionalSearchKeyGroups:[MPMediaGrouping.AlbumArtist])
     static let Composers = LibraryGrouping(name: "Composers",
         baseQuery: MPMediaQuery.composersQuery(),
         groupingType:MPMediaGrouping.Composer,
@@ -49,15 +51,28 @@ class LibraryGrouping {
     let groupingType:MPMediaGrouping
     let nextGroupLevel:LibraryGrouping?
     let filtersByTitle:Bool
-
+    let additionalSearchKeyGroups:[MPMediaGrouping]?
     
-    private init(name:String, baseQuery:MPMediaQuery, groupingType:MPMediaGrouping, nextGroupLevel:LibraryGrouping? = nil, filtersByTitle:Bool = false) {
-        self.name = name
-        self.baseQuery = baseQuery
-        self.groupingType = groupingType
-        self.nextGroupLevel = nextGroupLevel
-        self.filtersByTitle = filtersByTitle
+    var hashValue:Int {
+        return name.hashValue
     }
     
+    private init(name:String,
+        baseQuery:MPMediaQuery,
+        groupingType:MPMediaGrouping,
+        nextGroupLevel:LibraryGrouping? = nil,
+        filtersByTitle:Bool = false,
+        additionalSearchKeyGroups:[MPMediaGrouping]? = nil) {
+            self.name = name
+            self.baseQuery = baseQuery
+            self.groupingType = groupingType
+            self.nextGroupLevel = nextGroupLevel
+            self.filtersByTitle = filtersByTitle
+            self.additionalSearchKeyGroups = additionalSearchKeyGroups
+    }
 
+}
+
+func ==(lhs:LibraryGrouping, rhs:LibraryGrouping) -> Bool {
+    return lhs.hashValue == rhs.hashValue
 }

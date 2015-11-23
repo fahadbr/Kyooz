@@ -16,15 +16,3 @@ protocol ConfigurableAudioTableCell {
     func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping)
 
 }
-
-extension MediaCollectionTableViewCell {
-    
-
-    
-
-}
-
-extension  AlbumTableViewCell {
-    
-
-}

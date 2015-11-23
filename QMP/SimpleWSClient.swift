@@ -12,6 +12,7 @@ class SimpleWSClient {
     
     static let instance:SimpleWSClient = SimpleWSClient()
     
+    
     private let httpPOSTMethod = "POST"
     private let timeoutInSeconds = 15.0
     

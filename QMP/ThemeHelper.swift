@@ -21,7 +21,7 @@ struct ThemeHelper {
     
     static let defaultBarStyle = UIBarStyle.Black
     
-    static let defaultTableCellColor = UIColor(white: 0.07, alpha: 1.0)
+    static let defaultTableCellColor = UIColor(white: 0.09, alpha: 1.0)
     
     static let defaultFontColor = UIColor.whiteColor()
     static let defaultVividColor = UIColor(red: 64.0/225.0, green: 224.0/225.0, blue: 208.0/225.0, alpha: 1.0)
@@ -49,6 +49,7 @@ struct ThemeHelper {
         UITableView.appearance().tintColor = defaultTintColor
         UITableView.appearance().sectionIndexBackgroundColor = defaultTableCellColor
         UITableView.appearance().sectionIndexTrackingBackgroundColor = defaultTableCellColor        
+        UITableView.appearance().separatorColor = UIColor(white: 0.2, alpha: 1.0)
         
         UIToolbar.appearance().tintColor = defaultTintColor
         UIToolbar.appearance().barStyle = defaultBarStyle

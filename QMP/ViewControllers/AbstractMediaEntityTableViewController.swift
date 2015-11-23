@@ -10,13 +10,10 @@ import Foundation
 import UIKit
 import MediaPlayer
 
-class AbstractMediaEntityTableViewController : UITableViewController, MediaItemTableViewControllerProtocol {
+class AbstractMediaEntityTableViewController : AbstractTableViewController, MediaItemTableViewControllerProtocol {
     
     private static let greenColor = UIColor(red: 95.0/225.0, green: 118.0/225.0, blue: 97.0/225.0, alpha: 1)
     private static let blueColor = UIColor(red: 95.0/225.0, green: 110.0/225.0, blue: 118.0/225.0, alpha: 1)
-    
-    
-    
     
     let fatalErrorMessage = "Unsupported operation. this is an abstract class"
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
@@ -26,9 +23,11 @@ class AbstractMediaEntityTableViewController : UITableViewController, MediaItemT
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         reloadSourceData()
         registerForNotifications()
     }
+    
     
     deinit {
         unregisterForNotifications()
@@ -44,8 +43,6 @@ class AbstractMediaEntityTableViewController : UITableViewController, MediaItemT
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let mediaItems = getMediaItemsForIndexPath(indexPath)
-//        let enqueueAction = MusicPlayerTableViewActionFactory.instance.createEnqueueAction(mediaItems, tableViewDelegate: self, tableView: tableView, indexPath: indexPath)
-        
         
         let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nLast",
                 handler: {action, index in

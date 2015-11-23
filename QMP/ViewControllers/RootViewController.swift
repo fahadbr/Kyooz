@@ -27,6 +27,10 @@ class RootViewController: UIViewController, DragSource {
     }
     
     var sourceTableView:UITableView? {
+        if searchController.active {
+            return searchResultsController.tableView
+        }
+        
         if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewControllerProtocol {
             return mediaItemViewController.tableView
         }
@@ -34,7 +38,6 @@ class RootViewController: UIViewController, DragSource {
     }
     
     var libraryNavigationController:UINavigationController!
-    
 
     var nowPlayingSummaryViewController:NowPlayingSummaryViewController!
     
@@ -42,11 +45,14 @@ class RootViewController: UIViewController, DragSource {
     var nowPlayingPanGestureRecognizer:UIPanGestureRecognizer!
     var gestureDelegate:UIGestureRecognizerDelegate?
     
+    var searchController:UISearchController!
+    private var resultsTableController:UITableViewController!
+    private let searchResultsController = MediaLibrarySearchTableViewController.instance
     
     override func viewDidLoad() {
         super.viewDidLoad()
         libraryNavigationController = UIStoryboard.libraryNavigationController()
-
+        libraryNavigationController.navigationBar
         
         view.addSubview(libraryNavigationController.view)
         addChildViewController(libraryNavigationController)
@@ -66,6 +72,18 @@ class RootViewController: UIViewController, DragSource {
         nowPlayingTapGestureRecognizer.delegate = gestureDelegate
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
         
+        searchController = UISearchController(searchResultsController: searchResultsController)
+        searchController.searchResultsUpdater = searchResultsController
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.sizeToFit()
+        searchController.searchBar.searchBarStyle = UISearchBarStyle.Default
+        
+        searchController.searchBar.delegate = searchResultsController
+        searchController.searchBar.barStyle = UIBarStyle.Black
+        searchController.searchBar.translucent = false
+        searchResultsController.searchController = searchController
+        libraryNavigationController.definesPresentationContext = true
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -76,11 +94,13 @@ class RootViewController: UIViewController, DragSource {
         
         nowPlayingViewOrigin = CGPoint(x: 0, y: self.view.bounds.height - RootViewController.nowPlayingViewCollapsedOffset)
         nowPlayingSummaryViewController.view.frame = view.bounds
-        nowPlayingSummaryViewController.view.frame.origin.y = view.bounds.height
         
-        view.bringSubviewToFront(nowPlayingSummaryViewController.view)
-        pullableViewExpanded = false
-        animatePullablePanel(shouldExpand: false)
+//        if(nowPlayingSummaryViewController.view.frame.origin.y != nowPlayingViewOrigin.y) {
+            nowPlayingSummaryViewController.view.frame.origin.y = view.bounds.height
+            view.bringSubviewToFront(nowPlayingSummaryViewController.view)
+            pullableViewExpanded = false
+            animatePullablePanel(shouldExpand: false)
+//        }
     }
     
     
@@ -88,7 +108,13 @@ class RootViewController: UIViewController, DragSource {
         //explicitly setting this here
         pullableViewExpanded = false
     }
-
+    
+    
+    //MARK: - Class Methods
+    func activateSearch() {
+        libraryNavigationController.presentViewController(searchController, animated: true, completion: nil)
+    }
+    
     func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
         self.libraryNavigationController.interactivePopGestureRecognizer!.enabled = shouldEnable
         self.nowPlayingPanGestureRecognizer.enabled = shouldEnable
@@ -125,6 +151,10 @@ class RootViewController: UIViewController, DragSource {
     }
     
     func getItemsToDrag(indexPath:NSIndexPath) -> [AudioTrack]? {
+        if searchController.active {
+            return searchResultsController.getMediaItemsForIndexPath(indexPath)
+        }
+        
         if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewControllerProtocol {
             return mediaItemViewController.getMediaItemsForIndexPath(indexPath)
         }
