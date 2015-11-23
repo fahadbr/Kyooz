@@ -11,6 +11,8 @@ import MediaPlayer
 
 class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell {
 
+    static let reuseIdentifier = "mediaEntityCellIdentifier"
+    
     var isNowPlayingItem:Bool = false {
         didSet {
             if isNowPlayingItem != oldValue {
@@ -47,9 +49,11 @@ class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell 
             let artist:String = mediaItem.artist == nil ?  "" : mediaItem.artist!
             let album:String = mediaItem.albumTitle == nil ?  "" : mediaItem.albumTitle!
             detailTextLabel?.text = "\(artist) - \(album)"
+            accessoryType = UITableViewCellAccessoryType.None
         } else {
             let pluralText = entity.count > 1 ? "s" : ""
             detailTextLabel?.text = "\(entity.count) Track\(pluralText)"
+            accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         }
     }
     

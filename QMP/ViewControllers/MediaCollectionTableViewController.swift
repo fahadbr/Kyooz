@@ -11,17 +11,13 @@ import MediaPlayer
 
 class MediaCollectionTableViewController: AbstractMediaEntityTableViewController {
 
-    
-    private let collectionCellReuseIdentifier = "mediaEntityCellIdentifier"
-    private let imageViewCellReuseIdentifier = "albumTableViewCell"
-
     private var sections:[MPMediaQuerySection]?
     private var entities:[MPMediaEntity]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: collectionCellReuseIdentifier)
-        tableView.registerNib(NibContainer.albumTableViewCellNib, forCellReuseIdentifier: imageViewCellReuseIdentifier)
+        tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
+        tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         
     }
 
@@ -30,7 +26,23 @@ class MediaCollectionTableViewController: AbstractMediaEntityTableViewController
     }
 
     // MARK: - Table view data source and delegate methods
-
+    //MARK: header configuration
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+            return nil
+        }
+        guard let sections = self.sections else {
+            return nil
+        }
+        view.headerTitleLabel.text = sections[section].title
+        view.disclosureContainerView.hidden = true
+        return view
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return sections != nil ?  40.0 : 0.0
+    }
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         guard let sections = self.sections else {
             return 1
@@ -57,19 +69,13 @@ class MediaCollectionTableViewController: AbstractMediaEntityTableViewController
         return titles
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sections = self.sections else {
-            return nil
-        }
-        return sections[section].title
-    }
     
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return index
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let reuseIdentifier = libraryGroupingType === LibraryGrouping.Albums ? imageViewCellReuseIdentifier : collectionCellReuseIdentifier
+        let reuseIdentifier = libraryGroupingType === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
 
         guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
             return UITableViewCell()
@@ -82,7 +88,8 @@ class MediaCollectionTableViewController: AbstractMediaEntityTableViewController
             audioCell.configureCellForItems(entity, mediaGroupingType: libraryGroupingType.groupingType)
             audioCell.isNowPlayingItem = false
             let persistentIdPropertyName = MPMediaItem.persistentIDPropertyForGroupingType(libraryGroupingType.groupingType)
-            if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem, let persistentIdForGroupingType = nowPlayingItem.valueForProperty(persistentIdPropertyName) as? NSNumber {
+            if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem,
+                let persistentIdForGroupingType = nowPlayingItem.valueForProperty(persistentIdPropertyName) as? NSNumber {
                 
                 if persistentIdForGroupingType.unsignedLongLongValue == entity.persistentID {
                     audioCell.isNowPlayingItem = true

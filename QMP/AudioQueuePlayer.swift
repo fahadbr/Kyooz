@@ -49,12 +49,10 @@ enum AudioQueuePlayerUpdate : String {
 struct AudioQueuePlayerNotificationPublisher {
     
     static func publishNotification(updateType updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
-        let notificationPublication = {() -> Void in
+        dispatch_async(dispatch_get_main_queue()) {
             let notification = NSNotification(name: updateType.rawValue, object: sender)
             NSNotificationCenter.defaultCenter().postNotification(notification)
         }
-        
-        dispatch_async(dispatch_get_main_queue(), notificationPublication)
     }
 }
 

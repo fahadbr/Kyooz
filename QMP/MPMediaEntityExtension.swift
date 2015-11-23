@@ -34,7 +34,8 @@ extension MPMediaEntity {
             }
             return representativeItem.valueForProperty(titleProperty) as? String
         } else if let mediaItem = self as? MPMediaItem {
-            return mediaItem.title
+            let titleProperty = MPMediaItem.titlePropertyForGroupingType(grouping)
+            return mediaItem.valueForProperty(titleProperty) as? String
         }
         
         return nil
@@ -49,3 +50,4 @@ extension MPMediaEntity {
     }
      
 }
+

@@ -22,7 +22,7 @@ class KyoozTests: XCTestCase {
     }
     
     func testExample() {
-        // This is an example of a functional test case.
+        print("DOING A TEST")
         XCTAssert(true, "Pass")
     }
     

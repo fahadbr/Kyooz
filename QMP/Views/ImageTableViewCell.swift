@@ -9,20 +9,21 @@
 import UIKit
 import MediaPlayer
 
-class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
+class ImageTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
     
+    static let reuseIdentifier = "imageTableViewCell"
     
     @IBOutlet weak var albumArtwork: UIImageView!
-    @IBOutlet weak var albumTitle: UILabel!
-    @IBOutlet weak var albumDetails: UILabel!
+    @IBOutlet weak var title: UILabel!
+    @IBOutlet weak var details: UILabel!
     
     var isNowPlayingItem:Bool = false {
         didSet {
             if isNowPlayingItem != oldValue {
                 if isNowPlayingItem {
-                    albumTitle.textColor = ThemeHelper.defaultVividColor
+                    title.textColor = ThemeHelper.defaultVividColor
                 } else {
-                    albumTitle.textColor = ThemeHelper.defaultFontColor
+                    title.textColor = ThemeHelper.defaultFontColor
                 }
             }
         }
@@ -30,7 +31,8 @@ class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        albumDetails?.textColor = UIColor.lightGrayColor()
+        details?.textColor = UIColor.lightGrayColor()
+        accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -41,10 +43,14 @@ class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
     
     func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
         
-        albumTitle?.text = entity.titleForGrouping(mediaGroupingType)
+        title?.text = entity.titleForGrouping(mediaGroupingType)
         
         let pluralText = entity.count > 1 ? "s" : ""
-        albumDetails?.text = "\(entity.count) Track\(pluralText)"
+        var text = "\(entity.count) Track\(pluralText)"
+        if let mediaItem = entity.representativeItem, let releaseDate = mediaItem.releaseDate {
+            text = text + " • \(releaseDate)"
+        }
+        details?.text = text
         
         let albumArtworkTemp = entity.representativeItem?.artwork?.imageWithSize(albumArtwork.frame.size)
         if(albumArtworkTemp == nil) {
@@ -52,6 +58,7 @@ class AlbumTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
         } else {
             albumArtwork?.image = albumArtworkTemp
         }
+    
     }
     
 }

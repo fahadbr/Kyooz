@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class LibraryGroupingTableViewController: UITableViewController {
+class LibraryGroupingTableViewController: AbstractTableViewController {
     
     private let tableViewCellIdentifier = "libraryGroupingCell"
     private let font = UIFont(name: ThemeHelper.defaultFontName, size: ThemeHelper.defaultFontSize * 1.10)

@@ -1,53 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="albumTableViewCell" rowHeight="72" id="KGk-i7-Jjw" customClass="AlbumTableViewCell" customModule="Kyooz" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="72"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="imageTableViewCell" rowHeight="81" id="KGk-i7-Jjw" customClass="ImageTableViewCell" customModule="Kyooz" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="498" height="81"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                <rect key="frame" x="0.0" y="0.0" width="498" height="80"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Rta-dy-8fq">
-                        <rect key="frame" x="3" y="5" width="61" height="61"/>
+                        <rect key="frame" x="3" y="5" width="70" height="70"/>
                         <animations/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="Rta-dy-8fq" secondAttribute="height" multiplier="1:1" id="Vby-Ke-pUn"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AlbumTitle" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fzu-AO-SHn">
-                        <rect key="frame" x="72" y="17" width="243" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fzu-AO-SHn" userLabel="title">
+                        <rect key="frame" x="81" y="22" width="412" height="21"/>
                         <animations/>
                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="15"/>
-                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AlbumDetails" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eux-9S-S4w">
-                        <rect key="frame" x="72" y="38" width="73" height="14"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Details" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eux-9S-S4w" userLabel="details">
+                        <rect key="frame" x="81" y="43" width="412" height="14"/>
                         <animations/>
                         <constraints>
                             <constraint firstAttribute="height" constant="14" id="wbb-8z-WIA"/>
                         </constraints>
                         <fontDescription key="fontDescription" name="Avenir-Roman" family="Avenir" pointSize="12"/>
-                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <animations/>
-                <color key="backgroundColor" white="0.070000000000000007" alpha="1" colorSpace="calibratedWhite"/>
                 <constraints>
                     <constraint firstItem="Eux-9S-S4w" firstAttribute="top" secondItem="fzu-AO-SHn" secondAttribute="bottom" id="4bt-Em-uEu"/>
                     <constraint firstAttribute="bottomMargin" secondItem="Eux-9S-S4w" secondAttribute="bottom" constant="-6" id="640-9o-OfY"/>
                     <constraint firstItem="Eux-9S-S4w" firstAttribute="leading" secondItem="fzu-AO-SHn" secondAttribute="leading" id="B8L-dR-1No"/>
                     <constraint firstItem="fzu-AO-SHn" firstAttribute="leading" secondItem="Rta-dy-8fq" secondAttribute="trailing" constant="8" id="Jda-2U-4DK"/>
+                    <constraint firstItem="Eux-9S-S4w" firstAttribute="width" secondItem="fzu-AO-SHn" secondAttribute="width" id="RkS-u6-sU8"/>
                     <constraint firstItem="Eux-9S-S4w" firstAttribute="leading" secondItem="Rta-dy-8fq" secondAttribute="trailing" constant="8" id="Wpe-7P-QYa"/>
                     <constraint firstAttribute="centerY" secondItem="fzu-AO-SHn" secondAttribute="centerY" constant="8" id="WyE-1S-nYh"/>
                     <constraint firstAttribute="trailingMargin" secondItem="fzu-AO-SHn" secondAttribute="trailing" constant="-3" id="XFB-6v-87f"/>
@@ -64,11 +62,11 @@
             </tableViewCellContentView>
             <animations/>
             <connections>
-                <outlet property="albumArtwork" destination="Rta-dy-8fq" id="JxO-Bw-dt7"/>
-                <outlet property="albumDetails" destination="Eux-9S-S4w" id="lhw-yW-UyE"/>
-                <outlet property="albumTitle" destination="fzu-AO-SHn" id="IqP-Uq-slk"/>
+                <outlet property="albumArtwork" destination="Rta-dy-8fq" id="c8C-F4-Xgm"/>
+                <outlet property="details" destination="Eux-9S-S4w" id="kdF-C7-TAc"/>
+                <outlet property="title" destination="fzu-AO-SHn" id="PoC-K9-W6G"/>
             </connections>
-            <point key="canvasLocation" x="479" y="416"/>
+            <point key="canvasLocation" x="568" y="420.5"/>
         </tableViewCell>
     </objects>
 </document>
