@@ -2,67 +2,157 @@
 //  IndexBuildingOperation.swift
 //  Kyooz
 //
-//  Created by FAHAD RIAZ on 11/16/15.
+//  Created by FAHAD RIAZ on 11/27/15.
 //  Copyright © 2015 FAHAD RIAZ. All rights reserved.
 //
 
 import Foundation
 
-class IndexBuildingOperation<T:NSObject> : NSOperation {
+class IndexBuildingOperation<T:NSObject> : AbstractResultOperation<SearchIndex<T>> {
     
-    var progress:Int = 0
+    private let stopWords = ["the ", "a "]
     
-    var subIndex:[String:SearchIndex<T>]?
-    var values:[SearchIndexEntry<T>]?
-    
-    private let indexableValues:[T]
+    private let valuesToIndex:[T]
     private let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
     private let maxValuesAmount:Int
-    private let indexLevel:Int
-    private let isFinalLevel:Bool
     private let parentIndexName:String
     
-    init(parentIndexName:String, indexableValues:[T], maxValuesAmount:Int, indexLevel:Int, keyExtractingBlock:(T)->(String,String)) {
-        self.indexableValues = indexableValues
-        self.keyExtractingBlock = keyExtractingBlock
-        self.maxValuesAmount = maxValuesAmount
-        self.indexLevel = indexLevel
+    init(parentIndexName:String, valuesToIndex:[T], maxValuesAmount:Int, keyExtractingBlock:(T)->(String, String)) {
         self.parentIndexName = parentIndexName
-        self.isFinalLevel = indexableValues.count <= maxValuesAmount
-        if !isFinalLevel {
-            subIndex = [String:SearchIndex<T>]()
-        }
+        self.valuesToIndex = valuesToIndex
+        self.maxValuesAmount = maxValuesAmount
+        self.keyExtractingBlock = keyExtractingBlock
     }
     
-    
     override func main() {
-        if cancelled {
+        if cancelled { return }
+        
+        let fromValueIndexBuilder:IndexBuilder<T,T> = FromValuesIndexBuilder(maxValuesAmount: maxValuesAmount, keyExtractingBlock: keyExtractingBlock)
+        fromValueIndexBuilder.originatingOperation = self
+        let fromEntryIndexBuilder:IndexBuilder<T,SearchIndexEntry<T>> = FromEntriesIndexBuilder(maxValuesAmount:maxValuesAmount)
+        fromEntryIndexBuilder.originatingOperation = self
+        
+        let finalIndex:SearchIndex<T>
+        do {
+            finalIndex = try fromValueIndexBuilder.buildIndex(parentIndexName, valuesToIndex: valuesToIndex, indexLevel: 0, nextIndexBuilder: fromEntryIndexBuilder)
+        } catch IndexBuildError.Cancelled {
+            Logger.debug("Index build was cancelled")
+            return
+        } catch {
+            Logger.debug("Unknown error occurred")
             return
         }
         
-        var tempIndex = [String:[T]]()
+        if cancelled { return }
         
-        for value in indexableValues {
-            let keyValue = keyExtractingBlock(value)
-            let normalizedPrimaryKey = keyValue.normalizedPrimaryKey
+        for stopWord in stopWords {
+            if cancelled { return }
+            let results = finalIndex.searchIndexWithString(stopWord.normalizedString)
             
-            if subIndex != nil && indexLevel < normalizedPrimaryKey.characters.count {                
-                if tempIndex[normalizedPrimaryKey[indexLevel]]?.append(value) == nil {
-                    tempIndex[normalizedPrimaryKey[indexLevel]] = [value]
+            for result in results {
+                if cancelled { return }
+                let titleKeyEntry = keyExtractingBlock(result)
+                var normalizedKey = titleKeyEntry.normalizedPrimaryKey
+                if normalizedKey.hasPrefix(stopWord) {
+                    normalizedKey.removeRange(stopWord.startIndex..<stopWord.endIndex)
+                    finalIndex.insertIntoIndex(SearchIndexEntry(object: result, primaryKeyValue: (titleKeyEntry.titleProperty, normalizedKey)))
                 }
-            } else if values?.append(SearchIndexEntry(object: value, primaryKeyValue: keyValue)) == nil {
-                values = [SearchIndexEntry(object: value, primaryKeyValue: keyValue)]
-            }
-            progress++
-        }
-        
-        if subIndex != nil {
-            let nextIndexLevel = indexLevel + 1
-            for (key, value) in tempIndex {
-                subIndex![key] = SearchIndex(name:"\(parentIndexName)[\(key)]",indexableValues: value, indexLevel: nextIndexLevel, keyExtractingBlock: keyExtractingBlock)
             }
         }
         
+        inThreadCompletionBlock?(finalIndex)
     }
     
 }
+
+private enum IndexBuildError : ErrorType {
+    case Cancelled
+}
+
+private class IndexBuilder<BASE:NSObject,INPUT> {
+    
+    weak var originatingOperation:NSOperation?
+    
+    private let maxValuesAmount:Int
+    
+    init(maxValuesAmount:Int) {
+        self.maxValuesAmount = maxValuesAmount
+    }
+    
+    private func buildIndex(title:String, valuesToIndex:[INPUT], indexLevel:Int, nextIndexBuilder:IndexBuilder<BASE, SearchIndexEntry<BASE>>) throws -> SearchIndex<BASE> {
+        let isLastIndexLevel:Bool = valuesToIndex.count <= maxValuesAmount
+        var valueDict = [String:[SearchIndexEntry<BASE>]]()
+        var sameLevelValues = [SearchIndexEntry<BASE>]()
+        
+        for value in valuesToIndex {
+            
+            if let cancelled = originatingOperation?.cancelled where cancelled == true {
+                throw IndexBuildError.Cancelled
+            }
+            
+            let entry = getSearchIndexEntry(value)
+            let primaryKey = entry.primaryKey
+            if !isLastIndexLevel && indexLevel < primaryKey.characters.count {
+                if valueDict[primaryKey[indexLevel]]?.append(entry) == nil {
+                    valueDict[primaryKey[indexLevel]] = [entry]
+                }
+            } else {
+                sameLevelValues.append(entry)
+            }
+        }
+        
+        var subIndex:[String:SearchIndex<BASE>]?
+        var sameLevelValuesSet:Set<SearchIndexEntry<BASE>>?
+        if !isLastIndexLevel {
+            subIndex = [String:SearchIndex<BASE>]()
+            let nextIndexLevel = indexLevel + 1
+            for (characterIndex, values) in valueDict {
+                if let cancelled = originatingOperation?.cancelled where cancelled == true {
+                    throw IndexBuildError.Cancelled
+                }
+                
+                subIndex![characterIndex] = try nextIndexBuilder.buildIndex("\(title)[\(characterIndex)]", valuesToIndex: values, indexLevel: nextIndexLevel, nextIndexBuilder:nextIndexBuilder)
+            }
+        }
+        if !sameLevelValues.isEmpty {
+            sameLevelValuesSet = Set(sameLevelValues)
+        }
+        
+        if let cancelled = originatingOperation?.cancelled where cancelled == true {
+            throw IndexBuildError.Cancelled
+        }
+        
+        return SearchIndex(name: title, indexLevel: indexLevel, sameLevelValues: sameLevelValuesSet, subIndex: subIndex)
+    }
+    
+    private func getSearchIndexEntry(value:INPUT) -> SearchIndexEntry<BASE> {
+        fatalError()
+    }
+}
+
+private class FromValuesIndexBuilder<T:NSObject> : IndexBuilder<T, T> {
+    
+    private let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
+    
+    init(maxValuesAmount: Int, keyExtractingBlock:(T)->(String,String)) {
+        self.keyExtractingBlock = keyExtractingBlock
+        super.init(maxValuesAmount: maxValuesAmount)
+    }
+    
+    override func getSearchIndexEntry(value: T) -> SearchIndexEntry<T> {
+        return SearchIndexEntry(object: value, primaryKeyValue: keyExtractingBlock(value))
+    }
+}
+
+private class FromEntriesIndexBuilder<T:NSObject> : IndexBuilder<T, SearchIndexEntry<T>> {
+    
+    override init(maxValuesAmount: Int) {
+        super.init(maxValuesAmount: maxValuesAmount)
+    }
+    
+    override func getSearchIndexEntry(value: SearchIndexEntry<T>) -> SearchIndexEntry<T> {
+        return value
+    }
+    
+}
+

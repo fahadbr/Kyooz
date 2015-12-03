@@ -1,5 +1,5 @@
 //
-//  AbstractSearchOperation.swift
+//  AbstractResultOperation.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 11/22/15.
@@ -9,9 +9,9 @@
 import Foundation
 
 
-class AbstractSearchOperation<T:NSObject> : NSOperation {
+class AbstractResultOperation<T> : NSOperation {
     
-    var inThreadCompletionBlock:(([T])->())?
+    var inThreadCompletionBlock:((T)->())?
     
     override func main() {
         fatalError("main method must be overriden")

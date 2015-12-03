@@ -18,38 +18,25 @@ let indexQueue:NSOperationQueue = {
 class SearchIndex<T:NSObject> {
     
     let name:String
-    private let maxValuesAmount = 200
     
     private var subIndex:[String:SearchIndex<T>]?
-    private var values:[SearchIndexEntry<T>]!
+    private var sameLevelValues:Set<SearchIndexEntry<T>>?
     private let indexLevel:Int
     
-    convenience init(name:String, indexableValues:[T], keyExtractingBlock:(T)->(String, String)) {
-        self.init(name:name, indexableValues:indexableValues, indexLevel:0, keyExtractingBlock: keyExtractingBlock)
+    convenience init(name:String, sameLevelValues:Set<SearchIndexEntry<T>>?, subIndex:[String:SearchIndex<T>]?) {
+        self.init(name:name, indexLevel:0, sameLevelValues:sameLevelValues, subIndex:subIndex)
     }
     
-    init(name:String, indexableValues:[T], indexLevel:Int, keyExtractingBlock:(T)->(String,String)) {
+    init(name:String, indexLevel:Int, sameLevelValues:Set<SearchIndexEntry<T>>?, subIndex:[String:SearchIndex<T>]?) {
         self.name = name
         self.indexLevel = indexLevel
-        if indexableValues.isEmpty {
-            return
+        if (sameLevelValues == nil || sameLevelValues!.isEmpty) && (subIndex == nil || subIndex!.isEmpty) {
+            fatalError("Cannot create a SearchIndex with both sameLevelValues and subIndex as nil or empty")
         }
-        let indexBuildingTask = IndexBuildingOperation(parentIndexName:name,
-            indexableValues: indexableValues,
-            maxValuesAmount: maxValuesAmount,
-            indexLevel: indexLevel,
-            keyExtractingBlock: keyExtractingBlock)
-        indexBuildingTask.completionBlock = {
-            if !indexBuildingTask.cancelled {
-                if let subIndex = indexBuildingTask.subIndex {
-                    self.subIndex = subIndex
-                }
-                if let values = indexBuildingTask.values {
-                    self.values = values
-                }
-            }
-        }
-        indexQueue.addOperation(indexBuildingTask)
+        
+        self.subIndex = subIndex
+        self.sameLevelValues = sameLevelValues
+        
     }
     
     func searchIndexWithString(searchString:String, searchPredicate:NSPredicate? = nil) -> [T] {
@@ -65,7 +52,7 @@ class SearchIndex<T:NSObject> {
     func searchValuesWithString(searchString:String, searchPredicate:NSPredicate, searchAllValues:Bool = true) -> [T] {
         var filteredValues = [T]()
         
-        if let values = self.values {
+        if let values = self.sameLevelValues {
             if indexLevel >= searchString.characters.count && !searchAllValues {
                 filteredValues.appendContentsOf(values.map({ $0.object } ))
             } else {   
@@ -86,16 +73,16 @@ class SearchIndex<T:NSObject> {
         return filteredValues
     }
     
-    func insertIntoIndex(value:T, primaryKeyValue:(title:String, keyValue:String)) {
-        let key = primaryKeyValue.keyValue
+    func insertIntoIndex(entry:SearchIndexEntry<T>) {
+        let key = entry.primaryKey
         if indexLevel < key.characters.count {
             if let index = self.subIndex?[key[indexLevel]] {
-                index.insertIntoIndex(value, primaryKeyValue: primaryKeyValue)
+                index.insertIntoIndex(entry)
                 return
             }
         }
-        if values?.append(SearchIndexEntry(object: value, primaryKeyValue: primaryKeyValue)) == nil {
-            values = [SearchIndexEntry(object: value, primaryKeyValue: primaryKeyValue)]
+        if sameLevelValues?.insert(entry) == nil {
+            sameLevelValues = [entry]
         }
     }
     
