@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        MediaLibrarySearchTableViewController.instance.initializeIndicies()
+        MediaLibrarySearchTableViewController.instance
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
@@ -35,8 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         ThemeHelper.applyGlobalAppearanceSettings()
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
-
-
+        
         return true
     }
 

@@ -56,9 +56,7 @@
 		0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B70702E1B9799030000673E /* ConfigurableAudioTableCell.swift */; };
 		0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */; };
 		0B7776811BFC078A00B9A088 /* MPMediaItemCollectionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776801BFC078A00B9A088 /* MPMediaItemCollectionExtension.swift */; };
-		0B7776831BFC20AC00B9A088 /* StopWordIndexBuildingOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776821BFC20AC00B9A088 /* StopWordIndexBuildingOperation.swift */; };
 		0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */; };
-		0B7776871C0015F200B9A088 /* FullIpodLibrarySearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776861C0015F200B9A088 /* FullIpodLibrarySearchOperation.swift */; };
 		0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */; };
 		0B77768B1C001EC200B9A088 /* SearchResultsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B77768A1C001EC200B9A088 /* SearchResultsHeaderView.xib */; };
 		0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B081B9388BD00004A1B /* CGUtils.swift */; };
@@ -69,7 +67,10 @@
 		0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */; };
 		0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */; };
 		0BB8D1AA1BC1F8BA00472042 /* MPMediaEntityExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB8D1A91BC1F8BA00472042 /* MPMediaEntityExtension.swift */; };
-		0BBA91EF1C02292B00C79BA2 /* AbstractSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91EE1C02292B00C79BA2 /* AbstractSearchOperation.swift */; };
+		0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */; };
+		0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */; };
+		0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */; };
+		0BBA91F51C081F8C00C79BA2 /* IndexBuildingOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F41C081F8C00C79BA2 /* IndexBuildingOperation.swift */; };
 		0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */; };
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
@@ -96,9 +97,7 @@
 		0BEBCCB71B92123700EFC47D /* PlayPauseButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */; };
 		0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917401BF7FD7D001AC802 /* SearchIndex.swift */; };
 		0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */; };
-		0BF917461BF8D652001AC802 /* FullIndexSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917451BF8D652001AC802 /* FullIndexSearchOperation.swift */; };
 		0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917471BF8F36A001AC802 /* KyoozUtils.swift */; };
-		0BF9174A1BFA3FE2001AC802 /* IndexBuildingOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917491BFA3FE2001AC802 /* IndexBuildingOperation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,9 +164,7 @@
 		0B70702E1B9799030000673E /* ConfigurableAudioTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurableAudioTableCell.swift; sourceTree = "<group>"; };
 		0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		0B7776801BFC078A00B9A088 /* MPMediaItemCollectionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPMediaItemCollectionExtension.swift; sourceTree = "<group>"; };
-		0B7776821BFC20AC00B9A088 /* StopWordIndexBuildingOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StopWordIndexBuildingOperation.swift; sourceTree = "<group>"; };
 		0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocIPodLibrarySearchOperation.swift; sourceTree = "<group>"; };
-		0B7776861C0015F200B9A088 /* FullIpodLibrarySearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullIpodLibrarySearchOperation.swift; sourceTree = "<group>"; };
 		0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeaderView.swift; sourceTree = "<group>"; };
 		0B77768A1C001EC200B9A088 /* SearchResultsHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchResultsHeaderView.xib; sourceTree = "<group>"; };
 		0B778B081B9388BD00004A1B /* CGUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGUtils.swift; sourceTree = "<group>"; };
@@ -178,7 +175,10 @@
 		0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMAudioQueuePlayer.swift; sourceTree = "<group>"; };
 		0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MPMediaItemExtension.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BB8D1A91BC1F8BA00472042 /* MPMediaEntityExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPMediaEntityExtension.swift; sourceTree = "<group>"; };
-		0BBA91EE1C02292B00C79BA2 /* AbstractSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSearchOperation.swift; sourceTree = "<group>"; };
+		0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractResultOperation.swift; sourceTree = "<group>"; };
+		0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchExecutionController.swift; sourceTree = "<group>"; };
+		0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexSearchOperation.swift; sourceTree = "<group>"; };
+		0BBA91F41C081F8C00C79BA2 /* IndexBuildingOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexBuildingOperation.swift; sourceTree = "<group>"; };
 		0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleWSClient.swift; sourceTree = "<group>"; };
 		0BBE15F91AF5BE20007C6189 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KyoozBridge.h; sourceTree = "<group>"; };
@@ -206,9 +206,7 @@
 		0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayPauseButtonView.xib; sourceTree = "<group>"; };
 		0BF917401BF7FD7D001AC802 /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndex.swift; sourceTree = "<group>"; };
 		0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndexEntry.swift; sourceTree = "<group>"; };
-		0BF917451BF8D652001AC802 /* FullIndexSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullIndexSearchOperation.swift; sourceTree = "<group>"; };
 		0BF917471BF8F36A001AC802 /* KyoozUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozUtils.swift; sourceTree = "<group>"; };
-		0BF917491BFA3FE2001AC802 /* IndexBuildingOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexBuildingOperation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -488,14 +486,13 @@
 		0BF917421BF7FD83001AC802 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				0BBA91EE1C02292B00C79BA2 /* AbstractSearchOperation.swift */,
+				0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */,
 				0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */,
-				0BF917451BF8D652001AC802 /* FullIndexSearchOperation.swift */,
-				0B7776861C0015F200B9A088 /* FullIpodLibrarySearchOperation.swift */,
-				0BF917491BFA3FE2001AC802 /* IndexBuildingOperation.swift */,
+				0BBA91F41C081F8C00C79BA2 /* IndexBuildingOperation.swift */,
+				0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */,
+				0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */,
 				0BF917401BF7FD7D001AC802 /* SearchIndex.swift */,
 				0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */,
-				0B7776821BFC20AC00B9A088 /* StopWordIndexBuildingOperation.swift */,
 			);
 			name = Search;
 			sourceTree = "<group>";
@@ -627,9 +624,9 @@
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
 				0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */,
-				0B7776831BFC20AC00B9A088 /* StopWordIndexBuildingOperation.swift in Sources */,
 				0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
+				0BBA91F51C081F8C00C79BA2 /* IndexBuildingOperation.swift in Sources */,
 				0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */,
 				0BCE21A31B1403C70074DA47 /* AudioEngineController.swift in Sources */,
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
@@ -637,8 +634,6 @@
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
 				0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */,
 				0BCA19501BC73F05008CD0FF /* RemoteCommandHandler.swift in Sources */,
-				0BF9174A1BFA3FE2001AC802 /* IndexBuildingOperation.swift in Sources */,
-				0BF917461BF8D652001AC802 /* FullIndexSearchOperation.swift in Sources */,
 				0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */,
 				0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
@@ -648,7 +643,6 @@
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
 				0B17B02F1B7646FC0031CBBB /* ColoredUILabel.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
-				0B7776871C0015F200B9A088 /* FullIpodLibrarySearchOperation.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0B5123A21AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift in Sources */,
 				0B533ABE1BC17E4800EA71B7 /* LibraryGroupingTableViewController.swift in Sources */,
@@ -667,7 +661,9 @@
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B13DA211AE6FA9A00CC5C01 /* PlaybackStateDTO.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
+				0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */,
 				0B7776811BFC078A00B9A088 /* MPMediaItemCollectionExtension.swift in Sources */,
+				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
 				0B31FE091BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift in Sources */,
@@ -681,7 +677,7 @@
 				0BB8D1AA1BC1F8BA00472042 /* MPMediaEntityExtension.swift in Sources */,
 				0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */,
 				0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */,
-				0BBA91EF1C02292B00C79BA2 /* AbstractSearchOperation.swift in Sources */,
+				0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,

@@ -70,9 +70,19 @@ class LibraryGrouping : Hashable {
             self.filtersByTitle = filtersByTitle
             self.additionalSearchKeyGroups = additionalSearchKeyGroups
     }
+    
+    func getAllEntriesForSource(source:AudioTrackSource) -> [NSObject]? {
+        switch source {
+        case .iPodLibrary:
+            let results:[MPMediaEntity]? = self === LibraryGrouping.Songs ? baseQuery.items : baseQuery.collections
+            return results
+        default:
+            return nil
+        }
+    }
 
 }
 
 func ==(lhs:LibraryGrouping, rhs:LibraryGrouping) -> Bool {
-    return lhs.hashValue == rhs.hashValue
+    return lhs === rhs
 }

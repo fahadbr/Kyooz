@@ -10,53 +10,52 @@ import Foundation
 import UIKit
 import MediaPlayer
 
-class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate {
+class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate {
+    
+    private class RowLimit {
+        let limit:Int
+        var isExpanded:Bool = false
+        init(limit:Int) {
+            self.limit = limit
+        }
+    }
+
 
     static let instance = MediaLibrarySearchTableViewController()
-    
-    private static let groups = [LibraryGrouping.Artists, LibraryGrouping.Albums, LibraryGrouping.Songs, LibraryGrouping.Playlists]
     
     //MARK: - Properties
     var searchController:UISearchController!
     
-    private let maxRowsPerSection = [LibraryGrouping.Artists:3, LibraryGrouping.Albums:4, LibraryGrouping.Songs:6, LibraryGrouping.Playlists:3]
-    private let groups:[LibraryGrouping] = MediaLibrarySearchTableViewController.groups
-    private let searchKeysByGrouping = [
-        LibraryGrouping.Artists : [MPMediaItemPropertyAlbumArtist],
-        LibraryGrouping.Albums : [MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist],
-        LibraryGrouping.Songs : [MPMediaItemPropertyTitle, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist],
-        LibraryGrouping.Playlists : [MPMediaPlaylistPropertyName]]
-    
-    private let searchQueues:[LibraryGrouping:NSOperationQueue] = {
-        var queueDict = [LibraryGrouping:NSOperationQueue]()
-        for group in MediaLibrarySearchTableViewController.groups {
-            let queue = NSOperationQueue()
-            queue.name = "com.riaz.fahad.Kyooz.SearchQueue.\(group.name)"
-            queue.qualityOfService = NSQualityOfService.UserInteractive
-            queue.maxConcurrentOperationCount = 1
-            queueDict[group] = queue
-        }
-        return queueDict
+    private let searchExecutionControllers:[SearchExecutionController<MPMediaEntity>] = {
+        let artistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Artists,
+            searchKeys: [MPMediaItemPropertyAlbumArtist])
+        let albumSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Albums,
+            searchKeys: [MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
+        let songSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Songs,
+            searchKeys: [MPMediaItemPropertyTitle, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
+        let playlistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Playlists,
+            searchKeys: [MPMediaPlaylistPropertyName])
+        return [artistSearchExecutor, albumSearchExecutor, songSearchExecutor, playlistSearchExecutor]
     }()
     
-    private let completionQueue:NSOperationQueue = {
-        let queue = NSOperationQueue()
-        queue.name = "com.riaz.fahad.Kyooz.SearchCompletionQueue"
-        queue.qualityOfService = NSQualityOfService.UserInteractive
-        queue.maxConcurrentOperationCount = 1
-        return queue
-    }()
+    private let rowLimitPerSection = [LibraryGrouping.Artists:RowLimit(limit: 3),
+        LibraryGrouping.Albums:RowLimit(limit: 4),
+        LibraryGrouping.Songs:RowLimit(limit: 6),
+        LibraryGrouping.Playlists:RowLimit(limit: 3)]
     
-    private (set) var indexIsLoaded = false    
-    private var sections = [LibraryGrouping]()
-    private var searchResults = [LibraryGrouping:[MPMediaEntity]]()
-    private var searchIndicies = [LibraryGrouping:SearchIndex<MPMediaEntity>]()
+    
+    private var sections = [SearchExecutionController<MPMediaEntity>]()
     private var tapGestureRecognizers = [LibraryGrouping:UITapGestureRecognizer]()
-    private var selectedHeader:LibraryGrouping?
-    private var shouldReloadTableViewAfterSearchCompleted = true
+    private var selectedHeader:SearchExecutionController<MPMediaEntity>?
+    
+    private (set) var searchText:String!
     
     //MARK: - View life cycle
     override func viewDidLoad() {
+        for se in searchExecutionControllers {
+            se.delegate = self
+        }
+        
         super.viewDidLoad()
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
@@ -70,39 +69,34 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
 
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let group:LibraryGrouping
-        let isOnlySection:Bool
-        if let selectedHeader = self.selectedHeader {
-            group = selectedHeader
-            isOnlySection = true
-        } else {
-            group = sections[section]
-            isOnlySection = sections.count == 1 && shouldReloadTableViewAfterSearchCompleted
-        }
-        
-        guard let count = searchResults[group]?.count, let maxRows = maxRowsPerSection[group] else {
+        if section >= sections.count {
+            Logger.error("section index received is greater than the number of sections avaliable")
             return 0
         }
+        let searchExecutor = sections[section]
+        let rowLimit = rowLimitPerSection[searchExecutor.libraryGroup]!
         
-        return ((count > maxRows) && !isOnlySection) ? maxRows : count
+        if rowLimit.isExpanded {
+            return searchExecutor.searchResults.count
+        }
+        
+        return rowLimit.limit < searchExecutor.searchResults.count ? rowLimit.limit : searchExecutor.searchResults.count
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].name
-    }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let group = sections[indexPath.section]
+        let searchExecutor = sections[indexPath.section]
+        let group = searchExecutor.libraryGroup
         let reuseIdentifier = group === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
         
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier), let results = searchResults[group] else {
+        guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
             return UITableViewCell()
         }
         
-        guard indexPath.row < results.count else {
+        guard indexPath.row < searchExecutor.searchResults.count else {
             return UITableViewCell()
         }
-        let entity = results[indexPath.row]
+        let entity = searchExecutor.searchResults[indexPath.row]
         if let configurableCell = cell as? ConfigurableAudioTableCell {
             configurableCell.configureCellForItems(entity, mediaGroupingType: group.groupingType)
         } else {
@@ -115,7 +109,12 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     //MARK: - Table View Delegate
     //MARK: header configuration
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let group = sections[section]
+        if section >= sections.count {
+            Logger.error("section index received is greater than the number of sections avaliable")
+            return nil
+        }
+        let searchExecutor = sections[section]
+        let group = searchExecutor.libraryGroup
         guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
             return nil
         }
@@ -129,7 +128,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
             view.disclosureContainerView.hidden = true
         }
         
-        view.applyRotation(shouldExpand: selectedHeader != nil && group === selectedHeader!)
+        view.applyRotation(shouldExpand: selectedHeader != nil && searchExecutor === selectedHeader!)
         
         return view
     }
@@ -141,11 +140,14 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     //MARK: other configuration
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let group = sections[indexPath.section]
-        
-        guard let entity = searchResults[group]?[indexPath.row] else {
+        if indexPath.section >= sections.count || indexPath.row >= sections[indexPath.section].searchResults.count {
+            Logger.error("indexPath received is greater than the number of sections or search results avaliable")
             return
         }
+        
+        let searchExecutor = sections[indexPath.section]
+        let entity = searchExecutor.searchResults[indexPath.row]
+        let group = searchExecutor.libraryGroup
         
         if let item = entity as? MPMediaItem where group === LibraryGrouping.Songs {
             audioQueuePlayer.playNowWithCollection(mediaCollection: MPMediaItemCollection(items: [item]), itemToPlay: item)
@@ -175,10 +177,16 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         
         vc.filterQuery = filterQuery
         vc.libraryGroupingType = group.nextGroupLevel
+        vc.navigationItem.leftBarButtonItem?.title = nil
         
         (presentingViewController as? UINavigationController)?.popToRootViewControllerAnimated(false)
-        RootViewController.instance.searchController.active = false
+        searchController.active = false
         (presentingViewController as? UINavigationController)?.pushViewController(vc, animated: true)
+
+        //doing this asynchronously because it must be effective after the previous animations have taken place
+        KyoozUtils.doInMainQueueAsync() {
+            RootViewController.instance.previousSearchText = self.searchText
+        }
     }
     //MARK: - SCROLL DELEGATE
     override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
@@ -195,28 +203,26 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     }
     
     override func reloadTableViewData() {
-        reloadSections()
-        if shouldReloadTableViewAfterSearchCompleted {
-            if NSThread.isMainThread() {
-                super.reloadTableViewData()
-            } else {
-                dispatch_async(dispatch_get_main_queue(), super.reloadTableViewData)
-            }
+        KyoozUtils.doInMainQueue() {
+            self.reloadSections()
+            super.reloadTableViewData()
         }
     }
     
-    
-    
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        RootViewController.instance.searchController.searchBar.resignFirstResponder()
-        let group = sections[indexPath.section]
-        guard let results = searchResults[group] else {
+        if indexPath.section >= sections.count {
+            Logger.error("section index received is greater than the number of sections avaliable")
             return [AudioTrack]()
         }
-        if results.count <= indexPath.row {
+        
+        searchController.searchBar.resignFirstResponder()
+        let searchExecutor = sections[indexPath.section]
+        if searchExecutor.searchResults.count <= indexPath.row {
+            Logger.error("index received is greater than the number of search results avaliable")
             return [AudioTrack]()
         }
-        let entity = results[indexPath.row]
+        
+        let entity = searchExecutor.searchResults[indexPath.row]
         
         if let collection = entity as? MPMediaItemCollection {
             return collection.items
@@ -234,154 +240,53 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         searchBar.resignFirstResponder()
     }
     
-    //MARK: - Search Controller delegate
-    func didDismissSearchController(searchController: UISearchController) {
-        searchResults.removeAll()
-        selectedHeader = nil
-    }
     
     //MARK: - Search Results Updating
     func updateSearchResultsForSearchController(searchController: UISearchController) {
-        shouldReloadTableViewAfterSearchCompleted = true
-        updateSearchResults(searchController)
-    }
-    
-    //MARK: - class functions
-    private func updateSearchResults(searchController: UISearchController) {
-        
         if let text = searchController.searchBar.text?.normalizedString where !text.isEmpty {
-            
-            searchResults.removeAll()
-            
-            let searchItems = text.componentsSeparatedByString(" ") as [String]
-            
-            for group in groups {
-                
-                if selectedHeader != nil && selectedHeader! !== group {
-                    continue
-                }
-                
-                let andMatchPredicates: [NSPredicate] = searchItems.map { searchString in
-                    
-                    let searchStringExpression = NSExpression(forConstantValue: searchString)
-                    
-                    guard let searchKeys = searchKeysByGrouping[group] else {
-                        Logger.debug("No search keys for group \(group.name)")
-                        return NSPredicate()
-                    }
-                    
-                    var searchPredicates = [NSPredicate]()
-                    for searchKey in searchKeys {
-                        let keyExpression = NSExpression(forKeyPath: searchKey)
-                        let keySearchComparisonPredicate = NSComparisonPredicate(leftExpression: keyExpression, rightExpression: searchStringExpression, modifier: .DirectPredicateModifier, type: NSPredicateOperatorType.ContainsPredicateOperatorType,
-                            options: NSComparisonPredicateOptions.NormalizedPredicateOption)
-                        searchPredicates.append(keySearchComparisonPredicate)
-                    }
-                    
-                    
-                    return NSCompoundPredicate(orPredicateWithSubpredicates: searchPredicates)
-                }
-                
-                let finalCompoundPredicate =  NSCompoundPredicate(andPredicateWithSubpredicates: andMatchPredicates)
-                
-                guard let searchQueue = searchQueues[group] else {
-                    Logger.debug("No search queue found for group \(group.name)")
-                    return
-                }
-                searchQueue.cancelAllOperations()
-                
-                let completionBlock = { (results:[MPMediaEntity]) -> Void in
-                    self.completionQueue.addOperationWithBlock() {
-                        dispatch_sync(dispatch_get_main_queue()) {
-                            self.searchResults[group] = results
-                            self.reloadTableViewData()
-                        }
-                    }
-                }
-                
-                if indexIsLoaded {
-                    searchResults[group] = startSearchForMediaGrouping(text, group:group, searchPredicate: finalCompoundPredicate, searchQueue: searchQueue, inThreadCompletionBlock: completionBlock)
-                } else {
-                    performAdHocSearch(text, group: group, searchPredicate: finalCompoundPredicate, searchQueue: searchQueue, inThreadCompletionBlock: completionBlock)
-                }
+            if let currentText = self.searchText where currentText == text {
+                return
             }
             
-            reloadTableViewData()
+            searchText = text
+            let searchStringComponents = text.componentsSeparatedByString(" ") as [String]
+            
+            for searchExecutor in searchExecutionControllers {
+                searchExecutor.clearSearchResults()
+                
+                searchExecutor.executeSearchForStringComponents(text, stringComponents: searchStringComponents)
+            }
         } else {
             selectedHeader = nil
-            searchResults.removeAll()
         }
-        
     }
     
-    
-    private func performAdHocSearch(searchString:String, group:LibraryGrouping, searchPredicate:NSPredicate, searchQueue:NSOperationQueue, inThreadCompletionBlock:([MPMediaEntity])->()) {
-        let searchOperation = AdHocIPodLibrarySearchOperation(group: group, searchString: searchString, searchPredicate: searchPredicate)
-        searchOperation.inThreadCompletionBlock = inThreadCompletionBlock
-        searchQueue.addOperation(searchOperation)
-    }
-    
-    private func startSearchForMediaGrouping(searchString:String, group:LibraryGrouping, searchPredicate:NSPredicate, searchQueue:NSOperationQueue, inThreadCompletionBlock:([MPMediaEntity])->()) -> [MPMediaEntity] {
-        guard let searchIndex = searchIndicies[group] else {
-            return [MPMediaEntity]()
-        }
-        let primaryResults = searchIndex.searchIndexWithString(searchString, searchPredicate:searchPredicate)
-        
-        if let maxRows = maxRowsPerSection[group] where primaryResults.count >= maxRows && selectedHeader == nil {
-            return primaryResults
-        }
-        
-        let secondarySearchOperation = FullIndexSearchOperation(primaryResults: primaryResults, searchString: searchString, searchIndex: searchIndex, searchPredicate: searchPredicate)
-        secondarySearchOperation.inThreadCompletionBlock = inThreadCompletionBlock
-        secondarySearchOperation.name = searchString
-        searchQueue.addOperation(secondarySearchOperation)
-        
-        return primaryResults
+    //MARK: - SearchExecutionController Delegate
+    func searchResultsDidGetUpdated() {
+        reloadTableViewData()
     }
     
     func initializeIndicies() {
         Logger.debug("Search Index Rebuild has been triggered")
-        indexIsLoaded = false
-        for grouping in groups {
-            if let entities:[MPMediaEntity] = grouping == LibraryGrouping.Songs ? grouping.baseQuery.items : grouping.baseQuery.collections {
-                searchIndicies[grouping] = SearchIndex(name:grouping.name, indexableValues: entities, keyExtractingBlock: getKeyExtractorForLibraryGrouping(grouping))
-            }
-        }
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-            indexQueue.waitUntilAllOperationsAreFinished()
-            Logger.debug("Search Index has finished building")
-            for grouping in self.groups {
-                if let index = self.searchIndicies[grouping] {
-                    indexQueue.addOperation(StopWordIndexBuildingOperation(searchIndex: index, keyExtractingBlock: self.getKeyExtractorForLibraryGrouping(grouping)))
-                }
-            }
-            indexQueue.waitUntilAllOperationsAreFinished()
-            Logger.debug("Stop word indexing has completed")
-            self.indexIsLoaded = true
-        }
-    }
-    
-    private func getKeyExtractorForLibraryGrouping(grouping:LibraryGrouping) -> ((MPMediaEntity) -> (String, String)) {
-        let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(grouping.groupingType)
-        return { (entity:MPMediaEntity) -> (String,String) in
-            if let primaryKey = entity.titleForGrouping(grouping.groupingType)?.normalizedString {
-                return (titlePropertyName, primaryKey)
-            }
-            return (titlePropertyName,"null")
+        indexQueue.cancelAllOperations()
+        for searchExecutor in searchExecutionControllers {
+            searchExecutor.rebuildSearchIndex()
         }
     }
     
     private func reloadSections() {
-        var newSections = [LibraryGrouping]()
+        var newSections = [SearchExecutionController<MPMediaEntity>]()
         if let selectedHeader = self.selectedHeader {
             newSections = [selectedHeader]
         } else {
-            for group in groups {
-                if let results = searchResults[group] {
-                    if !results.isEmpty {
-                        newSections.append(group)
-                    }
+            for searchExecutor in searchExecutionControllers {
+                if !searchExecutor.searchResults.isEmpty {
+                    newSections.append(searchExecutor)
                 }
+                rowLimitPerSection[searchExecutor.libraryGroup]?.isExpanded = false
+            }
+            if newSections.count == 1 {
+                rowLimitPerSection[newSections[0].libraryGroup]?.isExpanded = true
             }
         }
         sections = newSections
@@ -389,123 +294,80 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     
     //MARK: tap gesture handler
     func didTapHeaderView(sender:UITapGestureRecognizer) {
-        //queue for serial processing for this function only in the background
-        struct function {
-            static let queue:NSOperationQueue = {
-                let queue = NSOperationQueue()
-                queue.qualityOfService = NSQualityOfService.UserInteractive
-                queue.maxConcurrentOperationCount = 1
-                queue.name = "Kyooz.SearchHeaderExpandCollapseFunctionQueue"
-                return queue
-            }()
-        }
         searchController.searchBar.resignFirstResponder()
         
-        function.queue.addOperationWithBlock() {
-            for group in self.groups {
-                self.searchQueues[group]?.waitUntilAllOperationsAreFinished()
-                self.completionQueue.waitUntilAllOperationsAreFinished()
-            }
-        }
-        
-        function.queue.addOperationWithBlock() {
-            self.shouldReloadTableViewAfterSearchCompleted = false
-            if let selectedHeader = self.selectedHeader {
-                self.collapseSelectedSectionAndInsertSections(sender, selectedHeader: selectedHeader)
-            } else {
-                self.removeSectionsAndExpandSelectedSection(sender)
-            }
-            self.shouldReloadTableViewAfterSearchCompleted = true
+        if let se = self.selectedHeader {
+            self.collapseSelectedSectionAndInsertSections(sender, selectedHeader: se)
+        } else if let se = searchExecutionControllers.filter({ self.tapGestureRecognizers[$0.libraryGroup] === sender }).first {
+            self.removeSectionsAndExpandSelectedSection(sender, searchExecutor: se)
         }
     }
     
-    private func collapseSelectedSectionAndInsertSections(sender:UITapGestureRecognizer, selectedHeader:LibraryGrouping) {
+    private func collapseSelectedSectionAndInsertSections(sender:UITapGestureRecognizer, selectedHeader:SearchExecutionController<MPMediaEntity>) {
         (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:false)
-        dispatch_sync(dispatch_get_main_queue()) {
-            self.selectedHeader = nil
-            
-            guard let maxRows = self.maxRowsPerSection[selectedHeader], let currentNoOfRows = self.searchResults[selectedHeader]?.count else {
-                return
+        self.selectedHeader = nil
+        
+        let rowLimit = rowLimitPerSection[selectedHeader.libraryGroup]!
+        let maxRows = rowLimit.limit
+        rowLimit.isExpanded = false
+        
+        let currentNoOfRows = selectedHeader.searchResults.count
+        
+        //reduce the number of rows in the tableView to be equal to maxRows
+        if maxRows < currentNoOfRows {
+            var indexPaths = [NSIndexPath]()
+            for i in maxRows..<currentNoOfRows {
+                indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
             }
-            
-            //reduce the number of rows in the tableView to be equal to maxRows
-            if maxRows < currentNoOfRows {
-                var indexPaths = [NSIndexPath]()
-                for i in maxRows..<currentNoOfRows {
-                    indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
-                }
 
-                self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: indexPaths.count > 40 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Automatic)
+            self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: indexPaths.count > 40 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Automatic)
+        }
+        
+        self.reloadSections()
+        
+        let indexSet = NSMutableIndexSet()
+        for i in 0..<self.sections.count {
+            if self.sections[i] !== selectedHeader {
+                indexSet.addIndex(i)
             }
         }
         
-        updateSearchResults(self.searchController)
-        
-        for group in self.groups {
-            searchQueues[group]?.waitUntilAllOperationsAreFinished()
-            completionQueue.waitUntilAllOperationsAreFinished()
+        if indexSet.count >= self.sections.count {
+            let tempSections = self.sections
+            self.sections.removeAll()
+            self.tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.sections = tempSections
         }
-        dispatch_sync(dispatch_get_main_queue()) {
-            self.reloadSections()
-            
-            let indexSet = NSMutableIndexSet()
-            for i in 0..<self.sections.count {
-                if self.sections[i] !== selectedHeader {
-                    indexSet.addIndex(i)
-                }
-            }
-            
-            if indexSet.count >= self.sections.count {
-                let tempSections = self.sections
-                self.sections.removeAll()
-                self.tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Automatic)
-                self.sections = tempSections
-            }
-            self.tableView.insertSections(indexSet, withRowAnimation: UITableViewRowAnimation.Automatic)
-        }
+        self.tableView.insertSections(indexSet, withRowAnimation: UITableViewRowAnimation.Automatic)
     }
     
-    private func removeSectionsAndExpandSelectedSection(sender:UITapGestureRecognizer) {
-        for (group, gestureRecognizer) in self.tapGestureRecognizers {
-            //here we check which header was tapped by matching it to the gesture recognizer instance we store and map to a grouping type
-            if gestureRecognizer !== sender {
-                continue
-            }
-            
-            (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:true)
+    private func removeSectionsAndExpandSelectedSection(sender:UITapGestureRecognizer, searchExecutor:SearchExecutionController<MPMediaEntity>) {
+        (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:true)
 
-            dispatch_sync(dispatch_get_main_queue()) {
-                let indexSet = NSMutableIndexSet()
-                
-                for i in 0..<self.sections.count {
-                    if group != self.sections[i] {
-                        indexSet.addIndex(i)
-                    }
-                }
-                self.sections = [group]
-                self.tableView.deleteSections(indexSet, withRowAnimation: UITableViewRowAnimation.Automatic)
-            }
-            
-            self.selectedHeader = group
-            //redo the search and wait for the results
-            self.updateSearchResults(self.searchController)
-            
-            self.searchQueues[group]?.waitUntilAllOperationsAreFinished()
-            self.completionQueue.waitUntilAllOperationsAreFinished()
-            
-            dispatch_sync(dispatch_get_main_queue()) {
-                guard let searchResults = self.searchResults[group], let maxRows = self.maxRowsPerSection[group] else {
-                    return
-                }
-                if searchResults.count > maxRows {
-                    var indexPaths = [NSIndexPath]()
-                    for i in maxRows..<searchResults.count {
-                        indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
-                    }
-                    self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Automatic)
-                }
+        let indexSet = NSMutableIndexSet()
+        
+        for i in 0..<self.sections.count {
+            if searchExecutor !== self.sections[i] {
+                indexSet.addIndex(i)
             }
         }
+        self.sections = [searchExecutor]
+        self.tableView.deleteSections(indexSet, withRowAnimation: UITableViewRowAnimation.Automatic)
         
+        self.selectedHeader = searchExecutor
+        
+        let searchResults = searchExecutor.searchResults
+        let rowLimit = rowLimitPerSection[searchExecutor.libraryGroup]!
+        
+        rowLimit.isExpanded = true
+        let maxRows = rowLimit.limit
+        
+        if searchResults.count > maxRows {
+            var indexPaths = [NSIndexPath]()
+            for i in maxRows..<searchResults.count {
+                indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+            }
+            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Automatic)
+        }
     }
 }

@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class RootViewController: UIViewController, DragSource {
+class RootViewController: UIViewController, DragSource, UINavigationControllerDelegate {
     
     static let instance:RootViewController = RootViewController()
     
@@ -22,7 +22,6 @@ class RootViewController: UIViewController, DragSource {
         } set {
             nowPlayingSummaryViewController.expanded = newValue
             nowPlayingTapGestureRecognizer.enabled = !newValue
-//            UIApplication.sharedApplication().setStatusBarStyle(newValue ? UIStatusBarStyle.LightContent : UIStatusBarStyle.Default, animated: true)
         }
     }
     
@@ -45,9 +44,14 @@ class RootViewController: UIViewController, DragSource {
     var nowPlayingPanGestureRecognizer:UIPanGestureRecognizer!
     var gestureDelegate:UIGestureRecognizerDelegate?
     
-    var searchController:UISearchController!
+    var previousSearchText:String?
+    private var searchController:UISearchController!
     private var resultsTableController:UITableViewController!
     private let searchResultsController = MediaLibrarySearchTableViewController.instance
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +61,7 @@ class RootViewController: UIViewController, DragSource {
         view.addSubview(libraryNavigationController.view)
         addChildViewController(libraryNavigationController)
         libraryNavigationController.didMoveToParentViewController(self)
+        libraryNavigationController.delegate = self
         
         nowPlayingSummaryViewController = UIStoryboard.nowPlayingSummaryViewController()
         
@@ -83,6 +88,8 @@ class RootViewController: UIViewController, DragSource {
         searchController.searchBar.translucent = false
         searchResultsController.searchController = searchController
         libraryNavigationController.definesPresentationContext = true
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
 
     }
     
@@ -109,9 +116,17 @@ class RootViewController: UIViewController, DragSource {
         pullableViewExpanded = false
     }
     
+    //MARK: - Navigation controller delegate
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        if viewController is LibraryGroupingTableViewController && previousSearchText != nil {
+            searchController.searchBar.text = previousSearchText
+            activateSearch()
+        }
+    }
     
     //MARK: - Class Methods
     func activateSearch() {
+        previousSearchText = nil
         libraryNavigationController.presentViewController(searchController, animated: true, completion: nil)
     }
     
@@ -199,6 +214,10 @@ class RootViewController: UIViewController, DragSource {
             animations: {self.nowPlayingSummaryViewController.view.frame.origin.y = targetPosition},
             completion: completion)
         
+    }
+    
+    func applicationDidEnterBackground(notification:NSNotification) {
+        previousSearchText = nil
     }
 
 

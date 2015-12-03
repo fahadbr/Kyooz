@@ -15,6 +15,10 @@ class SearchIndexEntry<T:NSObject> : NSObject {
     let object:T
     let primaryKey:String
     
+    override var hashValue:Int {
+        return object.hashValue
+    }
+    
     init(object:T, primaryKeyValue:(String, String)) {
         self.object = object
         self.primaryKey = primaryKeyValue.1
@@ -45,3 +49,4 @@ class SearchIndexEntry<T:NSObject> : NSObject {
     }
     
 }
+

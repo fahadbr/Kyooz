@@ -40,7 +40,7 @@ class SearchResultsHeaderView: UIView {
     }
     
     func animateDisclosureIndicator(shouldExpand shouldExpand:Bool) {
-        dispatch_async(dispatch_get_main_queue()) {
+        KyoozUtils.doInMainQueue() {
             UIView.animateWithDuration(0.2) {
                 self.applyRotation(shouldExpand:shouldExpand)
             }

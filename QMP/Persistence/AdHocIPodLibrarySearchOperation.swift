@@ -9,15 +9,12 @@
 import Foundation
 import MediaPlayer
 
-class AdHocIPodLibrarySearchOperation : AbstractSearchOperation<MPMediaEntity> {
+class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEntity]> {
     
 
     private let group:LibraryGrouping
     private let searchString:String
     private let searchPredicate:NSPredicate
-    
-    private (set) var finalResults:[MPMediaEntity]!
-    private (set) var fullSearchOperation:FullIpodLibrarySearchOperation!
     
     init(group:LibraryGrouping, searchString:String, searchPredicate:NSPredicate) {
         self.group = group
@@ -26,25 +23,29 @@ class AdHocIPodLibrarySearchOperation : AbstractSearchOperation<MPMediaEntity> {
     }
         
     override func main() {
-        if cancelled {
-            return
-        }
+        if cancelled { return }
+        
         let isItemQuery:Bool = group == LibraryGrouping.Songs
         guard let entities:[MPMediaEntity] = isItemQuery ? group.baseQuery.items : group.baseQuery.collections else {
             return
         }
-        guard let sections = isItemQuery ? group.baseQuery.itemSections : group.baseQuery.collectionSections else {
-            return
+        
+        var sections:[MPMediaQuerySection]? = nil
+        if let resultSections = isItemQuery ? group.baseQuery.itemSections : group.baseQuery.collectionSections {
+            if resultSections.count > 1 {
+                sections = resultSections
+            }
         }
+        
         
         var startIndex = 0
         var endIndex = !entities.isEmpty ? entities.count - 1 : 0
-        if let section = sections.filter( { $0.title.normalizedString == searchString[0] }).first {
+        if let section = sections?.filter( { $0.title.normalizedString == searchString[0] }).first {
             startIndex = section.range.location
             endIndex = startIndex + section.range.length
         }
         
-        finalResults = [MPMediaEntity]()
+        var finalResults = [MPMediaEntity]()
         let title = MPMediaItem.titlePropertyForGroupingType(group.groupingType)
         for i in startIndex...endIndex {
             let value = entities[i]
@@ -54,18 +55,40 @@ class AdHocIPodLibrarySearchOperation : AbstractSearchOperation<MPMediaEntity> {
             if searchPredicate.evaluateWithObject(SearchIndexEntry(object: value, primaryKeyValue: (title,primaryKey))) {
                 finalResults.append(value)
             }
-            if cancelled {
-                return
-            }
+            if cancelled { return }
         }
         
-        if !cancelled {
-            fullSearchOperation = FullIpodLibrarySearchOperation(group: group, searchString: searchString, searchPredicate: searchPredicate, primaryResults: finalResults, fullList: entities)
+        if cancelled { return }
+        
+        inThreadCompletionBlock?(finalResults)
+        
+        if cancelled { return }
 
-            inThreadCompletionBlock?(finalResults)
-            fullSearchOperation.inThreadCompletionBlock = inThreadCompletionBlock
-            NSOperationQueue.currentQueue()?.addOperation(fullSearchOperation)
+        //now do a full library search
+        var secondaryResults = [MPMediaEntity]()
+        for entity in entities {
+            guard let primaryKey = entity.titleForGrouping(group.groupingType)?.normalizedString else {
+                continue
+            }
+            if searchPredicate.evaluateWithObject(SearchIndexEntry(object: entity, primaryKeyValue: (title,primaryKey))) {
+                secondaryResults.append(entity)
+            }
+            
+            if cancelled { return }
         }
+        
+        if(secondaryResults.isEmpty) { return }
+        
+        let primarySet = Set<MPMediaEntity>(finalResults)
+        let resultsSet = Set<MPMediaEntity>(secondaryResults)
+        let differenceSet = resultsSet.subtract(primarySet)
+    
+        finalResults.appendContentsOf(differenceSet)
+        
+        if cancelled { return }
+        
+        inThreadCompletionBlock?(finalResults)
+
     }
     
 }
