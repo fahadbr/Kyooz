@@ -15,16 +15,28 @@ class TempDataDAO : NSObject {
     private static let nowPlayingQueueFileName = tempDirectory.URLByAppendingPathComponent("nowPlayingQueue.txt").path!
     private static let playbackStateFileName = tempDirectory.URLByAppendingPathComponent("playbackState.txt").path!
     private static let lastFmScrobbleCacheFileName = tempDirectory.URLByAppendingPathComponent("lastFmScrobbleCache.txt").path!
+    private static let miscValuesFileName = tempDirectory.URLByAppendingPathComponent("miscValues.txt").path!
     
     private static let INDEX_OF_NOW_PLAYING_ITEM_KEY = "indexOfNowPlayingItem"
     private static let CURRENT_PLAYBACK_TIME_KEY = "currentPlaybackTime"
+    
+    private var miscellaneousValues:NSMutableDictionary;
     
     
     static let instance:TempDataDAO = TempDataDAO()
 
     override init() {
+        
+        miscellaneousValues = NSMutableDictionary()
+        if NSFileManager.defaultManager().fileExistsAtPath(TempDataDAO.miscValuesFileName) {
+            if let storedValues = NSMutableDictionary(contentsOfFile: TempDataDAO.miscValuesFileName) {
+                miscellaneousValues = storedValues
+            }
+        }
+        
         super.init()
         registerForNotifications()
+        
     }
     
     deinit {
@@ -33,12 +45,24 @@ class TempDataDAO : NSObject {
 
     //MARK:CLASS FUNCTIONS
     
+    func addPersistentValue(key key:String, value:AnyObject) {
+        miscellaneousValues.setValue(value, forKey: key)
+    }
+    
+    func getPersistentValue(key key:String) -> AnyObject? {
+        return miscellaneousValues.valueForKey(key)
+    }
+    
     func persistData(notification:NSNotification) {
         let musicPlayer = ApplicationDefaults.audioQueuePlayer
         persistLastFmScrobbleCache(LastFmScrobbler.instance.scrobbleCache)
         persistNowPlayingQueueToTempStorage(musicPlayer.nowPlayingQueue)
         persistCurrentPlaybackStateToTempStorage(musicPlayer.indexOfNowPlayingItem, currentPlaybackTime: musicPlayer.currentPlaybackTime)
+        if !miscellaneousValues.writeToFile(TempDataDAO.miscValuesFileName, atomically: true) {
+            Logger.debug("failed to write all misc values to temp dir")
+        }
     }
+    
     
     func persistNowPlayingQueueToTempStorage(mediaItems:[AudioTrack]?) {
        persistMediaItemsToTempStorageFile(TempDataDAO.nowPlayingQueueFileName, mediaItems: mediaItems)
@@ -133,14 +157,10 @@ class TempDataDAO : NSObject {
     
     private func removeFile(filePath:String) {
         if(NSFileManager.defaultManager().fileExistsAtPath(filePath)) {
-            var error:NSError?
             do {
                 try NSFileManager.defaultManager().removeItemAtPath(filePath)
-            } catch let error1 as NSError {
-                error = error1
-            }
-            if let errorMessage = error?.description {
-                Logger.debug("could not remove file for reason: \(errorMessage)")
+            } catch let error as NSError {
+                Logger.debug("could not remove file for reason: \(error.description)")
             }
         }
     }

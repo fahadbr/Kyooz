@@ -106,9 +106,7 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         })
     }
     
-    override func gestureDidEnd(sender: UIGestureRecognizer) {
-        super.gestureDidEnd(sender)
-        
+    override func persistChanges(sender: UIGestureRecognizer) {
         if(cancelViewVisible) {
             removeCancelView()
         }

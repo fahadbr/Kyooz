@@ -9,12 +9,13 @@
 import UIKit
 import MediaPlayer
 
-class AlbumTrackTableViewController: AbstractMediaEntityTableViewController {
+final class AlbumTrackTableViewController: AbstractMediaEntityTableViewController {
     
     var albumCollection:MPMediaItemCollection!
-    private var albumArt:UIImage?
-    private var albumArtView:UIImageView?
-    private var albumArtColor:UIColor?
+    
+    override var headerHeight:CGFloat {
+        return 115
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,32 +33,57 @@ class AlbumTrackTableViewController: AbstractMediaEntityTableViewController {
         return albumCollection.count
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
-        guard let song = albumCollection.representativeItem else {
-            Logger.debug("couldnt representitive item of songs array")
+    
+    override func getViewForHeader() -> UIView? {
+        guard let albumHeaderView = NSBundle.mainBundle().loadNibNamed("AlbumHeaderView", owner: self, options: nil)?.first as? AlbumHeaderView else {
             return nil
         }
-        cell.textLabel?.text = song.albumTitle
-        cell.textLabel?.font = ThemeHelper.defaultFont
-        cell.textLabel?.textColor = UIColor.whiteColor()
-        cell.textLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        cell.textLabel?.numberOfLines = 2
-        
-        if(cell.imageView != nil) {
-            albumArt = song.artwork?.imageWithSize(cell.imageView!.frame.size)
-            let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
-            blurView.frame = CGRect(origin: cell.frame.origin, size: CGSize(width: view.frame.width, height: 70))
-            cell.insertSubview(blurView, atIndex: 0)
-            if albumArt != nil {
-                albumArtColor = UIColor(patternImage: albumArt!)
-                cell.backgroundColor = albumArtColor
-            }
+        guard let track = albumCollection.representativeItem else {
+            Logger.debug("couldnt get representative item for album collection")
+            return nil
         }
-        cell.imageView?.image = albumArt
         
-        return cell
-
+        albumHeaderView.albumTitleLabel.text = track.albumTitle
+        albumHeaderView.albumArtistLabel.text = track.albumArtist ?? track.artist
+        albumHeaderView.menuButtonBlock = { self.toggleSelectMode() }
+        
+        var details = [String]()
+        if let releaseDate = MediaItemUtils.getReleaseDateString(track) {
+            details.append(releaseDate)
+        }
+        if let genre = track.genre {
+            details.append(genre)
+        }
+        details.append("\(albumCollection.count) Tracks")
+        
+        albumHeaderView.albumDetailsLabel.text = details.joinWithSeparator(" • ")
+        
+        if let albumArt = track.artwork {
+            KyoozUtils.doInMainQueueAsync() {
+                if let image = albumArt.imageWithSize(albumHeaderView.albumImage.frame.size) {
+                    albumHeaderView.albumImage.image = image
+                    albumHeaderView.backgroundColor = UIColor(patternImage: image)
+                }
+            }
+        } else {
+            albumHeaderView.albumImage.hidden = true
+        }
+        
+        KyoozUtils.doInMainQueueAsync() { [weak albumCollection = self.albumCollection] in
+            if let items = albumCollection?.items {
+                var duration:NSTimeInterval = 0
+                for item in items {
+                    duration += item.playbackDuration
+                }
+                if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
+                    albumHeaderView.albumDurationLabel.text = albumDurationString
+                } else {
+                    albumHeaderView.albumDurationLabel.hidden = true
+                }
+            }
+            
+        }
+        return albumHeaderView
     }
 
     
@@ -75,6 +101,11 @@ class AlbumTrackTableViewController: AbstractMediaEntityTableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if tableView.editing {
+            super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+            return
+        }
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let index = indexPath.row
         let nowPlayingItem = albumCollection.items[index] as AudioTrack

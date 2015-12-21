@@ -20,6 +20,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
     private var gestureActivated = false
 
     var indexPathOfMovingItem:NSIndexPath!
+    var originalIndexPathOfMovingItem:NSIndexPath!
     var delegate:GestureHandlerDelegate?
     
     var positionChangeUpdatesDataSource = true
@@ -44,6 +45,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
             if let result = getCellForSnapshot(sender, tableView:tableView) {
                 gestureActivated = true
                 indexPathOfMovingItem = result.indexPath
+                originalIndexPathOfMovingItem = indexPathOfMovingItem
                 
                 gestureDidBegin(sender)
                 dragGestureScrollingController = getScrollingController()
@@ -93,7 +95,14 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
     }
     
     func gestureDidEnd(sender:UIGestureRecognizer) {
-         delegate?.gestureDidEnd?(sender)
+        delegate?.gestureDidEnd?(sender)
+        persistChanges(sender)
+    }
+    
+    func persistChanges(sender:UIGestureRecognizer) {
+        if !originalIndexPathOfMovingItem.isEqual(indexPathOfMovingItem) {
+            tableView.dataSource?.tableView?(tableView, moveRowAtIndexPath: originalIndexPathOfMovingItem, toIndexPath: indexPathOfMovingItem)
+        }
     }
     
     func handlePositionChange(sender: UILongPressGestureRecognizer) -> CGPoint? {
@@ -101,17 +110,12 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         let insideTableView = tableView.pointInside(location, withEvent: nil)
     
         updateSnapshotPosition(snapshot, sender:sender, locationInDestinationTableView: location)
-        let indexPath = tableView.indexPathForRowAtPoint(insideTableView ? location : CGPoint(x: 0, y: location.y))
-        if(indexPath != nil && !indexPathOfMovingItem.isEqual(indexPath)) {
-            if(positionChangeUpdatesDataSource) {
-                if let canMove = tableView.dataSource?.tableView?(tableView, canMoveRowAtIndexPath: indexPathOfMovingItem) {
-                    if(canMove) {
-                        tableView.dataSource?.tableView?(tableView, moveRowAtIndexPath: indexPathOfMovingItem, toIndexPath: indexPath!)
-                    }
-                }
+        let point = insideTableView ? location : CGPoint(x: 0, y: location.y)
+        if let indexPath = tableView.indexPathForRowAtPoint(point) where !indexPathOfMovingItem.isEqual(indexPath) {
+            if let canMove = tableView.dataSource?.tableView?(tableView, canMoveRowAtIndexPath: indexPathOfMovingItem) where canMove {
+                tableView.moveRowAtIndexPath(indexPathOfMovingItem, toIndexPath: indexPath)
+                indexPathOfMovingItem = indexPath
             }
-            tableView.moveRowAtIndexPath(indexPathOfMovingItem, toIndexPath: indexPath!)
-            indexPathOfMovingItem = indexPath!
         }
         if(insideTableView) {
             return location

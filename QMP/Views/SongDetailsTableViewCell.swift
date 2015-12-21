@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class SongDetailsTableViewCell: UITableViewCell {
+class SongDetailsTableViewCell: AbstractTableViewCell {
 
     static let normalFont = UIFont(name:ThemeHelper.defaultFontName, size:12.0)
     static let boldFont = UIFont(name:ThemeHelper.defaultFontNameBold, size:12.0)
@@ -36,12 +36,13 @@ class SongDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         songTitleLabel.font = SongDetailsTableViewCell.boldFont
         albumArtistAndAlbumLabel.font =  SongDetailsTableViewCell.normalFont
+        albumArtistAndAlbumLabel.textColor = UIColor.lightGrayColor()
         menuButtonVisualView.textColor = UIColor.lightGrayColor()
     }
     
     func configureTextLabelsForMediaItem(mediaItem:AudioTrack, isNowPlayingItem:Bool) {
         songTitleLabel.text = mediaItem.trackTitle
-        albumArtistAndAlbumLabel.text = mediaItem.albumArtist + " - " + mediaItem.albumTitle
+        albumArtistAndAlbumLabel.text = mediaItem.albumArtist ?? mediaItem.artist + " - " + mediaItem.albumTitle
         totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(mediaItem.playbackDuration)
         songTitleLabel.textColor = isNowPlayingItem ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
     }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -19,14 +18,12 @@
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qG3-ZO-mCS">
                         <rect key="frame" x="3" y="3" width="141" height="141"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="qG3-ZO-mCS" secondAttribute="height" multiplier="1:1" id="S1l-I7-Yrt"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="600" text="SongTitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B26-GH-wfa">
                         <rect key="frame" x="152" y="57" width="386" height="17"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="height" constant="15" id="mIU-lX-yRQ"/>
                         </constraints>
@@ -41,7 +38,6 @@
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Time" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="n0y-uB-2xy" userLabel="trackTimeLabel">
                         <rect key="frame" x="538" y="63" width="32" height="21"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="U0w-Y2-G5R"/>
                             <constraint firstAttribute="width" constant="32" id="XH6-Ay-d2y"/>
@@ -50,9 +46,8 @@
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="599" text="AlbumArtist - Album" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EsH-ut-oUB" customClass="GrayUILabel" customModule="Kyooz" customModuleProvider="target">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="599" text="AlbumArtist - Album" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EsH-ut-oUB">
                         <rect key="frame" x="152" y="74" width="386" height="15"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="height" constant="15" id="ENg-wp-0JI"/>
                         </constraints>
@@ -62,7 +57,6 @@
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="O O O" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e19-2q-zvl" userLabel="menuButtonVisualView">
                         <rect key="frame" x="581" y="59" width="10" height="30"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="CFo-PF-LDq"/>
                             <constraint firstAttribute="width" constant="10" id="kWe-kW-uuL"/>
@@ -73,7 +67,6 @@
                     </label>
                     <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OeZ-7J-aeG" userLabel="menuButtonActionArea">
                         <rect key="frame" x="539" y="0.0" width="60" height="148"/>
-                        <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -81,7 +74,6 @@
                         </constraints>
                     </view>
                 </subviews>
-                <animations/>
                 <constraints>
                     <constraint firstItem="OeZ-7J-aeG" firstAttribute="centerY" secondItem="e19-2q-zvl" secondAttribute="centerY" id="12q-AO-nfa"/>
                     <constraint firstItem="qG3-ZO-mCS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-5" id="1sx-pv-Lw8"/>
@@ -109,7 +101,6 @@
                     </mask>
                 </variation>
             </tableViewCellContentView>
-            <animations/>
             <connections>
                 <outlet property="albumArtImageView" destination="qG3-ZO-mCS" id="tbQ-s3-lDc"/>
                 <outlet property="albumArtistAndAlbumLabel" destination="EsH-ut-oUB" id="XkA-gE-Rq6"/>

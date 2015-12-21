@@ -50,7 +50,7 @@ class LibraryGroupingTableViewController: AbstractTableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        let vc = UIStoryboard.mediaCollectionTableViewController()
+        let vc = UIStoryboard.mediaEntityTableViewController()
         vc.libraryGroupingType = LibraryGrouping.values[indexPath.row]
         vc.filterQuery = vc.libraryGroupingType.baseQuery.setMusicOnly().shouldQueryCloudItems(true)
         vc.title = vc.libraryGroupingType.name

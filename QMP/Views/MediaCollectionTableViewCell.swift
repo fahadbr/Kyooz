@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell {
+class MediaCollectionTableViewCell: AbstractTableViewCell, ConfigurableAudioTableCell {
 
     static let reuseIdentifier = "mediaEntityCellIdentifier"
     
@@ -30,12 +30,15 @@ class MediaCollectionTableViewCell: UITableViewCell, ConfigurableAudioTableCell 
         // Initialization code
     }
     
+    
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
         textLabel?.font = ThemeHelper.defaultFont
         textLabel?.textColor = ThemeHelper.defaultFontColor
         detailTextLabel?.font = UIFont(name: ThemeHelper.defaultFontName, size: 12)
         detailTextLabel?.textColor = UIColor.lightGrayColor()
+        
     }
 
     required init?(coder aDecoder: NSCoder) {

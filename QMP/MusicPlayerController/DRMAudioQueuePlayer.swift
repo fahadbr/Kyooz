@@ -13,14 +13,6 @@ import Foundation
 class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
     
-    private static let drmAudioControllerQueue:NSOperationQueue = {
-        let queue = NSOperationQueue()
-        queue.qualityOfService = NSQualityOfService.UserInitiated
-        queue.name = "com.riaz.fahad.Kyooz.DRMAudioControllerQueue"
-        queue.maxConcurrentOperationCount = 1
-        return queue
-    }()
-    
     private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let playbackStateManager = PlaybackStateManager.instance
     
@@ -28,31 +20,30 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     private var queueIsPersisted:Bool = true
+    private let indexBeforeModificationKey = "indexBeforeModification"
+    private let mediaPlayerAPIHelper = MediaPlayerAPIHelper()
+    
+    private var indexBeforeModification:Int = 0 {
+        didSet {
+            TempDataDAO.instance.addPersistentValue(key: indexBeforeModificationKey, value: NSNumber(integer: indexBeforeModification))
+        }
+    }
     
     override init() {
         super.init()
-        
         registerForMediaPlayerNotifications()
+        
         if let queueFromTempStorage = TempDataDAO.instance.getNowPlayingQueueFromTempStorage(){
-            if let nowPlayingItem = musicPlayer.nowPlayingItem {
-                let index = musicPlayer.indexOfNowPlayingItem
-                //check if the queue from temp storage matches with the queue in the current music player
-                if(index < queueFromTempStorage.count && queueFromTempStorage[index].id == nowPlayingItem.id) {
-                    Logger.debug("restoring now playing queue from temp storage")
-                    self.nowPlayingQueue = queueFromTempStorage
-                    queueIsPersisted = true
-                    return
-                }
-            }
+            Logger.debug("restoring now playing queue from temp storage")
+            nowPlayingQueue = queueFromTempStorage
         }
-        if let nowPlayingItem = musicPlayer.nowPlayingItem {
-            let query = MPMediaQuery()
-            query.addFilterPredicate(MPMediaPropertyPredicate(value: NSNumber(unsignedLongLong: nowPlayingItem.albumPersistentID),
-                forProperty: MPMediaItemPropertyAlbumPersistentID,
-                comparisonType: MPMediaPredicateComparison.EqualTo))
-            Logger.debug("assuming now playing queue to be album")
-            self.nowPlayingQueue = query.items!
-            
+        
+        if let indexBeforeMod = TempDataDAO.instance.getPersistentValue(key: indexBeforeModificationKey) as? NSNumber {
+            indexBeforeModification = indexBeforeMod.longValue
+        }
+        
+        if pullCurrentQueueInSystemPlayer() {
+            return
         }
     }
     
@@ -64,11 +55,9 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     //MARK: AudioQueuePlayer - Properties
     var nowPlayingQueue:[AudioTrack] = [AudioTrack]() {
         didSet {
-            AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender: self)
-            queueIsPersisted = false
+            AudioQueuePlayerNotificationPublisher.publishNotification(updateType: AudioQueuePlayerUpdate.QueueUpdate, sender: self)
         }
     }
-    
     
     var nowPlayingItem:AudioTrack? {
         return musicPlayer.nowPlayingItem
@@ -99,7 +88,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func pause() {
         musicPlayer.pause()
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.25 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), { () -> Void in
+        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.25), dispatch_get_main_queue(), { () -> Void in
             self.persistQueueToAudioController(self.indexOfNowPlayingItem)
         })
     }
@@ -114,7 +103,8 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         if(currentPlaybackTime > 2.0) {
             musicPlayer.skipToBeginning()
         } else {
-            if !persistQueueToAudioController(indexOfNowPlayingItem - 1) {
+            let forcePersist = (indexOfNowPlayingItem - 1) < indexBeforeModification
+            if !persistQueueToAudioController(indexOfNowPlayingItem - 1, forcePersist:  forcePersist) {
                 musicPlayer.skipToPreviousItem()
             }
         }
@@ -122,7 +112,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func playNowWithCollection(mediaCollection mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
         let mediaItems = mediaCollection.items
-        DRMAudioQueuePlayer.drmAudioControllerQueue.addOperationWithBlock() {
+        KyoozUtils.doInMainQueueAsync() {
             self.nowPlayingQueue = mediaItems
             self.musicPlayer.setQueueWithItemCollection(mediaCollection)
             self.musicPlayer.nowPlayingItem = itemToPlay as? MPMediaItem
@@ -130,7 +120,8 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             self.playbackStateManager.correctPlaybackState()
             
             self.queueIsPersisted = true
-            self.indexOfNowPlayingItem = 0
+            self.indexOfNowPlayingItem = self.musicPlayer.indexOfNowPlayingItem
+            self.indexBeforeModification = 0
         }
         
     }
@@ -138,7 +129,9 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     func playItemWithIndexInCurrentQueue(index index:Int) {
         if(index == indexOfNowPlayingItem) { return }
         
-        if !persistQueueToAudioController(index) {
+        let shouldForcePersist = index < indexBeforeModification
+        
+        if !persistQueueToAudioController(index, forcePersist: shouldForcePersist) {
             musicPlayer.nowPlayingItem = nowPlayingQueue[index] as? MPMediaItem
             musicPlayer.play()
             playbackStateManager.correctPlaybackState()
@@ -149,17 +142,20 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func enqueue(itemsToEnqueue:[AudioTrack]) {
         nowPlayingQueue.appendContentsOf(itemsToEnqueue)
+        persistToSystemQueue()
     }
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) {
         nowPlayingQueue.insertAtIndex(itemsToInsert, index: index, placeHolderItem: MPMediaItem())
         if(index <= indexOfNowPlayingItem) {
             indexOfNowPlayingItem += itemsToInsert.count
+        } else {
+            persistToSystemQueue()
         }
     }
     
     func deleteItemsAtIndices(indiciesToRemove:[Int]) {
-        queueIsPersisted = false
+        var shouldPersist = false
         var indicies = indiciesToRemove
         if(indicies.count > 1) {
             //if removing more than 1 element, sort the array otherwise we will run into index out of bounds issues
@@ -170,13 +166,22 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             nowPlayingQueue.removeAtIndex(index)
             if(index < indexOfNowPlayingItem) {
                 indexOfNowPlayingItem--
+                if index < indexBeforeModification {
+                    indexBeforeModification--
+                }
             } else if (index == indexOfNowPlayingItem) {
                 nowPlayingItemRemoved = true
+                shouldPersist = true
+            } else {
+                shouldPersist = true
             }
         }
         
-        if(nowPlayingItemRemoved) {
+        if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
+        }
+        if shouldPersist {
+            persistToSystemQueue()
         }
     }
     
@@ -184,13 +189,20 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         let tempMediaItem = nowPlayingQueue[fromIndexPath]
         nowPlayingQueue.removeAtIndex(fromIndexPath)
         nowPlayingQueue.insert(tempMediaItem, atIndex: toIndexPath)
+        var shouldPersist = true
         
-        if(fromIndexPath == indexOfNowPlayingItem) {
+        if fromIndexPath == indexOfNowPlayingItem {
             indexOfNowPlayingItem = toIndexPath
-        } else if(fromIndexPath < indexOfNowPlayingItem && indexOfNowPlayingItem <= toIndexPath) {
+        } else if fromIndexPath < indexOfNowPlayingItem && indexOfNowPlayingItem <= toIndexPath {
             indexOfNowPlayingItem--
-        } else if(toIndexPath <= indexOfNowPlayingItem && indexOfNowPlayingItem < fromIndexPath) {
+        } else if toIndexPath <= indexOfNowPlayingItem && indexOfNowPlayingItem < fromIndexPath {
             indexOfNowPlayingItem++
+        } else if fromIndexPath < indexOfNowPlayingItem && toIndexPath < indexOfNowPlayingItem {
+            shouldPersist = false
+        }
+        
+        if shouldPersist {
+            persistToSystemQueue()
         }
     }
     
@@ -198,15 +210,37 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         nowPlayingQueue.removeRange((fromIndex + 1)..<nowPlayingQueue.count)
         if(fromIndex < indexOfNowPlayingItem) {
             resetQueueStateToBeginning()
+        } else {
+            persistToSystemQueue()
         }
     }
     
     //MARK: - Class functions
     
+    private func persistToSystemQueue() {
+        if let queue = nowPlayingQueue as? [MPMediaItem] {
+            indexBeforeModification = indexOfNowPlayingItem
+            var truncatedQueue = [MPMediaItem]()
+            for i in indexOfNowPlayingItem..<queue.count {
+                truncatedQueue.append(queue[i])
+            }
+            
+            musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
+            let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
+            musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
+            
+            queueIsPersisted = true
+        }
+    }
+    
     private func resetQueueStateToBeginning() {
+        if nowPlayingQueue.isEmpty { return }
+        
         let musicWasPlaying = musicIsPlaying
         
         indexOfNowPlayingItem = 0
+        indexBeforeModification = 0
+        musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
         musicPlayer.nowPlayingItem = nowPlayingQueue[indexOfNowPlayingItem] as? MPMediaItem
         if musicWasPlaying  {
             musicPlayer.play()
@@ -214,10 +248,10 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     
-    private func persistQueueToAudioController(var indexToPlay:Int, completionHandler:()->() = { }) -> Bool {
-        if(queueIsPersisted || nowPlayingQueue.isEmpty) { return false }
+    private func persistQueueToAudioController(var indexToPlay:Int, forcePersist:Bool = false, completionHandler:()->() = { }) -> Bool {
+        if nowPlayingQueue.isEmpty || (queueIsPersisted && !forcePersist ) { return false }
         
-        DRMAudioQueuePlayer.drmAudioControllerQueue.addOperationWithBlock() {
+        KyoozUtils.doInMainQueueAsync() {
         
             Logger.debug("** PERSISTING NOW PLAYING QUEUE **")
             
@@ -255,8 +289,14 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             self.playbackStateManager.correctPlaybackState()
             
             self.queueIsPersisted = true
+            self.indexBeforeModification = 0
         }
         return true
+    }
+    
+    private func refreshIndexOfNowPlayingItem() {
+        let currentIndex = musicPlayer.indexOfNowPlayingItem < nowPlayingQueue.count ? musicPlayer.indexOfNowPlayingItem : 0
+        indexOfNowPlayingItem = currentIndex + indexBeforeModification
     }
     
     
@@ -265,7 +305,8 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     func handleNowPlayingItemChanged(notification:NSNotification) {
         persistQueueToAudioController(indexOfNowPlayingItem + 1)
         
-        indexOfNowPlayingItem = musicPlayer.indexOfNowPlayingItem < nowPlayingQueue.count ? musicPlayer.indexOfNowPlayingItem : 0
+        refreshIndexOfNowPlayingItem()
+        
         AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
     
@@ -304,6 +345,33 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             endBackgroundTask()
         }
         playbackStateManager.correctPlaybackState()
+        
+        KyoozUtils.doInMainQueue() {
+            self.pullCurrentQueueInSystemPlayer()
+        }
+    }
+    
+    private func pullCurrentQueueInSystemPlayer() -> Bool {
+        if let currentQueue = mediaPlayerAPIHelper.getCurrentQueue(self.musicPlayer) {
+            if currentQueue.isEmpty {
+                resetQueueStateToBeginning()
+                return true
+            }
+            
+            var mergedQueue = [AudioTrack]()
+            for i in 0..<(indexBeforeModification + currentQueue.count) {
+                if i < indexBeforeModification {
+                    mergedQueue.append(nowPlayingQueue[i])
+                } else {
+                    mergedQueue.append(currentQueue[i - indexBeforeModification])
+                }
+            }
+            nowPlayingQueue = mergedQueue
+            queueIsPersisted = true
+            refreshIndexOfNowPlayingItem()
+            return true
+        }
+        return false
     }
     
     func handleApplicationWillTerminate(notification:NSNotification) {
@@ -350,7 +418,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
 
     func endBackgroundTask() {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        KyoozUtils.doInMainQueueAsync() {
             if let uwTimer = self.timer {
                 Logger.debug("Ending background task: " + self.backgroundTaskIdentifier.description)
                 uwTimer.invalidate()
@@ -358,7 +426,7 @@ class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 UIApplication.sharedApplication().endBackgroundTask(self.backgroundTaskIdentifier)
                 self.backgroundTaskIdentifier = UIBackgroundTaskInvalid
             }
-        })
+        }
     }
 
     func resignActiveIfQueueIsPersisted(sender: NSTimer) {

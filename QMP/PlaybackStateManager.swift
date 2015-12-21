@@ -23,7 +23,8 @@ class PlaybackStateManager: NSObject {
    
     private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let audioSession = AVAudioSession.sharedInstance()
-    private let timeDelayInNanoSeconds = Int64((1.0/4.0) * Double(NSEC_PER_SEC))
+    private let timeDelayInSeconds:Double = 1.0/4.0
+    private let stateDescriptions = ["Stopped", "Playing", "Paused", "Interrupted", "SeekingForward", "SeekingBackward"]
     private (set) var musicPlaybackState:MPMusicPlaybackState
     
     
@@ -43,13 +44,10 @@ class PlaybackStateManager: NSObject {
     }
 
     func correctPlaybackState() {
-        let dispatchTime1 = dispatch_time(DISPATCH_TIME_NOW, self.timeDelayInNanoSeconds)
-        dispatch_after(dispatchTime1, dispatch_get_main_queue(), { [unowned self]() -> Void in
+        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(timeDelayInSeconds), dispatch_get_main_queue(), { [unowned self]() -> Void in
             let oldPlaybackTime = self.musicPlayer.currentPlaybackTime
-            Logger.debug("oldPlaybackTime: \(oldPlaybackTime)")
-            
-            let dispatchTime2 = dispatch_time(DISPATCH_TIME_NOW, self.timeDelayInNanoSeconds)
-            dispatch_after(dispatchTime2, dispatch_get_main_queue(), { [unowned self] ()  in
+            Logger.debug("old time = \(oldPlaybackTime)")
+            dispatch_after(KyoozUtils.getDispatchTimeForSeconds(self.timeDelayInSeconds), dispatch_get_main_queue(), { [unowned self] ()  in
                 self.checkAgainstPlaybackTime(oldPlaybackTime)
             })
         })
@@ -57,8 +55,8 @@ class PlaybackStateManager: NSObject {
     
     private func checkAgainstPlaybackTime(playbackTime : NSTimeInterval) {
         let newPlaybackTime = self.musicPlayer.currentPlaybackTime
+        Logger.debug("new time = \(newPlaybackTime)")
         var playbackStateCorrected:Bool = false
-        Logger.debug("newPlaybackTime: \(newPlaybackTime)")
 
         if(newPlaybackTime.isNaN && playbackTime.isNaN) {
             if(self.musicPlaybackState != MPMusicPlaybackState.Stopped) {
@@ -76,8 +74,12 @@ class PlaybackStateManager: NSObject {
         }
         
         if(playbackStateCorrected) {
-            Logger.debug("Playback State Corrected to: \(self.musicPlaybackState.rawValue.description)")
-            dispatch_async(dispatch_get_main_queue()) {
+            var description:String?
+            if musicPlaybackState.rawValue < stateDescriptions.count {
+                description = stateDescriptions[musicPlaybackState.rawValue]
+            }
+            Logger.debug("Playback State Corrected to: \(description ?? "unknown")")
+            KyoozUtils.doInMainQueueAsync() {
                 let notification = NSNotification(name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: self)
                 NSNotificationCenter.defaultCenter().postNotification(notification)
             }
@@ -95,7 +97,7 @@ class PlaybackStateManager: NSObject {
                 let stateToSet = MPMusicPlaybackState(rawValue: stateRawValue)
                 if(stateToSet != nil) {
                     self.musicPlaybackState = stateToSet!
-                    Logger.debug("CurrentPlaybackState: " + self.musicPlaybackState.rawValue.description)
+//                    Logger.debug("CurrentPlaybackState: " + self.musicPlaybackState.rawValue.description)
                 }
             }
         }

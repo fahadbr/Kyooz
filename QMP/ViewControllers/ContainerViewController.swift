@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ContainerViewController : UIViewController , GestureHandlerDelegate {
+final class ContainerViewController : UIViewController , GestureHandlerDelegate, UIGestureRecognizerDelegate {
     
     static let instance:ContainerViewController = ContainerViewController()
     
@@ -49,6 +49,9 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         }
     }
     
+    private var collapsedConstraint:NSLayoutConstraint!
+    private var expandedConstraint:NSLayoutConstraint!
+    
     deinit {
         unregisterForNotifications()
     }
@@ -59,10 +62,19 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         
         rootViewController = RootViewController.instance
         
-        view.addSubview(rootViewController.view)
+        let rootView = rootViewController.view
+        view.addSubview(rootView)
         addChildViewController(rootViewController)
         rootViewController.didMoveToParentViewController(self)
         rootViewController.gestureDelegate = self
+        
+        rootView.translatesAutoresizingMaskIntoConstraints = false
+        rootView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        rootView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+        rootView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
+        collapsedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
+        collapsedConstraint.active = true
+        expandedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.leftAnchor, constant: centerPanelExpandedOffset)
         
         screenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
         screenEdgePanGestureRecognizer.edges = UIRectEdge.Right
@@ -96,32 +108,31 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         if(nowPlayingViewController == nil) {
             nowPlayingViewController = UIStoryboard.nowPlayingViewController()
             
-            let originalFrame = nowPlayingViewController!.view.bounds
-            let newWidth = CGRectGetWidth(view.bounds) - centerPanelExpandedOffset
-            let newHeight = originalFrame.height
-            let newX:CGFloat = CGRectGetWidth(view.bounds)
-            let newY:CGFloat = 0.0
-            
             nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
-            nowPlayingNavigationController!.view.frame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+
             nowPlayingNavigationController!.toolbarHidden = false
             view.insertSubview(nowPlayingNavigationController!.view, atIndex: 0)
             addChildViewController(nowPlayingNavigationController!)
             nowPlayingNavigationController!.didMoveToParentViewController(self)
-            
-            nowPlayingNavigationController!.view.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
+            let npView = nowPlayingNavigationController!.view
+            npView.translatesAutoresizingMaskIntoConstraints = false
+            npView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+            npView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+            npView.centerXAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
+            npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -centerPanelExpandedOffset).active = true
+            npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
         }
     }
     
-    func animateSidePanel(shouldExpand shouldExpand: Bool) {
-        if(shouldExpand) {
+    private func animateSidePanel(shouldExpand shouldExpand: Bool) {
+        if shouldExpand {
             sidePanelExpanded = true
             
             animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                centerPanelExpandedOffset)
+                centerPanelExpandedOffset, shouldExpand: shouldExpand)
             
         } else {
-            animateCenterPanelXPosition(targetPosition: 0) { finished in
+            animateCenterPanelXPosition(targetPosition: 0, shouldExpand: shouldExpand) { finished in
                 self.sidePanelExpanded = false
             }
         }
@@ -138,23 +149,30 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         var identity = CATransform3DIdentity
         identity.m34 = -1.0/1000
         let angle = Double(1.0 - fraction) * M_PI_2
-        let width = CGRectGetWidth(nowPlayingNavigationController!.view.bounds)
-        let xOffset = width * (fraction + 0.5)
         
         let rotateTransform = CATransform3DRotate(identity, CGFloat(angle), 0.0, 1.0, 0.0)
-
-        let translateTransform = CATransform3DMakeTranslation(-xOffset, 0.0, 0.0)
-        return CATransform3DConcat(rotateTransform, translateTransform)
+        return rotateTransform
     }
     
-    private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, completion: ((Bool) -> Void)! = nil) {
+    private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
+        if shouldExpand { //need to make sure one is deactivated before activating the other
+            collapsedConstraint.active = false
+            expandedConstraint.active = true
+        } else {
+            expandedConstraint.active = false
+            collapsedConstraint.active = true
+        }
+        
+        expandedConstraint.constant = centerPanelExpandedOffset
+        collapsedConstraint.constant = 0
+        
         UIView.animateWithDuration(0.4,
             delay: 0,
             usingSpringWithDamping: 1.0,
             initialSpringVelocity: 0,
             options: .CurveEaseInOut,
             animations: {
-                self.rootViewController.view.frame.origin.x = targetPosition
+                self.view.layoutIfNeeded()
                 let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
                 self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
                 self.nowPlayingNavigationController?.view.alpha = fraction
@@ -173,12 +191,43 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
 //        }
     }
     
-    func presentSettingsViewController() {
-        animateSidePanel(shouldExpand: false)
-        rootViewController.presentSettingsViewController()
+    func pushViewController(vc:UIViewController) {
+        if sidePanelExpanded {
+            animateSidePanel(shouldExpand: false)
+        }
+        rootViewController.pushViewController(vc)
     }
     
-
+    func pushNewMediaEntityControllerWithProperties(basePredicates basePredicates:Set<MPMediaPredicate>?, libraryGroupingType:LibraryGrouping, entity:MPMediaEntity) {
+        let title = entity.titleForGrouping(libraryGroupingType.groupingType)
+        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(libraryGroupingType.groupingType)
+        let propertyValue = NSNumber(unsignedLongLong: entity.persistentID)
+        
+        let filterQuery = MPMediaQuery(filterPredicates: basePredicates)
+        filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
+        filterQuery.groupingType = libraryGroupingType.nextGroupLevel!.groupingType
+        
+        let vc:AbstractMediaEntityTableViewController!
+        let mevc = UIStoryboard.mediaEntityViewController()
+        
+        if libraryGroupingType === LibraryGrouping.Albums {
+            let albumTrackVc = UIStoryboard.albumTrackTableViewController()
+            albumTrackVc.albumCollection = entity as! MPMediaItemCollection
+            vc = albumTrackVc
+        } else {
+            let mvc = UIStoryboard.mediaEntityTableViewController()
+            mevc.title = title
+            mvc.subGroups = libraryGroupingType.subGroupsForNextLevel
+            vc = mvc
+        }
+        
+        vc.filterQuery = filterQuery
+        vc.libraryGroupingType = libraryGroupingType.nextGroupLevel
+        
+        mevc.mediaEntityTVC = vc
+        
+        pushViewController(mevc)
+    }
     
     //MARK: NOTIFICATION REGISTRATIONS
     
@@ -200,9 +249,6 @@ class ContainerViewController : UIViewController , GestureHandlerDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-}
-
-extension ContainerViewController : UIGestureRecognizerDelegate {
     // MARK: Gesture recognizer
     
     func handleTouchGesture(recognizer:UITapGestureRecognizer) {
@@ -218,7 +264,6 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
         switch(recognizer.state) {
         case .Began:
             let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
-            Logger.debug("NPVC Screen Edge Pan Gesture Began")
             if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
                 addSidePanelViewController()
             }
@@ -245,13 +290,18 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
             newOriginX = 0
         }
         
-        recognizer.view!.frame.origin.x = newOriginX
+        let activeConstraint = expandedConstraint.active ? expandedConstraint : collapsedConstraint
         
         //the fraction is the percentage the center view controller has moved with respect to its final position (centerPanelExpandedXPosition)
         let fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
         let transform = transformForFraction(fraction)
         nowPlayingNavigationController?.view.layer.transform = transform
         nowPlayingNavigationController?.view.alpha = fraction
+        
+        if 0 <= fraction && fraction <= 1 {
+            activeConstraint.constant += recognizer.translationInView(view).x
+        }
+        
         recognizer.setTranslation(CGPointZero, inView: view)
     }
     
@@ -272,7 +322,8 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     }
     
     func handleLongPressGesture(recognizer:UILongPressGestureRecognizer) {
-        if (recognizer.state == UIGestureRecognizerState.Began) {
+        switch(recognizer.state) {
+        case .Began:
             //initialize the drag and drop handler and all the resources necessary for the drag and drop handler
             addSidePanelViewController()
             if(!nowPlayingViewController!.laidOutSubviews) {
@@ -283,8 +334,11 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
                 dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: rootViewController, dropDestination: nowPlayingViewController!)
                 dragAndDropHandler.delegate = self
             }
+        default:
+            break
         }
-        dragAndDropHandler.handleGesture(recognizer)
+        dragAndDropHandler?.handleGesture(recognizer)
+
     }
 
     
@@ -319,7 +373,6 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if(gestureRecognizer.isEqual(rootViewController.nowPlayingPanGestureRecognizer) &&
             otherGestureRecognizer.isEqual(screenEdgePanGestureRecognizer)) {
-                Logger.debug("Mandating screenEdgePanGestureRecognizer to fail")
                 return true
         }
         return false
@@ -328,7 +381,6 @@ extension ContainerViewController : UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if(gestureRecognizer.isEqual(screenEdgePanGestureRecognizer) &&
             otherGestureRecognizer.isEqual(rootViewController.nowPlayingPanGestureRecognizer)) {
-                Logger.debug("Mandating screenEdgePanGestureRecognizer to fail")
                 return true
         }
         return false

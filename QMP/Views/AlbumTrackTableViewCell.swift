@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class AlbumTrackTableViewCell: UITableViewCell {
+class AlbumTrackTableViewCell: AbstractTableViewCell {
 
     static let reuseIdentifier = "albumTrackTableViewCell"
     

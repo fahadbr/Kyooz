@@ -31,7 +31,7 @@ class SearchIndex<T:NSObject> {
         self.name = name
         self.indexLevel = indexLevel
         if (sameLevelValues == nil || sameLevelValues!.isEmpty) && (subIndex == nil || subIndex!.isEmpty) {
-            fatalError("Cannot create a SearchIndex with both sameLevelValues and subIndex as nil or empty")
+//            fatalError("Cannot create a SearchIndex with both sameLevelValues and subIndex as nil or empty")
         }
         
         self.subIndex = subIndex

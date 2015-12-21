@@ -9,8 +9,10 @@
 #ifndef Kyooz_KyoozBridge_h
 #define Kyooz_KyoozBridge_h
 
-#include <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonDigest.h>
+#import <Foundation/Foundation.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import "ObjCUtils.h"
 
-//#import <Spotify/Spotify.h>
 
 #endif
