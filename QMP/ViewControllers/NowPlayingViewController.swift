@@ -78,14 +78,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     //MARK:FUNCTIONS
     
     @IBAction func showSettings(sender: AnyObject) {
-        ContainerViewController.instance.presentSettingsViewController()
+        ContainerViewController.instance.pushViewController(UIStoryboard.settingsViewController())
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
         let editButton = editButtonItem()
-        editButton.tintColor = UIColor.blackColor()
         toolbarItems?[0] = editButton
         
 
@@ -179,7 +178,9 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         let mediaItem = audioQueuePlayer.nowPlayingQueue[indexToUse]
         let isNowPlayingItem = (indexToUse == audioQueuePlayer.indexOfNowPlayingItem)
         cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
-        cell.albumArtImageView.image = getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
+        KyoozUtils.doInMainQueueAsync() {
+            cell.albumArtImageView.image = self.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
+        }
         
         return cell
     }
@@ -257,6 +258,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
+        notificationCenter.addObserver(self, selector: "reloadTableData:",
+            name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     
     private func unregisterForNotifications() {
@@ -298,7 +301,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         let index = indexPath!.row
         
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
-        let controller = UIAlertController(title: mediaItem.trackTitle + "\n" + mediaItem.albumArtist + " - " + mediaItem.albumTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let actionTitle = "\(mediaItem.trackTitle)\n\(mediaItem.albumArtist ?? mediaItem.artist ?? "Unknown Artist") - \(mediaItem.albumTitle ?? "Unknown Album")"
+        let controller = UIAlertController(title: actionTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
         
@@ -318,8 +322,40 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
             controller.addAction(clearUpcomingItemsAction)
         }
         
+        if mediaItem.albumId != 0 {
+            let goToAlbumAction = UIAlertAction(title: "Go To Album", style: UIAlertActionStyle.Default) { action in
+                let query = MPMediaQuery.songsQuery()
+                query.addFilterPredicate(MPMediaPropertyPredicate(value: NSNumber(unsignedLongLong: mediaItem.albumId), forProperty: MPMediaItemPropertyAlbumPersistentID))
+                if let albumCollection = query.collections?.first {
+                    let vc = UIStoryboard.albumTrackTableViewController()
+                    vc.albumCollection = albumCollection
+                    vc.filterQuery = query
+                    vc.libraryGroupingType = LibraryGrouping.Songs
+                    ContainerViewController.instance.pushViewController(vc)
+                } else {
+                    let noAlbumAlert = UIAlertController(title: "Could not find album \"\(mediaItem.albumTitle ?? "Unknown Album")\" in Media Libary", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+                    self.presentViewController(noAlbumAlert, animated: true, completion: nil)
+                }
+            }
+            controller.addAction(goToAlbumAction)
+        }
+        
+        if mediaItem.albumArtistId != 0 {
+            let goToArtistAction = UIAlertAction(title: "Go To Artist", style: UIAlertActionStyle.Default) { action in
+                let query = MPMediaQuery.albumsQuery()
+                query.addFilterPredicate(MPMediaPropertyPredicate(value: NSNumber(unsignedLongLong: mediaItem.albumArtistId), forProperty: MPMediaItemPropertyAlbumArtistPersistentID))
+                let vc = UIStoryboard.mediaEntityTableViewController()
+                vc.filterQuery = query
+                vc.title = mediaItem.albumArtist ?? mediaItem.artist
+                vc.libraryGroupingType = LibraryGrouping.Albums
+                vc.subGroups = LibraryGrouping.Artists.subGroupsForNextLevel
+                ContainerViewController.instance.pushViewController(vc)
+            }
+            controller.addAction(goToArtistAction)
+        }
+        
 
-        let deleteAction = UIAlertAction(title: "Delete", style:UIAlertActionStyle.Destructive) { action in
+        let deleteAction = UIAlertAction(title: "Remove", style:UIAlertActionStyle.Destructive) { action in
             self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
                 forRowAtIndexPath: NSIndexPath(forRow: index, inSection: 0))
         }

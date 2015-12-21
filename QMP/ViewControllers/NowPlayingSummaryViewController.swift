@@ -45,7 +45,7 @@ class NowPlayingSummaryViewController: UIViewController {
     
     var expanded:Bool = false {
         didSet{
-//            albumArtwork?.hidden = !expanded
+            albumArtwork?.hidden = !expanded
         }
     }
     

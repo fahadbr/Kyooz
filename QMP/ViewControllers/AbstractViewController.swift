@@ -9,10 +9,11 @@
 import Foundation
 import UIKit
 
-class AbstractViewController : UITableViewController {
+class AbstractViewController : UIViewController {
     
     override func viewDidLoad() {
-        
+        super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
     }
     
 }

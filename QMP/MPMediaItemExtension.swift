@@ -13,6 +13,7 @@ extension MPMediaItem : AudioTrack {
     
     var trackTitle:String! { return title }
     var id:UInt64 { return persistentID }
+    var albumArtistId:UInt64 { return albumArtistPersistentID }
     var albumId:UInt64 { return albumPersistentID }
     var audioTrackSource:AudioTrackSource { return AudioTrackSource.iPodLibrary }
     

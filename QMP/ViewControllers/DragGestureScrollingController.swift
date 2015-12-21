@@ -18,9 +18,9 @@ class DragGestureScrollingController :NSObject {
     
     private let delegate:DragGestureScrollingControllerDelegate
     private let timeDelayInSeconds:Double = 0.005 //relates to smoothness
-    private let maxScrollSpeed:CGFloat = 7
-    private let minScrollSpeed:CGFloat = 0.005
-    private var scrollSpeed:CGFloat
+    private let maxScrollIncrement:CGFloat = 7
+    private let minScrollIncrement:CGFloat = 0.005
+    private var scrollIncrement:CGFloat
     
     private var visiblePosition:CGFloat!
     private var timer:NSTimer?
@@ -31,7 +31,7 @@ class DragGestureScrollingController :NSObject {
         self.delegate = delegate
         self.yTopOffset = scrollView.contentInset.top + offset
         self.yBottomOffset = scrollView.frame.height - offset - scrollView.contentInset.bottom
-        scrollSpeed = minScrollSpeed
+        scrollIncrement = minScrollIncrement
     }
     
     deinit {
@@ -51,8 +51,8 @@ class DragGestureScrollingController :NSObject {
         }
         if(positionOffset != nil) {
             positionOffset = positionOffset <= 0.0 ? 0.0 : positionOffset
-            let speed = CGFloat((positionOffset/yTopOffset) * CGFloat(maxScrollSpeed))
-            self.scrollSpeed = speed < 0.0 ? minScrollSpeed : speed
+            let speed = CGFloat((positionOffset/yTopOffset) * CGFloat(maxScrollIncrement))
+            self.scrollIncrement = speed < 0.0 ? minScrollIncrement : speed
             
             if(timer == nil) {
                 timer = NSTimer.scheduledTimerWithTimeInterval(timeDelayInSeconds,
@@ -63,7 +63,7 @@ class DragGestureScrollingController :NSObject {
             }
         } else {
             invalidateTimer()
-            scrollSpeed = minScrollSpeed
+            scrollIncrement = minScrollIncrement
         }
     }
     
@@ -77,9 +77,9 @@ class DragGestureScrollingController :NSObject {
         let originalYPosition = scrollView.contentOffset.y
         var newYPosition:CGFloat!
         if(visiblePosition <= yTopOffset && originalYPosition > (0 - scrollView.contentInset.top)) {
-            newYPosition = originalYPosition - scrollSpeed
+            newYPosition = originalYPosition - scrollIncrement
         } else if (visiblePosition >= yBottomOffset && originalYPosition < (scrollView.contentSize.height - scrollView.frame.height) + scrollView.contentInset.bottom){
-            newYPosition = originalYPosition + scrollSpeed
+            newYPosition = originalYPosition + scrollIncrement
         }
         
         if(newYPosition != nil) {

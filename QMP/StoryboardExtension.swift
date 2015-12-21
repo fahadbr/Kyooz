@@ -31,8 +31,12 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
     }
     
-    class func mediaCollectionTableViewController() -> MediaCollectionTableViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("mediaCollectionTableViewController") as! MediaCollectionTableViewController
+    class func mediaEntityTableViewController() -> MediaEntityTableViewController {
+        return MediaEntityTableViewController()
+    }
+    
+    class func mediaEntityViewController() -> MediaEntityViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("mediaEntityViewController") as! MediaEntityViewController
     }
     
     class func albumTrackTableViewController() -> AlbumTrackTableViewController {

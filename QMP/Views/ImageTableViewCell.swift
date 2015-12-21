@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ImageTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
+class ImageTableViewCell: AbstractTableViewCell, ConfigurableAudioTableCell{
     
     static let reuseIdentifier = "imageTableViewCell"
     
@@ -35,11 +35,6 @@ class ImageTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
         accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
         
@@ -51,12 +46,13 @@ class ImageTableViewCell: UITableViewCell, ConfigurableAudioTableCell{
             text = text + " • \(releaseDate)"
         }
         details?.text = text
-        
-        let albumArtworkTemp = entity.representativeItem?.artwork?.imageWithSize(albumArtwork.frame.size)
-        if(albumArtworkTemp == nil) {
-            albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
-        } else {
-            albumArtwork?.image = albumArtworkTemp
+        KyoozUtils.doInMainQueueAsync() {
+            let albumArtworkTemp = entity.representativeItem?.artwork?.imageWithSize(self.albumArtwork.frame.size)
+            if(albumArtworkTemp == nil) {
+                self.albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
+            } else {
+                self.albumArtwork?.image = albumArtworkTemp
+            }
         }
     
     }

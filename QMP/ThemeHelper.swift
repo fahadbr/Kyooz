@@ -44,7 +44,7 @@ struct ThemeHelper {
         UIBarButtonItem.appearance().tintColor = defaultTintColor
         
         UITableViewCell.appearance().backgroundColor = defaultTableCellColor
-//        UITableViewCell.appearance().sel
+        
         UITableView.appearance().backgroundColor = defaultTableCellColor
         UITableView.appearance().tintColor = defaultTintColor
         UITableView.appearance().sectionIndexBackgroundColor = defaultTableCellColor
@@ -56,8 +56,6 @@ struct ThemeHelper {
         UIToolbar.appearance().translucent = barsAreTranslucent
         
         UILabel.appearance().textColor = defaultFontColor
-        
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated:true)
     }
     
 }

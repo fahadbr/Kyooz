@@ -154,35 +154,10 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
             return
         }
         
-        let title = entity.titleForGrouping(group.groupingType)
-        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(group.groupingType)
-        let propertyValue = NSNumber(unsignedLongLong: entity.persistentID)
-        
-        let filterQuery = MPMediaQuery(filterPredicates: group.nextGroupLevel!.baseQuery.filterPredicates)
-        filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
-        filterQuery.groupingType = group.nextGroupLevel!.groupingType
-        
-        //go to specific album track view controller if we are selecting an album collection
-        
-        let vc:AbstractMediaEntityTableViewController!
-        
-        if group === LibraryGrouping.Albums {
-            let albumTrackVc = UIStoryboard.albumTrackTableViewController()
-            albumTrackVc.albumCollection = entity as! MPMediaItemCollection
-            vc = albumTrackVc
-        } else {
-            vc = UIStoryboard.mediaCollectionTableViewController()
-            vc.title = title
-        }
-        
-        vc.filterQuery = filterQuery
-        vc.libraryGroupingType = group.nextGroupLevel
-        vc.navigationItem.leftBarButtonItem?.title = nil
-        
         (presentingViewController as? UINavigationController)?.popToRootViewControllerAnimated(false)
-        searchController.active = false
-        (presentingViewController as? UINavigationController)?.pushViewController(vc, animated: true)
-
+        
+        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: group.nextGroupLevel!.baseQuery.filterPredicates, libraryGroupingType: group, entity: entity)
+        
         //doing this asynchronously because it must be effective after the previous animations have taken place
         KyoozUtils.doInMainQueueAsync() {
             RootViewController.instance.previousSearchText = self.searchText
@@ -312,22 +287,26 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         rowLimit.isExpanded = false
         
         let currentNoOfRows = selectedHeader.searchResults.count
-        
+        var reloadAllSections = false
         //reduce the number of rows in the tableView to be equal to maxRows
         if maxRows < currentNoOfRows {
-            var indexPaths = [NSIndexPath]()
-            for i in maxRows..<currentNoOfRows {
-                indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
-            }
+            if currentNoOfRows > 300 {
+                reloadAllSections = true
+            } else {
+                var indexPaths = [NSIndexPath]()
+                for i in maxRows..<currentNoOfRows {
+                    indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+                }
 
-            self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: indexPaths.count > 40 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Automatic)
+                self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: indexPaths.count > 40 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Automatic)
+            }
         }
         
         self.reloadSections()
         
         let indexSet = NSMutableIndexSet()
         for i in 0..<self.sections.count {
-            if self.sections[i] !== selectedHeader {
+            if self.sections[i] !== selectedHeader || reloadAllSections {
                 indexSet.addIndex(i)
             }
         }

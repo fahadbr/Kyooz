@@ -12,6 +12,7 @@ import MediaPlayer
 @objc protocol AudioTrack : AnyObject {
     
     var albumArtist:String! { get }
+    var albumArtistId:UInt64 { get }
     var albumId:UInt64 { get }
     var albumTitle:String! { get }
     var albumTrackNumber:Int { get }

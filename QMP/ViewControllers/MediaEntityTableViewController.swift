@@ -9,22 +9,127 @@
 import UIKit
 import MediaPlayer
 
-class MediaCollectionTableViewController: AbstractMediaEntityTableViewController {
+class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
 
     private var sections:[MPMediaQuerySection]?
     private var entities:[MPMediaEntity]!
+    
+    var subGroups:[LibraryGrouping] = LibraryGrouping.values {
+        didSet {
+            isBaseLevel = false
+        }
+    }
+    
+    private (set) var isBaseLevel:Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         
+        
+//        if !subGroups.isEmpty {
+//            addSegmentedControl()
+////            addCollectionViewControl()
+//        }
+    }
+    
+    override func getViewForHeader() -> UIView? {
+        if subGroups.isEmpty {
+            return nil
+        }
+        
+        guard let view = NSBundle.mainBundle().loadNibNamed("LibraryGroupingHeaderView", owner: self, options: nil)?.first as? MediaEntityHeaderView else {
+            return nil
+        }
+        
+        view.menuButtonBlock = {
+            self.toggleSelectMode()
+        }
+        
+        let control = UISegmentedControl(items: subGroups.map({ $0.name }))
+        control.tintColor = ThemeHelper.defaultTintColor
+        
+        control.apportionsSegmentWidthsByContent = true
+        control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
+        control.selectedSegmentIndex = 0
+        if control.frame.size.width < tableView.frame.width {
+            view.mainView.addSubview(control)
+            control.translatesAutoresizingMaskIntoConstraints = false
+            control.centerXAnchor.constraintEqualToAnchor(view.mainView.centerXAnchor).active = true
+            control.centerYAnchor.constraintEqualToAnchor(view.mainView.centerYAnchor).active = true
+            return view
+        }
+        
+        let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
+        scrollView.contentSize = control.frame.size
+
+        scrollView.addSubview(control)
+        scrollView.scrollsToTop = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        view.mainView.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.centerYAnchor.constraintEqualToAnchor(view.mainView.centerYAnchor).active = true
+        scrollView.leftAnchor.constraintEqualToAnchor(view.mainView.leftAnchor).active = true
+        scrollView.rightAnchor.constraintEqualToAnchor(view.mainView.rightAnchor).active = true
+        scrollView.heightAnchor.constraintEqualToAnchor(control.heightAnchor, constant:10).active = true
+//        view.frame.size = CGSize(width: tableView.frame.width, height: scrollView.frame.height + view.button.frame.height)
+        return view
+    }
+    
+    private var collectionVC:LibraryGroupCollectionViewController!
+    
+    private func addCollectionViewControl() {
+        collectionVC = LibraryGroupCollectionViewController(items: subGroups)
+        collectionVC.view.frame = view.bounds
+        collectionVC.view.frame.size.height = collectionVC.estimatedHeight + 60
+
+        tableView.tableHeaderView = collectionVC.view
+        addChildViewController(collectionVC)
+        collectionVC.didMoveToParentViewController(self)
+        collectionVC.collectionView?.scrollsToTop = false
+    }
+    
+    private func addSegmentedControl() {
+        let control = UISegmentedControl(items: subGroups.map({ $0.name }))
+        control.apportionsSegmentWidthsByContent = true
+        control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
+        control.selectedSegmentIndex = 0
+        
+        let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
+        scrollView.contentSize = control.frame.size
+        if control.frame.size.width < tableView.frame.width {
+            scrollView.contentInset.left = (tableView.frame.width - control.frame.size.width)/2
+        }
+        scrollView.contentInset.top = (scrollView.frame.height - control.frame.size.height)/2
+        scrollView.addSubview(control)
+        scrollView.scrollsToTop = false
+        tableView.tableHeaderView = scrollView
+    }
+    
+    
+    
+    func groupingTypeDidChange(sender:UISegmentedControl) {
+        let index = sender.selectedSegmentIndex
+        let selectedGroup = subGroups[index]
+        libraryGroupingType = selectedGroup
+        
+        if isBaseLevel {
+            filterQuery = libraryGroupingType.baseQuery
+        } else {
+            filterQuery.groupingType = selectedGroup.groupingType
+        }
+        
+        reloadAllData()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
+    
+    
     // MARK: - Table view data source and delegate methods
     //MARK: header configuration
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -103,6 +208,11 @@ class MediaCollectionTableViewController: AbstractMediaEntityTableViewController
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if tableView.editing {
+            super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+            return
+        }
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let entity = entities[getAbsoluteIndex(indexPath: indexPath)]
         
@@ -111,31 +221,9 @@ class MediaCollectionTableViewController: AbstractMediaEntityTableViewController
             return
         }
         
-        let title = entity.titleForGrouping(libraryGroupingType.groupingType)
-        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(libraryGroupingType.groupingType)
-        let propertyValue = NSNumber(unsignedLongLong: entity.persistentID)
-        
-        let filterQuery = MPMediaQuery(filterPredicates: self.filterQuery.filterPredicates)
-        filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
-        filterQuery.groupingType = libraryGroupingType.nextGroupLevel!.groupingType
-        
         //go to specific album track view controller if we are selecting an album collection
         
-        let vc:AbstractMediaEntityTableViewController!
-        
-        if libraryGroupingType === LibraryGrouping.Albums {
-            let albumTrackVc = UIStoryboard.albumTrackTableViewController()
-            albumTrackVc.albumCollection = entity as! MPMediaItemCollection
-            vc = albumTrackVc
-        } else {
-            vc = UIStoryboard.mediaCollectionTableViewController()
-            vc.title = title
-        }
-        
-        vc.filterQuery = filterQuery
-        vc.libraryGroupingType = libraryGroupingType.nextGroupLevel
-        
-        navigationController?.pushViewController(vc, animated: true)
+        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, libraryGroupingType: libraryGroupingType, entity: entity)
     }
     
     
@@ -155,6 +243,8 @@ class MediaCollectionTableViewController: AbstractMediaEntityTableViewController
     }
     
     override func reloadSourceData() {
+        entities = nil
+        sections = nil
         if libraryGroupingType === LibraryGrouping.Songs {
             guard let items = filterQuery.items else {
                 Logger.debug("No items found for query \(filterQuery)")
