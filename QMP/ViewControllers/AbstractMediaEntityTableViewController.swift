@@ -23,6 +23,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     
     var libraryGroupingType:LibraryGrouping! = LibraryGrouping.Artists
     var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
+    weak var parentMediaEntityController:MediaEntityViewController?
     
     var headerHeight:CGFloat {
         return 70
@@ -30,6 +31,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     
     private var playNextButton:UIBarButtonItem!
     private var playLastButton:UIBarButtonItem!
+    private var playRandomlyButton:UIBarButtonItem!
     private var selectAllButton:UIBarButtonItem!
     private var selectedIndicies:[NSIndexPath]!
     
@@ -40,14 +42,6 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         reloadSourceData()
         registerForNotifications()
     }
-    
-//    override func didMoveToParentViewController(parent: UIViewController?) {
-//        super.didMoveToParentViewController(parent)
-//        
-//        
-//    }
-    
-    
     
     deinit {
         unregisterForNotifications()
@@ -63,23 +57,36 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let mediaItems = getMediaItemsForIndexPath(indexPath)
+        var actions = [UITableViewRowAction]()
+        
         
         let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nLast",
                 handler: {action, index in
-                    self.audioQueuePlayer.enqueue(mediaItems)
+                    self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Last)
                     self.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
             })
+        actions.append(playLastAction)
         let playNextAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nNext",
             handler: {action, index in
-                self.audioQueuePlayer.insertItemsAtIndex(mediaItems, index: self.audioQueuePlayer.indexOfNowPlayingItem + 1)
+                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Next)
                 self.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
         })
+        actions.append(playNextAction)
+        
+        if audioQueuePlayer.shuffleActive {
+            let playRandomlyAction = UITableViewRowAction(style: .Normal, title: "Play\nRandomly", handler: { (action, index) -> Void in
+                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Random)
+                self.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
+            })
+            actions.append(playRandomlyAction)
+        }
+        
         
         playLastAction.backgroundColor = AbstractMediaEntityTableViewController.blueColor
         playNextAction.backgroundColor = AbstractMediaEntityTableViewController.greenColor
 
         
-        return [playLastAction, playNextAction]
+        return actions
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -118,9 +125,11 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         }
         reloadSourceData()
         reloadTableViewData()
+        parentMediaEntityController?.calculateContentSize()
     }
     
     func reloadTableViewData() {
+        refreshButtonStates()
         tableView.reloadData()
     }
     
@@ -131,14 +140,20 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     final func toggleSelectMode() {
         if parentViewController?.toolbarItems == nil {
             selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
-            playNextButton = UIBarButtonItem(title: "Play Next", style: UIBarButtonItemStyle.Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            playLastButton = UIBarButtonItem(title: "Play Last", style: UIBarButtonItemStyle.Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+            playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+            playLastButton = UIBarButtonItem(title: "Play Last", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+            playRandomlyButton = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
             selectAllButton.tintColor = ThemeHelper.defaultTintColor
             playNextButton.tintColor = ThemeHelper.defaultTintColor
             playLastButton.tintColor = ThemeHelper.defaultTintColor
+            playRandomlyButton.tintColor = ThemeHelper.defaultTintColor
             
-            parentViewController?.toolbarItems = [playNextButton, UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil), playLastButton,
-                UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil), selectAllButton]
+            func createFlexibleSpace() -> UIBarButtonItem {
+                return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+            }
+            
+            parentViewController?.toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton,
+                createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
         }
         
         let willEdit = !tableView.editing
@@ -152,6 +167,8 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
             }
         }
         
+        
+        
         refreshButtonStates()
         
     }
@@ -163,6 +180,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
 
         playNextButton.enabled = isNotEmpty
         playLastButton.enabled = isNotEmpty
+        playRandomlyButton.enabled = isNotEmpty && audioQueuePlayer.shuffleActive
         selectAllButton.title = isNotEmpty ? deselectAllString : selectAllString
     }
     
@@ -210,12 +228,13 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         }
         
         if sender === playNextButton {
-            audioQueuePlayer.insertItemsAtIndex(items, index: audioQueuePlayer.indexOfNowPlayingItem + 1)
-            toggleSelectMode()
+            audioQueuePlayer.enqueue(items: items, atPosition: .Next)
         } else if sender === playLastButton {
-            audioQueuePlayer.enqueue(items)
-            toggleSelectMode()
+            audioQueuePlayer.enqueue(items: items, atPosition: .Last)
+        } else if sender === playRandomlyButton {
+            audioQueuePlayer.enqueue(items: items, atPosition: .Random)
         }
+        toggleSelectMode()
     }
     
     //MARK: - Overriding MediaItemTableViewController methods
@@ -242,6 +261,5 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    
     
 }

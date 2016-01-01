@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="VuC-yT-2YM" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="249" height="199"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <color key="backgroundColor" red="0.13971748740000001" green="0.13971748740000001" blue="0.13971748740000001" alpha="1" colorSpace="calibratedRGB"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="boolean" keyPath="isActive" value="NO"/>
+            </userDefinedRuntimeAttributes>
+            <point key="canvasLocation" x="714.5" y="358.5"/>
+        </button>
+        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="1jJ-D2-beq" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="127" height="109"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <color key="backgroundColor" red="0.13971748740000001" green="0.13971748740000001" blue="0.13971748740000001" alpha="1" colorSpace="calibratedRGB"/>
+            <point key="canvasLocation" x="445.5" y="419.5"/>
+        </button>
+    </objects>
+</document>

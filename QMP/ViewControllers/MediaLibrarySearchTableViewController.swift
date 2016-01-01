@@ -150,13 +150,13 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         let group = searchExecutor.libraryGroup
         
         if let item = entity as? MPMediaItem where group === LibraryGrouping.Songs {
-            audioQueuePlayer.playNowWithCollection(mediaCollection: MPMediaItemCollection(items: [item]), itemToPlay: item)
+            audioQueuePlayer.playNow(withTracks: [item], startingAtIndex: 0)
             return
         }
         
         (presentingViewController as? UINavigationController)?.popToRootViewControllerAnimated(false)
         
-        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: group.nextGroupLevel!.baseQuery.filterPredicates, libraryGroupingType: group, entity: entity)
+        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: group.nextGroupLevel!.baseQuery.filterPredicates, parentGroup: group, entity: entity)
         
         //doing this asynchronously because it must be effective after the previous animations have taken place
         KyoozUtils.doInMainQueueAsync() {
@@ -298,7 +298,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
                     indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
                 }
 
-                self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: indexPaths.count > 40 ? UITableViewRowAnimation.None : UITableViewRowAnimation.Automatic)
+                self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
             }
         }
         
@@ -311,13 +311,12 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
             }
         }
         
+        tableView.beginUpdates()
         if indexSet.count >= self.sections.count {
-            let tempSections = self.sections
-            self.sections.removeAll()
             self.tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Automatic)
-            self.sections = tempSections
         }
-        self.tableView.insertSections(indexSet, withRowAnimation: UITableViewRowAnimation.Automatic)
+        tableView.insertSections(indexSet, withRowAnimation: UITableViewRowAnimation.Automatic)
+        tableView.endUpdates()
     }
     
     private func removeSectionsAndExpandSelectedSection(sender:UITapGestureRecognizer, searchExecutor:SearchExecutionController<MPMediaEntity>) {

@@ -37,11 +37,14 @@ class MediaPlayerAPIHelper {
         }
         
         var items = [AudioTrack]()
-        for i in 0..<numberOfItems {
-            if let item = objCUtils.getItemForPlayer(musicPlayer, forIndex: i) {
-                items.append(item)
-            } else {
-                Logger.error("was not able to retrieve media item for index \(i)")
+        items.reserveCapacity(numberOfItems)
+        KyoozUtils.performWithMetrics(blockDescription: "read system queue") {
+            for i in 0..<numberOfItems {
+                if let item = self.objCUtils.getItemForPlayer(musicPlayer, forIndex: i) {
+                    items.append(item)
+                } else {
+                    Logger.error("was not able to retrieve media item for index \(i)")
+                }
             }
         }
         

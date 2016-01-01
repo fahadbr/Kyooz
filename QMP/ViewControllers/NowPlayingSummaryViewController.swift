@@ -29,16 +29,14 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBOutlet weak var nowPlayingCollapsedBar: UIView!
     @IBOutlet weak var playbackProgressCollapsedBar: UIProgressView!
     
+    @IBOutlet weak var repeatButton: RepeatButtonView!
+    @IBOutlet weak var shuffleButton: ShuffleButtonView!
+    
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private let timeDelayInNanoSeconds = Int64(0.5 * Double(NSEC_PER_SEC))
     
     private var playbackProgressTimer:NSTimer?
     private var albumTitleForCurrentAlbumArt:String?
-    
-    private var playButtonImage:UIImage!
-    private var playButtonHighlightedImage:UIImage!
-    private var pauseButtonImage:UIImage!
-    private var pauseButtonHighlightedImage:UIImage!
     
     typealias KVOContext = UInt8
     private var observationContext = KVOContext()
@@ -95,15 +93,21 @@ class NowPlayingSummaryViewController: UIViewController {
         }
     }
     
+    @IBAction func toggleShuffle(sender: AnyObject) {
+        let newState = !audioQueuePlayer.shuffleActive
+        audioQueuePlayer.shuffleActive = newState
+        shuffleButton.isActive = audioQueuePlayer.shuffleActive
+    }
+    
+    @IBAction func switchRepeatMode(sender: AnyObject) {
+        let newState = audioQueuePlayer.repeatMode.nextState
+        audioQueuePlayer.repeatMode = newState
+        repeatButton.repeatState = audioQueuePlayer.repeatMode
+    }
+    
     //MARK: - FUNCTIONS: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.playButtonImage = playPauseButton.imageForState(UIControlState.Normal)
-        self.playButtonHighlightedImage = playPauseButton.imageForState(UIControlState.Highlighted)
-        
-        self.pauseButtonImage = UIImage(named: "pause_button")
-        self.pauseButtonHighlightedImage = UIImage(named: "pause_button_highlighted")
         
         self.reloadData(nil)
         registerForNotifications()
@@ -153,6 +157,10 @@ class NowPlayingSummaryViewController: UIViewController {
         }
         
         self.playbackProgressBar.maximumValue = Float(nowPlayingItem?.playbackDuration ?? 1.0)
+        
+        repeatButton.repeatState = audioQueuePlayer.repeatMode
+        shuffleButton.isActive = audioQueuePlayer.shuffleActive
+        
         updatePlaybackProgressBar(nil)
         updatePlaybackProgressTimer()
         updatePlaybackStatus(nil)
@@ -235,6 +243,10 @@ class NowPlayingSummaryViewController: UIViewController {
         
         if(alphaLevel > 1.0 || alphaLevel < 0.1) {
             alphaLevel = floor(alphaLevel)
+        }
+        
+        if alphaLevel > 0 && albumArtwork.hidden {
+            albumArtwork.hidden = false
         }
         
         self.albumArtwork.alpha = alphaLevel

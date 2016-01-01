@@ -30,7 +30,7 @@ struct ThemeHelper {
     
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()
-        titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontName, size:CGFloat(18.0))
+        titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontName + "-Heavy", size:defaultFontSize)
         
         UINavigationBar.appearance().titleTextAttributes = titleTextAttributes
         UINavigationBar.appearance().tintColor = defaultTintColor

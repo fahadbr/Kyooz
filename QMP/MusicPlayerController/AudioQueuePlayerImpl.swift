@@ -12,7 +12,7 @@ import AVFoundation
 
 typealias KVOContext=UInt8
 
-class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
+final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     
     //MARK: STATIC INSTANCE
     static let instance:AudioQueuePlayerImpl = AudioQueuePlayerImpl()
@@ -28,7 +28,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     
     var nowPlayingQueue:[AudioTrack] = [AudioTrack]() {
         didSet {
-            AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .QueueUpdate, sender: self)
+            publishNotification(updateType: .QueueUpdate, sender: self)
         }
     }
     
@@ -38,13 +38,11 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         AudioSessionManager.instance.initializeAudioSession()
         
         audioController.delegate = self
-        if let queue = TempDataDAO.instance.getNowPlayingQueueFromTempStorage() {
-            nowPlayingQueue = queue
-            if let playbackState = TempDataDAO.instance.getPlaybackStateFromTempStorage() {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.updateNowPlayingStateToIndex(playbackState.indexOfNowPlayingItem)
-                    self.currentPlaybackTime = playbackState.currentPlaybackTime.isNormal ? playbackState.currentPlaybackTime : 0
-                })
+        if let snapshot = TempDataDAO.instance.getPlaybackStateSnapshotFromTempStorage() {
+            nowPlayingQueue = snapshot.nowPlayingQueueContext.currentQueue
+            KyoozUtils.doInMainQueueAsync() {
+                self.updateNowPlayingStateToIndex(snapshot.indexOfNowPlayingItem)
+                self.currentPlaybackTime = snapshot.currentPlaybackTime.isNormal ? snapshot.currentPlaybackTime : 0
             }
         }
 
@@ -58,6 +56,10 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     }
     
     //MARK: AudioQueuePlayer - Properties
+    var playbackStateSnapshot:PlaybackStateSnapshot {
+        return PlaybackStateSnapshot(nowPlayingQueueContext: NowPlayingQueueContext(originalQueue: nowPlayingQueue), currentPlaybackTime: currentPlaybackTime, indexOfNowPlayingItem: indexOfNowPlayingItem)
+    }
+    
     var nowPlayingItem:AudioTrack? {
         willSet {
             if(audioController.canScrobble) {
@@ -72,8 +74,8 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
     var musicIsPlaying:Bool = false {
         didSet {
             shouldPlayAfterLoading = musicIsPlaying
-            AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
-            TempDataDAO.instance.persistCurrentPlaybackStateToTempStorage(indexOfNowPlayingItem, currentPlaybackTime: currentPlaybackTime)
+            publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+            TempDataDAO.instance.persistPlaybackStateSnapshotToTempStorage()
             if nowPlayingItem != nil {
                 nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime: currentPlaybackTime)
             }
@@ -90,11 +92,16 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
             if(audioController.audioTrackIsLoaded) {
                 audioController.currentPlaybackTime = Double(newValue)
                 nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime:newValue)
-                AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+                publishNotification(updateType: .PlaybackStateUpdate, sender: self)
             }
         }
     }
     var indexOfNowPlayingItem:Int = 0
+    
+    var shuffleActive:Bool = false
+
+    var repeatMode:RepeatState = .Off
+
     
     //MARK: AudioQueuePlayer - Functions
     
@@ -123,16 +130,10 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func playNowWithCollection(mediaCollection mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack) {
-        nowPlayingQueue = mediaCollection.items
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int) {
+        nowPlayingQueue = tracks
         shouldPlayAfterLoading = true
-        var i = 0
-        for mediaItem in nowPlayingQueue {
-            if(mediaItem.id == itemToPlay.id) {
-                updateNowPlayingStateToIndex(i)
-            }
-            i++
-        }
+        updateNowPlayingStateToIndex(index)
     }
     
     func playItemWithIndexInCurrentQueue(index index:Int) {
@@ -143,7 +144,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         updateNowPlayingStateToIndex(index)
     }
     
-    func enqueue(itemsToEnqueue:[AudioTrack]) {
+    func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition) {
         nowPlayingQueue.appendContentsOf(itemsToEnqueue)
     }
     
@@ -190,9 +191,9 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         }
     }
     
-    func clearUpcomingItems(fromIndex fromIndex:Int) {
-        nowPlayingQueue.removeRange((fromIndex + 1)..<nowPlayingQueue.count)
-        if(fromIndex < indexOfNowPlayingItem) {
+    func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int) {
+        nowPlayingQueue.removeRange((index + 1)..<nowPlayingQueue.count)
+        if(index < indexOfNowPlayingItem) {
             updateNowPlayingStateToIndex(0, shouldLoadAfterUpdate: true)
         }
     }
@@ -221,7 +222,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
             play()
             nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
         }
-        AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
     
     func advanceToNextTrack(shouldLoadAfterUpdate:Bool) {
@@ -298,7 +299,7 @@ class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDelegate {
         advanceToNextTrack(false)
         
         nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
-        AudioQueuePlayerNotificationPublisher.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
 }
 

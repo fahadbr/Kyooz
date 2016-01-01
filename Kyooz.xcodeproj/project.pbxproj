@@ -45,8 +45,14 @@
 		0B476C7C1B2295EA00626810 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B476C7B1B2295EA00626810 /* SystemConfiguration.framework */; };
 		0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C7E1B2350FE00626810 /* SpotifyController.swift */; };
 		0B4E5FFF1C27706500BB9D77 /* AlbumHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B4E5FFE1C27706500BB9D77 /* AlbumHeaderView.xib */; };
+		0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */; };
+		0B4E60061C2CBB7700BB9D77 /* ShuffleButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */; };
+		0B4E60081C2CD99C00BB9D77 /* RepeatButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B4E60071C2CD99C00BB9D77 /* RepeatButtonView.xib */; };
+		0B4E600A1C2CD9AD00BB9D77 /* RepeatButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E60091C2CD9AD00BB9D77 /* RepeatButtonView.swift */; };
+		0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E600B1C2DBC7800BB9D77 /* RepeatState.swift */; };
+		0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */; };
+		0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */; };
 		0B5123A21AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */; };
-		0B533ABE1BC17E4800EA71B7 /* LibraryGroupingTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B533ABD1BC17E4800EA71B7 /* LibraryGroupingTableViewController.swift */; };
 		0B533AC01BC1878900EA71B7 /* LibraryGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */; };
 		0B533AC21BC18A3E00EA71B7 /* MPMediaQueryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B533AC11BC18A3E00EA71B7 /* MPMediaQueryExtension.swift */; };
 		0B533AC41BC191B600EA71B7 /* MediaEntityTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B533AC31BC191B600EA71B7 /* MediaEntityTableViewController.swift */; };
@@ -160,8 +166,14 @@
 		0B476C7B1B2295EA00626810 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		0B476C7E1B2350FE00626810 /* SpotifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
 		0B4E5FFE1C27706500BB9D77 /* AlbumHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumHeaderView.xib; sourceTree = "<group>"; };
+		0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShuffleButtonView.swift; sourceTree = "<group>"; };
+		0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShuffleButtonView.xib; sourceTree = "<group>"; };
+		0B4E60071C2CD99C00BB9D77 /* RepeatButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RepeatButtonView.xib; sourceTree = "<group>"; };
+		0B4E60091C2CD9AD00BB9D77 /* RepeatButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatButtonView.swift; sourceTree = "<group>"; };
+		0B4E600B1C2DBC7800BB9D77 /* RepeatState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatState.swift; sourceTree = "<group>"; };
+		0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingQueueContext.swift; sourceTree = "<group>"; };
+		0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackStateSnapshot.swift; sourceTree = "<group>"; };
 		0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaItemTableViewControllerProtocol.swift; path = QMP/MediaItemTableViewControllerProtocol.swift; sourceTree = SOURCE_ROOT; };
-		0B533ABD1BC17E4800EA71B7 /* LibraryGroupingTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGroupingTableViewController.swift; sourceTree = "<group>"; };
 		0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGrouping.swift; sourceTree = "<group>"; };
 		0B533AC11BC18A3E00EA71B7 /* MPMediaQueryExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPMediaQueryExtension.swift; sourceTree = "<group>"; };
 		0B533AC31BC191B600EA71B7 /* MediaEntityTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaEntityTableViewController.swift; sourceTree = "<group>"; };
@@ -357,7 +369,6 @@
 				0B264BA61BF17C99002919F5 /* AbstractViewController.swift */,
 				0B13DA011AE6FA9A00CC5C01 /* AlbumTrackTableViewController.swift */,
 				0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */,
-				0B533ABD1BC17E4800EA71B7 /* LibraryGroupingTableViewController.swift */,
 				0BA2426E1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift */,
 				0B533AC31BC191B600EA71B7 /* MediaEntityTableViewController.swift */,
 				0BA242B21C25C2D0000170F9 /* MediaEntityViewController.swift */,
@@ -414,6 +425,9 @@
 				0B476C711B21FA5400626810 /* AudioTrack.swift */,
 				0B476C731B2273E500626810 /* AudioTrackEntity.swift */,
 				0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */,
+				0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */,
+				0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */,
+				0B4E600B1C2DBC7800BB9D77 /* RepeatState.swift */,
 			);
 			name = MediaObjects;
 			sourceTree = "<group>";
@@ -460,8 +474,12 @@
 			children = (
 				0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */,
 				0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */,
+				0B4E60091C2CD9AD00BB9D77 /* RepeatButtonView.swift */,
+				0B4E60071C2CD99C00BB9D77 /* RepeatButtonView.xib */,
 				0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */,
 				0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */,
+				0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */,
+				0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */,
 			);
 			name = "Custom Drawn Views";
 			sourceTree = "<group>";
@@ -654,6 +672,8 @@
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
 				0BCE21971B12C5300074DA47 /* Track1.mp4 in Resources */,
 				0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */,
+				0B4E60081C2CD99C00BB9D77 /* RepeatButtonView.xib in Resources */,
+				0B4E60061C2CBB7700BB9D77 /* ShuffleButtonView.xib in Resources */,
 				0BEBCCB71B92123700EFC47D /* PlayPauseButtonView.xib in Resources */,
 				0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */,
 				0B13DA1C1AE6FA9A00CC5C01 /* ImageTableViewCell.xib in Resources */,
@@ -703,10 +723,10 @@
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
+				0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0B5123A21AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift in Sources */,
-				0B533ABE1BC17E4800EA71B7 /* LibraryGroupingTableViewController.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
 				0B13DA231AE6FA9A00CC5C01 /* AudioQueuePlayer.swift in Sources */,
 				0BFC23BA1C0FCE6100C7A5D5 /* MediaPlayerAPIHelper.swift in Sources */,
@@ -719,11 +739,13 @@
 				0B533AC21BC18A3E00EA71B7 /* MPMediaQueryExtension.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
 				0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */,
+				0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */,
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
 				0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */,
 				0B7776811BFC078A00B9A088 /* MPMediaItemCollectionExtension.swift in Sources */,
+				0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */,
 				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
@@ -735,10 +757,12 @@
 				0B533AC41BC191B600EA71B7 /* MediaEntityTableViewController.swift in Sources */,
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */,
+				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,
 				0BB8D1AA1BC1F8BA00472042 /* MPMediaEntityExtension.swift in Sources */,
 				0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */,
 				0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */,
 				0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */,
+				0B4E600A1C2CD9AD00BB9D77 /* RepeatButtonView.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,
@@ -930,7 +954,7 @@
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

@@ -107,10 +107,7 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
         }
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let index = indexPath.row
-        let nowPlayingItem = albumCollection.items[index] as AudioTrack
-        audioQueuePlayer.playNowWithCollection(mediaCollection: albumCollection,
-            itemToPlay: nowPlayingItem)
+        audioQueuePlayer.playNow(withTracks: albumCollection.items, startingAtIndex: indexPath.row)
     }
     
 

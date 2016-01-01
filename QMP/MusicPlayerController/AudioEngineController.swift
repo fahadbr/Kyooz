@@ -9,7 +9,7 @@
 import Foundation
 import AVFoundation
 
-class AudioEngineController : AudioController {
+final class AudioEngineController : AudioController {
     
     static let instance = AudioEngineController()
     static let AUDIO_BUFFER_QUEUE = dispatch_queue_create("com.riaz.fahad.Kyooz.AudioBuffer", DISPATCH_QUEUE_SERIAL)

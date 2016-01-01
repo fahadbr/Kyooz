@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DropDestination {
+final class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DropDestination {
 
     @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
     
@@ -60,17 +60,13 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
     var insertMode:Bool = false {
         didSet {
             if(insertMode) {
-                longPressGestureRecognizer.enabled = false
-                for item in toolbarItems! {
-                    item.enabled = false
-                }
                 insertModeCount = audioQueuePlayer.nowPlayingQueue.count + 1
             } else {
-                longPressGestureRecognizer.enabled = true
                 indexPathOfMovingItem = nil
-                for item in toolbarItems! {
-                    item.enabled = true
-                }
+            }
+            longPressGestureRecognizer.enabled = !insertMode
+            for item in toolbarItems! {
+                item.enabled = !insertMode
             }
         }
     }
@@ -129,7 +125,7 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
                 indicies.append(indexPath.row)
             }
             audioQueuePlayer.deleteItemsAtIndices(indicies)
-            tableView.deleteRowsAtIndexPaths(indexPathsToDelete!, withRowAnimation: UITableViewRowAnimation.Automatic)
+            deleteIndexPaths(indexPathsToDelete!)
             indexPathsToDelete!.removeAll(keepCapacity: false)
         } else if (!tableView.editing && !audioQueuePlayer.nowPlayingQueue.isEmpty) {
             var indicies = [Int]()
@@ -140,8 +136,8 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
                     indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
                 }
             }
-            audioQueuePlayer.deleteItemsAtIndices(indicies)
-            tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Automatic)
+            audioQueuePlayer.clearItems(towardsDirection: .All, atIndex: audioQueuePlayer.indexOfNowPlayingItem)
+            deleteIndexPaths(indexPaths)
         }
     }
 
@@ -284,6 +280,19 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         return noAlbumArtCellImage
 
     }
+    
+    private func deleteIndexPaths(indiciesToDelete:[NSIndexPath]) {
+        if indiciesToDelete.isEmpty { return }
+        
+        if indiciesToDelete.count < 250 {
+            tableView.deleteRowsAtIndexPaths(indiciesToDelete, withRowAnimation: .Automatic)
+        } else {
+            tableView.beginUpdates()
+            tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            tableView.endUpdates()
+        }
+    }
 
     //MARK: gesture recognizer handlers
     func handleTapGesture(sender:UITapGestureRecognizer) {
@@ -308,48 +317,41 @@ class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
+        if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
+            let clearPrecedingItemsAction = UIAlertAction(title: "Clear Preceding Tracks", style: UIAlertActionStyle.Default) { action in
+                var indiciesToDelete = [NSIndexPath]()
+                indiciesToDelete.reserveCapacity(index)
+                for i in 0..<index {
+                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.audioQueuePlayer.clearItems(towardsDirection: .Preceding, atIndex: index)
+                self.deleteIndexPaths(indiciesToDelete)
+            }
+            controller.addAction(clearPrecedingItemsAction)
+        }
         
         if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
-            let clearUpcomingItemsAction = UIAlertAction(title: "Clear Upcoming Tracks", style: UIAlertActionStyle.Default) { action in
-                var indicesToDelete = [NSIndexPath]()
-                for var i=index + 1; i <= lastIndex; i++ {
-                    indicesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
+            let clearUpcomingItemsAction = UIAlertAction(title: "Clear Following Tracks", style: .Default) { action in
+                var indiciesToDelete = [NSIndexPath]()
+                for i in (index + 1)...lastIndex {
+                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                
-                self.audioQueuePlayer.clearUpcomingItems(fromIndex: index)
-                self.tableView.deleteRowsAtIndexPaths(indicesToDelete, withRowAnimation: UITableViewRowAnimation.Bottom)
+                self.audioQueuePlayer.clearItems(towardsDirection: .Following, atIndex: index)
+                self.deleteIndexPaths(indiciesToDelete)
             }
             controller.addAction(clearUpcomingItemsAction)
         }
         
         if mediaItem.albumId != 0 {
             let goToAlbumAction = UIAlertAction(title: "Go To Album", style: UIAlertActionStyle.Default) { action in
-                let query = MPMediaQuery.songsQuery()
-                query.addFilterPredicate(MPMediaPropertyPredicate(value: NSNumber(unsignedLongLong: mediaItem.albumId), forProperty: MPMediaItemPropertyAlbumPersistentID))
-                if let albumCollection = query.collections?.first {
-                    let vc = UIStoryboard.albumTrackTableViewController()
-                    vc.albumCollection = albumCollection
-                    vc.filterQuery = query
-                    vc.libraryGroupingType = LibraryGrouping.Songs
-                    ContainerViewController.instance.pushViewController(vc)
-                } else {
-                    let noAlbumAlert = UIAlertController(title: "Could not find album \"\(mediaItem.albumTitle ?? "Unknown Album")\" in Media Libary", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
-                    self.presentViewController(noAlbumAlert, animated: true, completion: nil)
-                }
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Albums, entity: mediaItem as! MPMediaItem)
             }
             controller.addAction(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
             let goToArtistAction = UIAlertAction(title: "Go To Artist", style: UIAlertActionStyle.Default) { action in
-                let query = MPMediaQuery.albumsQuery()
-                query.addFilterPredicate(MPMediaPropertyPredicate(value: NSNumber(unsignedLongLong: mediaItem.albumArtistId), forProperty: MPMediaItemPropertyAlbumArtistPersistentID))
-                let vc = UIStoryboard.mediaEntityTableViewController()
-                vc.filterQuery = query
-                vc.title = mediaItem.albumArtist ?? mediaItem.artist
-                vc.libraryGroupingType = LibraryGrouping.Albums
-                vc.subGroups = LibraryGrouping.Artists.subGroupsForNextLevel
-                ContainerViewController.instance.pushViewController(vc)
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Artists, entity: mediaItem as! MPMediaItem)
             }
             controller.addAction(goToArtistAction)
         }

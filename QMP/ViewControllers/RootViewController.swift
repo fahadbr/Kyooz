@@ -57,7 +57,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     override func viewDidLoad() {
         super.viewDidLoad()
         libraryNavigationController = UIStoryboard.libraryNavigationController()
-        libraryNavigationController.viewControllers.first?.title = "Browse All Music"
+        libraryNavigationController.viewControllers.first?.title = "BROWSE"
         
         view.addSubview(libraryNavigationController.view)
         addChildViewController(libraryNavigationController)
@@ -122,6 +122,9 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         if viewController === navigationController.viewControllers[0] && previousSearchText != nil {
             searchController.searchBar.text = previousSearchText
             activateSearch()
+        }
+        if !libraryNavigationController.toolbarHidden {
+            libraryNavigationController.toolbarHidden = true
         }
     }
     

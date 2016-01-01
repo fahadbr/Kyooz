@@ -11,11 +11,15 @@ import MediaPlayer
 
 protocol AudioQueuePlayer:class {
     
+    var playbackStateSnapshot:PlaybackStateSnapshot { get }
+    
     var nowPlayingItem:AudioTrack? { get }
     var musicIsPlaying:Bool { get }
     var currentPlaybackTime:Float { get set }
     var indexOfNowPlayingItem:Int { get }
     var nowPlayingQueue:[AudioTrack] { get }
+    var shuffleActive:Bool { get set }
+    var repeatMode:RepeatState { get set }
     
     func play()
     
@@ -25,11 +29,11 @@ protocol AudioQueuePlayer:class {
     
     func skipForwards()
     
-    func playNowWithCollection(mediaCollection mediaCollection:MPMediaItemCollection, itemToPlay:AudioTrack)
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int)
     
     func playItemWithIndexInCurrentQueue(index index:Int)
     
-    func enqueue(itemsToEnque:[AudioTrack])
+    func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition)
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int)
     
@@ -37,7 +41,18 @@ protocol AudioQueuePlayer:class {
     
     func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int)
     
-    func clearUpcomingItems(fromIndex fromIndex:Int)
+    func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int)
+    
+    
+}
+
+extension AudioQueuePlayer {
+    func publishNotification(updateType updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
+        KyoozUtils.doInMainQueueAsync() {
+            let notification = NSNotification(name: updateType.rawValue, object: sender)
+            NSNotificationCenter.defaultCenter().postNotification(notification)
+        }
+    }
 }
 
 enum AudioQueuePlayerUpdate : String {
@@ -46,13 +61,15 @@ enum AudioQueuePlayerUpdate : String {
     case NowPlayingItemChanged = "AudioQueuePlayerNowPlayingItemChanged"
 }
 
-struct AudioQueuePlayerNotificationPublisher {
-    
-    static func publishNotification(updateType updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let notification = NSNotification(name: updateType.rawValue, object: sender)
-            NSNotificationCenter.defaultCenter().postNotification(notification)
-        }
-    }
+enum ClearDirection : Int {
+    case Preceding
+    case Following
+    case All
+}
+
+enum EnqueuePosition : Int {
+    case Next
+    case Last
+    case Random
 }
 

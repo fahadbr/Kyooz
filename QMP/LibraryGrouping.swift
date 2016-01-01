@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-class LibraryGrouping : Hashable {
+final class LibraryGrouping : Hashable {
     
     static let Songs = LibraryGrouping(name: "SONGS",
         baseQuery: MPMediaQuery.songsQuery(),
@@ -31,7 +31,7 @@ class LibraryGrouping : Hashable {
         baseQuery: MPMediaQuery.playlistsQuery(),
         groupingType:MPMediaGrouping.Playlist,
         nextGroupLevel:Songs,
-        subGroupsForNextLevel: [Songs, Artists, Albums, Genres, Composers, Compilations])
+        subGroupsForNextLevel: [Songs, Artists, Albums, Genres, Composers])
     static let Artists = LibraryGrouping(name: "ARTISTS",
         baseQuery: MPMediaQuery.albumArtistsQuery(),
         groupingType: MPMediaGrouping.AlbumArtist,

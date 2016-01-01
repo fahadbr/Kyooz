@@ -42,7 +42,7 @@ class ImageTableViewCell: AbstractTableViewCell, ConfigurableAudioTableCell{
         
         let pluralText = entity.count > 1 ? "s" : ""
         var text = "\(entity.count) Track\(pluralText)"
-        if let mediaItem = entity.representativeItem, let releaseDate = mediaItem.releaseDate {
+        if let mediaItem = entity.representativeItem, let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
             text = text + " • \(releaseDate)"
         }
         details?.text = text

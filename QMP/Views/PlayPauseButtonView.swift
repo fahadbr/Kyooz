@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable
-class PlayPauseButtonView: UIButton {
+final class PlayPauseButtonView: UIButton {
 
     @IBInspectable
     var isPlayButton:Bool = false {

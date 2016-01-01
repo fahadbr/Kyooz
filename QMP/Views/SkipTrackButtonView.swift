@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable
-class SkipTrackButtonView: UIButton {
+final class SkipTrackButtonView: UIButton {
 
     override var highlighted:Bool {
         didSet {
@@ -40,13 +40,19 @@ class SkipTrackButtonView: UIButton {
         let triangleHeight:CGFloat = pow(3, 0.5)/2 * sideLength
         let offsetAmount = triangleHeight * offsetFactor
         
-        let leftRect = CGRect(x: rect.midX - triangleHeight + offsetAmount, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
-        let rightRect = CGRect(x: rect.midX - offsetAmount, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
+        let leftRectOriginX = rect.midX - offsetAmount
+        let rightRectOriginX = rect.midX - triangleHeight + offsetAmount
+        
+        let rightRect = CGRect(x: rightRectOriginX, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
+        let leftRect = CGRect(x: leftRectOriginX, y: rect.midY - sideLength/2, width: sideLength, height: sideLength)
         
         
         let path = UIBezierPath()
-        path.appendPath(CGUtils.drawTriangleWithCurvedEdges(leftRect, isPointingRight: isForwardButton))
         path.appendPath(CGUtils.drawTriangleWithCurvedEdges(rightRect, isPointingRight: isForwardButton))
+        path.appendPath(CGUtils.drawTriangleWithCurvedEdges(leftRect, isPointingRight: isForwardButton))
+        
+        let centerOffset = rect.midX - path.bounds.midX
+        path.applyTransform(CGAffineTransformMakeTranslation(centerOffset, 0))
         
         let strokePath = UIBezierPath()
         strokePath.lineCapStyle = CGLineCap.Round

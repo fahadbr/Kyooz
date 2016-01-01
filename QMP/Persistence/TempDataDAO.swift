@@ -9,16 +9,13 @@
 import Foundation
 import MediaPlayer
 
-class TempDataDAO : NSObject {
+final class TempDataDAO : NSObject {
     //MARK: STATIC PROPERTIES
     private static let tempDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory())
-    private static let nowPlayingQueueFileName = tempDirectory.URLByAppendingPathComponent("nowPlayingQueue.txt").path!
-    private static let playbackStateFileName = tempDirectory.URLByAppendingPathComponent("playbackState.txt").path!
+    private static let playbackStateSnapshotFileName = tempDirectory.URLByAppendingPathComponent("playbackStateSnapshot.archive").path!
     private static let lastFmScrobbleCacheFileName = tempDirectory.URLByAppendingPathComponent("lastFmScrobbleCache.txt").path!
     private static let miscValuesFileName = tempDirectory.URLByAppendingPathComponent("miscValues.txt").path!
     
-    private static let INDEX_OF_NOW_PLAYING_ITEM_KEY = "indexOfNowPlayingItem"
-    private static let CURRENT_PLAYBACK_TIME_KEY = "currentPlaybackTime"
     
     private var miscellaneousValues:NSMutableDictionary;
     
@@ -36,6 +33,8 @@ class TempDataDAO : NSObject {
         
         super.init()
         registerForNotifications()
+        removeFile(TempDataDAO.tempDirectory.URLByAppendingPathComponent("nowPlayingQueue.archive").path!)
+        removeFile(TempDataDAO.tempDirectory.URLByAppendingPathComponent("playbackState.txt").path!)
         
     }
     
@@ -54,19 +53,27 @@ class TempDataDAO : NSObject {
     }
     
     func persistData(notification:NSNotification) {
-        let musicPlayer = ApplicationDefaults.audioQueuePlayer
         persistLastFmScrobbleCache(LastFmScrobbler.instance.scrobbleCache)
-        persistNowPlayingQueueToTempStorage(musicPlayer.nowPlayingQueue)
-        persistCurrentPlaybackStateToTempStorage(musicPlayer.indexOfNowPlayingItem, currentPlaybackTime: musicPlayer.currentPlaybackTime)
+        persistPlaybackStateSnapshotToTempStorage()
         if !miscellaneousValues.writeToFile(TempDataDAO.miscValuesFileName, atomically: true) {
             Logger.debug("failed to write all misc values to temp dir")
         }
     }
     
-    
-    func persistNowPlayingQueueToTempStorage(mediaItems:[AudioTrack]?) {
-       persistMediaItemsToTempStorageFile(TempDataDAO.nowPlayingQueueFileName, mediaItems: mediaItems)
+    func persistPlaybackStateSnapshotToTempStorage() {
+        let persistableState = ApplicationDefaults.audioQueuePlayer.playbackStateSnapshot.persistableSnapshot
+        NSKeyedArchiver.archiveRootObject(persistableState, toFile: TempDataDAO.playbackStateSnapshotFileName)
     }
+    
+    func getPlaybackStateSnapshotFromTempStorage() -> PlaybackStateSnapshot? {
+        let filename = TempDataDAO.playbackStateSnapshotFileName
+        if !NSFileManager.defaultManager().fileExistsAtPath(filename) {
+            return nil
+        }
+        
+        return (NSKeyedUnarchiver.unarchiveObjectWithFile(filename) as? PlaybackStatePersistableSnapshot)?.snapshot
+    }
+    
     
     func persistMediaItemsToTempStorageFile(fileName:String, mediaItems:[AudioTrack]?) {
         if(mediaItems == nil || mediaItems!.count == 0) {
@@ -74,61 +81,25 @@ class TempDataDAO : NSObject {
             return
         }
         
-        var persistentIds = [NSNumber]()
-        for mediaItem in mediaItems! {
-            persistentIds.append(NSNumber(unsignedLongLong: mediaItem.id))
-        }
-        
-        let nsPersistentIds = persistentIds as NSArray
-        if(nsPersistentIds.writeToFile(fileName, atomically: true)) {
-            Logger.debug("successfully persisted \(nsPersistentIds.count) mediaItem persistentIDs to temp data")
-        } else {
-            Logger.debug("failed to persist \(nsPersistentIds.count) mediaItem persistentIDs to temp data")
-        }
+        let array = mediaItems! as NSArray
+        let archiveSuccess = NSKeyedArchiver.archiveRootObject(array, toFile: fileName)
+        Logger.debug("\(archiveSuccess ? "successfully archived" : "failed to archive") \(array.count) audio tracks to temp data")
     }
     
-    func getNowPlayingQueueFromTempStorage() -> [AudioTrack]? {
-        return getMediaItemsFromTempStorage(TempDataDAO.nowPlayingQueueFileName)
-    }
     
     func getMediaItemsFromTempStorage(fileName:String) -> [AudioTrack]? {
         if(!NSFileManager.defaultManager().fileExistsAtPath(fileName)) {
             return nil
         }
-        let persistedMediaIds = NSArray(contentsOfFile: fileName) as! [AnyObject]
         
-        return IPodLibraryDAO.queryMediaItemsFromIds(persistedMediaIds)
-    }
-    
-    func persistCurrentPlaybackStateToTempStorage(indexOfNowPlayingItem:Int, currentPlaybackTime:Float) {
-        var currentPlaybackState = [String : NSNumber]()
-
-        currentPlaybackState[TempDataDAO.INDEX_OF_NOW_PLAYING_ITEM_KEY] = NSNumber(integer: indexOfNowPlayingItem)
-        currentPlaybackState[TempDataDAO.CURRENT_PLAYBACK_TIME_KEY] = NSNumber(float: currentPlaybackTime)
-        
-        let nsCurrentPlaybackState = currentPlaybackState as NSDictionary
-        if(nsCurrentPlaybackState.writeToFile(TempDataDAO.playbackStateFileName, atomically: true)) {
-            Logger.debug("persisting playback state \(currentPlaybackState.description)")
-        } else {
-            Logger.debug("failed to persist playback state")
+        var obj:AnyObject?
+        KyoozUtils.performWithMetrics(blockDescription: "unarchive media items") {
+            obj = NSKeyedUnarchiver.unarchiveObjectWithFile(fileName)
         }
-    }
-    
-    func getPlaybackStateFromTempStorage() -> (indexOfNowPlayingItem:Int, currentPlaybackTime:Float)? {
-        if(!NSFileManager.defaultManager().fileExistsAtPath(TempDataDAO.playbackStateFileName)) {
+        guard let array = obj as? NSArray else {
             return nil
         }
-        
-        let persistedPlaybackState = NSDictionary(contentsOfFile: TempDataDAO.playbackStateFileName)
-        
-        let persistedIndex = persistedPlaybackState?.objectForKey(TempDataDAO.INDEX_OF_NOW_PLAYING_ITEM_KEY) as? Int
-        let persistedTime = persistedPlaybackState?.objectForKey(TempDataDAO.CURRENT_PLAYBACK_TIME_KEY) as? Float
-        Logger.debug("retrieving playback state from temp storage \(persistedPlaybackState?.description)")
-        
-        if let index = persistedIndex, let playbackTime = persistedTime {
-            return (index, playbackTime)
-        }
-        return nil
+        return array as? [AudioTrack]
     }
     
     func persistLastFmScrobbleCache(cacheItems:[[String:String]]) {
@@ -160,7 +131,7 @@ class TempDataDAO : NSObject {
             do {
                 try NSFileManager.defaultManager().removeItemAtPath(filePath)
             } catch let error as NSError {
-                Logger.debug("could not remove file for reason: \(error.description)")
+                Logger.error("could not remove file for reason: \(error.description)")
             }
         }
     }

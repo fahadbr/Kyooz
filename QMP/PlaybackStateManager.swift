@@ -10,7 +10,7 @@ import UIKit
 import MediaPlayer
 import AVFoundation
 
-class PlaybackStateManager: NSObject {
+final class PlaybackStateManager: NSObject {
     
     class var instance : PlaybackStateManager {
         struct Static {
@@ -23,7 +23,7 @@ class PlaybackStateManager: NSObject {
    
     private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
     private let audioSession = AVAudioSession.sharedInstance()
-    private let timeDelayInSeconds:Double = 1.0/4.0
+    private let timeDelayInSeconds:Double = 1.0/2.0
     private let stateDescriptions = ["Stopped", "Playing", "Paused", "Interrupted", "SeekingForward", "SeekingBackward"]
     private (set) var musicPlaybackState:MPMusicPlaybackState
     
@@ -46,7 +46,6 @@ class PlaybackStateManager: NSObject {
     func correctPlaybackState() {
         dispatch_after(KyoozUtils.getDispatchTimeForSeconds(timeDelayInSeconds), dispatch_get_main_queue(), { [unowned self]() -> Void in
             let oldPlaybackTime = self.musicPlayer.currentPlaybackTime
-            Logger.debug("old time = \(oldPlaybackTime)")
             dispatch_after(KyoozUtils.getDispatchTimeForSeconds(self.timeDelayInSeconds), dispatch_get_main_queue(), { [unowned self] ()  in
                 self.checkAgainstPlaybackTime(oldPlaybackTime)
             })
@@ -55,7 +54,6 @@ class PlaybackStateManager: NSObject {
     
     private func checkAgainstPlaybackTime(playbackTime : NSTimeInterval) {
         let newPlaybackTime = self.musicPlayer.currentPlaybackTime
-        Logger.debug("new time = \(newPlaybackTime)")
         var playbackStateCorrected:Bool = false
 
         if(newPlaybackTime.isNaN && playbackTime.isNaN) {
@@ -78,7 +76,7 @@ class PlaybackStateManager: NSObject {
             if musicPlaybackState.rawValue < stateDescriptions.count {
                 description = stateDescriptions[musicPlaybackState.rawValue]
             }
-            Logger.debug("Playback State Corrected to: \(description ?? "unknown")")
+            Logger.debug("Playback State Corrected to: \(description ?? "unknown"). oldTime:\(playbackTime), newTime:\(newPlaybackTime)")
             KyoozUtils.doInMainQueueAsync() {
                 let notification = NSNotification(name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: self)
                 NSNotificationCenter.defaultCenter().postNotification(notification)
