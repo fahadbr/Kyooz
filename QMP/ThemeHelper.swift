@@ -36,6 +36,9 @@ struct ThemeHelper {
         UINavigationBar.appearance().tintColor = defaultTintColor
         UINavigationBar.appearance().barStyle = defaultBarStyle
         UINavigationBar.appearance().translucent = barsAreTranslucent
+//        UINavigationBar.appearance().backgroundColor = UIColor.clearColor()
+//        UINavigationBar.appearance().setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
+//        UINavigationBar.appearance().shadowImage = UIImage()
         
         var uiBarButtonTextAttributes = [String : AnyObject]()
         uiBarButtonTextAttributes[NSFontAttributeName] = defaultFont
