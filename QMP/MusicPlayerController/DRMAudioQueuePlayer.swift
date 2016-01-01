@@ -402,7 +402,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
         timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: "resignActiveIfQueueIsPersisted:",
             userInfo: nil, repeats: true)
-        let taskName = "waitForQueuePersistenceTask2"
+        let taskName = "waitForQueuePersistenceTask"
 
         Logger.debug("Starting background task: \(taskName), backgroundTimeRemaining:\(UIApplication.sharedApplication().backgroundTimeRemaining)")
         backgroundTaskIdentifier = UIApplication.sharedApplication().beginBackgroundTaskWithName(taskName,
