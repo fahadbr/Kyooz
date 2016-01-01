@@ -400,7 +400,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             endBackgroundTask()
         }
 
-        timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: "resignActiveIfQueueIsPersisted:",
+        timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: "resignActiveIfQueueIsPersisted: ",
             userInfo: nil, repeats: true)
         let taskName = "waitForQueuePersistenceTask"
 
