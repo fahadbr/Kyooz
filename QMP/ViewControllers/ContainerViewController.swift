@@ -182,14 +182,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
     }
     
-    func deinitializeSideViewController(notification:NSNotification) {
-//        if(!sidePanelExpanded && nowPlayingViewController != nil) {
-//            Logger.debug("deinitializing side view controller")
-//            nowPlayingNavigationController!.view.removeFromSuperview()
-//            nowPlayingViewController = nil
-//            nowPlayingNavigationController = nil
-//        }
-    }
     
     func pushViewController(vc:UIViewController) {
         if sidePanelExpanded {
@@ -198,51 +190,59 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         rootViewController.pushViewController(vc)
     }
     
-    func pushNewMediaEntityControllerWithProperties(basePredicates basePredicates:Set<MPMediaPredicate>?, libraryGroupingType:LibraryGrouping, entity:MPMediaEntity) {
-        let title = entity.titleForGrouping(libraryGroupingType.groupingType)
-        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(libraryGroupingType.groupingType)
-        let propertyValue = NSNumber(unsignedLongLong: entity.persistentID)
+    func pushNewMediaEntityControllerWithProperties(basePredicates basePredicates:Set<MPMediaPredicate>?, parentGroup:LibraryGrouping, entity:MPMediaEntity) {
+        guard let nextGroupingType = parentGroup.nextGroupLevel else {
+            Logger.error("tried to push vc without a next group level")
+            return
+        }
         
-        let filterQuery = MPMediaQuery(filterPredicates: basePredicates)
+        let title = entity.titleForGrouping(parentGroup.groupingType)
+        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentGroup.groupingType)
+        let propertyValue:AnyObject?
+        if let playlist = entity as? MPMediaPlaylist {
+            propertyValue = NSNumber(unsignedLongLong: playlist.persistentID)
+        } else {
+            propertyValue = entity.representativeItem?.valueForProperty(propertyName)
+        }
+        
+        let filterQuery = MPMediaQuery(filterPredicates: basePredicates ?? parentGroup.baseQuery.filterPredicates)
         filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
-        filterQuery.groupingType = libraryGroupingType.nextGroupLevel!.groupingType
+        filterQuery.groupingType = nextGroupingType.groupingType
         
         let vc:AbstractMediaEntityTableViewController!
         let mevc = UIStoryboard.mediaEntityViewController()
         
-        if libraryGroupingType === LibraryGrouping.Albums {
-            let albumTrackVc = UIStoryboard.albumTrackTableViewController()
-            albumTrackVc.albumCollection = entity as! MPMediaItemCollection
-            vc = albumTrackVc
+        if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
+            vc = UIStoryboard.albumTrackTableViewController()
         } else {
             let mvc = UIStoryboard.mediaEntityTableViewController()
-            mevc.title = title
-            mvc.subGroups = libraryGroupingType.subGroupsForNextLevel
+            mevc.title = title?.uppercaseString
+            mvc.subGroups = parentGroup.subGroupsForNextLevel
             vc = mvc
         }
         
         vc.filterQuery = filterQuery
-        vc.libraryGroupingType = libraryGroupingType.nextGroupLevel
-        
+        vc.libraryGroupingType = nextGroupingType
+
         mevc.mediaEntityTVC = vc
-        
+
         pushViewController(mevc)
     }
     
     //MARK: NOTIFICATION REGISTRATIONS
     
     private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
-        
-        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-            name: UIApplicationDidEnterBackgroundNotification, object: application)
-        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-            name: UIApplicationWillResignActiveNotification, object: application)
-        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-            name: UIApplicationWillTerminateNotification, object: application)
-        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-            name: UIApplicationDidReceiveMemoryWarningNotification, object: application)
+//        let notificationCenter = NSNotificationCenter.defaultCenter()
+//        let application = UIApplication.sharedApplication()
+//        
+//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+//            name: UIApplicationDidEnterBackgroundNotification, object: application)
+//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+//            name: UIApplicationWillResignActiveNotification, object: application)
+//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+//            name: UIApplicationWillTerminateNotification, object: application)
+//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
+//            name: UIApplicationDidReceiveMemoryWarningNotification, object: application)
     }
     
     private func unregisterForNotifications() {
@@ -259,8 +259,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     func handleScreenEdgePanGesture(recognizer: UIPanGestureRecognizer) {
 
-        
-        
         switch(recognizer.state) {
         case .Began:
             let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)

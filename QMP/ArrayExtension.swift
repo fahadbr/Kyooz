@@ -13,7 +13,7 @@ extension Array {
     mutating func insertAtIndex(itemsToInsert:[Element], index:Int, placeHolderItem:Element) {
         if(itemsToInsert.isEmpty) { return }
         
-        if(index == self.count) {
+        if(index >= self.count) {
             self.appendContentsOf(itemsToInsert)
             return
         }
@@ -28,7 +28,7 @@ extension Array {
         let originalArray = self
         let endIndexOfInsertedItems = index + itemsToInsert.count
         let newArraySize = originalArray.count + itemsToInsert.count
-        
+
         var newArray = [Element](count:newArraySize, repeatedValue:placeHolderItem)
         
         for i in 0..<newArraySize {

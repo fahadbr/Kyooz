@@ -86,31 +86,16 @@
                     <view key="view" contentMode="scaleToFill" id="J0S-ic-K4i">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zc4-kU-szP" userLabel="topView">
-                                <rect key="frame" x="0.0" y="64" width="600" height="70"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="aYA-jk-ot6"/>
-                                </constraints>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="zc4-kU-szP" firstAttribute="top" secondItem="j2a-5n-8cC" secondAttribute="bottom" id="U49-4g-Nvw"/>
-                            <constraint firstAttribute="trailing" secondItem="zc4-kU-szP" secondAttribute="trailing" id="dmr-Vr-bLe"/>
-                            <constraint firstItem="zc4-kU-szP" firstAttribute="leading" secondItem="J0S-ic-K4i" secondAttribute="leading" id="gV1-DP-s4H"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="o1E-11-Zgj"/>
-                    <connections>
-                        <outlet property="topView" destination="zc4-kU-szP" id="4LZ-JS-6Si"/>
-                        <outlet property="topViewHeightConstraint" destination="aYA-jk-ot6" id="1jD-hO-DAy"/>
-                    </connections>
+                    <keyCommands>
+                        <keyCommand/>
+                    </keyCommands>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KXa-ci-R1j" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2359" y="-1151"/>
+            <point key="canvasLocation" x="2423" y="-1151"/>
         </scene>
         <!--NowPlayingQueue-->
         <scene sceneID="6XA-XL-1q0">
@@ -160,7 +145,8 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="Queue" id="TBa-Zq-QGg"/>
+                    <navigationItem key="navigationItem" title="QUEUE" id="TBa-Zq-QGg"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="zVD-YM-21y" id="OLr-IP-egg"/>
@@ -291,7 +277,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-vG-UDM" userLabel="forwardButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="373" y="499" width="40" height="40"/>
+                                <rect key="frame" x="365" y="499" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="MjA-9E-WAK"/>
                                     <constraint firstAttribute="width" constant="40" id="dB2-VA-rIr"/>
@@ -310,7 +296,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mo-6h-cpk" userLabel="skipBackButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="183" y="499" width="40" height="40"/>
+                                <rect key="frame" x="195" y="499" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="rdO-mC-1Eh"/>
                                     <constraint firstAttribute="width" constant="40" id="uy8-Fl-XrB"/>
@@ -326,6 +312,38 @@
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="skipBackward:" destination="igl-8i-tSd" eventType="touchUpInside" id="sZy-g3-OxI"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C3t-5J-Dbo" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
+                                <rect key="frame" x="140" y="502" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="C3t-5J-Dbo" secondAttribute="height" multiplier="1:1" id="h67-vG-zuh"/>
+                                    <constraint firstAttribute="width" constant="35" id="phQ-m7-Da2"/>
+                                    <constraint firstAttribute="height" constant="20" id="x8j-AZ-hyg"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="x8j-AZ-hyg"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="toggleShuffle:" destination="igl-8i-tSd" eventType="touchUpInside" id="GKQ-8J-s5D"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0G8-6W-24D" userLabel="repeatButton" customClass="RepeatButtonView" customModule="Kyooz" customModuleProvider="target">
+                                <rect key="frame" x="425" y="502" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="0G8-6W-24D" secondAttribute="height" multiplier="1:1" id="5d7-sd-A4W"/>
+                                    <constraint firstAttribute="width" constant="35" id="6Me-ce-vSh"/>
+                                    <constraint firstAttribute="height" constant="20" id="wV8-1h-mFe"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="wV8-1h-mFe"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="switchRepeatMode:" destination="igl-8i-tSd" eventType="touchUpInside" id="PZ3-tO-HEN"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ljA-ne-tuv" userLabel="playPauseButton" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
@@ -352,14 +370,16 @@
                             <constraint firstAttribute="centerX" secondItem="P3f-4Y-yeg" secondAttribute="centerX" id="31X-ML-EEi"/>
                             <constraint firstAttribute="centerX" secondItem="LL1-x0-BD9" secondAttribute="centerX" id="3oE-D7-peV"/>
                             <constraint firstItem="LL1-x0-BD9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-16" id="57Z-Jb-YMH"/>
+                            <constraint firstItem="0G8-6W-24D" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="6iF-oc-FoV"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="6oY-Bb-zqJ"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="LL1-x0-BD9" secondAttribute="trailing" constant="-16" id="7AZ-IR-J3k"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="R1l-bh-GSp" secondAttribute="bottom" id="BmD-ye-22M"/>
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" id="Csd-jr-CWQ"/>
                             <constraint firstAttribute="trailing" secondItem="R1l-bh-GSp" secondAttribute="trailing" id="H2m-LZ-eCi"/>
                             <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="HkR-T6-EkT"/>
-                            <constraint firstItem="cEN-vG-UDM" firstAttribute="leading" secondItem="ljA-ne-tuv" secondAttribute="trailing" constant="43" id="Hkh-HE-SAS"/>
+                            <constraint firstItem="cEN-vG-UDM" firstAttribute="leading" secondItem="ljA-ne-tuv" secondAttribute="trailing" constant="35" id="Hkh-HE-SAS"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="Iow-5t-KVW"/>
+                            <constraint firstItem="1mo-6h-cpk" firstAttribute="leading" secondItem="C3t-5J-Dbo" secondAttribute="trailing" constant="20" id="JRe-jh-dTv"/>
                             <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" constant="8" id="KH0-xr-sI4"/>
                             <constraint firstItem="LL1-x0-BD9" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" id="Mt9-Ti-0km"/>
                             <constraint firstAttribute="trailing" secondItem="qD5-cn-9cR" secondAttribute="trailing" id="OT0-dI-Pq9"/>
@@ -373,12 +393,14 @@
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="ZvZ-RQ-QnE"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
                             <constraint firstItem="a9l-ER-3zv" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="dRa-HY-yc6"/>
-                            <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="47" id="eUA-OX-4N8"/>
+                            <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="35" id="eUA-OX-4N8"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="fYD-bp-79n"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="top" secondItem="a9l-ER-3zv" secondAttribute="bottom" constant="8" id="fYe-5q-j9G"/>
                             <constraint firstItem="8bf-Dc-sUH" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="15" id="jWe-St-rAz"/>
+                            <constraint firstItem="C3t-5J-Dbo" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="jd0-1R-3d8"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" priority="900" constant="236" id="mHO-C2-WDN"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="mm3-Jf-oCR"/>
+                            <constraint firstItem="0G8-6W-24D" firstAttribute="leading" secondItem="cEN-vG-UDM" secondAttribute="trailing" constant="20" id="oJx-h6-Whe"/>
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="-15" id="rGs-dT-aTr"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="t0h-ZW-ReY"/>
                         </constraints>
@@ -402,6 +424,8 @@
                         <outlet property="playPauseCollapsedButton" destination="xr0-cf-bxB" id="vjT-rD-8HD"/>
                         <outlet property="playbackProgressBar" destination="QGr-jm-hSe" id="geR-tP-Tmd"/>
                         <outlet property="playbackProgressCollapsedBar" destination="n4K-jw-XaA" id="h3l-aY-I67"/>
+                        <outlet property="repeatButton" destination="0G8-6W-24D" id="uwL-6C-byr"/>
+                        <outlet property="shuffleButton" destination="C3t-5J-Dbo" id="yU9-zB-MEX"/>
                         <outlet property="songTitleCollapsedLabel" destination="ksq-Lm-cab" id="OAU-3u-U3f"/>
                         <outlet property="songTitleLabel" destination="a9l-ER-3zv" id="U7d-1D-7SU"/>
                         <outlet property="totalPlaybackTimeLabel" destination="8bf-Dc-sUH" id="Yuu-NL-Ewo"/>

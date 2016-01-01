@@ -13,15 +13,16 @@ struct IPodLibraryDAO {
     
     static func queryMediaItemsFromIds(persistentIds:[AnyObject]) -> [AudioTrack]? {
         var queriedMediaItems = [AnyObject]()
-        for mediaId in persistentIds {
-            let mediaItem = queryMediaItemFromId(mediaId)
-            if(mediaItem == nil) {
-                Logger.debug("query for mediaItem with persistentID:\(mediaId) did not return anything")
-                continue
+        KyoozUtils.performWithMetrics(blockDescription: "Query of List of IDs from iPod Library") {
+            for mediaId in persistentIds {
+                let mediaItem = queryMediaItemFromId(mediaId)
+                if(mediaItem == nil) {
+                    Logger.debug("query for mediaItem with persistentID:\(mediaId) did not return anything")
+                    continue
+                }
+                queriedMediaItems.append(mediaItem!)
             }
-            queriedMediaItems.append(mediaItem!)
         }
-        
         return queriedMediaItems as? [AudioTrack]
     }
     

@@ -27,13 +27,8 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
-        
-        
-//        if !subGroups.isEmpty {
-//            addSegmentedControl()
-////            addCollectionViewControl()
-//        }
     }
+    
     
     override func getViewForHeader() -> UIView? {
         if subGroups.isEmpty {
@@ -44,9 +39,11 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
             return nil
         }
         
+        
         view.menuButtonBlock = {
             self.toggleSelectMode()
         }
+        
         
         let control = UISegmentedControl(items: subGroups.map({ $0.name }))
         control.tintColor = ThemeHelper.defaultTintColor
@@ -75,7 +72,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         scrollView.leftAnchor.constraintEqualToAnchor(view.mainView.leftAnchor).active = true
         scrollView.rightAnchor.constraintEqualToAnchor(view.mainView.rightAnchor).active = true
         scrollView.heightAnchor.constraintEqualToAnchor(control.heightAnchor, constant:10).active = true
-//        view.frame.size = CGSize(width: tableView.frame.width, height: scrollView.frame.height + view.button.frame.height)
+
         return view
     }
     
@@ -91,24 +88,6 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         collectionVC.didMoveToParentViewController(self)
         collectionVC.collectionView?.scrollsToTop = false
     }
-    
-    private func addSegmentedControl() {
-        let control = UISegmentedControl(items: subGroups.map({ $0.name }))
-        control.apportionsSegmentWidthsByContent = true
-        control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
-        control.selectedSegmentIndex = 0
-        
-        let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
-        scrollView.contentSize = control.frame.size
-        if control.frame.size.width < tableView.frame.width {
-            scrollView.contentInset.left = (tableView.frame.width - control.frame.size.width)/2
-        }
-        scrollView.contentInset.top = (scrollView.frame.height - control.frame.size.height)/2
-        scrollView.addSubview(control)
-        scrollView.scrollsToTop = false
-        tableView.tableHeaderView = scrollView
-    }
-    
     
     
     func groupingTypeDidChange(sender:UISegmentedControl) {
@@ -176,6 +155,9 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
     
     
     override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+        //this synchronizes the parent scroll view with the table view after a section index has been selected
+        //doing this asynchronously because the tableView's contentOffset is not updated until after this method is called
+        KyoozUtils.doInMainQueueAsync() { [weak self] in self?.parentMediaEntityController?.synchronizeOffsetWithScrollview(tableView) }
         return index
     }
     
@@ -223,7 +205,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         
         //go to specific album track view controller if we are selecting an album collection
         
-        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, libraryGroupingType: libraryGroupingType, entity: entity)
+        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
     }
     
     
@@ -233,11 +215,11 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         //note the different behaviours.  if the current entities representation is a mpmediaItem then we play with the entire collection in the view
         //otherwise we play the selected entity only, assuming it is a media item collecion
         if let mediaItems = entities as? [MPMediaItem] {
-            audioQueuePlayer.playNowWithCollection(mediaCollection: MPMediaItemCollection(items: mediaItems), itemToPlay: mediaItems[getAbsoluteIndex(indexPath: indexPath)])
+            audioQueuePlayer.playNow(withTracks: mediaItems, startingAtIndex: getAbsoluteIndex(indexPath: indexPath))
         } else if let collections = entities as? [MPMediaItemCollection] {
             let collection = collections[getAbsoluteIndex(indexPath: indexPath)]
             if collection.count > 0 {
-                audioQueuePlayer.playNowWithCollection(mediaCollection: collection, itemToPlay: collection[0] as! MPMediaItem)
+                audioQueuePlayer.playNow(withTracks: collection.items, startingAtIndex: 0)
             }
         }
     }
@@ -269,6 +251,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
             }
             self.sections = sections
         }
+        tableView.estimatedSectionHeaderHeight = sections != nil ? 40 : 0
     }
 
     private func getAbsoluteIndex(indexPath indexPath: NSIndexPath) -> Int{
@@ -298,4 +281,5 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         }
         return [AudioTrack]()
     }
+    
 }

@@ -38,4 +38,21 @@ struct KyoozUtils {
         }
     }
     
+    static func randomNumber(belowValue value:Int) -> Int {
+        return Int(arc4random_uniform(UInt32(value)))
+    }
+    
+    static func randomNumberInRange(range:Range<Int>) -> Int {
+        let startIndex = range.startIndex
+        let endIndex = range.endIndex
+        return randomNumber(belowValue: endIndex - startIndex) + startIndex
+    }
+    
+    static func performWithMetrics(blockDescription description:String, block:()->()) {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        block()
+        let endTime = CFAbsoluteTimeGetCurrent()
+        Logger.debug("Took \(endTime - startTime) seconds to perform \(description)")
+    }
+    
 }

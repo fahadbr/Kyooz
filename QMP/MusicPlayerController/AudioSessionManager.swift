@@ -9,7 +9,7 @@
 import Foundation
 import AVFoundation
 
-class AudioSessionManager : NSObject {
+final class AudioSessionManager : NSObject {
     
     class var instance : AudioSessionManager {
         struct Static {

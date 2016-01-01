@@ -42,7 +42,17 @@ class SongDetailsTableViewCell: AbstractTableViewCell {
     
     func configureTextLabelsForMediaItem(mediaItem:AudioTrack, isNowPlayingItem:Bool) {
         songTitleLabel.text = mediaItem.trackTitle
-        albumArtistAndAlbumLabel.text = mediaItem.albumArtist ?? mediaItem.artist + " - " + mediaItem.albumTitle
+        var details = [String]()
+        if let albumArtist = mediaItem.albumArtist {
+            details.append(albumArtist)
+        } else if let artist = mediaItem.artist {
+            details.append(artist)
+        }
+        if let albumTitle = mediaItem.albumTitle {
+            details.append(albumTitle)
+        }
+        
+        albumArtistAndAlbumLabel.text = details.joinWithSeparator(" - ")
         totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(mediaItem.playbackDuration)
         songTitleLabel.textColor = isNowPlayingItem ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
     }

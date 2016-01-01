@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-class NowPlayingInfoHelper {
+final class NowPlayingInfoHelper {
     
     class var instance : NowPlayingInfoHelper {
         struct Static {

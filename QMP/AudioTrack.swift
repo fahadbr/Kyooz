@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-@objc protocol AudioTrack : AnyObject {
+@objc protocol AudioTrack : NSSecureCoding {
     
     var albumArtist:String! { get }
     var albumArtistId:UInt64 { get }
