@@ -64,6 +64,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
             view.addSubview(headerView)
             headerView.translatesAutoresizingMaskIntoConstraints = false
             headerView.heightAnchor.constraintEqualToConstant(mediaEntityTVC.headerHeight).active = true
+//            headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
             headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor)
             headerTopAnchorConstraint.active = true
             headerView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
