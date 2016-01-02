@@ -25,6 +25,8 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
     weak var parentMediaEntityController:MediaEntityViewController?
     
+//    @IBOutlet var tableView:UITableView!
+    
     var headerHeight:CGFloat {
         return 40
     }
@@ -53,15 +55,15 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         unregisterForNotifications()
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 60
     }
     
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true;
     }
     
-    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let mediaItems = getMediaItemsForIndexPath(indexPath)
         var actions = [UITableViewRowAction]()
         
@@ -95,14 +97,14 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         return actions
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if(tableView.editing) {
             selectedIndicies?.append(indexPath)
             refreshButtonStates()
         }
     }
     
-    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
         if(tableView.editing) {
             var indexToRemove:Int?
             for (index, indexPathToDelete) in selectedIndicies.enumerate() {
@@ -119,7 +121,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     }
 
     // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
     }
     

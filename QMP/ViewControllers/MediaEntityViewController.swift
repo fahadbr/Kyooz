@@ -17,11 +17,7 @@ final class MediaEntityViewController: AbstractViewController, MediaItemTableVie
     private var headerTopAnchorConstraint:NSLayoutConstraint!
     private var headerView:UIView!
     private var previousOffset:CGFloat = 0.0
-    private var headerCollapsed:Bool = false {
-        didSet {
-            
-        }
-    }
+    private var headerCollapsed:Bool = false
     private var headerTranslationTransform:CATransform3D!
     private var scrollView:UIScrollView!
     
@@ -43,8 +39,14 @@ final class MediaEntityViewController: AbstractViewController, MediaItemTableVie
     
     
     //MARK: - View life cycle methods
+    override func addChildViewController(childController: UIViewController) {
+        super.addChildViewController(childController)
+        Logger.debug("adding child vc \(childController.title)")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        Logger.debug("CALLING VIEW DID LOAD")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         if mediaEntityTVC == nil {
@@ -83,9 +85,6 @@ final class MediaEntityViewController: AbstractViewController, MediaItemTableVie
             if mediaEntityTVC is AlbumTrackTableViewController {
                 let blur = UIBlurEffect(style: .Dark)
                 let blurView = UIVisualEffectView(effect: blur)
-//                let blurView = UIView()
-//                blurView.backgroundColor = UIColor.blackColor()
-//                blurView.alpha = 0.5
                 view.insertSubview(blurView, atIndex: 0)
                 blurView.translatesAutoresizingMaskIntoConstraints = false
                 blurView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
