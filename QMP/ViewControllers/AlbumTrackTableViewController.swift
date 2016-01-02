@@ -13,6 +13,8 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
     
     var albumCollection:MPMediaItemCollection!
     
+    private var albumImage:UIImage?
+    
     override var headerHeight:CGFloat {
         return 115
     }
@@ -58,10 +60,14 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
         albumHeaderView.albumDetailsLabel.text = details.joinWithSeparator(" • ")
         
         if let albumArt = track.artwork {
-            KyoozUtils.doInMainQueueAsync() {
+            KyoozUtils.doInMainQueueAsync() { [weak self] in
                 if let image = albumArt.imageWithSize(albumHeaderView.albumImage.frame.size) {
+                    self?.albumImage = image
                     albumHeaderView.albumImage.image = image
-                    albumHeaderView.backgroundColor = UIColor(patternImage: image)
+//                    albumHeaderView.backgroundColor = UIColor(patternImage: image)
+                    albumHeaderView.backgroundColor = UIColor.clearColor()
+                    albumHeaderView.layer.shouldRasterize = true
+                    albumHeaderView.layer.rasterizationScale = UIScreen.mainScreen().scale
                 }
             }
         } else {
@@ -117,6 +123,16 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
             return [mediaItem]
         }
         return [AudioTrack]()
+    }
+    
+    override func configureBackgroundImage(view: UIView) {
+        KyoozUtils.doInMainQueueAsync() { [weak self] in
+            guard let albumImage = self?.albumImage else {
+                return
+            }
+
+            view.backgroundColor = UIColor(patternImage: albumImage)
+        }
     }
     
     override func reloadSourceData() {

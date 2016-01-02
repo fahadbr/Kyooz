@@ -33,12 +33,9 @@ struct ThemeHelper {
         titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontName + "-Heavy", size:defaultFontSize)
         
         UINavigationBar.appearance().titleTextAttributes = titleTextAttributes
-        UINavigationBar.appearance().tintColor = defaultTintColor
+        UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().barStyle = defaultBarStyle
         UINavigationBar.appearance().translucent = barsAreTranslucent
-//        UINavigationBar.appearance().backgroundColor = UIColor.clearColor()
-//        UINavigationBar.appearance().setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
-//        UINavigationBar.appearance().shadowImage = UIImage()
         
         var uiBarButtonTextAttributes = [String : AnyObject]()
         uiBarButtonTextAttributes[NSFontAttributeName] = defaultFont

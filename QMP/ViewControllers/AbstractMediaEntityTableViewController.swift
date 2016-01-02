@@ -44,9 +44,9 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         reloadSourceData()
         registerForNotifications()
         
-        testDelegate = TestTableViewDataSourceDelegate()
-        tableView.dataSource = testDelegate
-        tableView.delegate = testDelegate
+//        testDelegate = TestTableViewDataSourceDelegate()
+//        tableView.dataSource = testDelegate
+//        tableView.delegate = testDelegate
     }
     
     deinit {
@@ -257,6 +257,10 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
                 }
             }
         }
+    }
+    
+    func configureBackgroundImage(view:UIView) {
+        
     }
     
     //MARK: - Overriding MediaItemTableViewController methods

@@ -13,14 +13,6 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oen-FY-Q6L">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="M8Q-rL-Zqh">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    </view>
-                    <blurEffect style="dark"/>
-                </visualEffectView>
                 <stackView opaque="NO" contentMode="scaleToFill" semanticContentAttribute="spatial" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="6QC-ad-KqH">
                     <rect key="frame" x="8" y="213" width="584" height="175"/>
                     <subviews>
@@ -74,14 +66,10 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="6QC-ad-KqH" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="6I3-9d-hvf"/>
-                <constraint firstItem="oen-FY-Q6L" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Bf3-Y2-a19"/>
                 <constraint firstItem="6QC-ad-KqH" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="QRW-Sd-gAH"/>
                 <constraint firstItem="6QC-ad-KqH" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="WsP-fd-Z6D"/>
                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="6QC-ad-KqH" secondAttribute="bottom" constant="8" id="WtW-cP-NAH"/>
                 <constraint firstItem="Xih-4y-1yx" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="fuE-5Q-TLt"/>
-                <constraint firstItem="oen-FY-Q6L" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="g4q-Uy-Gc0"/>
-                <constraint firstAttribute="trailing" secondItem="oen-FY-Q6L" secondAttribute="trailing" id="p9T-ie-aqu"/>
-                <constraint firstAttribute="bottom" secondItem="oen-FY-Q6L" secondAttribute="bottom" id="sGs-2C-aac"/>
                 <constraint firstAttribute="trailingMargin" secondItem="6QC-ad-KqH" secondAttribute="trailing" id="uwj-op-eaL"/>
             </constraints>
             <variation key="default">
