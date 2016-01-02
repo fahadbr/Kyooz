@@ -11,16 +11,6 @@ import UIKit
 class MediaEntityHeaderView: UIView {
     
     @IBOutlet weak var mainView: UIView!
-    @IBOutlet weak var button: UIButton!
-    
-    var menuButtonBlock:(()->())?
-    private var menuActive:Bool = false
-
-    @IBAction func menuButtonPressed(sender: UIButton) {
-        menuActive = !menuActive
-        menuButtonBlock?()
-        button.setTitle(menuActive ? "CANCEL" : "SELECT", forState: .Normal)
-    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

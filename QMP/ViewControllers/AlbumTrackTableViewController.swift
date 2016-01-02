@@ -45,7 +45,6 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
         
         albumHeaderView.albumTitleLabel.text = track.albumTitle
         albumHeaderView.albumArtistLabel.text = track.albumArtist ?? track.artist
-        albumHeaderView.menuButtonBlock = { self.toggleSelectMode() }
         
         var details = [String]()
         if let releaseDate = MediaItemUtils.getReleaseDateString(track) {

@@ -35,14 +35,6 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
             return nil
         }
         
-        guard let view = NSBundle.mainBundle().loadNibNamed("LibraryGroupingHeaderView", owner: self, options: nil)?.first as? MediaEntityHeaderView else {
-            return nil
-        }
-        
-        
-        view.menuButtonBlock = {
-            self.toggleSelectMode()
-        }
         
         
         let control = UISegmentedControl(items: subGroups.map({ $0.name }))
@@ -52,11 +44,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
         control.selectedSegmentIndex = 0
         if control.frame.size.width < tableView.frame.width {
-            view.mainView.addSubview(control)
-            control.translatesAutoresizingMaskIntoConstraints = false
-            control.centerXAnchor.constraintEqualToAnchor(view.mainView.centerXAnchor).active = true
-            control.centerYAnchor.constraintEqualToAnchor(view.mainView.centerYAnchor).active = true
-            return view
+            return control
         }
         
         let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
@@ -66,14 +54,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         scrollView.scrollsToTop = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
-        view.mainView.addSubview(scrollView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.centerYAnchor.constraintEqualToAnchor(view.mainView.centerYAnchor).active = true
-        scrollView.leftAnchor.constraintEqualToAnchor(view.mainView.leftAnchor).active = true
-        scrollView.rightAnchor.constraintEqualToAnchor(view.mainView.rightAnchor).active = true
-        scrollView.heightAnchor.constraintEqualToAnchor(control.heightAnchor, constant:10).active = true
-
-        return view
+        return scrollView
     }
     
     private var collectionVC:LibraryGroupCollectionViewController!

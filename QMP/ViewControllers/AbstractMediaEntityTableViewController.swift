@@ -26,7 +26,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     weak var parentMediaEntityController:MediaEntityViewController?
     
     var headerHeight:CGFloat {
-        return 70
+        return 40
     }
     
     private var playNextButton:UIBarButtonItem!
@@ -143,7 +143,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         fatalError(fatalErrorMessage)
     }
     
-    final func toggleSelectMode() {
+    final func toggleSelectMode(sender:UIButton?) -> Bool {
         if parentViewController?.toolbarItems == nil {
             selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
             playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
@@ -163,7 +163,13 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         }
         
         let willEdit = !tableView.editing
-        selectedIndicies = willEdit ? [NSIndexPath]() : nil
+        if willEdit {
+            selectedIndicies = [NSIndexPath]()
+            sender?.setTitle("CANCEL", forState: .Normal)
+        } else {
+            selectedIndicies = nil
+            sender?.setTitle("SELECT", forState: .Normal)
+        }
         
         tableView.setEditing(willEdit, animated: true)
         RootViewController.instance.setToolbarHidden(!willEdit)
@@ -173,10 +179,8 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
             }
         }
         
-        
-        
         refreshButtonStates()
-        
+        return willEdit
     }
     
     private func refreshButtonStates() {
@@ -240,7 +244,18 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         } else if sender === playRandomlyButton {
             audioQueuePlayer.enqueue(items: items, atPosition: .Random)
         }
-        toggleSelectMode()
+        selectOrDeselectAll()
+    }
+    
+    final func shuffleAllItems(sender:UIButton?) {
+        KyoozUtils.doInMainQueueAsync() {
+            if let items = self.filterQuery.items where !items.isEmpty {
+                self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: KyoozUtils.randomNumber(belowValue: items.count))
+                if !self.audioQueuePlayer.shuffleActive {
+                    self.audioQueuePlayer.shuffleActive = true
+                }
+            }
+        }
     }
     
     //MARK: - Overriding MediaItemTableViewController methods

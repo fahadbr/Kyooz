@@ -12,10 +12,4 @@ final class SubHeaderView: UIView {
     @IBOutlet weak var selectButton: UIButton!
     @IBOutlet weak var shuffleButton: UIButton!
     
-    @IBAction func selectButtonPressed(sender: UIButton) {
-    }
-
-    @IBAction func shuffleButtonPressed(sender: UIButton) {
-    }
-    
 }
