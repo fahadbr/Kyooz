@@ -13,7 +13,11 @@ final class ShuffleButtonView : UIButton {
     
     
     @IBInspectable
-    var isActive:Bool = false
+    var isActive:Bool = false {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     
     @IBInspectable
     var color:UIColor = ThemeHelper.defaultFontColor {

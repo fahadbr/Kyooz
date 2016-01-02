@@ -130,10 +130,11 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         }
     }
     
-    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int) {
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, completionBlock:(()->())?) {
         nowPlayingQueue = tracks
         shouldPlayAfterLoading = true
         updateNowPlayingStateToIndex(index)
+        completionBlock?()
     }
     
     func playItemWithIndexInCurrentQueue(index index:Int) {

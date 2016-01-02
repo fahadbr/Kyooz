@@ -29,7 +29,7 @@ protocol AudioQueuePlayer:class {
     
     func skipForwards()
     
-    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int)
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, completionBlock:(()->())?)
     
     func playItemWithIndexInCurrentQueue(index index:Int)
     

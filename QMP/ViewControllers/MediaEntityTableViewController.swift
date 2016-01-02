@@ -34,8 +34,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         if subGroups.isEmpty {
             return nil
         }
-        
-        
+        let wrapperView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: headerHeight))
         
         let control = UISegmentedControl(items: subGroups.map({ $0.name }))
         control.tintColor = ThemeHelper.defaultTintColor
@@ -44,7 +43,11 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
         control.selectedSegmentIndex = 0
         if control.frame.size.width < tableView.frame.width {
-            return control
+            wrapperView.addSubview(control)
+            control.translatesAutoresizingMaskIntoConstraints = false
+            control.centerXAnchor.constraintEqualToAnchor(wrapperView.centerXAnchor).active = true
+            control.centerYAnchor.constraintEqualToAnchor(wrapperView.centerYAnchor).active = true
+            return wrapperView
         }
         
         let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
@@ -54,7 +57,13 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         scrollView.scrollsToTop = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
-        return scrollView
+        wrapperView.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.centerYAnchor.constraintEqualToAnchor(wrapperView.centerYAnchor).active = true
+        scrollView.leftAnchor.constraintEqualToAnchor(wrapperView.layoutMarginsGuide.leftAnchor).active = true
+        scrollView.rightAnchor.constraintEqualToAnchor(wrapperView.layoutMarginsGuide.rightAnchor).active = true
+        scrollView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
+        return wrapperView
     }
     
     private var collectionVC:LibraryGroupCollectionViewController!
@@ -196,11 +205,11 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         //note the different behaviours.  if the current entities representation is a mpmediaItem then we play with the entire collection in the view
         //otherwise we play the selected entity only, assuming it is a media item collecion
         if let mediaItems = entities as? [MPMediaItem] {
-            audioQueuePlayer.playNow(withTracks: mediaItems, startingAtIndex: getAbsoluteIndex(indexPath: indexPath))
+            audioQueuePlayer.playNow(withTracks: mediaItems, startingAtIndex: getAbsoluteIndex(indexPath: indexPath), completionBlock: nil)
         } else if let collections = entities as? [MPMediaItemCollection] {
             let collection = collections[getAbsoluteIndex(indexPath: indexPath)]
             if collection.count > 0 {
-                audioQueuePlayer.playNow(withTracks: collection.items, startingAtIndex: 0)
+                audioQueuePlayer.playNow(withTracks: collection.items, startingAtIndex: 0, completionBlock: nil)
             }
         }
     }
