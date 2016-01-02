@@ -60,6 +60,11 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
         mView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
         mView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
         
+        guard let subHeaderView = NSBundle.mainBundle().loadNibNamed("SubHeaderView", owner: nil, options: nil).first as? SubHeaderView else {
+            
+        }
+        
+        
         if let headerView = mediaEntityTVC.getViewForHeader() {
             view.addSubview(headerView)
             headerView.translatesAutoresizingMaskIntoConstraints = false
