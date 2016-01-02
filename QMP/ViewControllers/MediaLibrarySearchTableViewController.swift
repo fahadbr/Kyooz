@@ -150,7 +150,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         let group = searchExecutor.libraryGroup
         
         if let item = entity as? MPMediaItem where group === LibraryGrouping.Songs {
-            audioQueuePlayer.playNow(withTracks: [item], startingAtIndex: 0)
+            audioQueuePlayer.playNow(withTracks: [item], startingAtIndex: 0, completionBlock: nil)
             return
         }
         

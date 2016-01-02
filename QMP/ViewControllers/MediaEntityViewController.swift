@@ -65,7 +65,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
             subHeaderView.translatesAutoresizingMaskIntoConstraints = false
             subHeaderView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
             subHeaderView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-            subHeaderView.heightAnchor.constraintEqualToConstant(30).active = true
+            subHeaderView.heightAnchor.constraintEqualToConstant(35).active = true
             subHeaderView.bottomAnchor.constraintEqualToAnchor(mView.topAnchor).active = true
             subHeaderView.backgroundColor = ThemeHelper.defaultTableCellColor
             subHeaderView.selectButton.addTarget(self, action: "toggleSelectMode:", forControlEvents: .TouchUpInside)
@@ -74,7 +74,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
         }
         
         
-        if let internalHeaderView = mediaEntityTVC.getViewForHeader() {
+        if let headerView = mediaEntityTVC.getViewForHeader() {
             
             view.addSubview(headerView)
             headerView.translatesAutoresizingMaskIntoConstraints = false
@@ -126,7 +126,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
             heightForCells += (tableView.estimatedRowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
         }
         let estimatedHeight = heightForSections + heightForCells
-        let totalHeight = estimatedHeight + mediaEntityTVC.headerHeight
+        let totalHeight = estimatedHeight + mediaEntityTVC.headerHeight + 35
 
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         

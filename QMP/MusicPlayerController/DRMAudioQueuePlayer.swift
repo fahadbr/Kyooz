@@ -156,7 +156,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
-    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int) {
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, completionBlock:(()->())?) {
         KyoozUtils.doInMainQueueAsync() {
             var newContext = NowPlayingQueueContext(originalQueue: tracks)
             newContext.indexOfNowPlayingItem = index >= tracks.count ? 0 : index
@@ -176,6 +176,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             self.queueIsPersisted = true
             self.indexBeforeModification = 0
             self.refreshIndexOfNowPlayingItem()
+            completionBlock?()
         }
         
     }

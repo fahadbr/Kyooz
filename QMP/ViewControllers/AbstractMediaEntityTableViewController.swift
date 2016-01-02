@@ -44,9 +44,9 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         reloadSourceData()
         registerForNotifications()
         
-        testDelegate = TestTableViewDataSourceDelegate()
-        tableView.dataSource = testDelegate
-        tableView.delegate = testDelegate
+//        testDelegate = TestTableViewDataSourceDelegate()
+//        tableView.dataSource = testDelegate
+//        tableView.delegate = testDelegate
     }
     
     deinit {
@@ -250,9 +250,10 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     final func shuffleAllItems(sender:UIButton?) {
         KyoozUtils.doInMainQueueAsync() {
             if let items = self.filterQuery.items where !items.isEmpty {
-                self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: KyoozUtils.randomNumber(belowValue: items.count))
-                if !self.audioQueuePlayer.shuffleActive {
-                    self.audioQueuePlayer.shuffleActive = true
+                self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: KyoozUtils.randomNumber(belowValue: items.count)) {
+                    if !self.audioQueuePlayer.shuffleActive {
+                        self.audioQueuePlayer.shuffleActive = true
+                    }
                 }
             }
         }
