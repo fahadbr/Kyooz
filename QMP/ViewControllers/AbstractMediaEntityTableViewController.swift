@@ -44,9 +44,9 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         reloadSourceData()
         registerForNotifications()
         
-//        testDelegate = TestTableViewDataSourceDelegate()
-//        tableView.dataSource = testDelegate
-//        tableView.delegate = testDelegate
+        testDelegate = TestTableViewDataSourceDelegate()
+        tableView.dataSource = testDelegate
+        tableView.delegate = testDelegate
     }
     
     deinit {

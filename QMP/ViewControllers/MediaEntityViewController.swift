@@ -67,7 +67,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
             subHeaderView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
             subHeaderView.heightAnchor.constraintEqualToConstant(35).active = true
             subHeaderView.bottomAnchor.constraintEqualToAnchor(mView.topAnchor).active = true
-            subHeaderView.backgroundColor = ThemeHelper.defaultTableCellColor
+            subHeaderView.backgroundColor = UIColor.clearColor()
             subHeaderView.selectButton.addTarget(self, action: "toggleSelectMode:", forControlEvents: .TouchUpInside)
             subHeaderView.shuffleButton.addTarget(mediaEntityTVC, action: "shuffleAllItems:", forControlEvents: .TouchUpInside)
             self.subHeaderView = subHeaderView
