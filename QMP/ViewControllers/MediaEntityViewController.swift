@@ -12,7 +12,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
 
 
     var mediaEntityTVC:AbstractMediaEntityTableViewController!
-
+    private var subHeaderView:SubHeaderView!
     
     private var headerTopAnchorConstraint:NSLayoutConstraint!
     private var headerView:UIView!
@@ -60,12 +60,22 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
         mView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
         mView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
         
-        guard let subHeaderView = NSBundle.mainBundle().loadNibNamed("SubHeaderView", owner: nil, options: nil).first as? SubHeaderView else {
-            
+        if let subHeaderView = NSBundle.mainBundle().loadNibNamed("SubHeaderView", owner: nil, options: nil).first as? SubHeaderView {
+            view.addSubview(subHeaderView)
+            subHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            subHeaderView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+            subHeaderView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+            subHeaderView.heightAnchor.constraintEqualToConstant(30).active = true
+            subHeaderView.bottomAnchor.constraintEqualToAnchor(mView.topAnchor).active = true
+            subHeaderView.backgroundColor = ThemeHelper.defaultTableCellColor
+            subHeaderView.selectButton.addTarget(self, action: "toggleSelectMode:", forControlEvents: .TouchUpInside)
+            subHeaderView.shuffleButton.addTarget(mediaEntityTVC, action: "shuffleAllItems:", forControlEvents: .TouchUpInside)
+            self.subHeaderView = subHeaderView
         }
         
         
-        if let headerView = mediaEntityTVC.getViewForHeader() {
+        if let internalHeaderView = mediaEntityTVC.getViewForHeader() {
+            
             view.addSubview(headerView)
             headerView.translatesAutoresizingMaskIntoConstraints = false
             headerView.heightAnchor.constraintEqualToConstant(mediaEntityTVC.headerHeight).active = true
@@ -74,14 +84,19 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
             headerTopAnchorConstraint.active = true
             headerView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
             headerView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-            headerView.bottomAnchor.constraintEqualToAnchor(mView.topAnchor).active = true
+            
+            if subHeaderView != nil {
+                headerView.bottomAnchor.constraintEqualToAnchor(subHeaderView.topAnchor).active = true
+            } else {
+                headerView.bottomAnchor.constraintEqualToAnchor(mView.topAnchor).active = true
+            }
             
             headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
             headerTranslationTransform = CATransform3DMakeTranslation(0, mediaEntityTVC.headerHeight/2, 0)
             headerView.layer.transform = headerTranslationTransform
             self.headerView = headerView
             configureOverlayScrollViewForHeader()
-        } else {
+        } else if subHeaderView == nil {
             mView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
         }
     }
@@ -181,6 +196,15 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
                 self.scrollView.setContentOffset(CGPoint(x: 0, y: expectedOffset), animated: false)
             }
             return
+        }
+    }
+    
+    func toggleSelectMode(sender:UIButton!){
+        let willEdit = mediaEntityTVC.toggleSelectMode(sender)
+        if willEdit && scrollView != nil && scrollView.scrollEnabled {
+            UIView.animateWithDuration(0.25) {
+                self.scrollView.contentInset.bottom = willEdit ? 44 : 0
+            }
         }
     }
 }
