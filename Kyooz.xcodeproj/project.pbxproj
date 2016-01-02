@@ -292,7 +292,7 @@
 				0B1BFD491AF30A4C009838A5 /* LastFm */,
 				0B476C7D1B2350F000626810 /* Spotify */,
 				0B13D9F81AE6FA9A00CC5C01 /* AudioPlayer */,
-				0B476C701B21FA1F00626810 /* MediaObjects */,
+				0B476C701B21FA1F00626810 /* Model */,
 				0B13D9FC1AE6FA9A00CC5C01 /* DataAccess */,
 				0B13DA051AE6FA9A00CC5C01 /* Views */,
 				0B13D9FE1AE6FA9A00CC5C01 /* ViewControllers */,
@@ -425,7 +425,7 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
-		0B476C701B21FA1F00626810 /* MediaObjects */ = {
+		0B476C701B21FA1F00626810 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				0B476C711B21FA5400626810 /* AudioTrack.swift */,
@@ -435,7 +435,7 @@
 				0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */,
 				0B4E600B1C2DBC7800BB9D77 /* RepeatState.swift */,
 			);
-			name = MediaObjects;
+			name = Model;
 			sourceTree = "<group>";
 		};
 		0B476C7D1B2350F000626810 /* Spotify */ = {
