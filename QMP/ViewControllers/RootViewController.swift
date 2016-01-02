@@ -63,6 +63,9 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         addChildViewController(libraryNavigationController)
         libraryNavigationController.didMoveToParentViewController(self)
         libraryNavigationController.delegate = self
+        libraryNavigationController.navigationBar.backgroundColor = UIColor.clearColor()
+        libraryNavigationController.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
+        libraryNavigationController.navigationBar.shadowImage = UIImage()
         
         let libraryView = libraryNavigationController.view
         libraryView.translatesAutoresizingMaskIntoConstraints = false
