@@ -13,13 +13,10 @@ final class ShuffleButtonView : UIButton {
     
     
     @IBInspectable
-    var isActive:Bool = false {
-        didSet {
-            color = isActive ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
-        }
-    }
+    var isActive:Bool = false
     
-    private var color:UIColor = ThemeHelper.defaultFontColor {
+    @IBInspectable
+    var color:UIColor = ThemeHelper.defaultFontColor {
         didSet {
             setNeedsDisplay()
         }
@@ -36,6 +33,9 @@ final class ShuffleButtonView : UIButton {
         if highlighted {
             ThemeHelper.defaultTintColor.setFill()
             ThemeHelper.defaultTintColor.setStroke()
+        } else if isActive {
+            ThemeHelper.defaultVividColor.setFill()
+            ThemeHelper.defaultVividColor.setStroke()
         } else {
             color.setFill()
             color.setStroke()

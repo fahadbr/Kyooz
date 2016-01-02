@@ -35,12 +35,18 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     private var selectAllButton:UIBarButtonItem!
     private var selectedIndicies:[NSIndexPath]!
     
+    var testDelegate:TestTableViewDataSourceDelegate!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 60
         tableView.allowsMultipleSelectionDuringEditing = true
         reloadSourceData()
         registerForNotifications()
+        
+        testDelegate = TestTableViewDataSourceDelegate()
+        tableView.dataSource = testDelegate
+        tableView.delegate = testDelegate
     }
     
     deinit {
