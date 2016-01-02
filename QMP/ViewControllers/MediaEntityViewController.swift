@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MediaEntityViewController: AbstractViewController, MediaItemTableViewControllerProtocol, UIScrollViewDelegate, UIGestureRecognizerDelegate  {
+final class MediaEntityViewController: AbstractViewController, MediaItemTableViewControllerProtocol, UIScrollViewDelegate, UIGestureRecognizerDelegate  {
 
 
     var mediaEntityTVC:AbstractMediaEntityTableViewController!
@@ -17,7 +17,11 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
     private var headerTopAnchorConstraint:NSLayoutConstraint!
     private var headerView:UIView!
     private var previousOffset:CGFloat = 0.0
-    private var headerCollapsed:Bool = false
+    private var headerCollapsed:Bool = false {
+        didSet {
+            
+        }
+    }
     private var headerTranslationTransform:CATransform3D!
     private var scrollView:UIScrollView!
     
@@ -73,17 +77,31 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
             self.subHeaderView = subHeaderView
         }
         
-        
+        var headerSuperView:UIView = view        
         if let headerView = mediaEntityTVC.getViewForHeader() {
+
+            if mediaEntityTVC is AlbumTrackTableViewController {
+                let blur = UIBlurEffect(style: .Dark)
+                let blurView = UIVisualEffectView(effect: blur)
+//                let blurView = UIView()
+//                blurView.backgroundColor = UIColor.blackColor()
+//                blurView.alpha = 0.5
+                view.insertSubview(blurView, atIndex: 0)
+                blurView.translatesAutoresizingMaskIntoConstraints = false
+                blurView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+                blurView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+                blurView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+                blurView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+                headerSuperView = blurView.contentView
+            }
             
-            view.addSubview(headerView)
+            headerSuperView.addSubview(headerView)
             headerView.translatesAutoresizingMaskIntoConstraints = false
             headerView.heightAnchor.constraintEqualToConstant(mediaEntityTVC.headerHeight).active = true
-//            headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
             headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor)
             headerTopAnchorConstraint.active = true
-            headerView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-            headerView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+            headerView.leftAnchor.constraintEqualToAnchor(headerSuperView.leftAnchor).active = true
+            headerView.rightAnchor.constraintEqualToAnchor(headerSuperView.rightAnchor).active = true
             
             if subHeaderView != nil {
                 headerView.bottomAnchor.constraintEqualToAnchor(subHeaderView.topAnchor).active = true
@@ -99,6 +117,8 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
         } else if subHeaderView == nil {
             mView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
         }
+        
+        mediaEntityTVC.configureBackgroundImage(view)
     }
     
     private func configureOverlayScrollViewForHeader() {
@@ -175,7 +195,7 @@ class MediaEntityViewController: AbstractViewController, MediaItemTableViewContr
         
         if fraction == 1 {
             headerCollapsed = true
-        } else if fraction == 0 {
+        } else {
             headerCollapsed = false
         }
     }
