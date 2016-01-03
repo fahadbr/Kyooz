@@ -9,19 +9,69 @@
 import UIKit
 import MediaPlayer
 
-final class AlbumTrackTableViewController: AbstractMediaEntityTableViewController {
+final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController {
     
     var albumCollection:MPMediaItemCollection!
     
-    private var albumImage:UIImage?
+    @IBOutlet var albumImageView: UIImageView!
     
-    override var headerHeight:CGFloat {
-        return 115
-    }
+    @IBOutlet var albumTitleLabel: UILabel!
+    @IBOutlet var albumArtistLabel: UILabel!
+    @IBOutlet var albumDurationLabel: UILabel!
+    @IBOutlet var albumDetailsLabel: UILabel!
+    
+    @IBOutlet var blurView: UIVisualEffectView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
+        
+        guard let track = albumCollection.representativeItem else {
+            Logger.debug("couldnt get representative item for album collection")
+            return
+        }
+        
+        albumTitleLabel.text = track.albumTitle
+        albumArtistLabel.text = track.albumArtist ?? track.artist
+        
+        var details = [String]()
+        if let releaseDate = MediaItemUtils.getReleaseDateString(track) {
+            details.append(releaseDate)
+        }
+        if let genre = track.genre {
+            details.append(genre)
+        }
+        details.append("\(albumCollection.count) Tracks")
+        
+        albumDetailsLabel.text = details.joinWithSeparator(" • ")
+        
+        if let albumArt = track.artwork {
+            KyoozUtils.doInMainQueueAsync() { [weak self, albumImageView = self.albumImageView] in
+                if let image = albumArt.imageWithSize(albumImageView.frame.size) {
+                    albumImageView.image = image
+                    self?.blurView.backgroundColor = UIColor(patternImage: image)
+                    self?.headerView.layer.shouldRasterize = true
+                    self?.headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+                }
+            }
+        } else {
+            albumImageView.hidden = true
+        }
+        
+        KyoozUtils.doInMainQueueAsync() { [weak self] in
+            if let items = self?.albumCollection?.items {
+                var duration:NSTimeInterval = 0
+                for item in items {
+                    duration += item.playbackDuration
+                }
+                if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
+                    self?.albumDurationLabel.text = albumDurationString
+                } else {
+                    self?.albumDurationLabel.hidden = true
+                }
+            }
+            
+        }
     }
     
 
@@ -35,62 +85,6 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
         return albumCollection.count
     }
     
-    
-    override func getViewForHeader() -> UIView? {
-        guard let albumHeaderView = NSBundle.mainBundle().loadNibNamed("AlbumHeaderView", owner: self, options: nil)?.first as? AlbumHeaderView else {
-            return nil
-        }
-        guard let track = albumCollection.representativeItem else {
-            Logger.debug("couldnt get representative item for album collection")
-            return nil
-        }
-        
-        albumHeaderView.albumTitleLabel.text = track.albumTitle
-        albumHeaderView.albumArtistLabel.text = track.albumArtist ?? track.artist
-        
-        var details = [String]()
-        if let releaseDate = MediaItemUtils.getReleaseDateString(track) {
-            details.append(releaseDate)
-        }
-        if let genre = track.genre {
-            details.append(genre)
-        }
-        details.append("\(albumCollection.count) Tracks")
-        
-        albumHeaderView.albumDetailsLabel.text = details.joinWithSeparator(" • ")
-        
-        if let albumArt = track.artwork {
-            KyoozUtils.doInMainQueueAsync() { [weak self] in
-                if let image = albumArt.imageWithSize(albumHeaderView.albumImage.frame.size) {
-                    self?.albumImage = image
-                    albumHeaderView.albumImage.image = image
-//                    albumHeaderView.backgroundColor = UIColor(patternImage: image)
-                    albumHeaderView.backgroundColor = UIColor.clearColor()
-                    albumHeaderView.layer.shouldRasterize = true
-                    albumHeaderView.layer.rasterizationScale = UIScreen.mainScreen().scale
-                }
-            }
-        } else {
-            albumHeaderView.albumImage.hidden = true
-        }
-        
-        KyoozUtils.doInMainQueueAsync() { [weak albumCollection = self.albumCollection] in
-            if let items = albumCollection?.items {
-                var duration:NSTimeInterval = 0
-                for item in items {
-                    duration += item.playbackDuration
-                }
-                if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
-                    albumHeaderView.albumDurationLabel.text = albumDurationString
-                } else {
-                    albumHeaderView.albumDurationLabel.hidden = true
-                }
-            }
-            
-        }
-        return albumHeaderView
-    }
-
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(AlbumTrackTableViewCell.reuseIdentifier, forIndexPath: indexPath) as! AlbumTrackTableViewCell
@@ -125,15 +119,6 @@ final class AlbumTrackTableViewController: AbstractMediaEntityTableViewControlle
         return [AudioTrack]()
     }
     
-    override func configureBackgroundImage(view: UIView) {
-        KyoozUtils.doInMainQueueAsync() { [weak self] in
-            guard let albumImage = self?.albumImage else {
-                return
-            }
-
-            view.backgroundColor = UIColor(patternImage: albumImage)
-        }
-    }
     
     override func reloadSourceData() {
         if let mediaItems = filterQuery.items {

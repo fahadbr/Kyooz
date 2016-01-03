@@ -18,19 +18,11 @@ private let identityTransform:CATransform3D = {
     return identity
 }()
 
-class AbstractMediaEntityTableViewController : AbstractViewController, MediaItemTableViewControllerProtocol, UIScrollViewDelegate {
-    
-    private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)
-    private static let blueColor = UIColor(red: 51.0/225.0, green: 62.0/225.0, blue: 222.0/225.0, alpha: 1)
-    
-    let fatalErrorMessage = "Unsupported operation. this is an abstract class"
-    let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, UIScrollViewDelegate {
     
     var libraryGroupingType:LibraryGrouping! = LibraryGrouping.Artists
     var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
-    weak var parentMediaEntityController:MediaEntityViewController?
     
-    @IBOutlet var tableView:UITableView!
     @IBOutlet var headerView: UIView!
     @IBOutlet var scrollView:UIScrollView!
     
@@ -55,22 +47,16 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.estimatedRowHeight = 60
-        tableView.estimatedSectionHeaderHeight = 40
-        tableView.allowsMultipleSelectionDuringEditing = true
-        reloadSourceData()
-        registerForNotifications()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
         
         headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
         headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeight/2, 0)
         headerView.layer.transform = headerTranslationTransform
         
-        configureTestDelegates()
-        configureOverlayScrollView()
-    }
-    
-    deinit {
-        unregisterForNotifications()
+//        configureTestDelegates()
+        if scrollView != nil {
+            configureOverlayScrollView()
+        }
     }
     
     private func configureTestDelegates() {
@@ -95,7 +81,7 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
             heightForCells += (tableView.estimatedRowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
         }
         let estimatedHeight = heightForSections + heightForCells
-        let totalHeight = estimatedHeight + headerHeightConstraint.constant + subHeaderHeightConstraint.constant
+        let totalHeight = estimatedHeight + headerHeightConstraint.constant + (subHeaderHeightConstraint?.constant ?? 0)!
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
@@ -108,47 +94,8 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         Logger.debug("calculated content size: \(scrollView.contentSize)")
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 60
-    }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true;
-    }
     
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let mediaItems = getMediaItemsForIndexPath(indexPath)
-        var actions = [UITableViewRowAction]()
-        
-        
-        let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nLast",
-                handler: {action, index in
-                    self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Last)
-                    self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
-            })
-        actions.append(playLastAction)
-        let playNextAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nNext",
-            handler: {action, index in
-                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Next)
-                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
-        })
-        actions.append(playNextAction)
-        
-        if audioQueuePlayer.shuffleActive {
-            let playRandomlyAction = UITableViewRowAction(style: .Normal, title: "Play\nRandomly", handler: { (action, index) -> Void in
-                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Random)
-                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
-            })
-            actions.append(playRandomlyAction)
-        }
-        
-        
-        playLastAction.backgroundColor = AbstractMediaEntityTableViewController.blueColor
-        playNextAction.backgroundColor = AbstractMediaEntityTableViewController.greenColor
-
-        
-        return actions
-    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if(tableView.editing) {
@@ -173,30 +120,21 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         }
     }
 
-    // Override to support editing the table view.
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
     
     //MARK: - Class functions
-    func reloadAllData() {
-        Logger.debug("Reloading all media entity data")
+    override func reloadAllData() {
+        super.reloadAllData()
         if tableView.editing {
             selectedIndicies.removeAll()
         }
-        reloadSourceData()
-        reloadTableViewData()
-        parentMediaEntityController?.calculateContentSize()
+        calculateContentSize()
     }
     
-    func reloadTableViewData() {
+    override func reloadTableViewData() {
+        super.reloadTableViewData()
         refreshButtonStates()
-        tableView.reloadData()
     }
     
-    func reloadSourceData() {
-        fatalError(fatalErrorMessage)
-    }
     
     @IBAction final func toggleSelectMode(sender:UIButton?) {
         selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
@@ -300,10 +238,18 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
     }
     
     @IBAction final func shuffleAllItems(sender:UIButton?) {
+        playAllItems(sender, shouldShuffle: true)
+    }
+    
+    @IBAction final func playAllItems(sender:UIButton?) {
+        playAllItems(sender, shouldShuffle: false)
+    }
+    
+    private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {
         KyoozUtils.doInMainQueueAsync() {
             if let items = self.filterQuery.items where !items.isEmpty {
-                self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: KyoozUtils.randomNumber(belowValue: items.count)) {
-                    if !self.audioQueuePlayer.shuffleActive {
+                self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: items.count):0) {
+                    if shouldShuffle && !self.audioQueuePlayer.shuffleActive {
                         self.audioQueuePlayer.shuffleActive = true
                     }
                 }
@@ -332,7 +278,6 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         
     }
     
-    
     private func applyTransformToHeaderUsingOffset(offset:CGFloat) {
         headerTopAnchorConstraint.constant = -offset
         let fraction = offset/headerHeight
@@ -350,7 +295,6 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         }
     }
     
-    
     func synchronizeOffsetWithScrollview(scrollView:UIScrollView) {
         if self.scrollView == nil { return }
         let currentOffset = scrollView.contentOffset.y
@@ -367,35 +311,6 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
             }
             return
         }
-    }
-    
-    func configureBackgroundImage(view:UIView) {
-        
-    }
-    
-    //MARK: - Overriding MediaItemTableViewController methods
-    func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        fatalError(fatalErrorMessage)
-    }
-    
-    func getViewForHeader() -> UIView? {
-        return nil
-    }
-    
-    //MARK: - Private functions
-    
-    private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "reloadTableViewData",
-            name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableViewData",
-            name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadAllData",
-            name: MPMediaLibraryDidChangeNotification, object: MPMediaLibrary.defaultMediaLibrary())
-    }
-    
-    private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
 }

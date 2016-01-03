@@ -35,10 +35,6 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("mediaEntityVC") as! MediaEntityTableViewController
     }
     
-    class func mediaEntityViewController() -> MediaEntityViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("mediaEntityViewController") as! MediaEntityViewController
-    }
-    
     class func albumTrackTableViewController() -> AlbumTrackTableViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("albumTrackTableViewController") as! AlbumTrackTableViewController
     }

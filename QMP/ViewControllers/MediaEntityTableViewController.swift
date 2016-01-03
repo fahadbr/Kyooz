@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class MediaEntityTableViewController: AbstractMediaEntityTableViewController, UITableViewDelegate, UITableViewDataSource {
+final class MediaEntityTableViewController: ParentMediaEntityHeaderViewController, UITableViewDelegate, UITableViewDataSource {
 
     private var sections:[MPMediaQuerySection]?
     private var entities:[MPMediaEntity]!
@@ -24,7 +24,6 @@ final class MediaEntityTableViewController: AbstractMediaEntityTableViewControll
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         
@@ -57,43 +56,6 @@ final class MediaEntityTableViewController: AbstractMediaEntityTableViewControll
         scrollView.leftAnchor.constraintEqualToAnchor(headerView.layoutMarginsGuide.leftAnchor).active = true
         scrollView.rightAnchor.constraintEqualToAnchor(headerView.layoutMarginsGuide.rightAnchor).active = true
         scrollView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
-    }
-    
-    
-    override func getViewForHeader() -> UIView? {
-        if subGroups.isEmpty {
-            return nil
-        }
-        let wrapperView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: headerHeight))
-        
-        let control = UISegmentedControl(items: subGroups.map({ $0.name }))
-        control.tintColor = ThemeHelper.defaultTintColor
-        
-        control.apportionsSegmentWidthsByContent = true
-        control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
-        control.selectedSegmentIndex = 0
-        if control.frame.size.width < tableView.frame.width {
-            wrapperView.addSubview(control)
-            control.translatesAutoresizingMaskIntoConstraints = false
-            control.centerXAnchor.constraintEqualToAnchor(wrapperView.centerXAnchor).active = true
-            control.centerYAnchor.constraintEqualToAnchor(wrapperView.centerYAnchor).active = true
-            return wrapperView
-        }
-        
-        let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
-        scrollView.contentSize = control.frame.size
-
-        scrollView.addSubview(control)
-        scrollView.scrollsToTop = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.showsHorizontalScrollIndicator = false
-        wrapperView.addSubview(scrollView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.centerYAnchor.constraintEqualToAnchor(wrapperView.centerYAnchor).active = true
-        scrollView.leftAnchor.constraintEqualToAnchor(wrapperView.layoutMarginsGuide.leftAnchor).active = true
-        scrollView.rightAnchor.constraintEqualToAnchor(wrapperView.layoutMarginsGuide.rightAnchor).active = true
-        scrollView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
-        return wrapperView
     }
     
     private var collectionVC:LibraryGroupCollectionViewController!
@@ -132,19 +94,15 @@ final class MediaEntityTableViewController: AbstractMediaEntityTableViewControll
     // MARK: - Table view data source and delegate methods
     //MARK: header configuration
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+        guard let sections = self.sections else {
             return nil
         }
-        guard let sections = self.sections else {
+        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
             return nil
         }
         view.headerTitleLabel.text = sections[section].title
         view.disclosureContainerView.hidden = true
         return view
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return sections != nil ?  40.0 : 0.0
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -271,7 +229,13 @@ final class MediaEntityTableViewController: AbstractMediaEntityTableViewControll
             }
             self.sections = sections
         }
-        tableView.estimatedSectionHeaderHeight = sections != nil ? 40 : 0
+        if sections != nil {
+            tableView.estimatedSectionHeaderHeight = 40
+            tableView.sectionHeaderHeight = 40
+        } else {
+            tableView.estimatedSectionHeaderHeight = 0
+            tableView.sectionHeaderHeight = 0
+        }
     }
 
     private func getAbsoluteIndex(indexPath indexPath: NSIndexPath) -> Int{

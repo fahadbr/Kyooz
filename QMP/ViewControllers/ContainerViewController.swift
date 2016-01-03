@@ -209,14 +209,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
         filterQuery.groupingType = nextGroupingType.groupingType
         
-        let vc:AbstractMediaEntityTableViewController!
-        let mevc = UIStoryboard.mediaEntityViewController()
+        let vc:ParentMediaEntityHeaderViewController!
+//        let mevc = UIStoryboard.mediaEntityViewController()
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
             vc = UIStoryboard.albumTrackTableViewController()
         } else {
             let mvc = UIStoryboard.mediaEntityTableViewController()
-            mevc.title = title?.uppercaseString
+            mvc.title = title?.uppercaseString
             mvc.subGroups = parentGroup.subGroupsForNextLevel
             vc = mvc
         }
@@ -224,9 +224,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         vc.filterQuery = filterQuery
         vc.libraryGroupingType = nextGroupingType
 
-        mevc.mediaEntityTVC = vc
+//        mevc.mediaEntityTVC = vc
 
-        pushViewController(mevc)
+        pushViewController(vc)
     }
     
     //MARK: NOTIFICATION REGISTRATIONS
