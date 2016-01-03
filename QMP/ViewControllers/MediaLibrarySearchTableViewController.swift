@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MediaPlayer
 
-class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate {
+final class MediaLibrarySearchTableViewController : ParentMediaEntityViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     private class RowLimit {
         let limit:Int
@@ -55,7 +55,17 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         for se in searchExecutionControllers {
             se.delegate = self
         }
-        
+        tableView = UITableView()
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        tableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+        tableView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        tableView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.sectionHeaderHeight = 40
+        tableView.estimatedSectionHeaderHeight = 40
         super.viewDidLoad()
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
@@ -133,12 +143,8 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         return view
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40.0
-    }
-    
     //MARK: other configuration
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         if indexPath.section >= sections.count || indexPath.row >= sections[indexPath.section].searchResults.count {
             Logger.error("indexPath received is greater than the number of sections or search results avaliable")

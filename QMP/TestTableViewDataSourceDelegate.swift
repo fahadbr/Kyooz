@@ -12,7 +12,7 @@ class TestTableViewDataSourceDelegate: NSObject, UITableViewDataSource, UITableV
     
     let sections = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     
-    var mediaEntityTVC:AbstractMediaEntityTableViewController?
+    var mediaEntityTVC:ParentMediaEntityHeaderViewController?
 
     //MARK: - DATASOUCE
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
