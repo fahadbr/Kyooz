@@ -8,6 +8,12 @@
 
 import UIKit
 
+private let identityTransform:CATransform3D = {
+    var identity = CATransform3DIdentity
+    identity.m34 = -1.0/1000
+    return identity
+}()
+
 final class MediaEntityViewController: AbstractViewController, MediaItemTableViewControllerProtocol, UIScrollViewDelegate, UIGestureRecognizerDelegate  {
 
 
@@ -20,12 +26,6 @@ final class MediaEntityViewController: AbstractViewController, MediaItemTableVie
     private var headerCollapsed:Bool = false
     private var headerTranslationTransform:CATransform3D!
     private var scrollView:UIScrollView!
-    
-    private let identityTransform:CATransform3D = {
-        var identity = CATransform3DIdentity
-        identity.m34 = -1.0/1000
-        return identity
-    }()
     
     //MARK: - MediaItemTableViewControllerProtocol methods
     var tableView:UITableView! {
@@ -219,7 +219,8 @@ final class MediaEntityViewController: AbstractViewController, MediaItemTableVie
     }
     
     func toggleSelectMode(sender:UIButton!){
-        let willEdit = mediaEntityTVC.toggleSelectMode(sender)
+        mediaEntityTVC.toggleSelectMode(sender)
+        let willEdit = mediaEntityTVC.tableView.editing
         if willEdit && scrollView != nil && scrollView.scrollEnabled {
             UIView.animateWithDuration(0.25) {
                 self.scrollView.contentInset.bottom = willEdit ? 44 : 0

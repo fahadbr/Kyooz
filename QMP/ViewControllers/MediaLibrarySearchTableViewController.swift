@@ -63,12 +63,12 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     
     //MARK: - Table View Datasource
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return sections.count
     }
 
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section >= sections.count {
             Logger.error("section index received is greater than the number of sections avaliable")
             return 0
@@ -84,7 +84,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let searchExecutor = sections[indexPath.section]
         let group = searchExecutor.libraryGroup
         let reuseIdentifier = group === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
@@ -108,7 +108,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
     
     //MARK: - Table View Delegate
     //MARK: header configuration
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section >= sections.count {
             Logger.error("section index received is greater than the number of sections avaliable")
             return nil
@@ -133,7 +133,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         return view
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40.0
     }
     
@@ -164,7 +164,7 @@ class MediaLibrarySearchTableViewController : AbstractMediaEntityTableViewContro
         }
     }
     //MARK: - SCROLL DELEGATE
-    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         searchController.searchBar.resignFirstResponder()
     }
     

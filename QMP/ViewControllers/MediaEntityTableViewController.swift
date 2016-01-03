@@ -9,12 +9,10 @@
 import UIKit
 import MediaPlayer
 
-class MediaEntityTableViewController: AbstractMediaEntityTableViewController, UITableViewDelegate, UITableViewDataSource {
+final class MediaEntityTableViewController: AbstractMediaEntityTableViewController, UITableViewDelegate, UITableViewDataSource {
 
     private var sections:[MPMediaQuerySection]?
     private var entities:[MPMediaEntity]!
-    
-    @IBOutlet var headerView: UIView!
     
     var subGroups:[LibraryGrouping] = LibraryGrouping.values {
         didSet {
@@ -45,9 +43,11 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController, UI
         }
         
         let scrollView = UIScrollView(frame: headerView.bounds)
+//        let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
         scrollView.contentSize = control.frame.size
         
         scrollView.addSubview(control)
+        control.frame.origin = CGPoint.zero
         scrollView.scrollsToTop = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -177,7 +177,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController, UI
     func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         //this synchronizes the parent scroll view with the table view after a section index has been selected
         //doing this asynchronously because the tableView's contentOffset is not updated until after this method is called
-        KyoozUtils.doInMainQueueAsync() { [weak self] in self?.parentMediaEntityController?.synchronizeOffsetWithScrollview(tableView) }
+        KyoozUtils.doInMainQueueAsync() { [weak self] in self?.synchronizeOffsetWithScrollview(tableView) }
         return index
     }
     

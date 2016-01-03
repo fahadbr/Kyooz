@@ -32,7 +32,7 @@ extension UIStoryboard {
     }
     
     class func mediaEntityTableViewController() -> MediaEntityTableViewController {
-        return MediaEntityTableViewController()
+        return mainStoryboard().instantiateViewControllerWithIdentifier("mediaEntityVC") as! MediaEntityTableViewController
     }
     
     class func mediaEntityViewController() -> MediaEntityViewController {
