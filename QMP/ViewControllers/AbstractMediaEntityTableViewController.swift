@@ -13,7 +13,7 @@ import MediaPlayer
 private let selectAllString = "Select All"
 private let deselectAllString = "Deselect All"
 
-class AbstractMediaEntityTableViewController : AbstractTableViewController, MediaItemTableViewControllerProtocol {
+class AbstractMediaEntityTableViewController : AbstractViewController, MediaItemTableViewControllerProtocol {
     
     private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)
     private static let blueColor = UIColor(red: 51.0/225.0, green: 62.0/225.0, blue: 222.0/225.0, alpha: 1)
@@ -25,7 +25,7 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
     var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
     weak var parentMediaEntityController:MediaEntityViewController?
     
-//    @IBOutlet var tableView:UITableView!
+    @IBOutlet var tableView:UITableView!
     
     var headerHeight:CGFloat {
         return 40
@@ -71,20 +71,20 @@ class AbstractMediaEntityTableViewController : AbstractTableViewController, Medi
         let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nLast",
                 handler: {action, index in
                     self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Last)
-                    self.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
+                    self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
             })
         actions.append(playLastAction)
         let playNextAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nNext",
             handler: {action, index in
                 self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Next)
-                self.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
+                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
         })
         actions.append(playNextAction)
         
         if audioQueuePlayer.shuffleActive {
             let playRandomlyAction = UITableViewRowAction(style: .Normal, title: "Play\nRandomly", handler: { (action, index) -> Void in
                 self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Random)
-                self.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
+                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
             })
             actions.append(playRandomlyAction)
         }

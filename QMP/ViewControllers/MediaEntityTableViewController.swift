@@ -9,10 +9,12 @@
 import UIKit
 import MediaPlayer
 
-class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
+class MediaEntityTableViewController: AbstractMediaEntityTableViewController, UITableViewDelegate, UITableViewDataSource {
 
     private var sections:[MPMediaQuerySection]?
     private var entities:[MPMediaEntity]!
+    
+    @IBOutlet var headerView: UIView!
     
     var subGroups:[LibraryGrouping] = LibraryGrouping.values {
         didSet {
@@ -27,6 +29,34 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+        
+        let control = UISegmentedControl(items: subGroups.map({ $0.name }))
+        control.tintColor = ThemeHelper.defaultTintColor
+        
+        control.apportionsSegmentWidthsByContent = true
+        control.addTarget(self, action: "groupingTypeDidChange:", forControlEvents: UIControlEvents.ValueChanged)
+        control.selectedSegmentIndex = 0
+        if control.frame.size.width < tableView.frame.width {
+            headerView.addSubview(control)
+            control.translatesAutoresizingMaskIntoConstraints = false
+            control.centerXAnchor.constraintEqualToAnchor(headerView.centerXAnchor).active = true
+            control.centerYAnchor.constraintEqualToAnchor(headerView.centerYAnchor).active = true
+            return
+        }
+        
+        let scrollView = UIScrollView(frame: headerView.bounds)
+        scrollView.contentSize = control.frame.size
+        
+        scrollView.addSubview(control)
+        scrollView.scrollsToTop = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        headerView.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.centerYAnchor.constraintEqualToAnchor(headerView.centerYAnchor).active = true
+        scrollView.leftAnchor.constraintEqualToAnchor(headerView.layoutMarginsGuide.leftAnchor).active = true
+        scrollView.rightAnchor.constraintEqualToAnchor(headerView.layoutMarginsGuide.rightAnchor).active = true
+        scrollView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
     }
     
     
@@ -101,7 +131,7 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
     
     // MARK: - Table view data source and delegate methods
     //MARK: header configuration
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
             return nil
         }
@@ -113,11 +143,11 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         return view
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return sections != nil ?  40.0 : 0.0
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         guard let sections = self.sections else {
             return 1
         }
@@ -125,14 +155,14 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
         return sections.count
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let sections = self.sections else {
             return entities!.count
         }
         return sections[section].range.length
     }
     
-    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
         guard let sections = self.sections else {
             return nil
         }
@@ -144,14 +174,14 @@ class MediaEntityTableViewController: AbstractMediaEntityTableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         //this synchronizes the parent scroll view with the table view after a section index has been selected
         //doing this asynchronously because the tableView's contentOffset is not updated until after this method is called
         KyoozUtils.doInMainQueueAsync() { [weak self] in self?.parentMediaEntityController?.synchronizeOffsetWithScrollview(tableView) }
         return index
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let reuseIdentifier = libraryGroupingType === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
 
         guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
