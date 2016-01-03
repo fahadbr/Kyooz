@@ -50,7 +50,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cI8-2t-B1N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3414" y="-1151"/>
+            <point key="canvasLocation" x="3556" y="-1151"/>
         </scene>
         <!--Media Entity Table View Controller-->
         <scene sceneID="nJB-ER-uiL">
@@ -530,6 +530,119 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNa-UC-m6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2254" y="-186"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Cro-ML-1SZ">
+            <objects>
+                <viewController id="ZAO-9q-JeO" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ACD-RR-Vm9"/>
+                        <viewControllerLayoutGuide type="bottom" id="iHG-mx-ZRo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lXh-Iq-HMx">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yO9-Rd-JWI">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="230"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="GhA-cb-5AS">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="230"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8EG-8Y-Y2w">
+                                            <rect key="frame" x="8" y="72" width="584" height="158"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kJ0-gC-4I9">
+                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="150" id="Fp1-6N-Vi0"/>
+                                                        <constraint firstAttribute="width" secondItem="kJ0-gC-4I9" secondAttribute="height" multiplier="1:1" id="M8l-nj-BDu"/>
+                                                        <constraint firstAttribute="height" constant="150" id="ql2-cT-xS0"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="QVa-20-URu">
+                                                    <rect key="frame" x="158" y="0.0" width="426" height="75"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Av6-BN-Hb0" userLabel="albumTitle">
+                                                            <rect key="frame" x="0.0" y="0.0" width="426" height="24"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OUM-hK-WXy" userLabel="albumArtistName">
+                                                            <rect key="frame" x="0.0" y="24" width="426" height="17"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bTr-ye-XRY" userLabel="albumDuration">
+                                                            <rect key="frame" x="0.0" y="41" width="426" height="17"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bRw-xf-WoW" userLabel="albumDetails">
+                                                            <rect key="frame" x="0.0" y="58" width="426" height="17"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="158" id="Cnk-Iv-d42"/>
+                                            </constraints>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="8EG-8Y-Y2w" firstAttribute="leading" secondItem="GhA-cb-5AS" secondAttribute="leadingMargin" id="YEF-EO-xGe"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="8EG-8Y-Y2w" secondAttribute="trailing" id="zKu-Du-qpV"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="230" id="deR-DO-jXe"/>
+                                </constraints>
+                                <blurEffect style="dark"/>
+                            </visualEffectView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MYl-Z9-guE" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
+                                <rect key="frame" x="122" y="186" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="1cP-xm-xJt"/>
+                                    <constraint firstAttribute="height" constant="40" id="Mr9-ur-6qv"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZEM-IC-Nme" userLabel="playButton" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
+                                <rect key="frame" x="315" y="395" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="MYl-Z9-guE" firstAttribute="leading" secondItem="kJ0-gC-4I9" secondAttribute="leading" constant="4" id="Hqm-L6-OuT"/>
+                            <constraint firstItem="8EG-8Y-Y2w" firstAttribute="top" secondItem="ACD-RR-Vm9" secondAttribute="bottom" constant="8" id="J8R-9r-hjq"/>
+                            <constraint firstItem="MYl-Z9-guE" firstAttribute="bottom" secondItem="kJ0-gC-4I9" secondAttribute="bottom" constant="4" id="Y60-t5-9CQ"/>
+                            <constraint firstItem="yO9-Rd-JWI" firstAttribute="top" secondItem="lXh-Iq-HMx" secondAttribute="top" id="g48-Vh-bNI"/>
+                            <constraint firstItem="yO9-Rd-JWI" firstAttribute="leading" secondItem="lXh-Iq-HMx" secondAttribute="leading" id="jYg-fH-Hi1"/>
+                            <constraint firstItem="MYl-Z9-guE" firstAttribute="trailing" secondItem="kJ0-gC-4I9" secondAttribute="trailing" constant="4" id="kbd-TA-Slo"/>
+                            <constraint firstAttribute="trailing" secondItem="yO9-Rd-JWI" secondAttribute="trailing" id="xf0-W6-Qxn"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Hqm-L6-OuT"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hqw-Uf-ARv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3023" y="-450"/>
         </scene>
     </scenes>
     <resources>
