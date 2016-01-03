@@ -11,6 +11,8 @@ import UIKit
 class TestTableViewDataSourceDelegate: NSObject, UITableViewDataSource, UITableViewDelegate{
     
     let sections = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    
+    var mediaEntityTVC:AbstractMediaEntityTableViewController?
 
     //MARK: - DATASOUCE
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -42,6 +44,27 @@ class TestTableViewDataSourceDelegate: NSObject, UITableViewDataSource, UITableV
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sections[section]
     }
+    
+    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+        KyoozUtils.doInMainQueueAsync() { [weak self] in self?.mediaEntityTVC?.synchronizeOffsetWithScrollview(tableView) }
+        return index
+    }
     //MARK: - DELEGATE
     
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+            return nil
+        }
+        view.headerTitleLabel.text = sections[section]
+        view.disclosureContainerView.hidden = true
+        return view
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
 }

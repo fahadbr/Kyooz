@@ -12,8 +12,13 @@ import MediaPlayer
 
 private let selectAllString = "Select All"
 private let deselectAllString = "Deselect All"
+private let identityTransform:CATransform3D = {
+    var identity = CATransform3DIdentity
+    identity.m34 = -1.0/1000
+    return identity
+}()
 
-class AbstractMediaEntityTableViewController : AbstractViewController, MediaItemTableViewControllerProtocol {
+class AbstractMediaEntityTableViewController : AbstractViewController, MediaItemTableViewControllerProtocol, UIScrollViewDelegate {
     
     private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)
     private static let blueColor = UIColor(red: 51.0/225.0, green: 62.0/225.0, blue: 222.0/225.0, alpha: 1)
@@ -26,10 +31,19 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
     weak var parentMediaEntityController:MediaEntityViewController?
     
     @IBOutlet var tableView:UITableView!
+    @IBOutlet var headerView: UIView!
+    @IBOutlet var scrollView:UIScrollView!
+    
+    @IBOutlet var headerTopAnchorConstraint:NSLayoutConstraint!
+    @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var subHeaderHeightConstraint: NSLayoutConstraint!
     
     var headerHeight:CGFloat {
-        return 40
+        return headerHeightConstraint.constant
     }
+    
+    private var headerCollapsed:Bool = false
+    private var headerTranslationTransform:CATransform3D!
     
     private var playNextButton:UIBarButtonItem!
     private var playLastButton:UIBarButtonItem!
@@ -42,17 +56,56 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 60
+        tableView.estimatedSectionHeaderHeight = 40
         tableView.allowsMultipleSelectionDuringEditing = true
         reloadSourceData()
         registerForNotifications()
         
-//        testDelegate = TestTableViewDataSourceDelegate()
-//        tableView.dataSource = testDelegate
-//        tableView.delegate = testDelegate
+        headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
+        headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeight/2, 0)
+        headerView.layer.transform = headerTranslationTransform
+        
+        configureTestDelegates()
+        configureOverlayScrollView()
     }
     
     deinit {
         unregisterForNotifications()
+    }
+    
+    private func configureTestDelegates() {
+        testDelegate = TestTableViewDataSourceDelegate()
+        testDelegate.mediaEntityTVC = self
+        tableView.dataSource = testDelegate
+        tableView.delegate = testDelegate
+        tableView.estimatedSectionHeaderHeight = 40
+        tableView.estimatedRowHeight = 60
+    }
+    
+    private func configureOverlayScrollView() {
+        view.addGestureRecognizer(scrollView.panGestureRecognizer)
+        calculateContentSize()
+    }
+    
+    private func calculateContentSize() {
+        if scrollView == nil { return }
+        let heightForSections = tableView.estimatedSectionHeaderHeight * CGFloat(tableView.numberOfSections > 1 ? tableView.numberOfSections : 0)
+        var heightForCells:CGFloat = 0
+        for i in 0..<tableView.numberOfSections {
+            heightForCells += (tableView.estimatedRowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
+        }
+        let estimatedHeight = heightForSections + heightForCells
+        let totalHeight = estimatedHeight + headerHeightConstraint.constant + subHeaderHeightConstraint.constant
+        
+        scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
+        
+        let shouldUseOverlay = totalHeight >= view.frame.height
+        scrollView.userInteractionEnabled = shouldUseOverlay
+        scrollView.scrollsToTop = shouldUseOverlay
+        tableView.scrollEnabled = !shouldUseOverlay
+        tableView.scrollsToTop = !shouldUseOverlay
+        
+        Logger.debug("calculated content size: \(scrollView.contentSize)")
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -145,24 +198,21 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         fatalError(fatalErrorMessage)
     }
     
-    final func toggleSelectMode(sender:UIButton?) -> Bool {
-        if parentViewController?.toolbarItems == nil {
-            selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
-            playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            playLastButton = UIBarButtonItem(title: "Play Last", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            playRandomlyButton = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            selectAllButton.tintColor = ThemeHelper.defaultTintColor
-            playNextButton.tintColor = ThemeHelper.defaultTintColor
-            playLastButton.tintColor = ThemeHelper.defaultTintColor
-            playRandomlyButton.tintColor = ThemeHelper.defaultTintColor
-            
-            func createFlexibleSpace() -> UIBarButtonItem {
-                return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-            }
-            
-            parentViewController?.toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton,
-                createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
+    @IBAction final func toggleSelectMode(sender:UIButton?) {
+        selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
+        playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+        playLastButton = UIBarButtonItem(title: "Play Last", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+        playRandomlyButton = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+        selectAllButton.tintColor = ThemeHelper.defaultTintColor
+        playNextButton.tintColor = ThemeHelper.defaultTintColor
+        playLastButton.tintColor = ThemeHelper.defaultTintColor
+        playRandomlyButton.tintColor = ThemeHelper.defaultTintColor
+        
+        func createFlexibleSpace() -> UIBarButtonItem {
+            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         }
+        
+        toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
         
         let willEdit = !tableView.editing
         if willEdit {
@@ -177,12 +227,12 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         RootViewController.instance.setToolbarHidden(!willEdit)
         if parentViewController != nil && !parentViewController!.automaticallyAdjustsScrollViewInsets {
             UIView.animateWithDuration(0.25) {
-                self.tableView.contentInset.bottom = willEdit ? 44 : 0
+                let newInset:CGFloat = willEdit ? 44 : 0
+                self.tableView.contentInset.bottom = newInset
             }
         }
         
         refreshButtonStates()
-        return willEdit
     }
     
     private func refreshButtonStates() {
@@ -249,7 +299,7 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
         selectOrDeselectAll()
     }
     
-    final func shuffleAllItems(sender:UIButton?) {
+    @IBAction final func shuffleAllItems(sender:UIButton?) {
         KyoozUtils.doInMainQueueAsync() {
             if let items = self.filterQuery.items where !items.isEmpty {
                 self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: KyoozUtils.randomNumber(belowValue: items.count)) {
@@ -258,6 +308,64 @@ class AbstractMediaEntityTableViewController : AbstractViewController, MediaItem
                     }
                 }
             }
+        }
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if scrollView === tableView { return }
+        let currentOffset = scrollView.contentOffset.y
+        
+        
+        if currentOffset > 0 && currentOffset < headerHeight {
+            applyTransformToHeaderUsingOffset(currentOffset)
+        } else if currentOffset <= 0 {
+            if headerCollapsed {
+                applyTransformToHeaderUsingOffset(0)
+            }
+            tableView.contentOffset.y = currentOffset
+        } else {
+            if !headerCollapsed {
+                applyTransformToHeaderUsingOffset(headerHeight)
+            }
+            tableView.contentOffset.y = currentOffset - headerHeight
+        }
+        
+    }
+    
+    
+    private func applyTransformToHeaderUsingOffset(offset:CGFloat) {
+        headerTopAnchorConstraint.constant = -offset
+        let fraction = offset/headerHeight
+        
+        let angle = fraction * CGFloat(M_PI_2)
+        
+        let rotateTransform = CATransform3DRotate(identityTransform, angle, 1.0, 0.0, 0.0)
+        headerView.layer.transform = CATransform3DConcat(rotateTransform, headerTranslationTransform)
+        headerView.alpha = 1 - fraction
+        
+        if fraction == 1 {
+            headerCollapsed = true
+        } else if fraction == 0{
+            headerCollapsed = false
+        }
+    }
+    
+    
+    func synchronizeOffsetWithScrollview(scrollView:UIScrollView) {
+        if self.scrollView == nil { return }
+        let currentOffset = scrollView.contentOffset.y
+        if scrollView === tableView && currentOffset >= 0 {
+            var expectedOffset = currentOffset
+            if currentOffset > 0 {
+                expectedOffset += headerHeight
+            } else {
+                expectedOffset += -headerTopAnchorConstraint.constant
+            }
+            let diff = fabs(expectedOffset - self.scrollView.contentOffset.y)
+            if diff > 0 {
+                self.scrollView.setContentOffset(CGPoint(x: 0, y: expectedOffset), animated: false)
+            }
+            return
         }
     }
     

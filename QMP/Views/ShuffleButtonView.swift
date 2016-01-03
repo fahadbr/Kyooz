@@ -26,6 +26,13 @@ final class ShuffleButtonView : UIButton {
         }
     }
     
+    @IBInspectable
+    var alignRight:Bool = false {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override var highlighted:Bool {
         didSet {
             setNeedsDisplay()
@@ -35,8 +42,13 @@ final class ShuffleButtonView : UIButton {
  
     override func drawRect(rect: CGRect) {
         if highlighted {
-            ThemeHelper.defaultTintColor.setFill()
-            ThemeHelper.defaultTintColor.setStroke()
+            if let highlightColor = titleColorForState(.Highlighted) {
+                highlightColor.setFill()
+                highlightColor.setStroke()
+            } else {
+                UIColor.darkGrayColor().setFill()
+                UIColor.darkGrayColor().setStroke()
+            }
         } else if isActive {
             ThemeHelper.defaultVividColor.setFill()
             ThemeHelper.defaultVividColor.setStroke()
@@ -45,12 +57,18 @@ final class ShuffleButtonView : UIButton {
             color.setStroke()
         }
         
+        var rectToUse = rect
+        if alignRight {
+            rectToUse.size.width = rectToUse.size.height
+            rectToUse.origin.x = rect.maxX - rectToUse.size.width
+        }
+        
         
         let path = UIBezierPath()
-        let xInset = rect.width * 0.30
-        let yInset = rect.height * 0.35
+        let xInset = rectToUse.width * 0.30
+        let yInset = rectToUse.height * 0.35
         
-        let insetRect = CGRectInset(rect, xInset, yInset)
+        let insetRect = CGRectInset(rectToUse, xInset, yInset)
         drawCurve(path, rect: insetRect, invertY: false)
         drawCurve(path, rect: insetRect, invertY: true)
         
