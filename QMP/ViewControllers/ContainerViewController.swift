@@ -121,6 +121,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             npView.centerXAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
             npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -centerPanelExpandedOffset).active = true
             npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
+            npView.layer.rasterizationScale = UIScreen.mainScreen().scale
         }
     }
     
@@ -129,11 +130,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             sidePanelExpanded = true
             
             animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                centerPanelExpandedOffset, shouldExpand: shouldExpand)
+                centerPanelExpandedOffset, shouldExpand: shouldExpand) { finished in
+                    self.nowPlayingNavigationController?.view?.layer.shouldRasterize = false
+            }
             
         } else {
             animateCenterPanelXPosition(targetPosition: 0, shouldExpand: shouldExpand) { finished in
                 self.sidePanelExpanded = false
+                self.nowPlayingNavigationController?.view?.layer.shouldRasterize = false
             }
         }
     }
@@ -265,7 +269,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
                 addSidePanelViewController()
             }
-            
+            nowPlayingNavigationController?.view.layer.shouldRasterize = true
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:

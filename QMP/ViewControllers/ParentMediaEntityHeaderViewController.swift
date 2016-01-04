@@ -33,8 +33,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     var headerHeight:CGFloat {
         return headerHeightConstraint.constant
     }
+    var headerCollapsed:Bool = false
     
-    private var headerCollapsed:Bool = false
     private var headerTranslationTransform:CATransform3D!
     
     private var playNextButton:UIBarButtonItem!
@@ -50,8 +50,9 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
         
         headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
-        headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeight/2, 0)
+        headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeightConstraint.constant/2, 0)
         headerView.layer.transform = headerTranslationTransform
+        headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
         
 //        configureTestDelegates()
         if scrollView != nil {
@@ -163,12 +164,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         
         tableView.setEditing(willEdit, animated: true)
         RootViewController.instance.setToolbarHidden(!willEdit)
-        if parentViewController != nil && !parentViewController!.automaticallyAdjustsScrollViewInsets {
-            UIView.animateWithDuration(0.25) {
-                let newInset:CGFloat = willEdit ? 44 : 0
-                self.tableView.contentInset.bottom = newInset
-            }
-        }
         
         refreshButtonStates()
     }
@@ -246,11 +241,13 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     }
     
     private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {
-        KyoozUtils.doInMainQueueAsync() {
-            if let items = self.filterQuery.items where !items.isEmpty {
-                self.audioQueuePlayer.playNow(withTracks: items, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: items.count):0) {
-                    if shouldShuffle && !self.audioQueuePlayer.shuffleActive {
-                        self.audioQueuePlayer.shuffleActive = true
+        KyoozUtils.doInMainQueueAsync() { [audioQueuePlayer = self.audioQueuePlayer, filterQuery = self.filterQuery] in
+            if let items = filterQuery.items where !items.isEmpty {
+                audioQueuePlayer.playNow(withTracks: items, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: items.count):0) {
+                    if shouldShuffle && !audioQueuePlayer.shuffleActive {
+                        audioQueuePlayer.shuffleActive = true
+                    } else if !shouldShuffle && audioQueuePlayer.shuffleActive {
+                        audioQueuePlayer.shuffleActive = false
                     }
                 }
             }
@@ -263,14 +260,17 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         
         
         if currentOffset > 0 && currentOffset < headerHeight {
+            headerView.layer.shouldRasterize = true
             applyTransformToHeaderUsingOffset(currentOffset)
         } else if currentOffset <= 0 {
             if headerCollapsed {
+                headerView.layer.shouldRasterize = false
                 applyTransformToHeaderUsingOffset(0)
             }
             tableView.contentOffset.y = currentOffset
         } else {
             if !headerCollapsed {
+                headerView.layer.shouldRasterize = false
                 applyTransformToHeaderUsingOffset(headerHeight)
             }
             tableView.contentOffset.y = currentOffset - headerHeight

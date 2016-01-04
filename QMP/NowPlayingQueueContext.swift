@@ -42,7 +42,7 @@ struct NowPlayingQueueContext {
         if shuffleActive {
             shuffleQueue()
         } else {
-            KyoozUtils.performWithMetrics(blockDescription: "RESTORE ORIGINAL QUEUE", block: { self.restoreOriginalQueue() })
+            restoreOriginalQueue()
         }
         self.shuffleActive = shuffleActive
     }

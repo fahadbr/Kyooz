@@ -205,20 +205,12 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     override func reloadSourceData() {
         entities = nil
         sections = nil
-        if libraryGroupingType === LibraryGrouping.Songs {
-            guard let items = filterQuery.items else {
-                Logger.debug("No items found for query \(filterQuery)")
-                return
-            }
-            entities = items
-        } else {
-            guard let collections = filterQuery.collections else {
-                Logger.debug("No collections found for query \(filterQuery)")
-                return
-            }
-            entities = collections
+        let currentGroupIsSongs = libraryGroupingType === LibraryGrouping.Songs
+        guard let entities:[MPMediaEntity] = currentGroupIsSongs ? filterQuery.items : filterQuery.collections else {
+            Logger.debug("No items found for query \(filterQuery)")
+            return
         }
-        
+        self.entities = entities
         if entities.count >= 15 {
             guard let sections = libraryGroupingType === LibraryGrouping.Songs ? filterQuery.itemSections : filterQuery.collectionSections else {
                 Logger.debug("No sections found for query \(filterQuery)")

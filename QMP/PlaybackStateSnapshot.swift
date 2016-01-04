@@ -16,15 +16,6 @@ struct PlaybackStateSnapshot {
     var persistableSnapshot:PlaybackStatePersistableSnapshot {
         return PlaybackStatePersistableSnapshot(snapshot: self)
     }
-    
-    init(nowPlayingQueueContext:NowPlayingQueueContext,
-        currentPlaybackTime:Float,
-        indexOfNowPlayingItem:Int) {
-            self.nowPlayingQueueContext = nowPlayingQueueContext
-            self.currentPlaybackTime = currentPlaybackTime
-            self.indexOfNowPlayingItem = indexOfNowPlayingItem
-    }
-
 }
 
 final class PlaybackStatePersistableSnapshot : NSObject, NSSecureCoding {
