@@ -12,7 +12,7 @@ import MediaPlayer
 class SongDetailsTableViewCell: AbstractTableViewCell {
 
     static let normalFont = UIFont(name:ThemeHelper.defaultFontName, size:12.0)
-    static let boldFont = UIFont(name:ThemeHelper.defaultFontNameBold, size:12.0)
+    static let boldFont = UIFont(name:ThemeHelper.defaultFontNameMedium, size:12.0)
     
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var songTitleLabel: UILabel!

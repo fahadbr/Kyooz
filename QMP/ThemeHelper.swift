@@ -12,10 +12,11 @@ import UIKit
 struct ThemeHelper {
     
     static let defaultFontName = "Avenir"
-    static let defaultFontNameBold = defaultFontName + "-Medium"
+    static let defaultFontNameMedium = defaultFontName + "-Medium"
+    static let defaultFontNameBold = defaultFontName + "-Heavy"
     static let defaultFontSize = CGFloat(15.0)
     
-    static let defaultFont = UIFont(name: defaultFontName + "-Medium", size: defaultFontSize)
+    static let defaultFont = UIFont(name: defaultFontNameMedium, size: defaultFontSize)
     
     static let defaultTintColor = UIColor(white: 0.7, alpha: 1.0)
     
@@ -30,7 +31,7 @@ struct ThemeHelper {
     
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()
-        titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontName + "-Heavy", size:defaultFontSize)
+        titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontNameBold, size:defaultFontSize)
         
         UINavigationBar.appearance().titleTextAttributes = titleTextAttributes
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()

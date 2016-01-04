@@ -19,7 +19,7 @@ class SearchResultsHeaderView: UIView {
         self.backgroundColor = ThemeHelper.defaultTableCellColor
         disclosureContainerView.backgroundColor = ThemeHelper.defaultTableCellColor
         headerTitleLabel.textColor = ThemeHelper.defaultFontColor
-        headerTitleLabel.font = UIFont(name: ThemeHelper.defaultFontNameBold, size: 12)
+        headerTitleLabel.font = UIFont(name: ThemeHelper.defaultFontNameMedium, size: 12)
         disclosureIndicator.textColor = ThemeHelper.defaultFontColor
         disclosureIndicator.font = headerTitleLabel.font
     }
