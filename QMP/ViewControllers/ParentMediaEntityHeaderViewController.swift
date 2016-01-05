@@ -91,8 +91,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         scrollView.scrollsToTop = shouldUseOverlay
         tableView.scrollEnabled = !shouldUseOverlay
         tableView.scrollsToTop = !shouldUseOverlay
-        
-        Logger.debug("calculated content size: \(scrollView.contentSize)")
     }
     
     

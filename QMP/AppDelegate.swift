@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     let tempDataDAO = TempDataDAO.instance
     let lastFmScrobbler = LastFmScrobbler.instance
-//    var remoteCommandHandler:RemoteCommandHandler = RemoteCommandHandler()
+    var remoteCommandHandler:RemoteCommandHandler!
     
     
     var window: UIWindow?
@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window!.rootViewController = containerViewController
         window!.makeKeyAndVisible()
-        
+
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         
         return true

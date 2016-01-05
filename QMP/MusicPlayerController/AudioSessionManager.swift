@@ -11,12 +11,7 @@ import AVFoundation
 
 final class AudioSessionManager : NSObject {
     
-    class var instance : AudioSessionManager {
-        struct Static {
-            static let instance:AudioSessionManager = AudioSessionManager()
-        }
-        return Static.instance
-    }
+    static let instance = AudioSessionManager()
     
     override init() {
         super.init()
@@ -38,7 +33,7 @@ final class AudioSessionManager : NSObject {
         do {
             try audioSession.setCategory(AVAudioSessionCategoryPlayback)
         } catch let error as NSError {
-            NSErrorPointer().memory = error
+            Logger.error("\(error.description)")
         }
 //        audioSession.setActive(true, error: NSErrorPointer())
         deviceSampleRate = audioSession.sampleRate

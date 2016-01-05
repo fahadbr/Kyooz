@@ -64,6 +64,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
             } else {
                 indexPathOfMovingItem = nil
             }
+            insertCellView.hidden = insertMode
             longPressGestureRecognizer.enabled = !insertMode
             for item in toolbarItems! {
                 item.enabled = !insertMode

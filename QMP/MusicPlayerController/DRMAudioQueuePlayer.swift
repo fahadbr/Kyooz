@@ -13,8 +13,8 @@ import Foundation
 final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
     
-    private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
-    private let playbackStateManager = PlaybackStateManager.instance
+    private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
+    private let playbackStateManager:PlaybackStateManager
     
     private var timer: NSTimer?
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
@@ -36,6 +36,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     override init() {
+        playbackStateManager = PlaybackStateManager(musicPlayer: musicPlayer)
         if let nowPlayingQueueContext = TempDataDAO.instance.getPlaybackStateSnapshotFromTempStorage()?.nowPlayingQueueContext {
             self.nowPlayingQueueContext = nowPlayingQueueContext
         } else {

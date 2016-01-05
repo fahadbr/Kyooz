@@ -42,23 +42,23 @@ class ParentMediaEntityViewController : UIViewController, MediaItemTableViewCont
         var actions = [UITableViewRowAction]()
         
         
-        let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nLast",
+        let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Queue\nLast",
             handler: {action, index in
                 self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Last)
-                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
+                self.tableView.editing = false
         })
         actions.append(playLastAction)
-        let playNextAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Play\nNext",
+        let playNextAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Queue\nNext",
             handler: {action, index in
                 self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Next)
-                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
+                self.tableView.editing = false
         })
         actions.append(playNextAction)
         
         if audioQueuePlayer.shuffleActive {
-            let playRandomlyAction = UITableViewRowAction(style: .Normal, title: "Play\nRandomly", handler: { (action, index) -> Void in
+            let playRandomlyAction = UITableViewRowAction(style: .Normal, title: "Queue\nRandomly", handler: { (action, index) -> Void in
                 self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Random)
-                self.tableView.delegate?.tableView?(tableView, didEndEditingRowAtIndexPath: indexPath)
+                self.tableView.editing = false
             })
             actions.append(playRandomlyAction)
         }
