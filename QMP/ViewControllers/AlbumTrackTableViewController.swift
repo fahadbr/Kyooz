@@ -24,14 +24,6 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     
     @IBOutlet var blurView: UIVisualEffectView!
     
-    @IBOutlet var subStackViewLeftConstraint: NSLayoutConstraint!
-    @IBOutlet var subStackViewHeightConstraint: NSLayoutConstraint!
-    private var _headerHeight:CGFloat!
-    private var subStackViewLeftConstraintConstant:CGFloat!
-    
-    override var headerHeight:CGFloat {
-        return _headerHeight
-    }
     
     private var titleLabel:UILabel!
     
@@ -42,8 +34,6 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     }
     
     override func viewDidLoad() {
-        _headerHeight = headerHeightConstraint.constant - subStackViewHeightConstraint.constant
-        subStackViewLeftConstraintConstant = subStackViewLeftConstraint.constant
         super.viewDidLoad()
         self.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
         
@@ -85,8 +75,6 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
             }
         } else {
             albumImageView.hidden = true
-            subStackViewLeftConstraintConstant = 0
-            subStackViewLeftConstraint.constant = 0
             blurView.backgroundColor = UIColor.blackColor()
         }
         
@@ -171,12 +159,9 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
             if alpha <= 0.25 {
                 let percentage = alpha * 4
                 titleLabel.alpha = 1 - percentage
-//                subStackViewLeftConstraint.constant = percentage * subStackViewLeftConstraintConstant
             } else {
                 titleLabel.alpha = 0
-//                subStackViewLeftConstraint.constant = subStackViewLeftConstraintConstant
             }
-            subStackViewLeftConstraint.constant = alpha * subStackViewLeftConstraintConstant
         }
     }
 

@@ -317,51 +317,52 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
-        if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
-            let clearPrecedingItemsAction = UIAlertAction(title: "Clear Preceding Tracks", style: UIAlertActionStyle.Default) { action in
-                var indiciesToDelete = [NSIndexPath]()
-                indiciesToDelete.reserveCapacity(index)
-                for i in 0..<index {
-                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
-                }
-                self.audioQueuePlayer.clearItems(towardsDirection: .Preceding, atIndex: index)
-                self.deleteIndexPaths(indiciesToDelete)
-            }
-            controller.addAction(clearPrecedingItemsAction)
-        }
         
-        if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
-            let clearUpcomingItemsAction = UIAlertAction(title: "Clear Following Tracks", style: .Default) { action in
-                var indiciesToDelete = [NSIndexPath]()
-                for i in (index + 1)...lastIndex {
-                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
-                }
-                self.audioQueuePlayer.clearItems(towardsDirection: .Following, atIndex: index)
-                self.deleteIndexPaths(indiciesToDelete)
-            }
-            controller.addAction(clearUpcomingItemsAction)
-        }
         
         if mediaItem.albumId != 0 {
-            let goToAlbumAction = UIAlertAction(title: "Go To Album", style: UIAlertActionStyle.Default) { action in
+            let goToAlbumAction = UIAlertAction(title: "Go To Album", style: .Default) { action in
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Albums, entity: mediaItem as! MPMediaItem)
             }
             controller.addAction(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = UIAlertAction(title: "Go To Artist", style: UIAlertActionStyle.Default) { action in
+            let goToArtistAction = UIAlertAction(title: "Go To Artist", style: .Default) { action in
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Artists, entity: mediaItem as! MPMediaItem)
             }
             controller.addAction(goToArtistAction)
         }
         
-
-        let deleteAction = UIAlertAction(title: "Remove", style:UIAlertActionStyle.Destructive) { action in
-            self.tableView(self.tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete,
+        if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
+            let clearPrecedingItemsAction = UIAlertAction(title: "Remove Above", style: .Destructive) { action in
+                var indiciesToDelete = [NSIndexPath]()
+                indiciesToDelete.reserveCapacity(index)
+                for i in 0..<index {
+                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
+                self.deleteIndexPaths(indiciesToDelete)
+            }
+            controller.addAction(clearPrecedingItemsAction)
+        }
+        
+        let deleteAction = UIAlertAction(title: "Remove", style: .Destructive) { action in
+            self.tableView(self.tableView, commitEditingStyle: .Delete,
                 forRowAtIndexPath: NSIndexPath(forRow: index, inSection: 0))
         }
         controller.addAction(deleteAction)
+        
+        if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
+            let clearUpcomingItemsAction = UIAlertAction(title: "Remove Below", style: .Destructive) { action in
+                var indiciesToDelete = [NSIndexPath]()
+                for i in (index + 1)...lastIndex {
+                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
+                }
+                self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
+                self.deleteIndexPaths(indiciesToDelete)
+            }
+            controller.addAction(clearUpcomingItemsAction)
+        }
         
         self.presentViewController(controller, animated: true, completion: nil)
     }
