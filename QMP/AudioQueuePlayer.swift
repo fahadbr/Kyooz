@@ -62,8 +62,8 @@ enum AudioQueuePlayerUpdate : String {
 }
 
 enum ClearDirection : Int {
-    case Preceding
-    case Following
+    case Above
+    case Below
     case All
 }
 

@@ -121,6 +121,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 musicPlayer.repeatMode = .One
             case .All:
                 musicPlayer.repeatMode = .All
+                persistToSystemQueue()
             }
         }
     }
@@ -245,8 +246,17 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
             indexBeforeModification = indexOfNowPlayingItem
             var truncatedQueue = [MPMediaItem]()
+            let repeatAllEnabled = repeatMode == .All
+            truncatedQueue.reserveCapacity(repeatAllEnabled ? queue.count : queue.count - indexOfNowPlayingItem)
             for i in indexOfNowPlayingItem..<queue.count {
                 truncatedQueue.append(queue[i])
+            }
+            if repeatAllEnabled {
+                for i in 0 ..< indexOfNowPlayingItem {
+                    truncatedQueue.append(queue[i])
+                }
+                nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: truncatedQueue)
+                indexBeforeModification = 0
             }
             
             KyoozUtils.doInMainQueueAsync() {
@@ -302,6 +312,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 mergedQueue.append(systemQueue[i - indexBeforeModification])
             }
         }
+        var shouldPersist = repeatMode == .All && indexBeforeModification != 0
         if musicPlayer.shuffleMode == .Off && repeatMode != .One && !shuffleActive {
             //if no special playback mode enabled then take the merged queue as the new context
             nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: mergedQueue)
@@ -312,14 +323,20 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             nowPlayingQueueContext.overrideShuffleQueue(mergedQueue)
             refreshIndexOfNowPlayingItem()
             musicPlayer.shuffleMode = .Off
-            persistToSystemQueue()
+            shouldPersist = true
         } else if shuffleActive {
             //if shuffle was active then override the shuffled queue with the merged queue
             nowPlayingQueueContext.overrideShuffleQueue(mergedQueue)
             refreshIndexOfNowPlayingItem()
         }
-        queueIsPersisted = true
-        publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+        
+        if shouldPersist {
+            persistToSystemQueue()
+        } else {
+            queueIsPersisted = true
+        }
+        
+        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
     
     private func persistQueueToAudioController(var indexToPlay:Int, forcePersist:Bool = false, completionHandler:()->() = { }) -> Bool {

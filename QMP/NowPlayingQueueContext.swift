@@ -125,7 +125,7 @@ struct NowPlayingQueueContext {
     mutating func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int) -> Bool {
         var nowPlayingItemRemoved = false
         switch(direction) {
-        case .Preceding:
+        case .Above:
             let oldCount = currentQueue.count
             currentQueue.removeRange(0..<index)
             let newCount = currentQueue.count
@@ -135,7 +135,7 @@ struct NowPlayingQueueContext {
             } else {
                 indexOfNowPlayingItem -= (oldCount - newCount)
             }
-        case .Following:
+        case .Below:
             currentQueue.removeRange((index + 1)..<currentQueue.count)
             if index < indexOfNowPlayingItem {
                 indexOfNowPlayingItem = 0
