@@ -11,7 +11,17 @@ import MediaPlayer
 
 final class MediaEntityTableViewController: ParentMediaEntityHeaderViewController, UITableViewDelegate, UITableViewDataSource {
 
-    private var sections:[MPMediaQuerySection]?
+    private var sections:[MPMediaQuerySection]? {
+        didSet {
+            if sections != nil {
+                tableView.estimatedSectionHeaderHeight = 40
+                tableView.sectionHeaderHeight = 40
+            } else {
+                tableView.estimatedSectionHeaderHeight = 0
+                tableView.sectionHeaderHeight = 0
+            }
+        }
+    }
     private var entities:[MPMediaEntity]!
     
     var subGroups:[LibraryGrouping] = LibraryGrouping.values {
@@ -220,13 +230,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
                 return
             }
             self.sections = sections
-        }
-        if sections != nil {
-            tableView.estimatedSectionHeaderHeight = 40
-            tableView.sectionHeaderHeight = 40
-        } else {
-            tableView.estimatedSectionHeaderHeight = 0
-            tableView.sectionHeaderHeight = 0
         }
     }
 

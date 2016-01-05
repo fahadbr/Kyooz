@@ -12,23 +12,18 @@ import AVFoundation
 
 final class PlaybackStateManager: NSObject {
     
-    class var instance : PlaybackStateManager {
-        struct Static {
-            static let instance:PlaybackStateManager = PlaybackStateManager()
-        }
-        return Static.instance
-    }
     
     static let PlaybackStateCorrectedNotification = "PlaybackStateCorrectedNotification"
    
-    private let musicPlayer = ApplicationDefaults.defaultMusicPlayerController
+    private let musicPlayer:MPMusicPlayerController
     private let audioSession = AVAudioSession.sharedInstance()
     private let timeDelayInSeconds:Double = 1.0/2.0
     private let stateDescriptions = ["Stopped", "Playing", "Paused", "Interrupted", "SeekingForward", "SeekingBackward"]
     private (set) var musicPlaybackState:MPMusicPlaybackState
     
     
-    override init(){
+    init(musicPlayer:MPMusicPlayerController){
+        self.musicPlayer = musicPlayer
         self.musicPlaybackState = musicPlayer.playbackState
         super.init()
         self.registerForNotifications()

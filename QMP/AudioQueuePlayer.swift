@@ -48,6 +48,7 @@ protocol AudioQueuePlayer:class {
 
 extension AudioQueuePlayer {
     func publishNotification(updateType updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
+//        if let item = sender.nowPlayingItem { NowPlayingInfoHelper.instance.publishNowPlayingInfo(item) }
         KyoozUtils.doInMainQueueAsync() {
             let notification = NSNotification(name: updateType.rawValue, object: sender)
             NSNotificationCenter.defaultCenter().postNotification(notification)

@@ -35,17 +35,17 @@ class RemoteCommandHandler : NSObject {
         rcc.playCommand.addTarget(self, action: "play")
         
         
-//        remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//        rcc.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
 //            self.audioQueuePlayer.play()
 //            return MPRemoteCommandHandlerStatus.Success
 //        }
-//        remoteCommandCenter.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//        rcc.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
 //            self.audioQueuePlayer.pause()
 //            return MPRemoteCommandHandlerStatus.Success
 //        }
-//        remoteCommandCenter.togglePlayPauseCommand.enabled = shouldEnable
-//        remoteCommandCenter.togglePlayPauseCommand.addTarget(self, action: "doNothing")
-////        remoteCommandCenter.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//        rcc.togglePlayPauseCommand.enabled = shouldEnable
+//        rcc.togglePlayPauseCommand.addTarget(self, action: "doNothing")
+////        rcc.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
 ////            if(self.audioQueuePlayer.musicIsPlaying) {
 ////                self.audioQueuePlayer.pause()
 ////            } else {
@@ -53,14 +53,14 @@ class RemoteCommandHandler : NSObject {
 ////            }
 ////            return MPRemoteCommandHandlerStatus.Success
 ////        }
-//        remoteCommandCenter.previousTrackCommand.enabled = shouldEnable
-//        remoteCommandCenter.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//        rcc.previousTrackCommand.enabled = shouldEnable
+//        rcc.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
 //            self.audioQueuePlayer.skipBackwards()
 //            return MPRemoteCommandHandlerStatus.Success
 //        }
 //        
-//        remoteCommandCenter.nextTrackCommand.enabled = shouldEnable
-//        remoteCommandCenter.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+//        rcc.nextTrackCommand.enabled = shouldEnable
+//        rcc.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
 //            self.audioQueuePlayer.skipForwards()
 //            return MPRemoteCommandHandlerStatus.Success
 //        }
@@ -77,6 +77,11 @@ class RemoteCommandHandler : NSObject {
     
     func play() {
         rcc.playCommand.enabled = true
+        if audioQueuePlayer.musicIsPlaying {
+            audioQueuePlayer.pause()
+        } else {
+            audioQueuePlayer.play()
+        }
     }
     
     private func unregisterForRemoteCommands() {
