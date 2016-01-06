@@ -218,11 +218,67 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <visualEffectView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R1l-bh-GSp">
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R1l-bh-GSp">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <view key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" id="aOX-id-Cd2">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="HNg-HJ-gQM">
+                                            <rect key="frame" x="20" y="560" width="560" height="40"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-R2-BiF">
+                                                    <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="OH0-R2-BiF" secondAttribute="height" multiplier="1:1" id="lA0-hU-tFc"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
+                                                    <state key="normal" title="HIDE">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="collapseViewController:" destination="igl-8i-tSd" eventType="touchUpInside" id="W2Z-2x-UCz"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i2B-J3-Tc8">
+                                                    <rect key="frame" x="166" y="0.0" width="55" height="40"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
+                                                    <state key="normal" title="-&gt;ALBUM">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="goToAlbum:" destination="igl-8i-tSd" eventType="touchUpInside" id="Pk8-OQ-WfW"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckW-JV-yKz">
+                                                    <rect key="frame" x="341" y="0.0" width="52" height="40"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
+                                                    <state key="normal" title="-&gt;ARTIST">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="goToArtist:" destination="igl-8i-tSd" eventType="touchUpInside" id="cng-zK-nxD"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TgC-Lb-Gq8" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
+                                                    <rect key="frame" x="520" y="0.0" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="TgC-Lb-Gq8" secondAttribute="height" multiplier="1:1" id="GCn-54-kHy"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <action selector="showQueue:" destination="igl-8i-tSd" eventType="touchUpInside" id="lQz-w5-ZX4"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="33x-Ok-6qE"/>
+                                                <constraint firstItem="i2B-J3-Tc8" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="VLk-Yj-PCv"/>
+                                                <constraint firstItem="OH0-R2-BiF" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="blf-1h-9F3"/>
+                                                <constraint firstItem="TgC-Lb-Gq8" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="dDR-iR-h87"/>
+                                                <constraint firstItem="ckW-JV-yKz" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="gCe-g0-B0T"/>
+                                            </constraints>
+                                        </stackView>
+                                    </subviews>
                                 </view>
                                 <blurEffect style="dark"/>
                             </visualEffectView>
@@ -293,8 +349,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="400" height="3"/>
                                         </variation>
                                     </progressView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Song Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ksq-Lm-cab">
-                                        <rect key="frame" x="65" y="8" width="527" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ksq-Lm-cab">
+                                        <rect key="frame" x="65" y="6" width="527" height="21"/>
                                         <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -435,6 +491,7 @@
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="leading" secondItem="C3t-5J-Dbo" secondAttribute="trailing" constant="20" id="JRe-jh-dTv"/>
                             <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" constant="8" id="KH0-xr-sI4"/>
                             <constraint firstItem="LL1-x0-BD9" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" id="Mt9-Ti-0km"/>
+                            <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="HNg-HJ-gQM" secondAttribute="bottom" id="Mxd-Ke-vjt"/>
                             <constraint firstAttribute="trailing" secondItem="qD5-cn-9cR" secondAttribute="trailing" id="OT0-dI-Pq9"/>
                             <constraint firstItem="8bf-Dc-sUH" firstAttribute="trailing" secondItem="LL1-x0-BD9" secondAttribute="trailing" constant="-8" id="QyC-TX-VqA"/>
                             <constraint firstAttribute="centerX" secondItem="ljA-ne-tuv" secondAttribute="centerX" id="Scg-US-eWu"/>
@@ -444,6 +501,7 @@
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="trailing" secondItem="LL1-x0-BD9" secondAttribute="trailing" id="XxE-if-D1s"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="Ytu-f0-KS4"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="ZvZ-RQ-QnE"/>
+                            <constraint firstItem="HNg-HJ-gQM" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" id="abK-01-Njg"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
                             <constraint firstItem="a9l-ER-3zv" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="dRa-HY-yc6"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="35" id="eUA-OX-4N8"/>
@@ -454,6 +512,7 @@
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" priority="900" constant="236" id="mHO-C2-WDN"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="mm3-Jf-oCR"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="leading" secondItem="cEN-vG-UDM" secondAttribute="trailing" constant="20" id="oJx-h6-Whe"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HNg-HJ-gQM" secondAttribute="trailing" id="pcm-Bs-VuT"/>
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="-15" id="rGs-dT-aTr"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="t0h-ZW-ReY"/>
                         </constraints>

@@ -15,12 +15,32 @@ final class ListButtonView: UIButton {
     var alignRight:Bool = false
     
     @IBInspectable
-    var scale:CGFloat = 0.8
+    var scale:CGFloat = 0.4 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     
     @IBInspectable
     var color:UIColor = ThemeHelper.defaultFontColor
     
+    override var highlighted:Bool {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override func drawRect(rect: CGRect) {
+        var color:UIColor!
+        if highlighted {
+            if let highlightColor = titleColorForState(.Highlighted) {
+                color = highlightColor
+            } else {
+                color = UIColor.darkGrayColor()
+            }
+        } else {
+            color = self.color
+        }
         color.setStroke()
         
         var rectToUse = rect
@@ -30,7 +50,7 @@ final class ListButtonView: UIButton {
         }
         let xScale = (1 - scale)/2
         let insetX = rectToUse.width * xScale
-        let insetY = rectToUse.height * xScale * 3/2
+        let insetY = rectToUse.height * (xScale * 1.2)
         let insetRect = CGRectInset(rectToUse, insetX, insetY)
         
         let minX = insetRect.origin.x

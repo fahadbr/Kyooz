@@ -20,6 +20,15 @@ private let identityTransform:CATransform3D = {
 
 class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, UIScrollViewDelegate {
     
+    static let queueButton:UIBarButtonItem = {
+        let view = ListButtonView()
+        view.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        view.addTarget(ContainerViewController.instance, action: "toggleSidePanel", forControlEvents: .TouchUpInside)
+        return UIBarButtonItem(customView: view)
+    }()
+    
+    static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
+    
     var libraryGroupingType:LibraryGrouping! = LibraryGrouping.Artists
     var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
     
@@ -45,9 +54,11 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     var testDelegate:TestTableViewDataSourceDelegate!
     
+    var listButtonView = ListButtonView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
+        navigationItem.rightBarButtonItems = [ParentMediaEntityHeaderViewController.queueButton, ParentMediaEntityHeaderViewController.searchButton]
         
         headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
         headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeightConstraint.constant/2, 0)
@@ -136,20 +147,22 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     
     @IBAction final func toggleSelectMode(sender:UIButton?) {
-        selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
-        playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-        playLastButton = UIBarButtonItem(title: "Play Last", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-        playRandomlyButton = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-        selectAllButton.tintColor = ThemeHelper.defaultTintColor
-        playNextButton.tintColor = ThemeHelper.defaultTintColor
-        playLastButton.tintColor = ThemeHelper.defaultTintColor
-        playRandomlyButton.tintColor = ThemeHelper.defaultTintColor
-        
-        func createFlexibleSpace() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        if toolbarItems == nil || toolbarItems!.isEmpty {
+            selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
+            playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+            playLastButton = UIBarButtonItem(title: "Play Last", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+            playRandomlyButton = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
+            selectAllButton.tintColor = ThemeHelper.defaultTintColor
+            playNextButton.tintColor = ThemeHelper.defaultTintColor
+            playLastButton.tintColor = ThemeHelper.defaultTintColor
+            playRandomlyButton.tintColor = ThemeHelper.defaultTintColor
+            
+            func createFlexibleSpace() -> UIBarButtonItem {
+                return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+            }
+            
+            toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
         }
-        
-        toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
         
         let willEdit = !tableView.editing
         if willEdit {

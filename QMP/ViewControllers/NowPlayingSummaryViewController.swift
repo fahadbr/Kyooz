@@ -105,6 +105,26 @@ class NowPlayingSummaryViewController: UIViewController {
         repeatButton.repeatState = audioQueuePlayer.repeatMode
     }
     
+    @IBAction func showQueue(sender: AnyObject) {
+        ContainerViewController.instance.toggleSidePanel()
+    }
+    
+    
+    @IBAction func goToArtist(sender: AnyObject) {
+        if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem {
+            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Artists, entity: nowPlayingItem)
+        }
+    }
+    @IBAction func goToAlbum(sender: AnyObject) {
+        if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem {
+            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Albums, entity: nowPlayingItem)
+        }
+    }
+    
+    @IBAction func collapseViewController(sender: AnyObject) {
+        RootViewController.instance.animatePullablePanel(shouldExpand: false)
+    }
+    
     //MARK: - FUNCTIONS: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()

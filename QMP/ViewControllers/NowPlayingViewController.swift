@@ -256,6 +256,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",
+            name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
+        notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     

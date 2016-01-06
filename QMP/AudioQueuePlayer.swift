@@ -58,6 +58,7 @@ extension AudioQueuePlayer {
 
 enum AudioQueuePlayerUpdate : String {
     case QueueUpdate = "AudioQueuePlayerQueueUpdate"
+    case SystematicQueueUpdate = "AudioQueuePlayerSystematicQueueUpdate"
     case PlaybackStateUpdate = "AudioQueuePlayerPlaybackStatusUpdate"
     case NowPlayingItemChanged = "AudioQueuePlayerNowPlayingItemChanged"
 }
