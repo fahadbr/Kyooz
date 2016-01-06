@@ -106,6 +106,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         } set {
             nowPlayingQueueContext.setShuffleActive(newValue)
             persistToSystemQueue()
+            publishNotification(updateType: .SystematicQueueUpdate, sender: self)
         }
     }
     
@@ -343,7 +344,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             queueIsPersisted = true
         }
         
-        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        publishNotification(updateType: .SystematicQueueUpdate, sender: self)
     }
     
     private func persistQueueToAudioController(var indexToPlay:Int, forcePersist:Bool = false, completionHandler:()->() = { }) -> Bool {

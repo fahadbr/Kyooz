@@ -95,6 +95,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
         
+        addSidePanelViewController()
     }
     
     func toggleSidePanel() {
@@ -127,10 +128,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     private func animateSidePanel(shouldExpand shouldExpand: Bool) {
         if shouldExpand {
-            sidePanelExpanded = true
-            
             animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
                 centerPanelExpandedOffset, shouldExpand: shouldExpand) { finished in
+                    self.sidePanelExpanded = true
                     self.nowPlayingNavigationController?.view?.layer.shouldRasterize = false
             }
             
