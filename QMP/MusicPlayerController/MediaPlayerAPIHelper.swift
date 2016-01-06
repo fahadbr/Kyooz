@@ -9,46 +9,35 @@
 import Foundation
 import MediaPlayer
 
-class MediaPlayerAPIHelper {
+final class MediaPlayerAPIHelper {
     
-    private let objCUtils = ObjCUtils()
+    private static let objCUtils = ObjCUtils()
     
-    private let sel1 = ["number",""]
-    private let sel2 = ["of",""]
-    private let sel3 = ["items",""]
+    private static let sel1 = ["number",""]
+    private static let sel2 = ["of",""]
+    private static let sel3 = ["items",""]
     
-    private let selector:String
-    
-    init() {
-        selector = sel1[0] + sel2[0].capitalizedString + sel3[0].capitalizedString
-    }
+    private static let selector:String = {
+        return sel1[0] + sel2[0].capitalizedString + sel3[0].capitalizedString
+    }()
     
     
-    
-    func getCurrentQueue(musicPlayer:MPMusicPlayerController) -> [AudioTrack]? {
+    static func getQueueCount(musicPlayer:MPMusicPlayerController) -> Int {
         if !musicPlayer.respondsToSelector(NSSelectorFromString(selector)) {
             Logger.debug("music player doesnt respond to selector to get no of items")
-            return nil
+            return 0
         }
         
         guard let numberOfItems = musicPlayer.valueForKey(selector) as? Int else {
             Logger.debug("didnt get a value for number of items")
-            return nil
+            return 0
         }
         
-        var items = [AudioTrack]()
-        items.reserveCapacity(numberOfItems)
-        KyoozUtils.performWithMetrics(blockDescription: "read system queue") {
-            for i in 0..<numberOfItems {
-                if let item = self.objCUtils.getItemForPlayer(musicPlayer, forIndex: i) {
-                    items.append(item)
-                } else {
-                    Logger.error("was not able to retrieve media item for index \(i)")
-                }
-            }
-        }
-        
-        return items
+        return numberOfItems
+    }
+    
+    static func getMediaItemForIndex(musicPlayer:MPMusicPlayerController ,index:Int) -> AudioTrack? {
+        return objCUtils.getItemForPlayer(musicPlayer, forIndex: index)
     }
     
 }

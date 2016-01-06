@@ -13,6 +13,14 @@ import Foundation
 final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
     
+    private let backgroundQueue:NSOperationQueue = {
+        let queue = NSOperationQueue()
+        queue.qualityOfService = .UserInteractive
+        queue.name = "Kyooz.DRMAudioQueuePlayer.BackgroundQueue"
+        return queue
+    }()
+    private var pullSystemQueueOperation:PullSystemQueueOperation?
+    
     private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
     private let playbackStateManager:PlaybackStateManager
     
@@ -21,7 +29,6 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private var queueIsPersisted:Bool = true
     private let indexBeforeModificationKey = "indexBeforeModification"
-    private let mediaPlayerAPIHelper = MediaPlayerAPIHelper()
     
     private var nowPlayingQueueContext:NowPlayingQueueContext {
         didSet {
@@ -184,7 +191,17 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func playItemWithIndexInCurrentQueue(index index:Int) {
-        if(index == indexOfNowPlayingItem) { return }
+        if nowPlayingItem == nil {
+            playNow(withTracks: nowPlayingQueue, startingAtIndex: index, completionBlock: nil)
+            return
+        }
+        
+        if(index == indexOfNowPlayingItem) {
+            if !musicIsPlaying {
+                musicPlayer.play()
+            }
+            return
+        }
         
         let shouldForcePersist = index < indexBeforeModification
         
@@ -244,7 +261,9 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private func persistToSystemQueue() {
         if let queue = nowPlayingQueue as? [MPMediaItem] {
-
+            //cancel pulling of system queue if its executing
+            pullSystemQueueOperation?.cancel()
+            
             indexBeforeModification = indexOfNowPlayingItem
             var truncatedQueue = [MPMediaItem]()
             let repeatAllEnabled = repeatMode == .All
@@ -260,10 +279,10 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 indexBeforeModification = 0
             }
             
-            KyoozUtils.doInMainQueueAsync() {
-                self.musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
-                let item = self.musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
-                self.musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
+            KyoozUtils.doInMainQueueAsync() { [musicPlayer = self.musicPlayer] in
+                musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
+                let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
+                musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
             }
             queueIsPersisted = true
             
@@ -289,30 +308,17 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     private func pullSystemQueue() {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0)) {
-            if let systemQueue = self.mediaPlayerAPIHelper.getCurrentQueue(self.musicPlayer) {
-                KyoozUtils.doInMainQueue() {
-                    self.mergeNowPlayingQueue(withQueue: systemQueue)
-                }
-            }
+        self.pullSystemQueueOperation?.cancel()
+        let pullSystemQueueOperation = PullSystemQueueOperation(audioQueuePlayer: self)
+        pullSystemQueueOperation.completionBlock = {
+            KyoozUtils.doInMainQueue { self.pullSystemQueueOperation = nil }
         }
+        self.pullSystemQueueOperation = pullSystemQueueOperation
+        backgroundQueue.addOperation(pullSystemQueueOperation)
     }
     
-    private func mergeNowPlayingQueue(withQueue systemQueue:[AudioTrack]) {
-        if systemQueue.isEmpty {
-            resetQueueStateToBeginning()
-            return
-        }
+    private func applyMergedQueue(withQueue mergedQueue:[AudioTrack]) {
         
-        var mergedQueue = [AudioTrack]()
-        mergedQueue.reserveCapacity(indexBeforeModification + systemQueue.count)
-        for i in 0..<(indexBeforeModification + systemQueue.count) {
-            if i < indexBeforeModification {
-                mergedQueue.append(nowPlayingQueue[i])
-            } else {
-                mergedQueue.append(systemQueue[i - indexBeforeModification])
-            }
-        }
         var shouldPersist = repeatMode == .All && indexBeforeModification != 0
         if musicPlayer.shuffleMode == .Off && repeatMode != .One && !shuffleActive {
             //if no special playback mode enabled then take the merged queue as the new context
@@ -507,6 +513,73 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
     func isMultiTaskingSupported() -> Bool {
         return UIDevice.currentDevice().multitaskingSupported
+    }
+    
+    final class PullSystemQueueOperation : NSOperation {
+        
+        let audioQueuePlayer:DRMAudioQueuePlayer
+        
+        init(audioQueuePlayer:DRMAudioQueuePlayer) {
+            self.audioQueuePlayer = audioQueuePlayer
+        }
+        
+        deinit {
+            Logger.debug("deinitializing pull system queue op")
+        }
+        
+        override func main() {
+            KyoozUtils.performWithMetrics(blockDescription: "read system queue") {
+                self.readSystemQueue()
+            }
+        }
+        
+        private func readSystemQueue() {
+            let musicPlayer = audioQueuePlayer.musicPlayer
+            let numberOfItems = MediaPlayerAPIHelper.getQueueCount(musicPlayer)
+            if numberOfItems == 0 { return }
+            
+            func logCancelled() {
+                Logger.debug("pull systme queue op cancelled")
+            }
+            
+            var systemQueue = [AudioTrack]()
+            systemQueue.reserveCapacity(numberOfItems)
+            for i in 0..<numberOfItems {
+                if cancelled { logCancelled(); return }
+                
+                if let item = MediaPlayerAPIHelper.getMediaItemForIndex(musicPlayer, index: i) {
+                    systemQueue.append(item)
+                } else {
+                    Logger.error("was not able to retrieve media item for index \(i)")
+                }
+            }
+            
+            if systemQueue.isEmpty && audioQueuePlayer.nowPlayingItem == nil {
+                KyoozUtils.doInMainQueue() { [audioQueuePlayer = self.audioQueuePlayer] in
+                    audioQueuePlayer.resetQueueStateToBeginning()
+                }
+                return
+            }
+            
+            let indexBeforeModification = audioQueuePlayer.indexBeforeModification
+            let nowPlayingQueue = audioQueuePlayer.nowPlayingQueue
+            
+            var mergedQueue = [AudioTrack]()
+            mergedQueue.reserveCapacity(indexBeforeModification + systemQueue.count)
+            for i in 0..<(indexBeforeModification + systemQueue.count) {
+                if cancelled { logCancelled(); return }
+                if i < indexBeforeModification {
+                    mergedQueue.append(nowPlayingQueue[i])
+                } else {
+                    mergedQueue.append(systemQueue[i - indexBeforeModification])
+                }
+            }
+            
+            if cancelled { logCancelled(); return }
+            KyoozUtils.doInMainQueue() { [audioQueuePlayer = self.audioQueuePlayer] in
+                audioQueuePlayer.applyMergedQueue(withQueue: mergedQueue)
+            }
+        }
     }
     
 }
