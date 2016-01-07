@@ -20,6 +20,10 @@ private let identityTransform:CATransform3D = {
 
 class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, UIScrollViewDelegate {
     
+    private enum HeaderState : Int {
+        case Collapsed, Expanded, Transitioning
+    }
+    
     static let queueButton:UIBarButtonItem = {
         let view = ListButtonView()
         view.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
@@ -42,7 +46,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     var headerHeight:CGFloat {
         return headerHeightConstraint.constant
     }
-    var headerCollapsed:Bool = false
+    private var headerState:HeaderState = .Expanded
     
     private var headerTranslationTransform:CATransform3D!
     
@@ -274,13 +278,13 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
             headerView.layer.shouldRasterize = true
             applyTransformToHeaderUsingOffset(currentOffset)
         } else if currentOffset <= 0 {
-            if headerCollapsed {
+            if headerState != .Expanded {
                 headerView.layer.shouldRasterize = false
                 applyTransformToHeaderUsingOffset(0)
             }
             tableView.contentOffset.y = currentOffset
         } else {
-            if !headerCollapsed {
+            if headerState != .Collapsed {
                 headerView.layer.shouldRasterize = false
                 applyTransformToHeaderUsingOffset(headerHeight)
             }
@@ -300,9 +304,11 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         headerView.alpha = 1 - fraction
         
         if fraction == 1 {
-            headerCollapsed = true
-        } else if fraction == 0{
-            headerCollapsed = false
+            headerState = .Collapsed
+        } else if fraction == 0 {
+            headerState = .Expanded
+        } else {
+            headerState = .Transitioning
         }
     }
     

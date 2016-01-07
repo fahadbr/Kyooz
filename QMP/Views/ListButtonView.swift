@@ -24,6 +24,9 @@ final class ListButtonView: UIButton {
     @IBInspectable
     var color:UIColor = ThemeHelper.defaultFontColor
     
+    @IBInspectable
+    var showBullets:Bool = false
+    
     override var highlighted:Bool {
         didSet {
             setNeedsDisplay()
@@ -42,6 +45,7 @@ final class ListButtonView: UIButton {
             color = self.color
         }
         color.setStroke()
+        color.setFill()
         
         var rectToUse = rect
         if alignRight {
@@ -57,8 +61,9 @@ final class ListButtonView: UIButton {
         let maxX = insetRect.maxX
         
         let path = UIBezierPath()
+        let minY = insetRect.origin.y
         path.moveToPoint(insetRect.origin)
-        path.addLineToPoint(CGPoint(x: maxX, y: insetRect.origin.y))
+        path.addLineToPoint(CGPoint(x: maxX, y: minY))
         
         let midY = insetRect.midY
         path.moveToPoint(CGPoint(x: minX, y: midY))
@@ -67,8 +72,26 @@ final class ListButtonView: UIButton {
         let maxY = insetRect.maxY
         path.moveToPoint(CGPoint(x: minX, y: maxY))
         path.addLineToPoint(CGPoint(x: maxX, y: maxY))
-        path.lineWidth = 2
+        path.lineWidth = insetRect.height * 0.15
+        
+        if showBullets {
+            path.applyTransform(CGAffineTransformMakeTranslation(insetRect.width * 0.15, 0))
+            let size = insetRect.height * 0.2
+            let circlePath = UIBezierPath()
+            circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: minY, width: size, height: size)))
+            
+            circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: midY, width: size, height: size)))
+            
+            circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: maxY, width: size, height: size)))
+            
+            let translationAmount = -size/2
+            circlePath.applyTransform(CGAffineTransformMakeTranslation(translationAmount, translationAmount))
+            circlePath.fill()
+        }
+        
         path.stroke()
+        
+  
     }
 
 }
