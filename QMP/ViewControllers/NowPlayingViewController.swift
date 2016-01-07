@@ -248,6 +248,12 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         tableView.reloadData()
     }
     
+    func reloadIfCollapsed(notification:NSNotification?) {
+        if !viewExpanded {
+            reloadTableData(notification)
+        }
+    }
+    
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
@@ -257,6 +263,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
+        notificationCenter.addObserver(self, selector: "reloadIfCollapsed:",
+            name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadTableData:",
             name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }

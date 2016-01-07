@@ -65,6 +65,11 @@ class SearchExecutionController<T:NSObject> : NSObject {
             KyoozUtils.doInMainQueue() {
                 //we're updating the search results in the main queue because updating them in the background could conflict with when
                 //the table view using this data gets updated
+                if results.isEmpty {
+                    if let oldResults = self?.searchResults where oldResults.isEmpty{
+                        return
+                    }
+                }
                 self?.searchResults = results
                 self?.delegate?.searchResultsDidGetUpdated()
             }
@@ -91,7 +96,7 @@ class SearchExecutionController<T:NSObject> : NSObject {
     
 }
 
-class IPodLibrarySearchExecutionController : SearchExecutionController<MPMediaEntity> {
+final class IPodLibrarySearchExecutionController : SearchExecutionController<MPMediaEntity> {
     
     override init(libraryGroup: LibraryGrouping, searchKeys: [String]) {
         super.init(libraryGroup: libraryGroup, searchKeys: searchKeys)
