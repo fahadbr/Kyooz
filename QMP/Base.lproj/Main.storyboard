@@ -225,10 +225,10 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="HNg-HJ-gQM">
-                                            <rect key="frame" x="20" y="560" width="560" height="40"/>
+                                            <rect key="frame" x="12" y="570" width="576" height="30"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-R2-BiF">
-                                                    <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="OH0-R2-BiF" secondAttribute="height" multiplier="1:1" id="lA0-hU-tFc"/>
                                                     </constraints>
@@ -241,9 +241,9 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i2B-J3-Tc8">
-                                                    <rect key="frame" x="166" y="0.0" width="55" height="40"/>
+                                                    <rect key="frame" x="169" y="0.0" width="43" height="30"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
-                                                    <state key="normal" title="-&gt;ALBUM">
+                                                    <state key="normal" title="ALBUM">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
@@ -251,27 +251,34 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckW-JV-yKz">
-                                                    <rect key="frame" x="341" y="0.0" width="52" height="40"/>
+                                                    <rect key="frame" x="345" y="0.0" width="41" height="30"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
-                                                    <state key="normal" title="-&gt;ARTIST">
+                                                    <state key="normal" title="ARTIST">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="goToArtist:" destination="igl-8i-tSd" eventType="touchUpInside" id="cng-zK-nxD"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TgC-Lb-Gq8" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
-                                                    <rect key="frame" x="520" y="0.0" width="40" height="40"/>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TgC-Lb-Gq8" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
+                                                    <rect key="frame" x="506" y="0.0" width="70" height="30"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="TgC-Lb-Gq8" secondAttribute="height" multiplier="1:1" id="GCn-54-kHy"/>
+                                                        <constraint firstAttribute="width" constant="70" id="9No-U1-QLA"/>
                                                     </constraints>
+                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
+                                                    <state key="normal" title="QUEUE">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="alignRight" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
                                                     <connections>
                                                         <action selector="showQueue:" destination="igl-8i-tSd" eventType="touchUpInside" id="lQz-w5-ZX4"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="33x-Ok-6qE"/>
+                                                <constraint firstAttribute="height" constant="30" id="33x-Ok-6qE"/>
                                                 <constraint firstItem="i2B-J3-Tc8" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="VLk-Yj-PCv"/>
                                                 <constraint firstItem="OH0-R2-BiF" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="blf-1h-9F3"/>
                                                 <constraint firstItem="TgC-Lb-Gq8" firstAttribute="height" secondItem="HNg-HJ-gQM" secondAttribute="height" id="dDR-iR-h87"/>
@@ -501,7 +508,7 @@
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="trailing" secondItem="LL1-x0-BD9" secondAttribute="trailing" id="XxE-if-D1s"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="Ytu-f0-KS4"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="ZvZ-RQ-QnE"/>
-                            <constraint firstItem="HNg-HJ-gQM" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" id="abK-01-Njg"/>
+                            <constraint firstItem="HNg-HJ-gQM" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-8" id="abK-01-Njg"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
                             <constraint firstItem="a9l-ER-3zv" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="dRa-HY-yc6"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="35" id="eUA-OX-4N8"/>
@@ -512,7 +519,7 @@
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" priority="900" constant="236" id="mHO-C2-WDN"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="120" id="mm3-Jf-oCR"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="leading" secondItem="cEN-vG-UDM" secondAttribute="trailing" constant="20" id="oJx-h6-Whe"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="HNg-HJ-gQM" secondAttribute="trailing" id="pcm-Bs-VuT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HNg-HJ-gQM" secondAttribute="trailing" constant="-8" id="pcm-Bs-VuT"/>
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="-15" id="rGs-dT-aTr"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="t0h-ZW-ReY"/>
                         </constraints>
