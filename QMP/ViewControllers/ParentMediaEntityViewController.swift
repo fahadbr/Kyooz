@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ParentMediaEntityViewController : UIViewController, MediaItemTableViewControllerProtocol {
+class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol {
     private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)
     private static let blueColor = UIColor(red: 51.0/225.0, green: 62.0/225.0, blue: 222.0/225.0, alpha: 1)
     
@@ -31,6 +31,7 @@ class ParentMediaEntityViewController : UIViewController, MediaItemTableViewCont
     
     deinit {
         unregisterForNotifications()
+        Logger.debug("deinitializing media entity vc")
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

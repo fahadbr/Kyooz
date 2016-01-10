@@ -18,7 +18,7 @@ private let identityTransform:CATransform3D = {
     return identity
 }()
 
-class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, UIScrollViewDelegate {
+class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     private enum HeaderState : Int {
         case Collapsed, Expanded, Transitioning
@@ -36,7 +36,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     var libraryGroupingType:LibraryGrouping! = LibraryGrouping.Artists
     var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
     
-    @IBOutlet var headerView: UIView!
+    @IBOutlet var headerView:UIView!
     @IBOutlet var scrollView:UIScrollView!
     
     @IBOutlet var headerTopAnchorConstraint:NSLayoutConstraint!
@@ -46,6 +46,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     var headerHeight:CGFloat {
         return headerHeightConstraint.constant
     }
+    
     private var headerState:HeaderState = .Expanded
     
     private var headerTranslationTransform:CATransform3D!
@@ -57,8 +58,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     private var selectedIndicies:[NSIndexPath]!
     
     var testDelegate:TestTableViewDataSourceDelegate!
-    
-    var listButtonView = ListButtonView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +72,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         if scrollView != nil {
             configureOverlayScrollView()
         }
+        
+        popGestureRecognizer.delegate = self
     }
     
     private func configureTestDelegates() {
@@ -269,7 +270,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         }
     }
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    //MARK: - Scroll View Delegate
+    final func scrollViewDidScroll(scrollView: UIScrollView) {
         if scrollView === tableView { return }
         let currentOffset = scrollView.contentOffset.y
         
@@ -292,6 +294,11 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         }
         
     }
+    
+    final func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
+        return !ContainerViewController.instance.sidePanelExpanded
+    }
+    
     
     private func applyTransformToHeaderUsingOffset(offset:CGFloat) {
         headerTopAnchorConstraint.constant = -offset
@@ -329,5 +336,26 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
             return
         }
     }
+    
+
+    
+    //MARK: - GESTURE RECOGNIZER DELEGATE
+    final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer === popGestureRecognizer {
+            return gestureRecognizer === scrollView.panGestureRecognizer || gestureRecognizer === tableView.panGestureRecognizer
+        }
+        return false
+    }
+    final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
+    }
+    
+    final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer === popGestureRecognizer {
+            return otherGestureRecognizer === scrollView.panGestureRecognizer || otherGestureRecognizer === tableView.panGestureRecognizer
+        }
+        return false
+    }
+    
     
 }

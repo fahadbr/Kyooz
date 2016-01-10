@@ -31,6 +31,9 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     private (set) var isBaseLevel:Bool = true
+    
+    private var useBlankController:Bool = false
+    private var viewController:UIViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +69,10 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         scrollView.leftAnchor.constraintEqualToAnchor(headerView.layoutMarginsGuide.leftAnchor).active = true
         scrollView.rightAnchor.constraintEqualToAnchor(headerView.layoutMarginsGuide.rightAnchor).active = true
         scrollView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
+        
+        popGestureRecognizer.enabled = !isBaseLevel
     }
+    
     
     private var collectionVC:LibraryGroupCollectionViewController!
     
@@ -192,8 +198,17 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
         
         //go to specific album track view controller if we are selecting an album collection
-        
-        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
+        if useBlankController {
+            KyoozUtils.performWithMetrics(blockDescription: "pushing of blank view controller") {
+                self.viewController = UIViewController()
+                ContainerViewController.instance.pushViewController(self.viewController!)
+            }
+        } else {
+            KyoozUtils.performWithMetrics(blockDescription: "pushing of media entity controller") { [filterQuery = self.filterQuery, libraryGroupingType = self.libraryGroupingType] in
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
+            }
+        }
+//        useBlankController = !useBlankController
     }
     
     

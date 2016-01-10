@@ -131,6 +131,10 @@ class NowPlayingSummaryViewController: UIViewController {
         
         self.reloadData(nil)
         registerForNotifications()
+        
+        albumArtwork.layer.shadowOpacity = 0.7
+        albumArtwork.layer.shadowOffset = CGSize(width: 0, height: 3)
+        albumArtwork.layer.shadowRadius = 10
         updateAlphaLevels()
         self.view.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
         self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)

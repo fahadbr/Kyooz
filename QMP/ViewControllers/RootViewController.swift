@@ -49,6 +49,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     private var resultsTableController:UITableViewController!
     private let searchResultsController = MediaLibrarySearchTableViewController.instance
     
+    private let transition = ViewControllerFadeAnimator.instance
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -131,6 +132,18 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         }
     }
     
+    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.operation = operation
+        return transition
+    }
+    
+    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        if transition.interactive {
+            return transition
+        }
+        return nil
+    }
+    
     //MARK: - Class Methods
     func activateSearch() {
         previousSearchText = nil
@@ -150,9 +163,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
-        self.libraryNavigationController.interactivePopGestureRecognizer!.enabled = shouldEnable
-        self.nowPlayingPanGestureRecognizer.enabled = shouldEnable
-        self.nowPlayingTapGestureRecognizer.enabled = shouldEnable
+        libraryNavigationController.view.userInteractionEnabled = shouldEnable
+        nowPlayingSummaryViewController.view.userInteractionEnabled = shouldEnable
     }
     
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {

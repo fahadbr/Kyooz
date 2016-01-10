@@ -69,6 +69,8 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         super.viewDidLoad()
         tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+        
+        popGestureRecognizer.enabled = false
     }
     
     //MARK: - Table View Datasource

@@ -70,6 +70,8 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
             KyoozUtils.doInMainQueueAsync() { [weak self, albumImageView = self.albumImageView] in
                 if let image = albumArt.imageWithSize(albumImageView.frame.size) {
                     albumImageView.image = image
+                    albumImageView.layer.shadowOpacity = 0.6
+                    albumImageView.layer.shadowOffset = CGSize(width: 0, height: 0)
                     self?.blurView.backgroundColor = UIColor(patternImage: image)
                 }
             }
