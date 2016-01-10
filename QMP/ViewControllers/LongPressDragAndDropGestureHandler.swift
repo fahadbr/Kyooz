@@ -106,7 +106,6 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         if(cancelViewVisible) {
             removeCancelView()
         }
-        
         let tableView = dropDestination.destinationTableView
         let location = sender.locationInView(tableView)
         let insideTableView = tableView.pointInside(location, withEvent: nil)

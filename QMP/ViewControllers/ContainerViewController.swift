@@ -46,8 +46,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelExpanded)
             nowPlayingViewController?.viewExpanded = sidePanelExpanded
-//            nowPlayingViewController?.tableView?.scrollsToTop = sidePanelExpanded
-            
         }
     }
     
@@ -68,7 +66,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         view.addSubview(rootView)
         addChildViewController(rootViewController)
         rootViewController.didMoveToParentViewController(self)
-        rootViewController.gestureDelegate = self
         
         rootView.translatesAutoresizingMaskIntoConstraints = false
         rootView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
@@ -115,16 +112,17 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
 
             nowPlayingNavigationController!.toolbarHidden = false
-            view.insertSubview(nowPlayingNavigationController!.view, atIndex: 0)
+            let npView = nowPlayingNavigationController!.view
+            npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
+            view.insertSubview(npView, atIndex: 0)
             addChildViewController(nowPlayingNavigationController!)
             nowPlayingNavigationController!.didMoveToParentViewController(self)
-            let npView = nowPlayingNavigationController!.view
             npView.translatesAutoresizingMaskIntoConstraints = false
             npView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
             npView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
             npView.centerXAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
             npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -centerPanelExpandedOffset).active = true
-            npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
+
             npView.layer.rasterizationScale = UIScreen.mainScreen().scale
         }
     }
@@ -217,7 +215,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         filterQuery.groupingType = nextGroupingType.groupingType
         
         let vc:ParentMediaEntityHeaderViewController!
-//        let mevc = UIStoryboard.mediaEntityViewController()
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
             vc = UIStoryboard.albumTrackTableViewController()
@@ -230,8 +227,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         vc.filterQuery = filterQuery
         vc.libraryGroupingType = nextGroupingType
-
-//        mevc.mediaEntityTVC = vc
 
         pushViewController(vc)
     }
@@ -375,17 +370,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer === rootViewController.nowPlayingPanGestureRecognizer &&
-            otherGestureRecognizer === screenEdgePanGestureRecognizer {
-                return true
-        }
         return false
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer === screenEdgePanGestureRecognizer &&
-            otherGestureRecognizer === rootViewController.nowPlayingPanGestureRecognizer {
-                return true
+        if gestureRecognizer === screenEdgePanGestureRecognizer {
+            return true
         }
         return false
     }

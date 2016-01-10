@@ -944,7 +944,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -974,7 +974,7 @@
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
