@@ -50,6 +50,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = .Center
         titleLabel.sizeToFit()
+        titleLabel.hidden = true
         navigationItem.titleView = titleLabel
         
         albumArtistLabel.text = track.albumArtist ?? track.artist
@@ -159,10 +160,12 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         if keyPath != nil && keyPath! == alphaKey {
             let alpha = headerView.alpha
             if alpha <= 0.25 {
+                titleLabel.hidden = false
                 let percentage = alpha * 4
                 titleLabel.alpha = 1 - percentage
             } else {
                 titleLabel.alpha = 0
+                titleLabel.hidden = true
             }
         }
     }
