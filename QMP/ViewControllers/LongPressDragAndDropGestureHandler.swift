@@ -11,7 +11,7 @@ import UIKit
 import MediaPlayer
 
 
-class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
+final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     
     var dragSource:DragSource
     var dropDestination:DropDestination
@@ -40,6 +40,7 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         self.positionChangeUpdatesDataSource = false
         self.shouldHideSourceView = false
         self.snapshotScale = 0.8
+        self.updateSnapshotXPosition = true
     }
     
 
@@ -58,10 +59,6 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         return DragGestureScrollingController(scrollView: dropDestination.destinationTableView, delegate: self)
     }
     
-    override func updateSnapshotPosition(snapshot: UIView, sender: UIGestureRecognizer, locationInDestinationTableView: CGPoint) {
-        let location = sender.locationInView(sender.view)
-        snapshot.center = location
-    }
     
     override func removeSnapshotFromView(viewToFadeIn: UIView?, viewToFadeOut: UIView, completionHandler: (Bool) -> ()) {
         super.removeSnapshotFromView(nil, viewToFadeOut: viewToFadeOut, completionHandler: completionHandler)
@@ -80,7 +77,6 @@ class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     }
     
     override func gestureDidChange(sender: UIGestureRecognizer, newLocationInsideTableView: CGPoint?) {
-        super.gestureDidChange(sender, newLocationInsideTableView: newLocationInsideTableView)
         if newLocationInsideTableView == nil && !cancelViewVisible {
             cancelView.alpha = 0
             cancelViewVisible = true

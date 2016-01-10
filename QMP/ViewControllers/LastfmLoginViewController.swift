@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LastfmLoginViewController: UIViewController, UITextFieldDelegate {
+class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegate {
    
     
     

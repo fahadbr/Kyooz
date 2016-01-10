@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrollingControllerDelegate{
+class LongPressToDragGestureHandler : NSObject, GestureHandler{
     
     private let tableView:UITableView
     
@@ -25,6 +25,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
     
     var positionChangeUpdatesDataSource = true
     var shouldHideSourceView = true
+    var updateSnapshotXPosition = false
     
     var snapshotScale:CGFloat = 1.10
     
@@ -37,7 +38,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         Logger.debug("deinitializing long press to drag gesture handler")
     }
     
-    func handleGesture(sender: UILongPressGestureRecognizer) {
+    final func handleGesture(sender: UILongPressGestureRecognizer) {
         let state:UIGestureRecognizerState = sender.state
         
         switch(state) {
@@ -91,7 +92,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
     }
     
     func gestureDidChange(sender:UIGestureRecognizer, newLocationInsideTableView:CGPoint?) {
-        delegate?.gestureDidChange?(sender)
+        
     }
     
     func gestureDidEnd(sender:UIGestureRecognizer) {
@@ -105,11 +106,11 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         }
     }
     
-    func handlePositionChange(sender: UILongPressGestureRecognizer) -> CGPoint? {
+    final func handlePositionChange(sender: UILongPressGestureRecognizer) -> CGPoint? {
         let location = sender.locationInView(tableView)
         let insideTableView = tableView.pointInside(location, withEvent: nil)
-    
-        updateSnapshotPosition(snapshot, sender:sender, locationInDestinationTableView: location)
+        
+        updateSnapshotPosition(sender.locationInView(sender.view))
         let point = insideTableView ? location : CGPoint(x: 0, y: location.y)
         if let indexPath = tableView.indexPathForRowAtPoint(point) where !indexPathOfMovingItem.isEqual(indexPath) {
             if let canMove = tableView.dataSource?.tableView?(tableView, canMoveRowAtIndexPath: indexPathOfMovingItem) where canMove {
@@ -142,14 +143,15 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
         snapshot = ImageHelper.customSnapshotFromView(viewForSnapshot)
         
         //add the snapshot as a subview, centered at cell's center
-        updateSnapshotPosition(snapshot, sender:sender, locationInDestinationTableView: viewForSnapshot.center)
+        let locationInView = sender.locationInView(sender.view)
+        updateSnapshotPosition(locationInView)
         snapshot.alpha = 0.0
         sender.view?.addSubview(snapshot)
         beginningAnimationEnded = false
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             
             //Offest for gesture location
-            self.updateSnapshotPosition(self.snapshot, sender: sender, locationInDestinationTableView: viewForSnapshot.center)
+            self.updateSnapshotPosition(locationInView)
             self.snapshot.transform = CGAffineTransformMakeScale(self.snapshotScale, self.snapshotScale)
             self.snapshot.alpha = 0.80
             
@@ -183,8 +185,12 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler, DragGestureScrol
             },completion: completionHandler)
     }
     
-    func updateSnapshotPosition(snapshot:UIView, sender:UIGestureRecognizer, locationInDestinationTableView:CGPoint) {
-        snapshot.center.y = locationInDestinationTableView.y
+    final func updateSnapshotPosition(location:CGPoint) {
+        if updateSnapshotXPosition {
+            snapshot.center = location
+        } else {
+            snapshot.center.y = location.y
+        }
     }
     
 }

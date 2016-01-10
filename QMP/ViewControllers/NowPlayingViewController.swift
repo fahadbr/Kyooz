@@ -304,6 +304,11 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
             tableView.endUpdates()
         }
     }
+    
+    //MARK: - Scroll View Delegate
+    final func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
+        return viewExpanded
+    }
 
     //MARK: gesture recognizer handlers
     func handleTapGesture(sender:UITapGestureRecognizer) {

@@ -21,8 +21,6 @@ protocol GestureHandler : NSObjectProtocol {
     
     optional func gestureDidBegin(sender:UIGestureRecognizer)
     
-    optional func gestureDidChange(sender:UIGestureRecognizer)
-    
     optional func gestureDidEnd(sender:UIGestureRecognizer)
     
 }

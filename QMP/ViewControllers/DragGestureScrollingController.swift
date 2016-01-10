@@ -9,14 +9,14 @@
 import Foundation
 import UIKit
 
-class DragGestureScrollingController :NSObject {
+final class DragGestureScrollingController :NSObject {
     
     private let scrollView:UIScrollView
     private let offset:CGFloat = 50
     private let yTopOffset:CGFloat
     private let yBottomOffset:CGFloat
     
-    private let delegate:DragGestureScrollingControllerDelegate
+    private let delegate:LongPressToDragGestureHandler
     private let timeDelayInSeconds:Double = 0.005 //relates to smoothness
     private let maxScrollIncrement:CGFloat = 7
     private let minScrollIncrement:CGFloat = 0.005
@@ -26,7 +26,7 @@ class DragGestureScrollingController :NSObject {
     private var timer:NSTimer?
     private var gestureRecognizer:UILongPressGestureRecognizer!
 
-    init(scrollView:UIScrollView, delegate:DragGestureScrollingControllerDelegate) {
+    init(scrollView:UIScrollView, delegate:LongPressToDragGestureHandler) {
         self.scrollView = scrollView
         self.delegate = delegate
         self.yTopOffset = scrollView.contentInset.top + offset
@@ -57,7 +57,7 @@ class DragGestureScrollingController :NSObject {
             if(timer == nil) {
                 timer = NSTimer.scheduledTimerWithTimeInterval(timeDelayInSeconds,
                     target: self,
-                    selector: "adjustScrollOffset:",
+                    selector: "adjustScrollOffset",
                     userInfo: nil,
                     repeats: true)
             }
@@ -72,7 +72,7 @@ class DragGestureScrollingController :NSObject {
         timer = nil
     }
     
-    func adjustScrollOffset(sender:NSTimer?) {
+    func adjustScrollOffset() {
         
         let originalYPosition = scrollView.contentOffset.y
         var newYPosition:CGFloat!
@@ -92,7 +92,4 @@ class DragGestureScrollingController :NSObject {
     
 }
 
-protocol DragGestureScrollingControllerDelegate {
-    func handlePositionChange(sender:UILongPressGestureRecognizer) -> CGPoint?
-}
 

@@ -215,17 +215,17 @@
                         <viewControllerLayoutGuide type="bottom" id="4hG-pS-V2Q"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Cdl-oj-ugN">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R1l-bh-GSp">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <view key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" id="aOX-id-Cd2">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="HNg-HJ-gQM">
-                                            <rect key="frame" x="12" y="570" width="576" height="30"/>
+                                            <rect key="frame" x="8" y="637" width="359" height="30"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-R2-BiF">
                                                     <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
@@ -241,7 +241,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i2B-J3-Tc8">
-                                                    <rect key="frame" x="169" y="0.0" width="43" height="30"/>
+                                                    <rect key="frame" x="97" y="0.0" width="43" height="30"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
                                                     <state key="normal" title="ALBUM">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -251,7 +251,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckW-JV-yKz">
-                                                    <rect key="frame" x="345" y="0.0" width="41" height="30"/>
+                                                    <rect key="frame" x="201" y="0.0" width="41" height="30"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
                                                     <state key="normal" title="ARTIST">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -261,7 +261,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TgC-Lb-Gq8" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
-                                                    <rect key="frame" x="506" y="0.0" width="70" height="30"/>
+                                                    <rect key="frame" x="289" y="0.0" width="70" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="9No-U1-QLA"/>
                                                     </constraints>
@@ -290,25 +290,25 @@
                                 <blurEffect style="dark"/>
                             </visualEffectView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Album Artist - Album Title" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="P3f-4Y-yeg">
-                                <rect key="frame" x="16" y="424" width="568" height="20"/>
+                                <rect key="frame" x="12" y="450" width="351" height="20"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LL1-x0-BD9">
-                                <rect key="frame" x="128" y="20" width="344" height="344"/>
+                                <rect key="frame" x="10" y="35" width="355" height="355"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="LL1-x0-BD9" secondAttribute="height" multiplier="1:1" priority="950" id="1aV-0u-dvX"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7CN-wi-b5a" userLabel="CurrentPlaybackTimeLabel">
-                                <rect key="frame" x="136" y="379" width="29" height="12"/>
+                                <rect key="frame" x="18" y="405" width="29" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="QGr-jm-hSe">
-                                <rect key="frame" x="126" y="349" width="348" height="31"/>
+                                <rect key="frame" x="8" y="375" width="359" height="31"/>
                                 <color key="minimumTrackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="maximumTrackTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -320,10 +320,10 @@
                                 </connections>
                             </slider>
                             <view opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qD5-cn-9cR">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="55"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="55"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Album Artist - Album Title" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="K4x-rb-a4f">
-                                        <rect key="frame" x="65" y="29" width="527" height="18"/>
+                                        <rect key="frame" x="65" y="29" width="302" height="18"/>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -346,7 +346,7 @@
                                         </connections>
                                     </button>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-jw-XaA">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="3"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="3" id="IB0-fm-sXt"/>
                                         </constraints>
@@ -357,7 +357,7 @@
                                         </variation>
                                     </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ksq-Lm-cab">
-                                        <rect key="frame" x="65" y="6" width="527" height="21"/>
+                                        <rect key="frame" x="65" y="6" width="302" height="21"/>
                                         <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -381,19 +381,19 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="a9l-ER-3zv">
-                                <rect key="frame" x="16" y="394" width="568" height="22"/>
+                                <rect key="frame" x="12" y="420" width="351" height="22"/>
                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8bf-Dc-sUH" userLabel="TotalPlaybackTimeLabel">
-                                <rect key="frame" x="435" y="379" width="29" height="12"/>
+                                <rect key="frame" x="328" y="405" width="29" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-vG-UDM" userLabel="forwardButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="365" y="499" width="40" height="40"/>
+                                <rect key="frame" x="253" y="525" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="MjA-9E-WAK"/>
                                     <constraint firstAttribute="width" constant="40" id="dB2-VA-rIr"/>
@@ -412,7 +412,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mo-6h-cpk" userLabel="skipBackButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="195" y="499" width="40" height="40"/>
+                                <rect key="frame" x="83" y="525" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="rdO-mC-1Eh"/>
                                     <constraint firstAttribute="width" constant="40" id="uy8-Fl-XrB"/>
@@ -431,7 +431,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C3t-5J-Dbo" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="140" y="502" width="35" height="35"/>
+                                <rect key="frame" x="28" y="528" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="C3t-5J-Dbo" secondAttribute="height" multiplier="1:1" id="h67-vG-zuh"/>
                                     <constraint firstAttribute="width" constant="35" id="phQ-m7-Da2"/>
@@ -447,7 +447,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0G8-6W-24D" userLabel="repeatButton" customClass="RepeatButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="425" y="502" width="35" height="35"/>
+                                <rect key="frame" x="313" y="528" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="0G8-6W-24D" secondAttribute="height" multiplier="1:1" id="5d7-sd-A4W"/>
                                     <constraint firstAttribute="width" constant="35" id="6Me-ce-vSh"/>
@@ -463,7 +463,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ljA-ne-tuv" userLabel="playPauseButton" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="270" y="489" width="60" height="60"/>
+                                <rect key="frame" x="158" y="515" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="1nV-tZ-gZs"/>
                                     <constraint firstAttribute="height" constant="60" id="uBI-Eq-gle"/>
@@ -485,10 +485,10 @@
                             <constraint firstItem="7CN-wi-b5a" firstAttribute="top" secondItem="LL1-x0-BD9" secondAttribute="bottom" constant="15" id="1I7-AF-5hB"/>
                             <constraint firstAttribute="centerX" secondItem="P3f-4Y-yeg" secondAttribute="centerX" id="31X-ML-EEi"/>
                             <constraint firstAttribute="centerX" secondItem="LL1-x0-BD9" secondAttribute="centerX" id="3oE-D7-peV"/>
-                            <constraint firstItem="LL1-x0-BD9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-16" id="57Z-Jb-YMH"/>
+                            <constraint firstItem="LL1-x0-BD9" firstAttribute="left" relation="greaterThanOrEqual" secondItem="Cdl-oj-ugN" secondAttribute="left" constant="10" id="57Z-Jb-YMH"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="6iF-oc-FoV"/>
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="trailing" secondItem="Cdl-oj-ugN" secondAttribute="trailingMargin" constant="4" id="6oY-Bb-zqJ"/>
-                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="LL1-x0-BD9" secondAttribute="trailing" constant="-16" id="7AZ-IR-J3k"/>
+                            <constraint firstAttribute="right" relation="greaterThanOrEqual" secondItem="LL1-x0-BD9" secondAttribute="right" constant="10" id="7AZ-IR-J3k"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="R1l-bh-GSp" secondAttribute="bottom" id="BmD-ye-22M"/>
                             <constraint firstItem="QGr-jm-hSe" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" id="Csd-jr-CWQ"/>
                             <constraint firstAttribute="trailing" secondItem="R1l-bh-GSp" secondAttribute="trailing" id="H2m-LZ-eCi"/>
@@ -497,7 +497,7 @@
                             <constraint firstItem="P3f-4Y-yeg" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="Iow-5t-KVW"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="leading" secondItem="C3t-5J-Dbo" secondAttribute="trailing" constant="20" id="JRe-jh-dTv"/>
                             <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="LL1-x0-BD9" secondAttribute="leading" constant="8" id="KH0-xr-sI4"/>
-                            <constraint firstItem="LL1-x0-BD9" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" id="Mt9-Ti-0km"/>
+                            <constraint firstItem="LL1-x0-BD9" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="15" id="Mt9-Ti-0km"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="HNg-HJ-gQM" secondAttribute="bottom" id="Mxd-Ke-vjt"/>
                             <constraint firstAttribute="trailing" secondItem="qD5-cn-9cR" secondAttribute="trailing" id="OT0-dI-Pq9"/>
                             <constraint firstItem="8bf-Dc-sUH" firstAttribute="trailing" secondItem="LL1-x0-BD9" secondAttribute="trailing" constant="-8" id="QyC-TX-VqA"/>
@@ -533,6 +533,7 @@
                     <navigationItem key="navigationItem" id="Xee-zB-nFN"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <nil key="simulatedBottomBarMetrics"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="albumArtistAndAlbumTitleCollapsedLabel" destination="K4x-rb-a4f" id="sOn-jX-qxZ"/>
                         <outlet property="albumArtistAndAlbumTitleLabel" destination="P3f-4Y-yeg" id="ybI-VU-xgg"/>
@@ -552,7 +553,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNa-UC-m6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2254" y="-186"/>
+            <point key="canvasLocation" x="3525.5" y="-342.5"/>
         </scene>
         <!--Album Track Table View Controller-->
         <scene sceneID="Cro-ML-1SZ">

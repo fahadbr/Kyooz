@@ -46,6 +46,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelExpanded)
             nowPlayingViewController?.viewExpanded = sidePanelExpanded
+//            nowPlayingViewController?.tableView?.scrollsToTop = sidePanelExpanded
+            
         }
     }
     
@@ -108,6 +110,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func addSidePanelViewController() {
         if(nowPlayingViewController == nil) {
             nowPlayingViewController = UIStoryboard.nowPlayingViewController()
+            nowPlayingViewController?.tableView?.scrollsToTop = false
             
             nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
 
@@ -340,7 +343,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             break
         }
         dragAndDropHandler?.handleGesture(recognizer)
-
     }
 
     
@@ -362,7 +364,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if(gestureRecognizer.isEqual(longPressGestureRecognizer)) {
+        if gestureRecognizer === longPressGestureRecognizer {
             return (!rootViewController.pullableViewExpanded && !sidePanelExpanded)
         }
         return true
@@ -373,16 +375,16 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if(gestureRecognizer.isEqual(rootViewController.nowPlayingPanGestureRecognizer) &&
-            otherGestureRecognizer.isEqual(screenEdgePanGestureRecognizer)) {
+        if gestureRecognizer === rootViewController.nowPlayingPanGestureRecognizer &&
+            otherGestureRecognizer === screenEdgePanGestureRecognizer {
                 return true
         }
         return false
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if(gestureRecognizer.isEqual(screenEdgePanGestureRecognizer) &&
-            otherGestureRecognizer.isEqual(rootViewController.nowPlayingPanGestureRecognizer)) {
+        if gestureRecognizer === screenEdgePanGestureRecognizer &&
+            otherGestureRecognizer === rootViewController.nowPlayingPanGestureRecognizer {
                 return true
         }
         return false
