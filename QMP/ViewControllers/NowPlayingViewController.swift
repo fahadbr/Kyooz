@@ -175,9 +175,9 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         let mediaItem = audioQueuePlayer.nowPlayingQueue[indexToUse]
         let isNowPlayingItem = (indexToUse == audioQueuePlayer.indexOfNowPlayingItem)
         cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
-        KyoozUtils.doInMainQueueAsync() {
+//        KyoozUtils.doInMainQueueAsync() {
             cell.albumArtImageView.image = self.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
-        }
+//        }
         
         return cell
     }
