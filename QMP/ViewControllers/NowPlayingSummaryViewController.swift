@@ -36,7 +36,7 @@ class NowPlayingSummaryViewController: UIViewController {
     private let timeDelayInNanoSeconds = Int64(0.5 * Double(NSEC_PER_SEC))
     
     private var playbackProgressTimer:NSTimer?
-    private var albumTitleForCurrentAlbumArt:String?
+    private var albumIdForCurrentAlbumArt:UInt64?
     
     typealias KVOContext = UInt8
     private var observationContext = KVOContext()
@@ -162,14 +162,14 @@ class NowPlayingSummaryViewController: UIViewController {
         self.albumArtistAndAlbumTitleCollapsedLabel.text = self.albumArtistAndAlbumTitleLabel.text
 
         let artwork = nowPlayingItem?.artwork
-        var albumArtTitle:String!
+        let albumArtId:UInt64
         if(artwork == nil) {
-            albumArtTitle = "noArtwork"
+            albumArtId = 0
         } else {
-            albumArtTitle = albumTitle
+            albumArtId = nowPlayingItem!.albumId
         }
         
-        if(albumTitleForCurrentAlbumArt == nil || albumTitleForCurrentAlbumArt! != albumArtTitle) {
+        if(albumIdForCurrentAlbumArt == nil || albumIdForCurrentAlbumArt! != albumArtId) {
             Logger.debug("loading new album art image")
             var albumArtImage = artwork?.imageWithSize(albumArtwork.frame.size)
             if(albumArtImage == nil) {
@@ -177,7 +177,7 @@ class NowPlayingSummaryViewController: UIViewController {
             }
             self.albumArtwork.image = albumArtImage
             self.view.backgroundColor = UIColor(patternImage: albumArtImage!)
-            self.albumTitleForCurrentAlbumArt = albumArtTitle
+            self.albumIdForCurrentAlbumArt = albumArtId
         }
         
         self.playbackProgressBar.maximumValue = Float(nowPlayingItem?.playbackDuration ?? 1.0)
