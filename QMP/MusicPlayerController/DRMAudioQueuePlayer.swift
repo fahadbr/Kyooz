@@ -28,6 +28,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     private var queueIsPersisted:Bool = true
+    private var queueStateInconsistent:Bool = false
     private let indexBeforeModificationKey = "indexBeforeModification"
     
     private var nowPlayingQueueContext:NowPlayingQueueContext {
@@ -105,7 +106,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             return nowPlayingQueueContext.shuffleActive
         } set {
             nowPlayingQueueContext.setShuffleActive(newValue)
-            persistToSystemQueue()
+            persistToSystemQueue(nowPlayingQueueContext)
             publishNotification(updateType: .SystematicQueueUpdate, sender: self)
         }
     }
@@ -130,7 +131,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 musicPlayer.repeatMode = .One
             case .All:
                 musicPlayer.repeatMode = .All
-                persistToSystemQueue()
+                persistToSystemQueue(nowPlayingQueueContext)
             }
         }
     }
@@ -198,40 +199,44 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition) {
+        let oldContext = nowPlayingQueueContext
         nowPlayingQueueContext.enqueue(items: itemsToEnqueue, atPosition: position)
-        persistToSystemQueue()
+        persistToSystemQueue(oldContext)
     }
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) {
+        let oldContext = nowPlayingQueueContext
         nowPlayingQueueContext.insertItemsAtIndex(itemsToInsert, index: index)
-        persistToSystemQueue()
+        persistToSystemQueue(oldContext)
     }
     
     func deleteItemsAtIndices(indiciesToRemove:[Int]) {
+        let oldContext = nowPlayingQueueContext
         let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indiciesToRemove)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
-            persistToSystemQueue()
+            persistToSystemQueue(oldContext)
         }
     }
     
     func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
+        let oldContext = nowPlayingQueueContext
         nowPlayingQueueContext.moveMediaItem(fromIndexPath: fromIndexPath, toIndexPath: toIndexPath)
-        persistToSystemQueue()
+        persistToSystemQueue(oldContext)
     }
     
     func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int) {
+        let oldContext = nowPlayingQueueContext
         let nowPlayingItemRemoved = nowPlayingQueueContext.clearItems(towardsDirection: direction, atIndex: index)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
-            persistToSystemQueue()
+            persistToSystemQueue(oldContext)
         }
     }
     
     //MARK: - Class functions
-    
     
     private func playNowInternal(mediaItems:[MPMediaItem], index:Int) {
         musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: mediaItems))
@@ -244,34 +249,37 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         refreshIndexOfNowPlayingItem()
     }
     
-    private func persistToSystemQueue() {
-        if let queue = nowPlayingQueue as? [MPMediaItem] {
-            //cancel pulling of system queue if its executing
-            pullSystemQueueOperation?.cancel()
-            
-            lowestIndexPersisted = indexOfNowPlayingItem
-            var truncatedQueue = [MPMediaItem]()
-            let repeatAllEnabled = repeatMode == .All
-            truncatedQueue.reserveCapacity(repeatAllEnabled ? queue.count : queue.count - indexOfNowPlayingItem)
-            for i in indexOfNowPlayingItem..<queue.count {
-                truncatedQueue.append(queue[i])
-            }
-//            if repeatAllEnabled {
-//                for i in 0 ..< indexOfNowPlayingItem {
-//                    truncatedQueue.append(queue[i])
-//                }
-//                nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: truncatedQueue)
-//                indexBeforeModification = 0
-//            }
-            
-            KyoozUtils.doInMainQueueAsync() { [musicPlayer = self.musicPlayer] in
-                musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
-                let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
-                musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
-            }
-            queueIsPersisted = true
-            
+    private func persistToSystemQueue(oldContext:NowPlayingQueueContext) {
+        if queueStateInconsistent {
+            Logger.debug("queue state is inconsistent with system queue.  skipping persist of changes")
+            return
         }
+        
+        guard let queue = nowPlayingQueue as? [MPMediaItem]  else {
+            Logger.error("Now playing queue is not one that contains MPMediaItem objects.  Cannot persist to queue")
+            return
+        }
+        
+        
+        lowestIndexPersisted = indexOfNowPlayingItem
+        var truncatedQueue = [MPMediaItem]()
+        let repeatAllEnabled = repeatMode == .All
+        truncatedQueue.reserveCapacity(repeatAllEnabled ? queue.count : queue.count - indexOfNowPlayingItem)
+        for i in indexOfNowPlayingItem..<queue.count {
+            truncatedQueue.append(queue[i])
+        }
+//        if repeatAllEnabled {
+//            for i in 0 ..< indexOfNowPlayingItem {
+//                truncatedQueue.append(queue[i])
+//            }
+//        }
+        
+        KyoozUtils.doInMainQueueAsync() { [musicPlayer = self.musicPlayer] in
+            musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
+            let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
+            musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
+        }
+        queueIsPersisted = true
     }
     
     private func resetQueueStateToBeginning() {
@@ -293,17 +301,17 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     private func pullSystemQueue() {
-        self.pullSystemQueueOperation?.cancel()
-        let pullSystemQueueOperation = PullSystemQueueOperation(audioQueuePlayer: self)
-        pullSystemQueueOperation.completionBlock = {
-            KyoozUtils.doInMainQueue { self.pullSystemQueueOperation = nil }
-        }
-        self.pullSystemQueueOperation = pullSystemQueueOperation
-        backgroundQueue.addOperation(pullSystemQueueOperation)
+//        self.pullSystemQueueOperation?.cancel()
+//        let pullSystemQueueOperation = PullSystemQueueOperation(audioQueuePlayer: self)
+//        pullSystemQueueOperation.completionBlock = {
+//            KyoozUtils.doInMainQueue { self.pullSystemQueueOperation = nil }
+//        }
+//        self.pullSystemQueueOperation = pullSystemQueueOperation
+//        backgroundQueue.addOperation(pullSystemQueueOperation)
     }
     
     private func applyMergedQueue(withQueue mergedQueue:[AudioTrack]) {
-        
+        let oldContext = nowPlayingQueueContext
         var shouldPersist = repeatMode == .All && lowestIndexPersisted != 0
         if musicPlayer.shuffleMode == .Off && repeatMode != .One && !shuffleActive {
             //if no special playback mode enabled then take the merged queue as the new context
@@ -323,7 +331,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
         
         if shouldPersist {
-            persistToSystemQueue()
+            persistToSystemQueue(oldContext)
         } else {
             queueIsPersisted = true
         }
@@ -378,9 +386,21 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     private func refreshIndexOfNowPlayingItem() {
+        guard let nowPlayingItem = self.nowPlayingItem else {
+            indexOfNowPlayingItem = 0
+            return
+        }
+        
         let i = musicPlayer.indexOfNowPlayingItem
-        let currentIndex = i < nowPlayingQueue.count ? i : 0
-        indexOfNowPlayingItem = currentIndex + lowestIndexPersisted
+        let systemIndex = max(min(i, nowPlayingQueue.count - 1), 0)
+        let newIndex = systemIndex + lowestIndexPersisted
+        
+        if nowPlayingQueue[newIndex].id != nowPlayingItem.id {
+            queueStateInconsistent = true
+        } else {
+            indexOfNowPlayingItem = newIndex
+        }
+
     }
     
     
