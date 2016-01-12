@@ -123,69 +123,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             npView.centerXAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
             npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -centerPanelExpandedOffset).active = true
 
-            npView.layer.rasterizationScale = UIScreen.mainScreen().scale
+            nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
         }
     }
     
-    private func animateSidePanel(shouldExpand shouldExpand: Bool) {
-        if shouldExpand {
-            animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                centerPanelExpandedOffset, shouldExpand: shouldExpand) { finished in
-                    self.sidePanelExpanded = true
-                    self.nowPlayingNavigationController?.view?.layer.shouldRasterize = false
-            }
-            
-        } else {
-            animateCenterPanelXPosition(targetPosition: 0, shouldExpand: shouldExpand) { finished in
-                self.sidePanelExpanded = false
-                self.nowPlayingNavigationController?.view?.layer.shouldRasterize = false
-            }
-        }
-    }
-    
-    private func transformForFraction(var fraction:CGFloat) -> CATransform3D{
-        //make sure that the fraction does not go past the 1 or 0 bounds
-        if fraction < 0 {
-            fraction = 0
-        } else if fraction > 1 {
-            fraction = 1
-        }
-        
-        var identity = CATransform3DIdentity
-        identity.m34 = -1.0/1000
-        let angle = Double(1.0 - fraction) * M_PI_2
-        
-        let rotateTransform = CATransform3DRotate(identity, CGFloat(angle), 0.0, 1.0, 0.0)
-        return rotateTransform
-    }
-    
-    private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
-        if shouldExpand { //need to make sure one is deactivated before activating the other
-            collapsedConstraint.active = false
-            expandedConstraint.active = true
-        } else {
-            expandedConstraint.active = false
-            collapsedConstraint.active = true
-        }
-        
-        expandedConstraint.constant = centerPanelExpandedOffset
-        collapsedConstraint.constant = 0
-        
-        UIView.animateWithDuration(0.4,
-            delay: 0,
-            usingSpringWithDamping: 1.0,
-            initialSpringVelocity: 0,
-            options: .CurveEaseInOut,
-            animations: {
-                self.view.layoutIfNeeded()
-                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
-                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
-                self.nowPlayingNavigationController?.view.alpha = fraction
-            },
-            completion: completion)
-
-        
-    }
     
     
     func pushViewController(vc:UIViewController) {
@@ -256,6 +197,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func handleTouchGesture(recognizer:UITapGestureRecognizer) {
         if(recognizer.state == .Ended) {
             toggleSidePanel()
+            
         }
     }
     
@@ -267,7 +209,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
                 addSidePanelViewController()
             }
-            nowPlayingNavigationController?.view.layer.shouldRasterize = true
+            nowPlayingViewController?.view.layer.shouldRasterize = true
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
@@ -280,6 +222,68 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
         
     }
+    
+    private func animateSidePanel(shouldExpand shouldExpand: Bool) {
+        if shouldExpand {
+            self.sidePanelExpanded = true
+            animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
+                centerPanelExpandedOffset, shouldExpand: shouldExpand) { finished in
+
+                    self.nowPlayingViewController?.view?.layer.shouldRasterize = false
+            }
+            
+        } else {
+            animateCenterPanelXPosition(targetPosition: 0, shouldExpand: shouldExpand) { finished in
+                self.sidePanelExpanded = false
+                self.nowPlayingViewController?.view?.layer.shouldRasterize = false
+            }
+        }
+    }
+    
+    private func transformForFraction(var fraction:CGFloat) -> CATransform3D{
+        //make sure that the fraction does not go past the 1 or 0 bounds
+        if fraction < 0 {
+            fraction = 0
+        } else if fraction > 1 {
+            fraction = 1
+        }
+        
+        var identity = CATransform3DIdentity
+        identity.m34 = -1.0/1000
+        let angle = Double(1.0 - fraction) * M_PI_2
+        
+        let rotateTransform = CATransform3DRotate(identity, CGFloat(angle), 0.0, 1.0, 0.0)
+        return rotateTransform
+    }
+    
+    private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
+        if shouldExpand { //need to make sure one is deactivated before activating the other
+            collapsedConstraint.active = false
+            expandedConstraint.active = true
+        } else {
+            expandedConstraint.active = false
+            collapsedConstraint.active = true
+        }
+        
+        expandedConstraint.constant = centerPanelExpandedOffset
+        collapsedConstraint.constant = 0
+        
+        UIView.animateWithDuration(0.4,
+            delay: 0,
+            usingSpringWithDamping: 1.0,
+            initialSpringVelocity: 0,
+            options: .CurveEaseInOut,
+            animations: {
+                self.view.layoutIfNeeded()
+                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
+                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
+                self.nowPlayingNavigationController?.view.alpha = fraction
+            },
+            completion: completion)
+        
+        
+    }
+
     
     private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
         var newOriginX = recognizer.view!.frame.origin.x + recognizer.translationInView(view).x
@@ -308,6 +312,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         
         switch(recognizer.state) {
+        case .Began:
+            nowPlayingViewController!.view.layer.shouldRasterize = true
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
