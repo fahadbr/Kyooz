@@ -39,7 +39,7 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         super.init(tableView: dropDestination.destinationTableView)
         self.positionChangeUpdatesDataSource = false
         self.shouldHideSourceView = false
-        self.snapshotScale = 0.8
+        self.snapshotScale = 0.9
         self.updateSnapshotXPosition = true
     }
     
@@ -112,18 +112,19 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         let localItemsToInsert = itemsToDrag
         let localIndexPathForInserting = indexPathOfMovingItem
         
-        tableView.deleteRowsAtIndexPaths([localIndexPathForInserting], withRowAnimation: UITableViewRowAnimation.Fade)
+        tableView.deleteRowsAtIndexPaths([localIndexPathForInserting], withRowAnimation: .None)
         
         if(insideTableView) {
-            if(localItemsToInsert != nil) {
+            if let itemsToInsert = localItemsToInsert {
                 var indexPaths = [NSIndexPath]()
                 let startingIndex = localIndexPathForInserting.row
-                for index in (startingIndex)..<(startingIndex+localItemsToInsert.count)  {
+                let noOfItemsToInsert = itemsToInsert.count
+                for index in startingIndex ..< (startingIndex + noOfItemsToInsert)  {
                     indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
                 }
                 
-                dropDestination.setDropItems(localItemsToInsert!, atIndex:localIndexPathForInserting)
-                tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Fade)
+                dropDestination.setDropItems(itemsToInsert, atIndex:localIndexPathForInserting)
+                tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: noOfItemsToInsert == 1 ? .Fade : .Automatic)
             }
         }
     }

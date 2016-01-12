@@ -24,12 +24,12 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         case Collapsed, Expanded, Transitioning
     }
     
-    static let queueButton:UIBarButtonItem = {
-        let view = ListButtonView()
-        view.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-        view.addTarget(ContainerViewController.instance, action: "toggleSidePanel", forControlEvents: .TouchUpInside)
-        return UIBarButtonItem(customView: view)
-    }()
+//    static let queueButton:UIBarButtonItem = {
+//        let view = ListButtonView()
+//        view.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+//        view.addTarget(ContainerViewController.instance, action: "toggleSidePanel", forControlEvents: .TouchUpInside)
+//        return UIBarButtonItem(customView: view)
+//    }()
     
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
     
@@ -61,7 +61,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItems = [ParentMediaEntityHeaderViewController.queueButton, ParentMediaEntityHeaderViewController.searchButton]
+        navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
         
         headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
         headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeightConstraint.constant/2, 0)

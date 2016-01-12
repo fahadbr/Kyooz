@@ -19,7 +19,7 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             return 0.15
         }
     }
-    let interactiveAnimationDuration = 0.35
+    let interactiveAnimationDuration = 0.5
     
     var operation:UINavigationControllerOperation = .Push
     
@@ -55,12 +55,6 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             fadeAnimation.fromValue = 0
             fadeAnimation.toValue = 1
             
-//            let translateAnimation = CABasicAnimation(keyPath: "transform")
-//            translateAnimation.duration = animationDuration
-//            translateAnimation.fromValue = NSValue(CATransform3D: CATransform3DMakeTranslation(vcToAnimate.view.frame.width/2, 0, 0))
-//            translateAnimation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
-//            
-//            vcToAnimate.view.layer.addAnimation(translateAnimation, forKey: nil)
             vcToAnimate.view.layer.addAnimation(fadeAnimation, forKey: nil)
         } else {
             vcToAnimate = fromVC
@@ -68,7 +62,7 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             
             var animations = { vcToAnimate.view.layer.opacity = 0.0 }
             if interactive {
-                let transform = CATransform3DMakeTranslation(vcToAnimate.view.frame.width/2, 0, 0)
+                let transform = CATransform3DMakeTranslation(vcToAnimate.view.frame.width * 0.75, 0, 0)
                 animations = {
                     vcToAnimate.view.layer.transform = transform
                     vcToAnimate.view.layer.opacity = 0.0
@@ -99,7 +93,7 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             return
         }
         let translation = recognizer.translationInView(superView)
-        let progress:CGFloat = min(max(abs(translation.x/200.0), 0.01), 0.99)
+        let progress:CGFloat = min(max(abs(translation.x/300), 0.01), 0.99)
         
         switch recognizer.state {
         case .Changed:

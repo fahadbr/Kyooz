@@ -122,7 +122,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     //MARK: - Navigation controller delegate
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
         if viewController === navigationController.viewControllers[0] && previousSearchText != nil {
             searchController.searchBar.text = previousSearchText
             activateSearch()

@@ -31,9 +31,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     private (set) var isBaseLevel:Bool = true
-    
-    private var useBlankController:Bool = false
-    private var viewController:UIViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -198,17 +195,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
         
         //go to specific album track view controller if we are selecting an album collection
-        if useBlankController {
-            KyoozUtils.performWithMetrics(blockDescription: "pushing of blank view controller") {
-                self.viewController = UIViewController()
-                ContainerViewController.instance.pushViewController(self.viewController!)
-            }
-        } else {
-            KyoozUtils.performWithMetrics(blockDescription: "pushing of media entity controller") { [filterQuery = self.filterQuery, libraryGroupingType = self.libraryGroupingType] in
-                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
-            }
-        }
-//        useBlankController = !useBlankController
+        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
     }
     
     

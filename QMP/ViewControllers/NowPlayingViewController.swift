@@ -55,7 +55,16 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     //MARK: GESTURE PROPERTIES
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
     
-    var indexPathOfMovingItem:NSIndexPath!
+    var indexPathOfMovingItem:NSIndexPath! {
+        didSet {
+            if indexPathOfMovingItem == nil { return }
+            if indexPathOfMovingItem.row == audioQueuePlayer.nowPlayingQueue.count || indexPathOfMovingItem.row == 0 {
+                insertCellView.hidden = false
+            } else {
+                insertCellView.hidden = true
+            }
+        }
+    }
     var insertModeCount:Int!
     var insertMode:Bool = false {
         didSet {
@@ -64,7 +73,6 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
             } else {
                 indexPathOfMovingItem = nil
             }
-            insertCellView.hidden = insertMode
             longPressGestureRecognizer.enabled = !insertMode
             for item in toolbarItems! {
                 item.enabled = !insertMode
@@ -82,6 +90,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         super.viewDidLoad()
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
         let editButton = editButtonItem()
+        editButton.tintColor = ThemeHelper.defaultTintColor
         toolbarItems?[0] = editButton
         
 
@@ -92,11 +101,14 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         tableView.addGestureRecognizer(menuButtonTapGestureRecognizer)
         
         let cell = UITableViewCell()
-        cell.backgroundColor = UIColor(white: 0.1, alpha: 0.5)
+        cell.backgroundColor = ThemeHelper.defaultTableCellColor
         cell.textLabel?.text = "Insert Here"
         cell.textLabel?.textAlignment = NSTextAlignment.Center
         cell.textLabel?.font = ThemeHelper.defaultFont
-        cell.textLabel?.textColor = UIColor(white: 0.9, alpha: 0.5)
+        cell.textLabel?.textColor = UIColor.grayColor()
+        cell.layer.rasterizationScale = UIScreen.mainScreen().scale
+        cell.layer.shouldRasterize = true
+        cell.hidden = true
         insertCellView = cell
         
         registerForNotifications()
@@ -175,10 +187,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         let mediaItem = audioQueuePlayer.nowPlayingQueue[indexToUse]
         let isNowPlayingItem = (indexToUse == audioQueuePlayer.indexOfNowPlayingItem)
         cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
-//        KyoozUtils.doInMainQueueAsync() {
-            cell.albumArtImageView.image = self.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
-//        }
-        
+        cell.albumArtImageView.image = self.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
         return cell
     }
     

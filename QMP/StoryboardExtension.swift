@@ -12,11 +12,17 @@ import UIKit
 extension UIStoryboard {
 
     class func mainStoryboard() -> UIStoryboard {
-        return UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        struct Static {
+            static let instance = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+        }
+        return Static.instance
     }
     
     class func settingsStoryboard() -> UIStoryboard {
-        return UIStoryboard(name: "Settings", bundle:NSBundle.mainBundle())
+        struct Static {
+            static let instance = UIStoryboard(name: "Settings", bundle:NSBundle.mainBundle())
+        }
+        return Static.instance
     }
     
     class func libraryNavigationController() -> UINavigationController {
