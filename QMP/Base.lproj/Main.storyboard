@@ -209,17 +209,17 @@
         <!--Warning View Controller-->
         <scene sceneID="x1M-OP-ra1">
             <objects>
-                <viewController storyboardIdentifier="warningViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ubx-ew-Vbd" customClass="WarningViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="warningViewController" providesPresentationContextTransitionStyle="YES" modalTransitionStyle="crossDissolve" modalPresentationStyle="pageSheet" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ubx-ew-Vbd" customClass="WarningViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="aOV-zR-vdF"/>
                         <viewControllerLayoutGuide type="bottom" id="MuX-5n-WAv"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Rfa-FI-Vqo">
-                        <rect key="frame" x="0.0" y="0.0" width="400" height="55"/>
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="40"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="sk4-bX-jeT">
-                                <rect key="frame" x="20" y="0.0" width="360" height="55"/>
+                                <rect key="frame" x="20" y="0.0" width="360" height="40"/>
                                 <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="14"/>
                                 <size key="titleShadowOffset" width="2.2250738585072014e-308" height="0.0"/>
                                 <state key="normal" title="Kyooz is out of sync with the system music player.  Tap to fix"/>
@@ -236,8 +236,9 @@
                             <constraint firstAttribute="bottomMargin" secondItem="sk4-bX-jeT" secondAttribute="bottom" id="qMa-T2-Vxk"/>
                         </constraints>
                     </view>
+                    <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="400" height="55"/>
+                    <size key="freeformSize" width="400" height="40"/>
                     <connections>
                         <outlet property="warningButton" destination="sk4-bX-jeT" id="Gaa-Do-Lh3"/>
                     </connections>
@@ -245,6 +246,56 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TF2-5v-w3n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2984" y="-452"/>
+        </scene>
+        <!--System Queue Resync Workflow Controller-->
+        <scene sceneID="Rae-zX-nF8">
+            <objects>
+                <viewController storyboardIdentifier="systemQueueResyncWorkflowController" modalTransitionStyle="crossDissolve" modalPresentationStyle="formSheet" useStoryboardIdentifierAsRestorationIdentifier="YES" id="yug-B7-DM9" customClass="SystemQueueResyncWorkflowController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="XwU-Zh-tjD"/>
+                        <viewControllerLayoutGuide type="bottom" id="mew-KM-pCd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8qA-VG-GPV">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-da-NAC">
+                                <rect key="frame" x="0.0" y="118" width="375" height="549"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YyH-sy-0Fk" userLabel="headerView">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="118"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T7z-5C-3IS">
+                                        <rect key="frame" x="23" y="80" width="46" height="30"/>
+                                        <state key="normal" title="Button">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.089999999999999997" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="118" id="0Bd-dO-nc3"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="YyH-sy-0Fk" firstAttribute="leading" secondItem="8qA-VG-GPV" secondAttribute="leading" id="FqB-lr-NLU"/>
+                            <constraint firstItem="YyH-sy-0Fk" firstAttribute="top" secondItem="8qA-VG-GPV" secondAttribute="top" id="IfM-ek-3Yk"/>
+                            <constraint firstAttribute="trailing" secondItem="yfP-da-NAC" secondAttribute="trailing" id="VOg-wy-lyr"/>
+                            <constraint firstItem="yfP-da-NAC" firstAttribute="leading" secondItem="8qA-VG-GPV" secondAttribute="leading" id="XrA-Ge-OkD"/>
+                            <constraint firstItem="yfP-da-NAC" firstAttribute="top" secondItem="YyH-sy-0Fk" secondAttribute="bottom" id="icn-YZ-mwx"/>
+                            <constraint firstItem="mew-KM-pCd" firstAttribute="top" secondItem="yfP-da-NAC" secondAttribute="bottom" id="ln4-5e-los"/>
+                            <constraint firstAttribute="trailing" secondItem="YyH-sy-0Fk" secondAttribute="trailing" id="n2V-2K-jRb"/>
+                        </constraints>
+                    </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QMn-Z6-CLK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2402.5" y="-281.5"/>
         </scene>
         <!--NowPlayingSummaryView-->
         <scene sceneID="hrQ-wI-PHv">

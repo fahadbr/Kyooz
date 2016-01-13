@@ -11,11 +11,25 @@ import UIKit
 final class WarningViewController: UIViewController {
 
     @IBOutlet var warningButton: UIButton!
+
     var handler:(()->())?
+    var message:String! {
+        didSet {
+            warningButton?.setTitle(message, forState: .Normal)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        warningButton.titleLabel?.textAlignment = NSTextAlignment.Center
+        guard let label = warningButton.titleLabel else {
+            return
+        }
+        label.textAlignment = NSTextAlignment.Center
+        label.minimumScaleFactor = 0.6
+        label.allowsDefaultTighteningForTruncation = true
+        label.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        label.numberOfLines = 1
+        warningButton.setTitle(message, forState: .Normal)
         // Do any additional setup after loading the view.
     }
 

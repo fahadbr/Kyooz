@@ -406,7 +406,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
         if queueStateInconsistent {
             KyoozUtils.doInMainQueueAsync() {
-                RootViewController.instance.displayWarningView("Kyooz is out of sync with the system music player.  Tap to fix!", handler: { () -> () in
+                RootViewController.instance.presentWarningView("Kyooz is out of sync with the system music player. Tap to fix!", handler: { () -> () in
                     Logger.debug("warning view tapped!")
                     self.queueStateInconsistent = false
                 })
