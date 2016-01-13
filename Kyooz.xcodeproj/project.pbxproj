@@ -74,6 +74,7 @@
 		0BA2426F1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA2426E1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift */; };
 		0BA242711C20B1E1000170F9 /* LibraryGroupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242701C20B1E1000170F9 /* LibraryGroupCollectionViewCell.swift */; };
 		0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242741C251671000170F9 /* AbstractTableViewCell.swift */; };
+		0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */; };
 		0BB8D1AA1BC1F8BA00472042 /* MPMediaEntityExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB8D1A91BC1F8BA00472042 /* MPMediaEntityExtension.swift */; };
 		0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */; };
 		0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */; };
@@ -197,6 +198,7 @@
 		0BA2426E1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGroupCollectionViewController.swift; sourceTree = "<group>"; };
 		0BA242701C20B1E1000170F9 /* LibraryGroupCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGroupCollectionViewCell.swift; sourceTree = "<group>"; };
 		0BA242741C251671000170F9 /* AbstractTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractTableViewCell.swift; sourceTree = "<group>"; };
+		0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemQueueResyncWorkflowController.swift; sourceTree = "<group>"; };
 		0BB8D1A91BC1F8BA00472042 /* MPMediaEntityExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPMediaEntityExtension.swift; sourceTree = "<group>"; };
 		0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractResultOperation.swift; sourceTree = "<group>"; };
 		0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchExecutionController.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */,
+				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
 			);
 			name = ViewControllerUtils;
 			sourceTree = "<group>";
@@ -782,6 +785,7 @@
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */,
 				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,
+				0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */,
 				0BB8D1AA1BC1F8BA00472042 /* MPMediaEntityExtension.swift in Sources */,
 				0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */,
 				0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */,

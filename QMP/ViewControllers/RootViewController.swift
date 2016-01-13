@@ -36,7 +36,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     var libraryNavigationController:UINavigationController!
-    private var lncTopLayoutGuideConstraint:NSLayoutConstraint!
+    private var lncBottomConstraint:NSLayoutConstraint!
     
     var nowPlayingSummaryViewController:NowPlayingSummaryViewController!
     
@@ -45,6 +45,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     var gestureDelegate:UIGestureRecognizerDelegate?
     private var collapsedConstraint:NSLayoutConstraint!
     private var expandedConstraint:NSLayoutConstraint!
+    
+    private var collapsedBarLayoutGuide:UILayoutGuide!
     
     var previousSearchText:String?
     private var searchController:UISearchController!
@@ -64,6 +66,13 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryNavigationController = UIStoryboard.libraryNavigationController()
         libraryNavigationController.viewControllers.first?.title = "BROWSE"
         
+        collapsedBarLayoutGuide = UILayoutGuide()
+        view.addLayoutGuide(collapsedBarLayoutGuide)
+        collapsedBarLayoutGuide.topAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -55).active = true
+        collapsedBarLayoutGuide.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+        collapsedBarLayoutGuide.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        collapsedBarLayoutGuide.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        
         view.addSubview(libraryNavigationController.view)
         addChildViewController(libraryNavigationController)
         libraryNavigationController.didMoveToParentViewController(self)
@@ -74,9 +83,9 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         
         let libraryView = libraryNavigationController.view
         libraryView.translatesAutoresizingMaskIntoConstraints = false
-        lncTopLayoutGuideConstraint = libraryView.topAnchor.constraintEqualToAnchor(view.topAnchor)
-        lncTopLayoutGuideConstraint.active = true
-        libraryView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -55).active = true
+        libraryView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        lncBottomConstraint = libraryView.bottomAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor)
+        lncBottomConstraint.active = true
         libraryView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         libraryView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
         
@@ -88,7 +97,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         addChildViewController(nowPlayingSummaryViewController)
         nowPlayingSummaryViewController.didMoveToParentViewController(self)
         nowPlayingView.translatesAutoresizingMaskIntoConstraints = false
-        collapsedConstraint = nowPlayingView.topAnchor.constraintEqualToAnchor(libraryView.bottomAnchor)
+        collapsedConstraint = nowPlayingView.topAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor)
         collapsedConstraint.active = true
         expandedConstraint = nowPlayingView.topAnchor.constraintEqualToAnchor(view.topAnchor)
         
@@ -126,6 +135,11 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         pullableViewExpanded = false
     }
     
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
+        Logger.debug("calling update constraints")
+    }
+    
     //MARK: - Navigation controller delegate
     func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
         if viewController === navigationController.viewControllers[0] && previousSearchText != nil {
@@ -155,7 +169,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryNavigationController.presentViewController(searchController, animated: true, completion: nil)
     }
     
-    func displayWarningView(message:String, handler:()->()) {
+    func presentWarningView(message:String, handler:()->()) {
         if self.warningViewController != nil {
             Logger.debug("already displaying warning view")
             return
@@ -163,37 +177,47 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         let warningVC = UIStoryboard.warningViewController()
         warningVC.handler = {
             handler()
-            self.dismissWarningView()
+            KyoozUtils.doInMainQueue() {
+                self.dismissWarningView()
+            }
         }
+        warningVC.message = message
         
         let warningView = warningVC.view
-        warningView.frame = CGRect(x: 0, y: -60, width: view.frame.width, height: 60)
-        view.addSubview(warningView)
+        warningView.frame = CGRect(origin: collapsedBarLayoutGuide.layoutFrame.origin, size: CGSize(width: view.frame.width, height: 0))
+        view.insertSubview(warningView, belowSubview: nowPlayingSummaryViewController.view)
         warningViewController = warningVC
         
         warningView.translatesAutoresizingMaskIntoConstraints = false
-        warningView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        lncBottomConstraint.active = false
+        warningView.topAnchor.constraintEqualToAnchor(libraryNavigationController.view.bottomAnchor).active = true
         warningView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         warningView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-        warningView.heightAnchor.constraintEqualToConstant(60).active = true
-        lncTopLayoutGuideConstraint.active = false
-        warningView.bottomAnchor.constraintEqualToAnchor(libraryNavigationController.view.topAnchor).active = true
-        
-        UIView.animateWithDuration(0.3) { () -> Void in
+        warningView.heightAnchor.constraintEqualToConstant(40).active = true
+        warningView.bottomAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor).active = true
+        warningVC.warningButton.alpha = 0
+        UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .CurveEaseInOut, animations: { () -> Void in
             self.view.layoutIfNeeded()
-        }
+            warningVC.warningButton.alpha = 1
+            }, completion: nil)
 
     }
     
     private func dismissWarningView() {
-        warningViewController?.view?.removeFromSuperview()
-        warningViewController = nil
-        lncTopLayoutGuideConstraint.active = true
-        
-        UIView.animateWithDuration(0.3) { () -> Void in
-            self.view.layoutIfNeeded()
+        guard let warningVC = self.warningViewController else {
+            return
         }
+        warningViewController = nil
         
+        guard let heightConstraint = warningVC.view.constraints.filter({
+            return $0.firstAttribute == NSLayoutAttribute.Height && $0.firstItem === warningVC.view && $0.secondItem == nil
+        }).first else { return }
+        heightConstraint.constant = 0
+        warningVC.warningButton.hidden = true
+        UIView.animateWithDuration(0.15, delay: 0, options: .CurveEaseInOut, animations: { self.view.layoutIfNeeded() }, completion: {_ in
+            warningVC.view.removeFromSuperview()
+            self.lncBottomConstraint.active = true
+        })
     }
     
     func setToolbarHidden(hidden:Bool) {
@@ -224,7 +248,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
             let translationY = recognizer.translationInView(self.view).y
             let endYPos = currenyYPos + translationY
             
-            if(endYPos >= view.frame.minY && endYPos <= libraryNavigationController.view.frame.maxY) {
+            if(endYPos >= view.frame.minY && endYPos <= collapsedBarLayoutGuide.layoutFrame.minY) {
                 activeConstraint.constant += translationY
 
                 recognizer.setTranslation(CGPointZero, inView: view)
