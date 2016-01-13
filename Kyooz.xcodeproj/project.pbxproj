@@ -112,6 +112,7 @@
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */; };
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
+		10C7B9DB1C45C16E00ADAAB6 /* WarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,6 +237,7 @@
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListButtonView.swift; sourceTree = "<group>"; };
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
+		10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -388,6 +390,7 @@
 				0BCA194D1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift */,
 				0B650A5E1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
+				10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -775,6 +778,7 @@
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
 				0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */,
 				0B533AC41BC191B600EA71B7 /* MediaEntityTableViewController.swift in Sources */,
+				10C7B9DB1C45C16E00ADAAB6 /* WarningViewController.swift in Sources */,
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */,
 				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,

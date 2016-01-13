@@ -206,6 +206,46 @@
             </objects>
             <point key="canvasLocation" x="4298" y="-403"/>
         </scene>
+        <!--Warning View Controller-->
+        <scene sceneID="x1M-OP-ra1">
+            <objects>
+                <viewController storyboardIdentifier="warningViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ubx-ew-Vbd" customClass="WarningViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="aOV-zR-vdF"/>
+                        <viewControllerLayoutGuide type="bottom" id="MuX-5n-WAv"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Rfa-FI-Vqo">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="55"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="sk4-bX-jeT">
+                                <rect key="frame" x="20" y="0.0" width="360" height="55"/>
+                                <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="14"/>
+                                <size key="titleShadowOffset" width="2.2250738585072014e-308" height="0.0"/>
+                                <state key="normal" title="Kyooz is out of sync with the system music player.  Tap to fix"/>
+                                <connections>
+                                    <action selector="executeHandler:" destination="Ubx-ew-Vbd" eventType="touchUpInside" id="vct-d8-pPC"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.45124345549738221" green="0.0" blue="0.023144693476255699" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="sk4-bX-jeT" firstAttribute="leading" secondItem="Rfa-FI-Vqo" secondAttribute="leadingMargin" id="S5j-0E-ESM"/>
+                            <constraint firstItem="sk4-bX-jeT" firstAttribute="top" secondItem="Rfa-FI-Vqo" secondAttribute="topMargin" id="Vj2-zE-XRP"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sk4-bX-jeT" secondAttribute="trailing" id="cZ9-9B-N7c"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="sk4-bX-jeT" secondAttribute="bottom" id="qMa-T2-Vxk"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="400" height="55"/>
+                    <connections>
+                        <outlet property="warningButton" destination="sk4-bX-jeT" id="Gaa-Do-Lh3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TF2-5v-w3n" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2984" y="-452"/>
+        </scene>
         <!--NowPlayingSummaryView-->
         <scene sceneID="hrQ-wI-PHv">
             <objects>

@@ -36,6 +36,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     var libraryNavigationController:UINavigationController!
+    private var lncTopLayoutGuideConstraint:NSLayoutConstraint!
+    
     var nowPlayingSummaryViewController:NowPlayingSummaryViewController!
     
     var nowPlayingTapGestureRecognizer:UITapGestureRecognizer!
@@ -48,6 +50,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     private var searchController:UISearchController!
     private var resultsTableController:UITableViewController!
     private let searchResultsController = MediaLibrarySearchTableViewController.instance
+    
+    private var warningViewController:WarningViewController?
     
     private let transition = ViewControllerFadeAnimator.instance
     
@@ -70,7 +74,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         
         let libraryView = libraryNavigationController.view
         libraryView.translatesAutoresizingMaskIntoConstraints = false
-        libraryView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        lncTopLayoutGuideConstraint = libraryView.topAnchor.constraintEqualToAnchor(view.topAnchor)
+        lncTopLayoutGuideConstraint.active = true
         libraryView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -55).active = true
         libraryView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         libraryView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
@@ -148,6 +153,47 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     func activateSearch() {
         previousSearchText = nil
         libraryNavigationController.presentViewController(searchController, animated: true, completion: nil)
+    }
+    
+    func displayWarningView(message:String, handler:()->()) {
+        if self.warningViewController != nil {
+            Logger.debug("already displaying warning view")
+            return
+        }
+        let warningVC = UIStoryboard.warningViewController()
+        warningVC.handler = {
+            handler()
+            self.dismissWarningView()
+        }
+        
+        let warningView = warningVC.view
+        warningView.frame = CGRect(x: 0, y: -60, width: view.frame.width, height: 60)
+        view.addSubview(warningView)
+        warningViewController = warningVC
+        
+        warningView.translatesAutoresizingMaskIntoConstraints = false
+        warningView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        warningView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        warningView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        warningView.heightAnchor.constraintEqualToConstant(60).active = true
+        lncTopLayoutGuideConstraint.active = false
+        warningView.bottomAnchor.constraintEqualToAnchor(libraryNavigationController.view.topAnchor).active = true
+        
+        UIView.animateWithDuration(0.3) { () -> Void in
+            self.view.layoutIfNeeded()
+        }
+
+    }
+    
+    private func dismissWarningView() {
+        warningViewController?.view?.removeFromSuperview()
+        warningViewController = nil
+        lncTopLayoutGuideConstraint.active = true
+        
+        UIView.animateWithDuration(0.3) { () -> Void in
+            self.view.layoutIfNeeded()
+        }
+        
     }
     
     func setToolbarHidden(hidden:Bool) {

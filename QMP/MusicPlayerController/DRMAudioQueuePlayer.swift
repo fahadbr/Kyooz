@@ -252,20 +252,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private func persistToSystemQueue(oldContext:NowPlayingQueueContext) {
         if queueStateInconsistent {
-            let a = UIAlertController(title: "Overwrite System Queue?", message: "Kyooz is out of sync with the system music player.  Proceeding with the queue operation will overwrite any changes you made in another app", preferredStyle: .Alert)
-            let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default) {_ in
-                self.queueStateInconsistent = false
-                if let id = self.nowPlayingItem?.id, let item = IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: id)) {
-                    self.nowPlayingQueueContext.insertItemsAtIndex([item], index: 0)
-                    self.indexOfNowPlayingItem = 0
-                }
-                self.persistToSystemQueue(oldContext)
-            }
-            a.addAction(overwriteAction)
-            a.preferredAction = overwriteAction
-            a.addAction(UIAlertAction(title: "Don't Overwrite", style: .Default, handler: nil))
-            a.addAction(UIAlertAction(title: "Undo", style: .Cancel, handler: {_ in self.nowPlayingQueueContext = oldContext }))
-            ContainerViewController.instance.presentViewController(a, animated: true, completion: nil)
+            Logger.debug("queue state is inconsistent. will not persist changes")
             return
         }
         
@@ -413,14 +400,16 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         
         if nowPlayingQueue[newIndex].id != nowPlayingItem.id {
             queueStateInconsistent = true
+            indexOfNowPlayingItem = 0
         } else {
             indexOfNowPlayingItem = newIndex
         }
         if queueStateInconsistent {
-            KyoozUtils.doInMainQueue() {
-                let a = UIAlertController(title: "Out of Sync", message: "Kyooz is out of sync with the system music player.  The music queue in this app may not reflect what will play in the system music player.", preferredStyle: .Alert)
-                a.addAction(UIAlertAction(title: "Got It", style: .Cancel, handler: nil))
-                ContainerViewController.instance.presentViewController(a, animated: true, completion: nil)
+            KyoozUtils.doInMainQueueAsync() {
+                RootViewController.instance.displayWarningView("Kyooz is out of sync with the system music player.  Tap to fix!", handler: { () -> () in
+                    Logger.debug("warning view tapped!")
+                    self.queueStateInconsistent = false
+                })
             }
         }
 

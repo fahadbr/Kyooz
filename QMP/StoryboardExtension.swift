@@ -45,7 +45,13 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("albumTrackTableViewController") as! AlbumTrackTableViewController
     }
     
+    static func warningViewController() -> WarningViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("warningViewController") as! WarningViewController
+    }
+    
     class func settingsViewController() -> UIViewController {
         return settingsStoryboard().instantiateInitialViewController()!
     }
+    
+    
 }
