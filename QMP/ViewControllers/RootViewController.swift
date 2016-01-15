@@ -235,6 +235,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
         libraryNavigationController.view.userInteractionEnabled = shouldEnable
         nowPlayingSummaryViewController.view.userInteractionEnabled = shouldEnable
+        searchResultsController.view.userInteractionEnabled = shouldEnable
+        searchController.view.userInteractionEnabled = shouldEnable
     }
     
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {

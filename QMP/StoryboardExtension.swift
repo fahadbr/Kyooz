@@ -11,37 +11,37 @@ import UIKit
 
 extension UIStoryboard {
 
-    class func mainStoryboard() -> UIStoryboard {
+    static func mainStoryboard() -> UIStoryboard {
         struct Static {
             static let instance = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
         }
         return Static.instance
     }
     
-    class func settingsStoryboard() -> UIStoryboard {
+    static func settingsStoryboard() -> UIStoryboard {
         struct Static {
             static let instance = UIStoryboard(name: "Settings", bundle:NSBundle.mainBundle())
         }
         return Static.instance
     }
     
-    class func libraryNavigationController() -> UINavigationController {
+    static func libraryNavigationController() -> UINavigationController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("libraryNavigationController") as! UINavigationController
     }
     
-    class func nowPlayingViewController() -> NowPlayingViewController {
+    static func nowPlayingViewController() -> NowPlayingViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingViewController") as! NowPlayingViewController
     }
     
-    class func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
+    static func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
     }
     
-    class func mediaEntityTableViewController() -> MediaEntityTableViewController {
+    static func mediaEntityTableViewController() -> MediaEntityTableViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("mediaEntityVC") as! MediaEntityTableViewController
     }
     
-    class func albumTrackTableViewController() -> AlbumTrackTableViewController {
+    static func albumTrackTableViewController() -> AlbumTrackTableViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("albumTrackTableViewController") as! AlbumTrackTableViewController
     }
     
@@ -49,7 +49,11 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("warningViewController") as! WarningViewController
     }
     
-    class func settingsViewController() -> UIViewController {
+    static func systemQueueResyncWorkflowController() -> SystemQueueResyncWorkflowController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("systemQueueResyncWorkflowController") as! SystemQueueResyncWorkflowController
+    }
+    
+    static func settingsViewController() -> UIViewController {
         return settingsStoryboard().instantiateInitialViewController()!
     }
     

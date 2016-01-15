@@ -262,20 +262,62 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-da-NAC">
                                 <rect key="frame" x="0.0" y="118" width="375" height="549"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="yug-B7-DM9" id="uP7-Bn-UCh"/>
+                                    <outlet property="delegate" destination="yug-B7-DM9" id="DNF-GI-0gx"/>
+                                </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YyH-sy-0Fk" userLabel="headerView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="118"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T7z-5C-3IS">
-                                        <rect key="frame" x="23" y="80" width="46" height="30"/>
-                                        <state key="normal" title="Button">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T7z-5C-3IS">
+                                        <rect key="frame" x="8" y="8" width="48" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="1Y9-NF-lbt"/>
+                                            <constraint firstAttribute="width" constant="48" id="gej-91-9Rt"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
+                                        <state key="normal" title="Cancel">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="cancelWorkflow:" destination="yug-B7-DM9" eventType="touchUpInside" id="HRk-r3-kdv"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="select the track to play now" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Roy-eB-Qkg">
+                                        <rect key="frame" x="8" y="38" width="359" height="72"/>
+                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EhE-oM-BpL">
+                                        <rect key="frame" x="319" y="8" width="48" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="GiM-Rh-2yy"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="Joi-gi-rQm"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="48" id="gBD-g5-cSb"/>
+                                            <constraint firstAttribute="width" constant="48" id="tZC-jd-oxa"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
+                                        <state key="normal" title="Done">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelWorkflow:" destination="yug-B7-DM9" eventType="touchUpInside" id="QtW-S5-pFB"/>
+                                            <action selector="finishWorkFlow:" destination="yug-B7-DM9" eventType="touchUpInside" id="t9e-jt-gxP"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.089999999999999997" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="118" id="0Bd-dO-nc3"/>
+                                    <constraint firstItem="EhE-oM-BpL" firstAttribute="top" secondItem="YyH-sy-0Fk" secondAttribute="topMargin" id="8DT-No-YD1"/>
+                                    <constraint firstItem="Roy-eB-Qkg" firstAttribute="top" secondItem="T7z-5C-3IS" secondAttribute="bottom" id="8Ku-fk-LX0"/>
+                                    <constraint firstItem="Roy-eB-Qkg" firstAttribute="leading" secondItem="YyH-sy-0Fk" secondAttribute="leadingMargin" id="OUV-NW-bse"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="Roy-eB-Qkg" secondAttribute="trailing" id="SdW-qK-F0f"/>
+                                    <constraint firstItem="T7z-5C-3IS" firstAttribute="leading" secondItem="YyH-sy-0Fk" secondAttribute="leadingMargin" id="YEO-MN-3WP"/>
+                                    <constraint firstItem="EhE-oM-BpL" firstAttribute="trailing" secondItem="YyH-sy-0Fk" secondAttribute="trailingMargin" id="Ym0-V0-3h0"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="Roy-eB-Qkg" secondAttribute="bottom" id="gsd-t2-S1y"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -283,6 +325,7 @@
                         <constraints>
                             <constraint firstItem="YyH-sy-0Fk" firstAttribute="leading" secondItem="8qA-VG-GPV" secondAttribute="leading" id="FqB-lr-NLU"/>
                             <constraint firstItem="YyH-sy-0Fk" firstAttribute="top" secondItem="8qA-VG-GPV" secondAttribute="top" id="IfM-ek-3Yk"/>
+                            <constraint firstItem="T7z-5C-3IS" firstAttribute="top" secondItem="XwU-Zh-tjD" secondAttribute="bottom" constant="-12" id="UvL-oE-0ba"/>
                             <constraint firstAttribute="trailing" secondItem="yfP-da-NAC" secondAttribute="trailing" id="VOg-wy-lyr"/>
                             <constraint firstItem="yfP-da-NAC" firstAttribute="leading" secondItem="8qA-VG-GPV" secondAttribute="leading" id="XrA-Ge-OkD"/>
                             <constraint firstItem="yfP-da-NAC" firstAttribute="top" secondItem="YyH-sy-0Fk" secondAttribute="bottom" id="icn-YZ-mwx"/>
@@ -292,6 +335,10 @@
                     </view>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="messageLabel" destination="Roy-eB-Qkg" id="f3c-Qd-dVW"/>
+                        <outlet property="tableView" destination="yfP-da-NAC" id="aC5-6K-1eo"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QMn-Z6-CLK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
