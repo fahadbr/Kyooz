@@ -19,4 +19,5 @@ struct NibContainer {
     
     static let searchResultsHeaderViewNib = UINib(nibName: "SearchResultsHeaderView", bundle: nil)
     
+    static let headerView = UINib(nibName: "SearchResultsHeaderView", bundle: nil)
 }

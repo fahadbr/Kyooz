@@ -8,7 +8,9 @@
 
 import UIKit
 
-class SearchResultsHeaderView: UIView {
+final class SearchResultsHeaderView: UITableViewHeaderFooterView {
+    
+    static let reuseIdentifier = "searchResultsHeaderView"
     
     @IBOutlet weak var headerTitleLabel: UILabel!
     @IBOutlet weak var disclosureIndicator: UILabel!

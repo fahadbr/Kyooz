@@ -282,7 +282,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    private func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:AudioTrack, isNowPlayingItem:Bool) -> UIImage! {
+    func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:AudioTrack, isNowPlayingItem:Bool) -> UIImage! {
         
         if let albumArtworkObject = mediaItem.artwork {
             var albumArtwork = tempImageCache[mediaItem.albumId]
