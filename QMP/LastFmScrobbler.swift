@@ -167,13 +167,13 @@ final class LastFmScrobbler {
     
     func submitCachedScrobbles() {
         if(scrobbleCache.isEmpty) { return }
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [unowned self]() -> Void in
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [scrobbleCache = self.scrobbleCache]() -> Void in
             Logger.debug("submitting the scrobble cache")
-            let maxValue = self.scrobbleCache.count
+            let maxValue = scrobbleCache.count
             for var i=0 ; i < maxValue ;  {
                 let nextIncrement = i + self.BATCH_SIZE
                 let nextIndexToUse = nextIncrement >= maxValue ? maxValue : nextIncrement
-                self.submitBatchOfScrobbles(self.scrobbleCache[i..<(nextIndexToUse)])
+                self.submitBatchOfScrobbles(scrobbleCache[i..<(nextIndexToUse)])
                 i = nextIndexToUse
             }
         })

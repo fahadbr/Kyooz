@@ -8,7 +8,7 @@
 
 import Foundation
 
-class IndexSearchOperation<T:NSObject> : AbstractResultOperation<[T]> {
+final class IndexSearchOperation<T:NSObject> : AbstractResultOperation<[T]> {
     
     let searchIndex:SearchIndex<T>
     let searchPredicate:NSPredicate

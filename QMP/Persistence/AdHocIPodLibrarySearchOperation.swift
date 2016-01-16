@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEntity]> {
+final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEntity]> {
     
 
     private let group:LibraryGrouping

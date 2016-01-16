@@ -15,6 +15,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
     private let playbackStateManager:PlaybackStateManager
+    private let playCountIterator = PlayCountIterator()
     
     private var queueStateInconsistent:Bool = false {
         didSet {
@@ -101,7 +102,6 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         get {
             return nowPlayingQueueContext.indexOfNowPlayingItem
         } set {
-            Logger.debug("newIndex \(newValue)")
             nowPlayingQueueContext.indexOfNowPlayingItem = newValue
         }
     }

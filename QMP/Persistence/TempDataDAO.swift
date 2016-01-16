@@ -33,8 +33,6 @@ final class TempDataDAO : NSObject {
         
         super.init()
         registerForNotifications()
-        removeFile(TempDataDAO.tempDirectory.URLByAppendingPathComponent("nowPlayingQueue.archive").path!)
-        removeFile(TempDataDAO.tempDirectory.URLByAppendingPathComponent("playbackState.txt").path!)
         
     }
     
@@ -53,7 +51,7 @@ final class TempDataDAO : NSObject {
     }
     
     func persistData(notification:NSNotification) {
-        persistLastFmScrobbleCache(LastFmScrobbler.instance.scrobbleCache)
+        persistLastFmScrobbleCache()
         persistPlaybackStateSnapshotToTempStorage()
         if !miscellaneousValues.writeToFile(TempDataDAO.miscValuesFileName, atomically: true) {
             Logger.debug("failed to write all misc values to temp dir")
@@ -102,7 +100,9 @@ final class TempDataDAO : NSObject {
         return array as? [AudioTrack]
     }
     
-    func persistLastFmScrobbleCache(cacheItems:[[String:String]]) {
+    func persistLastFmScrobbleCache() {
+        let cacheItems = LastFmScrobbler.instance.scrobbleCache
+        
         if(cacheItems.isEmpty) {
             removeFile(TempDataDAO.lastFmScrobbleCacheFileName)
             return
