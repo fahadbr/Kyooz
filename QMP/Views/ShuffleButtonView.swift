@@ -6,7 +6,7 @@
 //  Copyright © 2015 FAHAD RIAZ. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 @IBDesignable
 final class ShuffleButtonView : UIButton {

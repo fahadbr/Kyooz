@@ -118,8 +118,6 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         } else {
             indexOfNewItem = index - 1
         }
-//        tableView.reloadData()
-//        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Middle)
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

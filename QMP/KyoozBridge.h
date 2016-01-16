@@ -10,9 +10,6 @@
 #define Kyooz_KyoozBridge_h
 
 #import <CommonCrypto/CommonDigest.h>
-#import <Foundation/Foundation.h>
-#import <MediaPlayer/MediaPlayer.h>
-#import "ObjCUtils.h"
 
 
 #endif
