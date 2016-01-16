@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-class LastFmScrobbler {
+final class LastFmScrobbler {
     
     static let instance:LastFmScrobbler = LastFmScrobbler()
     
@@ -198,14 +198,14 @@ class LastFmScrobbler {
                 }, failureHandler: { [unowned self](info:[String : String]) -> () in
                     Logger.debug("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
                     if(info[self.error_key] != nil && info[self.error_key]! != self.httpFailure) {
-                        self.scrobbleCache.removeAll(keepCapacity: true)
+                        self.scrobbleCache.removeAll()
                     }
                 })
             })
     }
     
-    private func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
-        Logger.debug("caching the scrobble")
+    func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
+        Logger.debug("caching the scrobble for track: \(mediaItemToScrobble.trackTitle) - \(mediaItemToScrobble.artist)")
         let i = scrobbleCache.count
         var scrobbleDict = [String:String]()
         scrobbleDict[self.track + "[\(i)]" ] = mediaItemToScrobble.trackTitle

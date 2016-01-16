@@ -6,7 +6,8 @@
 //  Copyright © 2016 FAHAD RIAZ. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import MediaPlayer
 
 class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol {
     private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)

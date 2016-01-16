@@ -11,7 +11,7 @@ import MediaPlayer
 
 final class TempDataDAO : NSObject {
     //MARK: STATIC PROPERTIES
-    private static let tempDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory())
+    static let tempDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory())
     private static let playbackStateSnapshotFileName = tempDirectory.URLByAppendingPathComponent("playbackStateSnapshot.archive").path!
     private static let lastFmScrobbleCacheFileName = tempDirectory.URLByAppendingPathComponent("lastFmScrobbleCache.txt").path!
     private static let miscValuesFileName = tempDirectory.URLByAppendingPathComponent("miscValues.txt").path!
