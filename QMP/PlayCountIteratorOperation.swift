@@ -22,6 +22,10 @@ final class PlayCountIteratorOperation: NSOperation {
         super.init()
     }
     
+    deinit {
+        Logger.debug("deinit of playcount op")
+    }
+    
     override func main() {
         KyoozUtils.performWithMetrics(blockDescription: "iterateThroughPlaycounts") {
             self.iterateThroughPlaycounts()
@@ -33,6 +37,7 @@ final class PlayCountIteratorOperation: NSOperation {
             Logger.debug("no items found in library")
             return
         }
+        Logger.debug("starting iteration through play counts")
         
         for item in items {
             if cancelled { return }

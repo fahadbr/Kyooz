@@ -8,7 +8,7 @@
 
 import Foundation
 
-class IndexBuildingOperation<T:NSObject> : AbstractResultOperation<SearchIndex<T>> {
+final class IndexBuildingOperation<T:NSObject> : AbstractResultOperation<SearchIndex<T>> {
     
     private let stopWords = ["the ", "a "]
     

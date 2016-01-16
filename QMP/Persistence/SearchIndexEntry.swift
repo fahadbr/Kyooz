@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SearchIndexEntry<T:NSObject> : NSObject {
+final class SearchIndexEntry<T:NSObject> : NSObject {
     
     private var normalizedKeyValues = [String:String]()
     
