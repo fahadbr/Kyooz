@@ -11,164 +11,132 @@ import MediaPlayer
 
 final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    private enum WorkflowState:Int {
-        case SelectItemToPlayNow, SelectItemInQueueToPlayNext, ConfirmChoices
-        
-        mutating func moveToNextState() {
-            if let nextState = WorkflowState(rawValue: self.rawValue + 1) {
-                self = nextState
-            } else {
-                self = ConfirmChoices
-            }
-        }
-        
-        mutating func moveToPreviousState() {
-            if let previousState = WorkflowState(rawValue: self.rawValue - 1) {
-                self = previousState
-            } else {
-                self = SelectItemToPlayNow
-            }
-         }
-    }
     
     private lazy var nowPlayingViewController = ContainerViewController.instance.nowPlayingViewController!
-    private var audioQueuePlayer:AudioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    private var previewQueue = ApplicationDefaults.audioQueuePlayer.nowPlayingQueue
+    private var nowPlayingItem:AudioTrack!
     
     @IBOutlet var messageLabel: UILabel!
     @IBOutlet var tableView: UITableView!
+    @IBOutlet var headerView: UIView!
     
-    private var workflowState:WorkflowState = .SelectItemToPlayNow {
+    private var indexOfNewItem:Int? {
         didSet {
-            reloadSections()
+            if oldValue == nil && indexOfNewItem != nil {
+                UIView.transitionWithView(messageLabel, duration: 0.3, options: UIViewAnimationOptions.TransitionFlipFromBottom, animations: { () -> Void in
+                    self.messageLabel.text = "Tap here to Finish!"
+                    }, completion: nil)
+                UIView.animateWithDuration(0.3, animations: { [weak self]() -> Void in
+                    self?.headerView.backgroundColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
+                })
+            }
         }
     }
     
-    private var itemToPlayNow:AudioTrack?
-    private var indexOfNewItem:Int?
+    var completionBlock:((Int)->())?
     
-    private let itemToPlayNowName = "Track to Play"
-    private let itemToPlayNextName = "Track to Play Next In Queue"
-    private let keepPlayingCurrentTrackName = "Keep Playing Current Track"
-    private let currentQueueName = "Current Queue"
-    private var sectionHeaderNames:[String]!
-    
-    
-    @IBAction func cancelWorkflow(sender: UIButton) {
+    @IBAction func cancelWorkflow(sender: UIButton?) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    @IBAction func finishWorkFlow(sender: UIButton) {
-        guard let itemToPlayNow = self.itemToPlayNow, let indexOfNewItem = self.indexOfNewItem else {
-            Logger.debug("workflow is not done yet!")
+    @IBAction func messageLabelTapped(sender:UITapGestureRecognizer) {
+        guard let newIndex = indexOfNewItem else {
             return
         }
-        
-        if audioQueuePlayer.nowPlayingQueue[indexOfNewItem].id != itemToPlayNow.id {
-            audioQueuePlayer.insertItemsAtIndex([itemToPlayNow], index: indexOfNewItem)
+        dismissViewControllerAnimated(true) { [completionBlock = self.completionBlock] in
+            completionBlock?(newIndex)
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        sectionHeaderNames = [keepPlayingCurrentTrackName, currentQueueName]
+        guard let item = audioQueuePlayer.nowPlayingItem else {
+            cancelWorkflow(nil)
+            return
+        }
+        
+        nowPlayingItem = item
+        
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: SongDetailsTableViewCell.reuseIdentifier)
-        tableView.registerNib(NibContainer.headerView, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleNowPlayingItemChanged:", name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        switch workflowState {
-        case .SelectItemToPlayNow, .SelectItemInQueueToPlayNext:
-            return 2
-        case .ConfirmChoices:
-            return 3
-        }
+        return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 || (workflowState == .ConfirmChoices && section == 1) {
-            return 1
-        }
-        return audioQueuePlayer.nowPlayingQueue.count
+        return previewQueue.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        func configureCell(cell:SongDetailsTableViewCell, audioTrack:AudioTrack) {
-            cell.configureTextLabelsForMediaItem(audioTrack, isNowPlayingItem: false)
-            cell.imageView?.image = nowPlayingViewController.getImageForCell(imageSize: cell.imageView!.frame.size, withMediaItem: audioTrack, isNowPlayingItem: false)
+        guard let cell = tableView.dequeueReusableCellWithIdentifier(SongDetailsTableViewCell.reuseIdentifier) as? SongDetailsTableViewCell else {
+            return UITableViewCell()
+        }
+        let indexToUse = indexPath.row
+        var isNowPlayingItem = false
+        
+        if let index = indexOfNewItem where index == indexPath.row {
+            isNowPlayingItem = true
         }
         
-        switch workflowState {
-        case .SelectItemToPlayNow, .SelectItemInQueueToPlayNext:
-            if indexPath.section != 0 {
-                break
-            }
-            guard let cell = tableView.dequeueReusableCellWithIdentifier(SongDetailsTableViewCell.reuseIdentifier) as? SongDetailsTableViewCell, audioTrack = workflowState == .SelectItemToPlayNow ? audioQueuePlayer.nowPlayingItem : itemToPlayNow else {
-                return UITableViewCell()
-            }
-            configureCell(cell, audioTrack: audioTrack)
-            return cell
-            
-        case .ConfirmChoices:
-            if indexPath.section > 1 {
-                break
-            }
-            guard let cell = tableView.dequeueReusableCellWithIdentifier(SongDetailsTableViewCell.reuseIdentifier) as? SongDetailsTableViewCell, audioTrack = indexPath.section == 0 ? itemToPlayNow : audioQueuePlayer.nowPlayingQueue[indexPath.row]  else {
-                return UITableViewCell()
-            }
-            configureCell(cell, audioTrack: audioTrack)
-            return cell
-        }
+        let mediaItem = previewQueue[indexToUse]
         
-        return nowPlayingViewController.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
+        cell.menuButtonVisualView.hidden = true
+        cell.albumArtImageView.image = nowPlayingViewController.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
+        return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        switch workflowState {
-        case .SelectItemToPlayNow:
-            if indexPath.section == 0 {
-                itemToPlayNow = audioQueuePlayer.nowPlayingItem
-            } else {
-                itemToPlayNow = audioQueuePlayer.nowPlayingQueue[indexPath.row]
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        var index = indexPath.row
+        if let oldIndex = indexOfNewItem {
+            if oldIndex == (index - 1) || oldIndex == index {
+                return
             }
-            workflowState.moveToNextState()
-            let indexSet = NSIndexSet(index: 0)
-            tableView.beginUpdates()
-            tableView.deleteSections(indexSet, withRowAnimation: .Right)
-            tableView.insertSections(indexSet, withRowAnimation: .Left)
-            tableView.endUpdates()
-        case .SelectItemInQueueToPlayNext:
-            if indexPath.section == 0 {
-                break
+            
+            if oldIndex < index {
+                index = index - 1
             }
-            indexOfNewItem = indexPath.row - 1
-            workflowState.moveToNextState()
-            tableView.insertSections(NSIndexSet(index: 1), withRowAnimation: .Middle)
-        default:
-            break
+            
+            let item = previewQueue.removeAtIndex(oldIndex)
+            previewQueue.insert(item, atIndex: index)
+            indexOfNewItem = index
+            tableView.moveRowAtIndexPath(NSIndexPath(forRow: oldIndex, inSection: 0), toIndexPath: NSIndexPath(forRow: index, inSection: 0))
+            return
         }
+        
+        indexOfNewItem = index
+        if index == 0 || nowPlayingItem.id != previewQueue[index - 1].id {
+            previewQueue.insert(nowPlayingItem, atIndex: index)
+//            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Middle)
+        }
+        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Middle)
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchResultsHeaderView else {
+        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
             return nil
         }
-        headerView.headerTitleLabel.text = sectionHeaderNames[section]
-        headerView.disclosureContainerView.hidden = true
-        return headerView
+        view.headerTitleLabel.text = indexOfNewItem == nil ? "CURRENT QUEUE" : "PREVIEW QUEUE"
+        view.disclosureContainerView.hidden = true
+        return view
     }
     
     //MARK: - Class functions
     
-    private func reloadSections() {
-        switch workflowState {
-        case .SelectItemToPlayNow:
-            sectionHeaderNames = [keepPlayingCurrentTrackName, currentQueueName]
-        case .SelectItemInQueueToPlayNext:
-            sectionHeaderNames = [itemToPlayNowName, currentQueueName]
-        case .ConfirmChoices:
-            sectionHeaderNames = [itemToPlayNowName, itemToPlayNextName, currentQueueName]
+    func handleNowPlayingItemChanged(notification:NSNotification!) {
+        if let item = audioQueuePlayer.nowPlayingItem {
+            nowPlayingItem = item
+            if let index = indexOfNewItem {
+                previewQueue[index] = nowPlayingItem
+                tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+            }
+        } else {
+            cancelWorkflow(nil)
         }
     }
-    
-    
 }

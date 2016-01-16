@@ -259,8 +259,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-da-NAC">
-                                <rect key="frame" x="0.0" y="118" width="375" height="549"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="40" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="yfP-da-NAC">
+                                <rect key="frame" x="0.0" y="100" width="375" height="567"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="yug-B7-DM9" id="uP7-Bn-UCh"/>
@@ -268,10 +268,10 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YyH-sy-0Fk" userLabel="headerView">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="118"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T7z-5C-3IS">
-                                        <rect key="frame" x="8" y="8" width="48" height="30"/>
+                                        <rect key="frame" x="8" y="20" width="48" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="1Y9-NF-lbt"/>
                                             <constraint firstAttribute="width" constant="48" id="gej-91-9Rt"/>
@@ -284,39 +284,24 @@
                                             <action selector="cancelWorkflow:" destination="yug-B7-DM9" eventType="touchUpInside" id="HRk-r3-kdv"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="select the track to play now" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Roy-eB-Qkg">
-                                        <rect key="frame" x="8" y="38" width="359" height="72"/>
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="select the track to play next" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Roy-eB-Qkg">
+                                        <rect key="frame" x="8" y="50" width="359" height="42"/>
+                                        <gestureRecognizers/>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EhE-oM-BpL">
-                                        <rect key="frame" x="319" y="8" width="48" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="GiM-Rh-2yy"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="Joi-gi-rQm"/>
-                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="48" id="gBD-g5-cSb"/>
-                                            <constraint firstAttribute="width" constant="48" id="tZC-jd-oxa"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
-                                        <state key="normal" title="Done">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
                                         <connections>
-                                            <action selector="cancelWorkflow:" destination="yug-B7-DM9" eventType="touchUpInside" id="QtW-S5-pFB"/>
-                                            <action selector="finishWorkFlow:" destination="yug-B7-DM9" eventType="touchUpInside" id="t9e-jt-gxP"/>
+                                            <outletCollection property="gestureRecognizers" destination="USV-ud-G2T" appends="YES" id="NYn-F4-yXU"/>
                                         </connections>
-                                    </button>
+                                    </label>
                                 </subviews>
-                                <color key="backgroundColor" white="0.089999999999999997" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.36862745098039218" green="0.0" blue="0.031372549019607843" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="118" id="0Bd-dO-nc3"/>
-                                    <constraint firstItem="EhE-oM-BpL" firstAttribute="top" secondItem="YyH-sy-0Fk" secondAttribute="topMargin" id="8DT-No-YD1"/>
+                                    <constraint firstAttribute="height" constant="100" id="0Bd-dO-nc3"/>
                                     <constraint firstItem="Roy-eB-Qkg" firstAttribute="top" secondItem="T7z-5C-3IS" secondAttribute="bottom" id="8Ku-fk-LX0"/>
                                     <constraint firstItem="Roy-eB-Qkg" firstAttribute="leading" secondItem="YyH-sy-0Fk" secondAttribute="leadingMargin" id="OUV-NW-bse"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="Roy-eB-Qkg" secondAttribute="trailing" id="SdW-qK-F0f"/>
                                     <constraint firstItem="T7z-5C-3IS" firstAttribute="leading" secondItem="YyH-sy-0Fk" secondAttribute="leadingMargin" id="YEO-MN-3WP"/>
-                                    <constraint firstItem="EhE-oM-BpL" firstAttribute="trailing" secondItem="YyH-sy-0Fk" secondAttribute="trailingMargin" id="Ym0-V0-3h0"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="Roy-eB-Qkg" secondAttribute="bottom" id="gsd-t2-S1y"/>
                                 </constraints>
                             </view>
@@ -325,7 +310,7 @@
                         <constraints>
                             <constraint firstItem="YyH-sy-0Fk" firstAttribute="leading" secondItem="8qA-VG-GPV" secondAttribute="leading" id="FqB-lr-NLU"/>
                             <constraint firstItem="YyH-sy-0Fk" firstAttribute="top" secondItem="8qA-VG-GPV" secondAttribute="top" id="IfM-ek-3Yk"/>
-                            <constraint firstItem="T7z-5C-3IS" firstAttribute="top" secondItem="XwU-Zh-tjD" secondAttribute="bottom" constant="-12" id="UvL-oE-0ba"/>
+                            <constraint firstItem="T7z-5C-3IS" firstAttribute="top" secondItem="XwU-Zh-tjD" secondAttribute="bottom" id="UvL-oE-0ba"/>
                             <constraint firstAttribute="trailing" secondItem="yfP-da-NAC" secondAttribute="trailing" id="VOg-wy-lyr"/>
                             <constraint firstItem="yfP-da-NAC" firstAttribute="leading" secondItem="8qA-VG-GPV" secondAttribute="leading" id="XrA-Ge-OkD"/>
                             <constraint firstItem="yfP-da-NAC" firstAttribute="top" secondItem="YyH-sy-0Fk" secondAttribute="bottom" id="icn-YZ-mwx"/>
@@ -336,11 +321,17 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
+                        <outlet property="headerView" destination="YyH-sy-0Fk" id="1he-nm-h0i"/>
                         <outlet property="messageLabel" destination="Roy-eB-Qkg" id="f3c-Qd-dVW"/>
                         <outlet property="tableView" destination="yfP-da-NAC" id="aC5-6K-1eo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QMn-Z6-CLK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="USV-ud-G2T">
+                    <connections>
+                        <action selector="messageLabelTapped:" destination="yug-B7-DM9" id="Qc7-iT-OuA"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="2402.5" y="-281.5"/>
         </scene>

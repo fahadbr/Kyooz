@@ -107,8 +107,7 @@ struct NowPlayingQueueContext {
     
     mutating func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
         var currentQueue = self.currentQueue
-        let tempMediaItem = currentQueue[fromIndexPath]
-        currentQueue.removeAtIndex(fromIndexPath)
+        let tempMediaItem = currentQueue.removeAtIndex(fromIndexPath)
         currentQueue.insert(tempMediaItem, atIndex: toIndexPath)
         
         if fromIndexPath == indexOfNowPlayingItem {

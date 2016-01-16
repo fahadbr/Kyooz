@@ -28,7 +28,23 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
     private var queueIsPersisted:Bool = true
-    private var queueStateInconsistent:Bool = false
+    private var queueStateInconsistent:Bool = false {
+        didSet {
+            if queueStateInconsistent {
+                KyoozUtils.doInMainQueueAsync() {
+                    RootViewController.instance.presentWarningView("Kyooz is out of sync with the system music player. Play a new track or Tap to fix!", handler: { () -> () in
+                        let vc = UIStoryboard.systemQueueResyncWorkflowController()
+                        vc.completionBlock = self.resyncWithSystemQueueUsingIndex
+                        ContainerViewController.instance.presentViewController(vc, animated: true, completion: nil)
+                    })
+                }
+            } else {
+                KyoozUtils.doInMainQueueAsync() {
+                    RootViewController.instance.dismissWarningView()
+                }
+            }
+        }
+    }
     private let indexBeforeModificationKey = "indexBeforeModification"
     
     private var nowPlayingQueueContext:NowPlayingQueueContext {
@@ -93,7 +109,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
-    var indexOfNowPlayingItem:Int {
+    private (set) var indexOfNowPlayingItem:Int {
         get {
             return nowPlayingQueueContext.indexOfNowPlayingItem
         } set {
@@ -123,7 +139,6 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             }
         }
         set {
-            Logger.debug("setting repeat mode \(newValue.rawValue)")
             switch(newValue) {
             case .Off:
                 musicPlayer.repeatMode = .None
@@ -294,6 +309,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         
         nowPlayingQueueContext.indexOfNowPlayingItem = 0
         lowestIndexPersisted = 0
+        queueStateInconsistent = false
         musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
         musicPlayer.nowPlayingItem = nowPlayingQueue[indexOfNowPlayingItem] as? MPMediaItem
         
@@ -390,13 +406,12 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private func refreshIndexOfNowPlayingItem() {
         guard let nowPlayingItem = self.nowPlayingItem else {
-            indexOfNowPlayingItem = 0
+            resetQueueStateToBeginning()
             return
         }
         
         let i = musicPlayer.indexOfNowPlayingItem
-        let systemIndex = max(min(i, nowPlayingQueue.count - 1), 0)
-        let newIndex = systemIndex + lowestIndexPersisted
+        let newIndex = max(min((i + lowestIndexPersisted), nowPlayingQueue.count - 1), 0)
         
         if nowPlayingQueue[newIndex].id != nowPlayingItem.id {
             queueStateInconsistent = true
@@ -404,17 +419,26 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         } else {
             indexOfNowPlayingItem = newIndex
         }
-        if queueStateInconsistent {
-            KyoozUtils.doInMainQueueAsync() {
-                RootViewController.instance.presentWarningView("Kyooz is out of sync with the system music player. Play a new track or Tap to fix!", handler: { () -> () in
-                    let vc = UIStoryboard.systemQueueResyncWorkflowController()
-                    ContainerViewController.instance.presentViewController(vc, animated: true, completion: { () -> Void in
-                        //MARK: I WAS GOING TO TAKE THE DATA FROM THE WORKFLOW AND PERSIST THE NEW QUEUE HERE
-                    })
-                })
-            }
+    }
+    
+    private func resyncWithSystemQueueUsingIndex(indexOfNewItem index:Int) {
+        guard let itemToPlay = nowPlayingItem else {
+            resetQueueStateToBeginning()
+            return
         }
-
+        let queue = nowPlayingQueue
+        guard index < queue.count else {
+            Logger.error("trying to play an index that is out of bounds")
+            return
+        }
+        
+        queueStateInconsistent = false
+        let oldContext = nowPlayingQueueContext
+        if itemToPlay.id != queue[index].id {
+            nowPlayingQueueContext.insertItemsAtIndex([itemToPlay], index: index)
+        }
+        indexOfNowPlayingItem = index
+        persistToSystemQueue(oldContext)
     }
     
     

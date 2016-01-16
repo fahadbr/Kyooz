@@ -26,9 +26,10 @@ final class WarningViewController: UIViewController {
         }
         label.textAlignment = NSTextAlignment.Center
         label.minimumScaleFactor = 0.6
+        label.adjustsFontSizeToFitWidth = true
         label.allowsDefaultTighteningForTruncation = true
         label.lineBreakMode = NSLineBreakMode.ByTruncatingTail
-        label.numberOfLines = 1
+        label.numberOfLines = 2
         warningButton.setTitle(message, forState: .Normal)
         // Do any additional setup after loading the view.
     }
