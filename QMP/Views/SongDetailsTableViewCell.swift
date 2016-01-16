@@ -16,12 +16,12 @@ final class SongDetailsTableViewCell: AbstractTableViewCell {
     private static let normalFont = UIFont(name:ThemeHelper.defaultFontName, size:12.0)
     private static let boldFont = UIFont(name:ThemeHelper.defaultFontNameMedium, size:12.0)
     
-    @IBOutlet weak var albumArtImageView: UIImageView!
-    @IBOutlet weak var songTitleLabel: UILabel!
-    @IBOutlet weak var albumArtistAndAlbumLabel: UILabel!
-    @IBOutlet weak var totalPlaybackTImeLabel: UILabel!
-    @IBOutlet weak var menuButtonActionArea: UIView!
-    @IBOutlet weak var menuButtonVisualView: UILabel!
+    @IBOutlet var albumArtImageView: UIImageView!
+    @IBOutlet var songTitleLabel: UILabel!
+    @IBOutlet var albumArtistAndAlbumLabel: UILabel!
+    @IBOutlet var totalPlaybackTImeLabel: UILabel!
+    @IBOutlet var menuButtonActionArea: UIView!
+    @IBOutlet var menuButtonVisualView: UILabel!
     
     override var alpha:CGFloat {
         didSet {
