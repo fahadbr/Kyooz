@@ -285,6 +285,8 @@ class NowPlayingSummaryViewController: UIViewController {
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: "reloadData:",
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
+        notificationCenter.addObserver(self, selector: "reloadData:",
+            name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
         
         notificationCenter.addObserver(self, selector: "invalidateTimer:",
             name: UIApplicationDidEnterBackgroundNotification, object: application)

@@ -142,6 +142,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             return
         }
         
+        if let item = entity as? MPMediaItem {
+            if IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.id)) == nil {
+                Logger.debug("item not found in media library, will not push VC")
+                return
+            }
+        }
+        
         let title = entity.titleForGrouping(parentGroup.groupingType)
         let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentGroup.groupingType)
         let propertyValue:AnyObject?
@@ -175,22 +182,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     //MARK: NOTIFICATION REGISTRATIONS
     
     private func registerForNotifications() {
-//        let notificationCenter = NSNotificationCenter.defaultCenter()
-//        let application = UIApplication.sharedApplication()
-//        
-//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-//            name: UIApplicationDidEnterBackgroundNotification, object: application)
-//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-//            name: UIApplicationWillResignActiveNotification, object: application)
-//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-//            name: UIApplicationWillTerminateNotification, object: application)
-//        notificationCenter.addObserver(self, selector: "deinitializeSideViewController:",
-//            name: UIApplicationDidReceiveMemoryWarningNotification, object: application)
+        
     }
     
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
     
     // MARK: Gesture recognizer
     

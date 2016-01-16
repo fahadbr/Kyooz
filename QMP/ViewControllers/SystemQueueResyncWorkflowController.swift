@@ -11,6 +11,7 @@ import MediaPlayer
 
 final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    private static let greenHeaderColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
     
     private lazy var nowPlayingViewController = ContainerViewController.instance.nowPlayingViewController!
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
@@ -24,11 +25,11 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
     private var indexOfNewItem:Int? {
         didSet {
             if oldValue == nil && indexOfNewItem != nil {
-                UIView.transitionWithView(messageLabel, duration: 0.3, options: UIViewAnimationOptions.TransitionFlipFromBottom, animations: { () -> Void in
-                    self.messageLabel.text = "Tap here to Finish!"
-                    }, completion: nil)
+                UIView.transitionWithView(messageLabel, duration: 0.5, options: UIViewAnimationOptions.TransitionFlipFromBottom, animations: { () -> Void in
+                    self.messageLabel.text = "Choose another track or tap here to Finish!"
+                    }, completion: {_ in self.tableView.reloadData() })
                 UIView.animateWithDuration(0.3, animations: { [weak self]() -> Void in
-                    self?.headerView.backgroundColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
+                    self?.headerView.backgroundColor = SystemQueueResyncWorkflowController.greenHeaderColor
                 })
             }
         }
@@ -109,12 +110,16 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
             return
         }
         
-        indexOfNewItem = index
+
         if index == 0 || nowPlayingItem.id != previewQueue[index - 1].id {
+            indexOfNewItem = index
             previewQueue.insert(nowPlayingItem, atIndex: index)
-//            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Middle)
+            tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Middle)
+        } else {
+            indexOfNewItem = index - 1
         }
-        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Middle)
+//        tableView.reloadData()
+//        tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Middle)
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -53,6 +53,20 @@ extension AudioQueuePlayer {
             NSNotificationCenter.defaultCenter().postNotification(notification)
         }
     }
+    
+    func presentNotificationsIfNecessary() {
+        if repeatMode == .One {
+            let ac = UIAlertController(title: "Turn off Repeat One Mode?", message: "The tracks you just queued won't play until Repeat One Mode is turned off", preferredStyle: .Alert)
+            let yesAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: {_ -> Void in
+                self.repeatMode = .Off
+            })
+            ac.addAction(yesAction)
+            ac.preferredAction = yesAction
+            ac.addAction(UIAlertAction(title: "No", style: .Cancel, handler: nil))
+            ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+            return
+        }
+    }
 }
 
 enum AudioQueuePlayerUpdate : String {
