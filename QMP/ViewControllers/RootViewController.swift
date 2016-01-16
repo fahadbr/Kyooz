@@ -175,12 +175,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
             return
         }
         let warningVC = UIStoryboard.warningViewController()
-        warningVC.handler = {
-            handler()
-            KyoozUtils.doInMainQueue() {
-                self.dismissWarningView()
-            }
-        }
+        warningVC.handler = handler
         warningVC.message = message
         
         let warningView = warningVC.view
@@ -203,7 +198,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 
     }
     
-    private func dismissWarningView() {
+    func dismissWarningView() {
         guard let warningVC = self.warningViewController else {
             return
         }

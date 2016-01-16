@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class SearchResultsHeaderView: UITableViewHeaderFooterView {
+final class SearchResultsHeaderView: UIView {
     
     static let reuseIdentifier = "searchResultsHeaderView"
     

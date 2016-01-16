@@ -32,7 +32,6 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="Dkg-7u-BeS" firstAttribute="leading" secondItem="OgV-Px-xzC" secondAttribute="trailing" constant="8" id="HSw-83-Byn"/>
                 <constraint firstItem="Dkg-7u-BeS" firstAttribute="bottom" secondItem="OgV-Px-xzC" secondAttribute="bottom" id="L35-NI-AGf"/>
