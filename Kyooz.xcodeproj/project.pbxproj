@@ -286,9 +286,6 @@
 			isa = PBXGroup;
 			children = (
 				0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */,
-				0BBE16001AF6AC80007C6189 /* Logger */,
-				0B1BFDAA1AF535DB009838A5 /* Extensions */,
-				0B1BFD491AF30A4C009838A5 /* LastFm */,
 				0B476C7D1B2350F000626810 /* Spotify */,
 				0B13D9F81AE6FA9A00CC5C01 /* AudioPlayer */,
 				0B476C701B21FA1F00626810 /* Model */,
@@ -339,6 +336,7 @@
 		0B13D9F81AE6FA9A00CC5C01 /* AudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				0B1BFD491AF30A4C009838A5 /* LastFm */,
 				0BCE21901B120DE10074DA47 /* MPMusicPlayerControlerImpl */,
 				0BCE21A21B1403C70074DA47 /* AudioEngineController.swift */,
 				0BCE21891B10D78E0074DA47 /* AudioController.swift */,
@@ -411,6 +409,7 @@
 				0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */,
 			);
 			name = LastFm;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		0B1BFDAA1AF535DB009838A5 /* Extensions */ = {
@@ -495,6 +494,8 @@
 		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				0B1BFDAA1AF535DB009838A5 /* Extensions */,
+				0BBE16001AF6AC80007C6189 /* Logger */,
 				10171E041C373342002FD905 /* Test */,
 				0B778B081B9388BD00004A1B /* CGUtils.swift */,
 				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
@@ -930,7 +931,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;

@@ -12,12 +12,13 @@ final class SimpleWSClient {
     
     static let instance:SimpleWSClient = SimpleWSClient()
     
+    private let urlSession = NSURLSession.sharedSession()
     
     private let httpPOSTMethod = "POST"
     private let timeoutInSeconds = 15.0
     
-    func executeHTTPSPOSTCall(baseURL baseURL:String, params:[String],
-        successHandler:([String:String]) -> Void, failureHandler: () -> ()) {
+    
+    func executeHTTPSPOSTCall(baseURL baseURL:String, params:[String], successHandler:([String:String]) -> Void, failureHandler: () -> ()) {
         let urlAsString = baseURL
        
         
@@ -33,15 +34,15 @@ final class SimpleWSClient {
         let queue = NSOperationQueue()
         queue.qualityOfService = NSQualityOfService.Background
         
-        NSURLConnection.sendAsynchronousRequest(urlRequest, queue: queue) { (response:NSURLResponse?, returnData:NSData?, error:NSError?) -> Void in
+        urlSession.dataTaskWithRequest(urlRequest) { (returnData:NSData?, response:NSURLResponse?, error:NSError?) -> Void in
             if let data = returnData where data.length > 0 && error == nil {
-//                let html = NSString(data: data, encoding: NSUTF8StringEncoding)
+                //                let html = NSString(data: data, encoding: NSUTF8StringEncoding)
                 let parser = NSXMLParser(data: data)
                 let parserDelegate = SimpleXMLParserDelegate()
                 parser.delegate = parserDelegate
                 parser.parse()
-//                Logger.debug("html response = \(html)")
-//                Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
+                //                Logger.debug("html response = \(html)")
+                //                Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
                 
                 successHandler(parserDelegate.xmlInfo)
                 
@@ -52,15 +53,14 @@ final class SimpleWSClient {
                 failureHandler()
             }
             
-        }
+        }.resume()
         
     }
-
    
 }
 
  //MARK: NSXMLParserDelegate properties and methods
-class SimpleXMLParserDelegate : NSObject, NSXMLParserDelegate {
+final class SimpleXMLParserDelegate : NSObject, NSXMLParserDelegate {
     
     var xmlInfo:[String:String] = [String:String]()
     var elements:[String] = [String]()
