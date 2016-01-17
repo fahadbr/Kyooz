@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol AudioController {
+protocol AudioController : class {
     
     var currentPlaybackTime:Double { get set }
     var audioTrackIsLoaded:Bool { get }

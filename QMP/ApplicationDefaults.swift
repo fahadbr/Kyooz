@@ -17,9 +17,13 @@ struct ApplicationDefaults {
 //        return AudioQueuePlayerImpl.instance
     }
     
-//    static let audioController:AudioController = SimpleAudioController.instance
-    static let audioController:AudioController = AudioEngineController.instance
-    
+    static func evaluateMinimumFetchInterval() {
+        if audioQueuePlayer is DRMAudioQueuePlayer && LastFmScrobbler.instance.validSessionObtained {
+            UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        } else {
+            UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+        }
+    }
 }
 
 

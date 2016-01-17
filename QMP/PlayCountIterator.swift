@@ -23,12 +23,13 @@ final class PlayCountIterator : NSObject {
     }()
     
     private var lastOperationTime:CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
-    private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier?
+    private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     private var playCountIteratorOperation:PlayCountIteratorOperation?
     
     override init() {
         super.init()
         registerForAppNotifications()
+        BackgroundFetchController.instance.playCountIterator = self
     }
     
     deinit {
@@ -37,9 +38,13 @@ final class PlayCountIterator : NSObject {
     
     private func performOperationIfTimeWindowPassed() {
         let currentTime = CFAbsoluteTimeGetCurrent()
-        if (currentTime - lastOperationTime) < -1 || playCountIteratorOperation != nil {
+        if (currentTime - lastOperationTime) < -1 || playCountIteratorOperation != nil || !LastFmScrobbler.instance.validSessionObtained {
             return
         }
+        performOperationWithTime(currentTime)
+    }
+    
+    private func performOperationWithTime(currentTime:CFAbsoluteTime) {
         lastOperationTime = currentTime
         
         guard let oldPlayCounts = getPersistedPlayCounts() else {
@@ -47,12 +52,10 @@ final class PlayCountIterator : NSObject {
             return
         }
         
-        let op = PlayCountIteratorOperation(oldPlayCounts: oldPlayCounts)
-        op.completionBlock = {
-            self.playcountOpDidComplete(op)
-        }
+        let op = PlayCountIteratorOperation(oldPlayCounts: oldPlayCounts, playCountCompletionBlock: self.playcountOpDidComplete)
         playCountIteratorOperation = op
         PlayCountIterator.backgroundQueue.addOperation(op)
+
     }
     
     private func getPersistedPlayCounts() -> [NSNumber:Int]? {
@@ -90,10 +93,10 @@ final class PlayCountIterator : NSObject {
         }
     }
     
-    private func playcountOpDidComplete(operation:PlayCountIteratorOperation) {
-        persistPlayCounts(operation.newPlayCounts)
+    private func playcountOpDidComplete(newPlayCounts:[NSNumber:Int]) {
+        persistPlayCounts(newPlayCounts)
         playCountIteratorOperation = nil
-        if backgroundTaskIdentifier != nil {
+        if backgroundTaskIdentifier != UIBackgroundTaskInvalid {
             TempDataDAO.instance.persistLastFmScrobbleCache()
             endBackgroundTask()
         } else {
@@ -102,27 +105,40 @@ final class PlayCountIterator : NSObject {
     }
     
     private func endBackgroundTask() {
-        if let bgTask = backgroundTaskIdentifier {
-            UIApplication.sharedApplication().endBackgroundTask(bgTask)
-            backgroundTaskIdentifier = nil
+        if backgroundTaskIdentifier != UIBackgroundTaskInvalid {
+            UIApplication.sharedApplication().endBackgroundTask(backgroundTaskIdentifier)
+            backgroundTaskIdentifier = UIBackgroundTaskInvalid
         }
     }
     
     
     func handleApplicationWillEnterForeground(notification: NSNotification) {
         endBackgroundTask()
-//        PlayCountIterator.backgroundQueue.addOperationWithBlock() {
+        PlayCountIterator.backgroundQueue.addOperationWithBlock() {
             self.performOperationIfTimeWindowPassed()
-//        }
+        }
+    }
+    
+    func performBackgroundIteration(completionHandler: (UIBackgroundFetchResult) -> Void) {
+        performOperationWithTime(CFAbsoluteTimeGetCurrent())
+        playCountIteratorOperation?.completionBlock = {
+            completionHandler(UIBackgroundFetchResult.NewData)
+        }
     }
     
     func handleApplicationDidEnterBackground(notification: NSNotification) {
         if playCountIteratorOperation == nil { return }
         
+        endBackgroundTask()
+        
         Logger.debug("starting background task for playCountIterator")
         backgroundTaskIdentifier = UIApplication.sharedApplication().beginBackgroundTaskWithName("playCountIteratorOperation") { () -> Void in
             Logger.debug("canceling play count task")
             PlayCountIterator.backgroundQueue.cancelAllOperations()
+        }
+        
+        if backgroundTaskIdentifier == UIBackgroundTaskInvalid {
+            Logger.debug("was not able to start background task")
         }
     }
     
