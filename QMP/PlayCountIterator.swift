@@ -22,7 +22,7 @@ final class PlayCountIterator : NSObject {
         return queue
     }()
     
-    private var lastOperationTime:CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
+    private var lastOperationTime:CFAbsoluteTime = 0
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     private var playCountIteratorOperation:PlayCountIteratorOperation?
     private var performingBackgroundFetch = false
@@ -31,6 +31,11 @@ final class PlayCountIterator : NSObject {
         super.init()
         registerForAppNotifications()
         BackgroundFetchController.instance.playCountIterator = self
+        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(3), dispatch_get_main_queue()) {
+            PlayCountIterator.backgroundQueue.addOperationWithBlock() {
+                self.performOperationIfTimeWindowPassed()
+            }
+        }
     }
     
     deinit {
@@ -49,7 +54,6 @@ final class PlayCountIterator : NSObject {
     
     private func performOperationWithTime(currentTime:CFAbsoluteTime) {
         lastOperationTime = currentTime
-        Logger.debug("performing operation at time \(currentTime)")
         guard let oldPlayCounts = getPersistedPlayCounts() else {
             Logger.debug("no play counts to compare to")
             return
@@ -61,7 +65,7 @@ final class PlayCountIterator : NSObject {
 
     }
     
-    private func getPersistedPlayCounts() -> [NSNumber:Int]? {
+    private func getPersistedPlayCounts() -> NSDictionary? {
         if !NSFileManager.defaultManager().fileExistsAtPath(PlayCountIterator.directory) {
             PlayCountIterator.backgroundQueue.addOperationWithBlock() {
                 self.createInitialPlaycounts()
@@ -69,10 +73,7 @@ final class PlayCountIterator : NSObject {
             return nil
         }
         
-        if let playCounts = NSKeyedUnarchiver.unarchiveObjectWithFile(PlayCountIterator.directory) as? [NSNumber:Int] {
-            return playCounts
-        }
-        return nil
+        return NSKeyedUnarchiver.unarchiveObjectWithFile(PlayCountIterator.directory) as? NSDictionary
     }
     
     private func createInitialPlaycounts() {
@@ -82,21 +83,21 @@ final class PlayCountIterator : NSObject {
 
         Logger.debug("creating initial playcounts")
         
-        var newPlayCounts = [NSNumber:Int]()
+        let newPlayCounts = NSMutableDictionary()
         for item in items {
-            newPlayCounts[NSNumber(unsignedLongLong: item.persistentID)] = item.playCount
+            newPlayCounts.setObject(NSNumber(integer: item.playCount), forKey: NSNumber(unsignedLongLong: item.persistentID))
         }
         
         persistPlayCounts(newPlayCounts)
     }
     
-    private func persistPlayCounts(playCounts:[NSNumber:Int]) {
-        if !NSKeyedArchiver.archiveRootObject(playCounts as NSDictionary, toFile: PlayCountIterator.directory) {
+    private func persistPlayCounts(playCounts:NSDictionary) {
+        if !NSKeyedArchiver.archiveRootObject(playCounts, toFile: PlayCountIterator.directory) {
             Logger.error("couldn't write the new playcounts successfully")
         }
     }
     
-    private func playcountOpDidComplete(newPlayCounts:[NSNumber:Int]) {
+    private func playcountOpDidComplete(newPlayCounts:NSDictionary) {
         persistPlayCounts(newPlayCounts)
         playCountIteratorOperation = nil
         if performingBackgroundFetch {
@@ -129,7 +130,7 @@ final class PlayCountIterator : NSObject {
             op.completionBlock = {
                 Logger.debug("done with background iteration")
                 self.performingBackgroundFetch = false
-                completionHandler(UIBackgroundFetchResult.NewData)
+                completionHandler(ApplicationDefaults.audioQueuePlayer.musicIsPlaying ? .NewData : .NoData)
             }
         } else {
             performingBackgroundFetch = false

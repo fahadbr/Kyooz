@@ -79,7 +79,7 @@ private class IndexBuilder<BASE:NSObject,INPUT> {
         self.maxValuesAmount = maxValuesAmount
     }
     
-    private func buildIndex(title:String, valuesToIndex:[INPUT], indexLevel:Int, nextIndexBuilder:IndexBuilder<BASE, SearchIndexEntry<BASE>>) throws -> SearchIndex<BASE> {
+    private final func buildIndex(title:String, valuesToIndex:[INPUT], indexLevel:Int, nextIndexBuilder:IndexBuilder<BASE, SearchIndexEntry<BASE>>) throws -> SearchIndex<BASE> {
         let isLastIndexLevel:Bool = valuesToIndex.count <= maxValuesAmount
         var valueDict = [String:[SearchIndexEntry<BASE>]]()
         var sameLevelValues = [SearchIndexEntry<BASE>]()

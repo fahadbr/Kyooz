@@ -103,6 +103,7 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController<MPM
     }
     
     override func rebuildSearchIndex() {
+        self.searchIndex = nil
         if let values:[MPMediaEntity] = libraryGroup == LibraryGrouping.Songs ? libraryGroup.baseQuery.items : libraryGroup.baseQuery.collections {
             let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
             let groupingType = libraryGroup.groupingType

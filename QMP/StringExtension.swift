@@ -28,12 +28,7 @@ extension String {
     }
     
     var urlEncodedString:String! {
-        let encodedString = CFURLCreateStringByAddingPercentEscapes(nil,
-            self as CFString,
-            nil,
-            "!*'();:@&=+$,/?%#[]" as CFString,
-            CFStringBuiltInEncodings.UTF8.rawValue)
-        return encodedString as String
+        return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet(charactersInString: "!*'();:@&=+$,/?%#[]"))
     }
     
     var normalizedString:String {

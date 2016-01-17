@@ -34,7 +34,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             }
         }
     }
-    private let lowestIndexPersistedKey = "lowestIndexPersistedKey"
+
     
     private var nowPlayingQueueContext:NowPlayingQueueContext {
         didSet {
@@ -42,6 +42,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
+    private let lowestIndexPersistedKey = "lowestIndexPersistedKey"
     private var lowestIndexPersisted:Int = 0 {
         didSet {
             TempDataDAO.instance.addPersistentValue(key: lowestIndexPersistedKey, value: NSNumber(integer: lowestIndexPersisted))
@@ -250,6 +251,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private func persistToSystemQueue(oldContext:NowPlayingQueueContext) {
         if queueStateInconsistent {
+            queueStateInconsistent = true //doing this to retrigger the warning view if its not currently showing
             Logger.debug("queue state is inconsistent. will not persist changes")
             return
         }
@@ -283,8 +285,11 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     private func resetQueueStateToBeginning() {
+        if queueStateInconsistent {
+            return
+        }
+        
         if nowPlayingQueue.isEmpty {
-            musicPlayer.nowPlayingItem = nil
             musicPlayer.stop()
             return
         }

@@ -13,12 +13,11 @@ final class PlayCountIteratorOperation: NSOperation {
     
     private let lastFmScrobbler = LastFmScrobbler.instance
     
-    private let oldPlayCounts:[NSNumber:Int]
-    private (set) var newPlayCounts = [NSNumber:Int]()
+    private let oldPlayCounts:NSDictionary
+    private let newPlayCounts = NSMutableDictionary()
+    private let playCountCompletionBlock:((NSDictionary)->())?
     
-    private let playCountCompletionBlock:(([NSNumber:Int])->())?
-    
-    init(oldPlayCounts:[NSNumber:Int], playCountCompletionBlock:(([NSNumber:Int])->())?) {
+    init(oldPlayCounts:NSDictionary, playCountCompletionBlock:((NSDictionary)->())?) {
         self.oldPlayCounts = oldPlayCounts
         self.playCountCompletionBlock = playCountCompletionBlock
         super.init()
@@ -39,23 +38,23 @@ final class PlayCountIteratorOperation: NSOperation {
             Logger.debug("no items found in library")
             return
         }
-        Logger.debug("starting iteration through play counts")
         
         for item in items {
             if cancelled { return }
             
             let newCount = item.playCount
             let key = NSNumber(unsignedLongLong: item.persistentID)
-            if let oldCount = oldPlayCounts[key] {
+            
+            if let oldCount = (oldPlayCounts.objectForKey(key) as? NSNumber)?.integerValue {
                 if newCount > oldCount {
-                    let timeStamp = item.lastPlayedDate?.timeIntervalSince1970 ?? NSDate().timeIntervalSince1970
-                    for _ in oldCount..<newCount {
-                        lastFmScrobbler.addToScrobbleCache(item, timeStampToScrobble: timeStamp)
+                    let timeStamp = floor(item.lastPlayedDate?.timeIntervalSince1970 ?? NSDate().timeIntervalSince1970)
+                    for i in 0..<(newCount-oldCount) {
+                        lastFmScrobbler.addToScrobbleCache(item, timeStampToScrobble: timeStamp + Double(i))
                     }
                 }
             }
             
-            newPlayCounts[key] = newCount
+            newPlayCounts.setObject(NSNumber(integer: newCount), forKey: key)
         }
         
         if !cancelled {
