@@ -25,6 +25,7 @@ final class PlayCountIterator : NSObject {
     private var lastOperationTime:CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
     private var backgroundTaskIdentifier:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     private var playCountIteratorOperation:PlayCountIteratorOperation?
+    private var performingBackgroundFetch = false
     
     override init() {
         super.init()
@@ -36,9 +37,11 @@ final class PlayCountIterator : NSObject {
         unregisterForAppNotifications()
     }
     
+    //MARK: - Class functions
+    
     private func performOperationIfTimeWindowPassed() {
         let currentTime = CFAbsoluteTimeGetCurrent()
-        if (currentTime - lastOperationTime) < -1 || playCountIteratorOperation != nil || !LastFmScrobbler.instance.validSessionObtained {
+        if (currentTime - lastOperationTime) < PlayCountIterator.timeIntervalInSeconds || playCountIteratorOperation != nil || !LastFmScrobbler.instance.validSessionObtained {
             return
         }
         performOperationWithTime(currentTime)
@@ -46,7 +49,7 @@ final class PlayCountIterator : NSObject {
     
     private func performOperationWithTime(currentTime:CFAbsoluteTime) {
         lastOperationTime = currentTime
-        
+        Logger.debug("performing operation at time \(currentTime)")
         guard let oldPlayCounts = getPersistedPlayCounts() else {
             Logger.debug("no play counts to compare to")
             return
@@ -96,7 +99,9 @@ final class PlayCountIterator : NSObject {
     private func playcountOpDidComplete(newPlayCounts:[NSNumber:Int]) {
         persistPlayCounts(newPlayCounts)
         playCountIteratorOperation = nil
-        if backgroundTaskIdentifier != UIBackgroundTaskInvalid {
+        if performingBackgroundFetch {
+            TempDataDAO.instance.persistLastFmScrobbleCache()
+        } else if backgroundTaskIdentifier != UIBackgroundTaskInvalid  {
             TempDataDAO.instance.persistLastFmScrobbleCache()
             endBackgroundTask()
         } else {
@@ -111,18 +116,33 @@ final class PlayCountIterator : NSObject {
         }
     }
     
+    func performBackgroundIteration(completionHandler: (UIBackgroundFetchResult) -> Void) {
+        guard playCountIteratorOperation == nil else {
+            Logger.debug("already performing background fetch")
+            completionHandler(.NoData)
+            return
+        }
+        
+        performingBackgroundFetch = true
+        performOperationWithTime(CFAbsoluteTimeGetCurrent())
+        if let op = playCountIteratorOperation {
+            op.completionBlock = {
+                Logger.debug("done with background iteration")
+                self.performingBackgroundFetch = false
+                completionHandler(UIBackgroundFetchResult.NewData)
+            }
+        } else {
+            performingBackgroundFetch = false
+            completionHandler(.NoData)
+        }
+    }
+    
+    //MARK: - App Notification Handlers
     
     func handleApplicationWillEnterForeground(notification: NSNotification) {
         endBackgroundTask()
         PlayCountIterator.backgroundQueue.addOperationWithBlock() {
             self.performOperationIfTimeWindowPassed()
-        }
-    }
-    
-    func performBackgroundIteration(completionHandler: (UIBackgroundFetchResult) -> Void) {
-        performOperationWithTime(CFAbsoluteTimeGetCurrent())
-        playCountIteratorOperation?.completionBlock = {
-            completionHandler(UIBackgroundFetchResult.NewData)
         }
     }
     

@@ -83,6 +83,7 @@ final class LastFmScrobbler {
                     self.username_value = username_value.lowercaseString
 
             } else {
+                self.validSessionObtained = false
                 return
             }
             

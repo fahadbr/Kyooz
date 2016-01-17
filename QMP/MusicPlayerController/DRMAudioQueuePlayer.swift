@@ -19,7 +19,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private var queueStateInconsistent:Bool = false {
         didSet {
-            if queueStateInconsistent {
+            if queueStateInconsistent && nowPlayingQueue.count > 0 {
                 KyoozUtils.doInMainQueueAsync() {
                     RootViewController.instance.presentWarningView("Kyooz is out of sync with the system music player. Play a new track or Tap to fix!", handler: { () -> () in
                         let vc = UIStoryboard.systemQueueResyncWorkflowController()
@@ -308,10 +308,11 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             return
         }
         
-        let i = musicPlayer.indexOfNowPlayingItem
-        let newIndex = (i + lowestIndexPersisted)%nowPlayingQueue.count
+        let i = musicPlayer.indexOfNowPlayingItem + lowestIndexPersisted
+        let count = nowPlayingQueue.count
+        let newIndex = count == 0 ? i : i%nowPlayingQueue.count
         
-        if nowPlayingQueue[newIndex].id != nowPlayingItem.id {
+        if newIndex >= count || nowPlayingQueue[newIndex].id != nowPlayingItem.id {
             queueStateInconsistent = true
             indexOfNowPlayingItem = 0
         } else {

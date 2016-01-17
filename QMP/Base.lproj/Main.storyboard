@@ -128,7 +128,6 @@
         <scene sceneID="PG5-55-KkY">
             <objects>
                 <navigationController storyboardIdentifier="libraryNavigationController" title="BROWSE" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="AlC-4z-9IE" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="first" id="qp2-Kj-XpR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Kfj-cB-Vol">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -891,7 +890,4 @@
             <point key="canvasLocation" x="3245" y="-1151"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="first" width="30" height="30"/>
-    </resources>
 </document>
