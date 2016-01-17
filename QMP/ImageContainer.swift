@@ -11,6 +11,8 @@ import UIKit
 
 struct ImageContainer {
     
+    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "blueplayicon")!
+    
     static func resizeImage(image:UIImage, toSize newSize:CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         

@@ -33,8 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window!.rootViewController = containerViewController
         window!.makeKeyAndVisible()
-        
-        ApplicationDefaults.evaluateMinimumFetchInterval()
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         

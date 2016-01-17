@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SimpleWSClient {
+final class SimpleWSClient {
     
     static let instance:SimpleWSClient = SimpleWSClient()
     
@@ -29,7 +29,7 @@ class SimpleWSClient {
             
         let body = postParamString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         urlRequest.HTTPBody = body
-        Logger.debug("URL: \(urlRequest.URL?.absoluteString)")
+//        Logger.debug("URL: \(urlRequest.URL?.absoluteString)")
         let queue = NSOperationQueue()
         queue.qualityOfService = NSQualityOfService.Background
         
@@ -41,7 +41,7 @@ class SimpleWSClient {
                 parser.delegate = parserDelegate
                 parser.parse()
 //                Logger.debug("html response = \(html)")
-                Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
+//                Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
                 
                 successHandler(parserDelegate.xmlInfo)
                 
@@ -51,6 +51,7 @@ class SimpleWSClient {
                 Logger.debug("Error occurred: \(error)")
                 failureHandler()
             }
+            
         }
         
     }
