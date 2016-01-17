@@ -71,6 +71,7 @@
 		0B83FE1E1B24CA1E00746A9E /* log_in-mobile.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */; };
 		0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */; };
 		0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9016051C4ABFFD00B1ACD1 /* PlayCountIterator.swift */; };
+		0B9016081C4B197D00B1ACD1 /* BackgroundFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */; };
 		0B9F3B9E1B0ACA03005274E8 /* MPMediaItemExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */; };
 		0BA2426F1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA2426E1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift */; };
 		0BA242711C20B1E1000170F9 /* LibraryGroupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242701C20B1E1000170F9 /* LibraryGroupCollectionViewCell.swift */; };
@@ -194,6 +195,7 @@
 		0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMAudioQueuePlayer.swift; sourceTree = "<group>"; };
 		0B9016031C4A960100B1ACD1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0B9016051C4ABFFD00B1ACD1 /* PlayCountIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIterator.swift; sourceTree = "<group>"; };
+		0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchController.swift; sourceTree = "<group>"; };
 		0B9F3B9D1B0ACA03005274E8 /* MPMediaItemExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MPMediaItemExtension.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BA2426E1C20AE4B000170F9 /* LibraryGroupCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGroupCollectionViewController.swift; sourceTree = "<group>"; };
 		0BA242701C20B1E1000170F9 /* LibraryGroupCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGroupCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				0B83FE1F1B24EC8B00746A9E /* Utils */,
 				0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */,
 				0B13DA091AE6FA9A00CC5C01 /* ApplicationDefaults.swift */,
+				0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */,
 				0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */,
 				0BD11B621B0829FA00565471 /* Settings.storyboard */,
 				0B13D9C91AE6F80E00CC5C01 /* LaunchScreen.xib */,
@@ -736,6 +739,7 @@
 				0B5123A21AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
 				0B13DA231AE6FA9A00CC5C01 /* AudioQueuePlayer.swift in Sources */,
+				0B9016081C4B197D00B1ACD1 /* BackgroundFetchController.swift in Sources */,
 				0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */,
 				0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,

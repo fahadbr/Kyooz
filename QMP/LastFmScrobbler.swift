@@ -56,7 +56,11 @@ final class LastFmScrobbler {
     let BATCH_SIZE = 50
     var scrobbleCache = [[String:String]]()
 
-    var validSessionObtained:Bool = false
+    private (set) var validSessionObtained:Bool = false {
+        didSet {
+            ApplicationDefaults.evaluateMinimumFetchInterval()
+        }
+    }
     
     var mediaItemToScrobble:AudioTrack!
     

@@ -16,9 +16,11 @@ final class PlayCountIteratorOperation: NSOperation {
     private let oldPlayCounts:[NSNumber:Int]
     private (set) var newPlayCounts = [NSNumber:Int]()
     
+    private let playCountCompletionBlock:(([NSNumber:Int])->())?
     
-    init(oldPlayCounts:[NSNumber:Int]) {
+    init(oldPlayCounts:[NSNumber:Int], playCountCompletionBlock:(([NSNumber:Int])->())?) {
         self.oldPlayCounts = oldPlayCounts
+        self.playCountCompletionBlock = playCountCompletionBlock
         super.init()
     }
     
@@ -56,6 +58,9 @@ final class PlayCountIteratorOperation: NSOperation {
             newPlayCounts[key] = newCount
         }
         
+        if !cancelled {
+            playCountCompletionBlock?(newPlayCounts)
+        }
     }
     
 }

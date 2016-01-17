@@ -23,8 +23,8 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
     
     var shouldPlayAfterLoading:Bool = false
-    var audioController:AudioController = ApplicationDefaults.audioController
-    var lastFmScrobbler = LastFmScrobbler.instance
+    let audioController:AudioController = AudioEngineController()
+    let lastFmScrobbler = LastFmScrobbler.instance
     
     var nowPlayingQueue:[AudioTrack] = [AudioTrack]() {
         didSet {

@@ -33,6 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window!.rootViewController = containerViewController
         window!.makeKeyAndVisible()
+        
+        ApplicationDefaults.evaluateMinimumFetchInterval()
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         
@@ -59,6 +61,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         MPMediaLibrary.defaultMediaLibrary().endGeneratingLibraryChangeNotifications()
+    }
+    
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        BackgroundFetchController.instance.performFetchWithCompletionHandler(completionHandler)
     }
 
 }
