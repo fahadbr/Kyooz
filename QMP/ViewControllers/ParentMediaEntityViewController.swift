@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol {
+class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
     private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)
     private static let blueColor = UIColor(red: 51.0/225.0, green: 62.0/225.0, blue: 222.0/225.0, alpha: 1)
     
@@ -34,51 +34,7 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
         unregisterForNotifications()
         Logger.debug("deinitializing media entity vc")
     }
-    
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true;
-    }
-    
-    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        let mediaItems = getMediaItemsForIndexPath(indexPath)
-        var actions = [UITableViewRowAction]()
-        
-        
-        let playLastAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Queue\nLast",
-            handler: {action, index in
-                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Last)
-                self.tableView.editing = false
-        })
-        actions.append(playLastAction)
-        let playNextAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Queue\nNext",
-            handler: {action, index in
-                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Next)
-                self.tableView.editing = false
-        })
-        actions.append(playNextAction)
-        
-        if audioQueuePlayer.shuffleActive {
-            let playRandomlyAction = UITableViewRowAction(style: .Normal, title: "Queue\nRandomly", handler: { (action, index) -> Void in
-                self.audioQueuePlayer.enqueue(items: mediaItems, atPosition: .Random)
-                self.tableView.editing = false
-            })
-            actions.append(playRandomlyAction)
-        }
-        
-        
-        playLastAction.backgroundColor = ParentMediaEntityViewController.blueColor
-        playNextAction.backgroundColor = ParentMediaEntityViewController.greenColor
-        
-        
-        return actions
-    }
-    
 
-    
-    // Override to support editing the table view.
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
     
     //MARK: - Class functions
     func reloadAllData() {
@@ -100,6 +56,11 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
         fatalError(fatalErrorMessage)
     }
     
+    //MARK: - MediaLibraryTableViewCellDelegate
+    func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?) {
+        let mediaItems = getMediaItemsForIndexPath(indexPath)
+        ContainerViewController.instance.presentActionsForTracks(mediaItems, title: title, details: details)
+    }
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()

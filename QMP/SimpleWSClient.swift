@@ -41,8 +41,8 @@ final class SimpleWSClient {
                 let parserDelegate = SimpleXMLParserDelegate()
                 parser.delegate = parserDelegate
                 parser.parse()
-                //                Logger.debug("html response = \(html)")
-                //                Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
+//                Logger.debug("html response = \(html)")
+//                Logger.debug("xmlInfo dictionary = \(parserDelegate.xmlInfo.description)")
                 
                 successHandler(parserDelegate.xmlInfo)
                 

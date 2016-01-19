@@ -8,6 +8,8 @@
 
 import Foundation
 
+private let legalCharacters = NSCharacterSet(charactersInString: "!*'();:@&=+$,/?%#[] ").invertedSet
+
 extension String {
     
     var md5:String! {
@@ -28,7 +30,7 @@ extension String {
     }
     
     var urlEncodedString:String! {
-        return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet(charactersInString: "!*'();:@&=+$,/?%#[]"))
+        return stringByAddingPercentEncodingWithAllowedCharacters(legalCharacters)
     }
     
     var normalizedString:String {

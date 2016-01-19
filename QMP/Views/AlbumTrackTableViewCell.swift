@@ -9,41 +9,31 @@
 import UIKit
 import MediaPlayer
 
-class AlbumTrackTableViewCell: AbstractTableViewCell {
+final class AlbumTrackTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell {
 
     static let reuseIdentifier = "albumTrackTableViewCell"
     
     @IBOutlet weak var trackNumber: UILabel!
-    @IBOutlet weak var trackTitle: UILabel!
-    @IBOutlet weak var trackDetails: UILabel!
     @IBOutlet weak var trackDuration: UILabel!
-    
-    
-    var isNowPlayingItem:Bool = false {
-        didSet {
-            if isNowPlayingItem != oldValue {
-                if isNowPlayingItem {
-                    trackTitle.textColor = ThemeHelper.defaultVividColor
-                } else {
-                    trackTitle.textColor = ThemeHelper.defaultFontColor
-                }
-            }
-        }
-    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         let color = UIColor.lightGrayColor()
         trackNumber.textColor = color
-        trackDetails.textColor = color
         trackDuration.textColor = color
-        // Initialization code
+        shouldHideAccessoryStack = false
     }
     
-    func configureCellForItem(mediaItem:AudioTrack) {
+    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
+        guard let mediaItem = entity as? MPMediaItem else {
+            return
+        }
+        
         trackNumber.text = mediaItem.albumTrackNumber > 0 ? "\(mediaItem.albumTrackNumber)" : nil
-        trackTitle.text = mediaItem.trackTitle
-        trackDetails.text = mediaItem.artist
+        titleLabel.text = mediaItem.trackTitle
+        detailsLabel.text = mediaItem.artist
         trackDuration.text = MediaItemUtils.getTimeRepresentation(mediaItem.playbackDuration)
+        configureDRMAndCloudLabels(mediaItem)
     }
+
 }

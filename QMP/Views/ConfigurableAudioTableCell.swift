@@ -9,10 +9,17 @@
 import Foundation
 import MediaPlayer
 
-protocol ConfigurableAudioTableCell {
+protocol ConfigurableAudioTableCell : class {
     
+    weak var delegate:ConfigurableAudioTableCellDelegate? { get set }
+    
+    var indexPath:NSIndexPath! { get set }
     var isNowPlayingItem:Bool { get set }
     
     func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping)
 
+}
+
+protocol ConfigurableAudioTableCellDelegate : class {
+    func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?)
 }

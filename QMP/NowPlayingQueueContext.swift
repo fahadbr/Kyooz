@@ -59,16 +59,17 @@ struct NowPlayingQueueContext {
         case .Last:
             currentQueue.appendContentsOf(itemsToEnqueue)
         case .Random:
-            KyoozUtils.doInMainQueueAsync() {
-                self.originalQueue.appendContentsOf(itemsToEnqueue)
+            var queue = self.currentQueue
+            let index = indexOfNowPlayingItem + 1
+            itemsToEnqueue.forEach() {
+                queue.insert($0, atIndex: KyoozUtils.randomNumberInRange(index..<queue.count))
             }
+            self.currentQueue = queue
+            
             if shuffleActive {
-                var queue = self.shuffledQueue
-                let index = indexOfNowPlayingItem + 1
-                itemsToEnqueue.forEach() {
-                    queue.insert($0, atIndex: KyoozUtils.randomNumberInRange(index..<queue.count))
+                KyoozUtils.doInMainQueueAsync() {
+                    self.originalQueue.appendContentsOf(itemsToEnqueue)
                 }
-                self.shuffledQueue = queue
             }
         }
     }
@@ -150,6 +151,11 @@ struct NowPlayingQueueContext {
     }
     
     private mutating func shuffleQueue() {
+        if originalQueue.isEmpty {
+            shuffledQueue = originalQueue
+            return
+        }
+        
         var tempOriginalQueue = originalQueue
         
         //by doing this we are ensuring that the currently playing item is always on top

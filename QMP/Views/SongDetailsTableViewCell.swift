@@ -20,26 +20,14 @@ final class SongDetailsTableViewCell: AbstractTableViewCell {
     @IBOutlet var songTitleLabel: UILabel!
     @IBOutlet var albumArtistAndAlbumLabel: UILabel!
     @IBOutlet var totalPlaybackTImeLabel: UILabel!
-    @IBOutlet var menuButtonActionArea: UIView!
-    @IBOutlet var menuButtonVisualView: UILabel!
-    
-    override var alpha:CGFloat {
-        didSet {
-            albumArtImageView?.alpha = alpha
-            songTitleLabel?.alpha = alpha
-            albumArtistAndAlbumLabel?.alpha = alpha
-            totalPlaybackTImeLabel?.alpha = alpha
-            menuButtonActionArea?.alpha = alpha
-            menuButtonVisualView?.alpha = alpha
-        }
-    }
+    @IBOutlet var menuButton:UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         songTitleLabel.font = SongDetailsTableViewCell.boldFont
         albumArtistAndAlbumLabel.font =  SongDetailsTableViewCell.normalFont
         albumArtistAndAlbumLabel.textColor = UIColor.lightGrayColor()
-        menuButtonVisualView.textColor = UIColor.lightGrayColor()
+        menuButton.userInteractionEnabled = false
     }
     
     func configureTextLabelsForMediaItem(mediaItem:AudioTrack, isNowPlayingItem:Bool) {

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B055A211C4C6537007CB60A /* MediaCollectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B055A201C4C6537007CB60A /* MediaCollectionTableViewCell.xib */; };
+		0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B055A221C4C6A97007CB60A /* MenuDotsView.swift */; };
+		0B055A251C4C6AB0007CB60A /* MenuDotsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */; };
+		0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */; };
 		0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */; };
 		0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */; };
 		0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */; };
@@ -66,6 +70,8 @@
 		0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B081B9388BD00004A1B /* CGUtils.swift */; };
 		0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */; };
 		0B778B0D1B938E2500004A1B /* SkipTrackButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */; };
+		0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */; };
+		0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */; };
 		0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */; };
 		0B83FE1E1B24CA1E00746A9E /* log_in-mobile.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */; };
 		0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */; };
@@ -124,6 +130,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0B055A201C4C6537007CB60A /* MediaCollectionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MediaCollectionTableViewCell.xib; sourceTree = "<group>"; };
+		0B055A221C4C6A97007CB60A /* MenuDotsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuDotsView.swift; sourceTree = "<group>"; };
+		0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuDotsView.xib; sourceTree = "<group>"; };
+		0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLibraryTableViewCell.swift; sourceTree = "<group>"; };
 		0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerFadeAnimator.swift; sourceTree = "<group>"; };
 		0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kyooz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B13D9BF1AE6F80E00CC5C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -187,6 +197,8 @@
 		0B778B081B9388BD00004A1B /* CGUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGUtils.swift; sourceTree = "<group>"; };
 		0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkipTrackButtonView.swift; sourceTree = "<group>"; };
 		0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkipTrackButtonView.xib; sourceTree = "<group>"; };
+		0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
 		0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyDAO.swift; sourceTree = "<group>"; };
 		0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "log_in-mobile.png"; sourceTree = "<group>"; };
 		0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMAudioQueuePlayer.swift; sourceTree = "<group>"; };
@@ -468,6 +480,8 @@
 				0B13DA061AE6FA9A00CC5C01 /* ImageTableViewCell.swift */,
 				0B13DA071AE6FA9A00CC5C01 /* ImageTableViewCell.xib */,
 				0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */,
+				0B055A201C4C6537007CB60A /* MediaCollectionTableViewCell.xib */,
+				0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */,
 				0B13DA601AED49AF00CC5C01 /* SongDetailsTableViewCell.swift */,
 				0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */,
 			);
@@ -479,6 +493,8 @@
 			children = (
 				10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */,
 				10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */,
+				0B055A221C4C6A97007CB60A /* MenuDotsView.swift */,
+				0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */,
 				0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */,
 				0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */,
 				0B4E60091C2CD9AD00BB9D77 /* RepeatButtonView.swift */,
@@ -528,7 +544,9 @@
 			isa = PBXGroup;
 			children = (
 				0BD11B651B082C4B00565471 /* LastfmLoginViewController.swift */,
+				0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */,
 				0B476C791B22921800626810 /* SpotifySettingsViewController.swift */,
+				0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -664,6 +682,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B055A211C4C6537007CB60A /* MediaCollectionTableViewCell.xib in Resources */,
 				0B77768B1C001EC200B9A088 /* SearchResultsHeaderView.xib in Resources */,
 				0BE21C571BAF8925000509FD /* ApplicationIconView.xib in Resources */,
 				0B70702D1B9767080000673E /* AlbumTrackTableViewCell.xib in Resources */,
@@ -679,6 +698,7 @@
 				0BEBCCB71B92123700EFC47D /* PlayPauseButtonView.xib in Resources */,
 				0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */,
 				0B13DA1C1AE6FA9A00CC5C01 /* ImageTableViewCell.xib in Resources */,
+				0B055A251C4C6AB0007CB60A /* MenuDotsView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -698,6 +718,7 @@
 			files = (
 				0BCE21941B122D420074DA47 /* CAExtensions.swift in Sources */,
 				0BCA194E1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift in Sources */,
+				0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
@@ -751,7 +772,9 @@
 				0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */,
 				10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */,
 				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
+				0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,
+				0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
 				10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */,
 				0B31FE091BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift in Sources */,
@@ -776,6 +799,7 @@
 				0B13DA171AE6FA9A00CC5C01 /* AlbumTrackTableViewController.swift in Sources */,
 				0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */,
 				0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */,
+				0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */,
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
 				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,

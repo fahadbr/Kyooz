@@ -34,8 +34,9 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
+        tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+        tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         
         let control = UISegmentedControl(items: subGroups.map({ $0.name }))
         control.tintColor = ThemeHelper.defaultTintColor
@@ -110,11 +111,16 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         guard let sections = self.sections else {
             return nil
         }
-        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+        
+        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
             return nil
         }
-        view.headerTitleLabel.text = sections[section].title
-        view.disclosureContainerView.hidden = true
+        view.initializeHeaderView()
+        
+        if let headerView = view.headerView {
+            headerView.headerTitleLabel.text = sections[section].title
+            headerView.disclosureContainerView.hidden = true
+        }
         return view
     }
     
@@ -162,9 +168,11 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         let entity = entities[getAbsoluteIndex(indexPath: indexPath)]
         
         
-        if var audioCell = cell as? ConfigurableAudioTableCell {
+        if let audioCell = cell as? ConfigurableAudioTableCell {
             audioCell.configureCellForItems(entity, mediaGroupingType: libraryGroupingType.groupingType)
             audioCell.isNowPlayingItem = false
+            audioCell.indexPath = indexPath
+            audioCell.delegate = self
             let persistentIdPropertyName = MPMediaItem.persistentIDPropertyForGroupingType(libraryGroupingType.groupingType)
             if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem,
                 let persistentIdForGroupingType = nowPlayingItem.valueForProperty(persistentIdPropertyName) as? NSNumber {
@@ -205,11 +213,11 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         //note the different behaviours.  if the current entities representation is a mpmediaItem then we play with the entire collection in the view
         //otherwise we play the selected entity only, assuming it is a media item collecion
         if let mediaItems = entities as? [MPMediaItem] {
-            audioQueuePlayer.playNow(withTracks: mediaItems, startingAtIndex: getAbsoluteIndex(indexPath: indexPath), completionBlock: nil)
+            audioQueuePlayer.playNow(withTracks: mediaItems, startingAtIndex: getAbsoluteIndex(indexPath: indexPath), shouldShuffleIfOff: false)
         } else if let collections = entities as? [MPMediaItemCollection] {
             let collection = collections[getAbsoluteIndex(indexPath: indexPath)]
             if collection.count > 0 {
-                audioQueuePlayer.playNow(withTracks: collection.items, startingAtIndex: 0, completionBlock: nil)
+                audioQueuePlayer.playNow(withTracks: collection.items, startingAtIndex: 0, shouldShuffleIfOff: false)
             }
         }
     }

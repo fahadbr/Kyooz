@@ -28,6 +28,7 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         updateViewBasedOnSession()
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         errorLabel.hidden = true
