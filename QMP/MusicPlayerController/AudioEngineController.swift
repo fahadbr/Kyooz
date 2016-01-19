@@ -194,7 +194,7 @@ final class AudioEngineController : AudioController {
         self.currentlyPlayingAudio = self.audioToBuffer
     }
     
-    private class AudioFileWrapper {
+    private final class AudioFileWrapper {
         static let FOUR_MINUTES:Double = 4 * 60
         
         let sourceAudioFile:AVAudioFile!
