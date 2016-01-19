@@ -114,10 +114,14 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(AlbumTrackTableViewCell.reuseIdentifier, forIndexPath: indexPath) as! AlbumTrackTableViewCell
+        guard let cell = tableView.dequeueReusableCellWithIdentifier(AlbumTrackTableViewCell.reuseIdentifier, forIndexPath: indexPath) as? AlbumTrackTableViewCell else {
+            return UITableViewCell()
+        }
 
-        let track = albumCollection.items[indexPath.row] as AudioTrack
-        cell.configureCellForItem(track)
+        let track = albumCollection.items[indexPath.row]
+        cell.configureCellForItems(track, mediaGroupingType: .Title)
+        cell.indexPath = indexPath
+        cell.delegate = self
         
         if let currentTrack = audioQueuePlayer.nowPlayingItem {
             cell.isNowPlayingItem = (currentTrack.id == track.id)
@@ -133,7 +137,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         }
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        audioQueuePlayer.playNow(withTracks: albumCollection.items, startingAtIndex: indexPath.row, completionBlock: nil)
+        audioQueuePlayer.playNow(withTracks: albumCollection.items, startingAtIndex: indexPath.row, shouldShuffleIfOff: false)
     }
     
 

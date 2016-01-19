@@ -12,10 +12,17 @@ import MediaPlayer
 
 struct ApplicationDefaults {
     
-    static var audioQueuePlayer:AudioQueuePlayer {
-        return DRMAudioQueuePlayer.instance
-//        return AudioQueuePlayerImpl.instance
-    }
+    static let audioQueuePlayer:AudioQueuePlayer = {
+        let value = AudioQueuePlayerType(rawValue: NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)) ?? AudioQueuePlayerType.DRM
+        switch value {
+        case .DRM:
+            Logger.debug("Loading DRMAudioQueuePlayer")
+            return DRMAudioQueuePlayer.instance
+        case .Custom:
+            Logger.debug("Loading AudioQueuePlayerImpl")
+            return AudioQueuePlayerImpl.instance
+        }
+    }()
     
     static func evaluateMinimumFetchInterval() {
         if audioQueuePlayer is DRMAudioQueuePlayer && LastFmScrobbler.instance.validSessionObtained {

@@ -247,8 +247,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     
     //MARK: INSERT MODE FUNCITONS
     
-    func setDropItems(dropItems: [AudioTrack], atIndex:NSIndexPath) {
-        audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
+    func setDropItems(dropItems: [AudioTrack], atIndex:NSIndexPath) -> Int {
+        return audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
     }
     
 
@@ -326,8 +326,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         if(indexPath == nil) { return }
         
         let touchedCell = tableView.cellForRowAtIndexPath(indexPath!)! as! SongDetailsTableViewCell
-        let locationInMenuButton = sender.locationInView(touchedCell.menuButtonActionArea)
-        if(!touchedCell.menuButtonActionArea.pointInside(locationInMenuButton, withEvent: nil)) {
+        let locationInMenuButton = sender.locationInView(touchedCell.menuButton)
+        if(!touchedCell.menuButton.pointInside(locationInMenuButton, withEvent: nil)) {
             tableView(tableView, didSelectRowAtIndexPath: indexPath!)
             return
         }
@@ -335,8 +335,10 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         let index = indexPath!.row
         
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
-        let actionTitle = "\(mediaItem.trackTitle)\n\(mediaItem.albumArtist ?? mediaItem.artist ?? "Unknown Artist") - \(mediaItem.albumTitle ?? "Unknown Album")"
-        let controller = UIAlertController(title: actionTitle, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let actionTitle = mediaItem.trackTitle
+        let actionDetails = "\(mediaItem.albumArtist ?? mediaItem.artist ?? "Unknown Artist") - \(mediaItem.albumTitle ?? "Unknown Album")"
+        let controller = UIAlertController(title: actionTitle, message: actionDetails, preferredStyle: UIAlertControllerStyle.Alert)
+
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
         
@@ -345,14 +347,14 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         
         
         if mediaItem.albumId != 0 {
-            let goToAlbumAction = UIAlertAction(title: "Go To Album", style: .Default) { action in
+            let goToAlbumAction = UIAlertAction(title: "☞ Album", style: .Default) { action in
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Albums, entity: mediaItem as! MPMediaItem)
             }
             controller.addAction(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = UIAlertAction(title: "Go To Artist", style: .Default) { action in
+            let goToArtistAction = UIAlertAction(title: "☞ Artist", style: .Default) { action in
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Artists, entity: mediaItem as! MPMediaItem)
             }
             controller.addAction(goToArtistAction)

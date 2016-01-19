@@ -144,7 +144,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         if let item = entity as? MPMediaItem {
             if IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.id)) == nil {
-                Logger.debug("item not found in media library, will not push VC")
+                var name = parentGroup.name.capitalizedString
+                name.removeAtIndex(name.endIndex.predecessor())
+                let ac = UIAlertController(title: "Track Not Found In Library", message: "Kyooz can't show details about this track's \(name) because it's not in your music library.", preferredStyle: .Alert)
+                ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
+                presentViewController(ac, animated: true, completion: nil)
                 return
             }
         }
@@ -177,6 +181,32 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         vc.libraryGroupingType = nextGroupingType
 
         pushViewController(vc)
+    }
+    
+    func presentActionsForTracks(tracks:[AudioTrack], title:String?, details:String?) {
+        let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
+        
+        let playLastAction = UIAlertAction(title: "Queue Last", style: .Default) { (action) -> Void in
+            ApplicationDefaults.audioQueuePlayer.enqueue(items: tracks, atPosition: .Last)
+        }
+        let playNextAction = UIAlertAction(title: "Queue Next", style: .Default) { (action) -> Void in
+            ApplicationDefaults.audioQueuePlayer.enqueue(items: tracks, atPosition: .Next)
+        }
+        let playRandomlyAction = UIAlertAction(title: "Queue Randomly", style: .Default) { (action) -> Void in
+            ApplicationDefaults.audioQueuePlayer.enqueue(items: tracks, atPosition: .Random)
+        }
+        
+        if tracks.count == 1 {
+            ac.addAction(UIAlertAction(title: "Play Only This", style: .Default) { (action) -> Void in
+              ApplicationDefaults.audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: 0, shouldShuffleIfOff: false)
+            })
+        }
+        
+        ac.addAction(playNextAction)
+        ac.addAction(playLastAction)
+        ac.addAction(playRandomlyAction)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(ac, animated: true, completion: nil)
     }
     
     //MARK: NOTIFICATION REGISTRATIONS

@@ -9,43 +9,26 @@
 import UIKit
 import MediaPlayer
 
-class ImageTableViewCell: AbstractTableViewCell, ConfigurableAudioTableCell{
+final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
     
     static let reuseIdentifier = "imageTableViewCell"
     
     @IBOutlet weak var albumArtwork: UIImageView!
-    @IBOutlet weak var title: UILabel!
-    @IBOutlet weak var details: UILabel!
-    
-    var isNowPlayingItem:Bool = false {
-        didSet {
-            if isNowPlayingItem != oldValue {
-                if isNowPlayingItem {
-                    title.textColor = ThemeHelper.defaultVividColor
-                } else {
-                    title.textColor = ThemeHelper.defaultFontColor
-                }
-            }
-        }
-    }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        details?.textColor = UIColor.lightGrayColor()
-        accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-    }
 
     
     func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
         
-        title?.text = entity.titleForGrouping(mediaGroupingType)
+        titleLabel.text = entity.titleForGrouping(mediaGroupingType)
         
         let pluralText = entity.count > 1 ? "s" : ""
         var text = "\(entity.count) Track\(pluralText)"
-        if let mediaItem = entity.representativeItem, let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
-            text = text + " • \(releaseDate)"
+        if let mediaItem = entity.representativeItem {
+            if let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
+                text = text + " • \(releaseDate)"
+            }
+            configureDRMAndCloudLabels(mediaItem)
         }
-        details?.text = text
+        detailsLabel.text = text
         KyoozUtils.doInMainQueueAsync() {
             let albumArtworkTemp = entity.representativeItem?.artwork?.imageWithSize(self.albumArtwork.frame.size)
             if(albumArtworkTemp == nil) {

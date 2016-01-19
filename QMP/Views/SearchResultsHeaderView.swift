@@ -56,3 +56,21 @@ final class SearchResultsHeaderView: UIView {
     }
 
 }
+
+final class SearchHeaderFooterView : UITableViewHeaderFooterView {
+    
+    var headerView:SearchResultsHeaderView!
+    
+    func initializeHeaderView() {
+        guard headerView == nil else { return }
+        
+        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+            return
+        }
+        headerView = view
+        view.frame = contentView.frame
+        contentView.addSubview(headerView)
+    }
+    
+    
+}

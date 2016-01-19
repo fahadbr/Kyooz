@@ -109,7 +109,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     var shuffleActive:Bool {
         get {
-            return nowPlayingQueueContext.shuffleActive
+            return nowPlayingQueueContext.shuffleActive && nowPlayingItem != nil
         } set {
             nowPlayingQueueContext.setShuffleActive(newValue)
             persistToSystemQueue(nowPlayingQueueContext)
@@ -119,6 +119,10 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     var repeatMode:RepeatState {
         get {
+            if nowPlayingItem == nil {
+                return .Off
+            }
+            
             switch(musicPlayer.repeatMode) {
             case .None:
                 return .Off
@@ -147,14 +151,17 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func play() {
         musicPlayer.play()
+        playbackStateManager.correctPlaybackState()
     }
     
     func pause() {
         musicPlayer.pause()
+        playbackStateManager.correctPlaybackState()
     }
     
     func skipForwards() {
         musicPlayer.skipToNextItem()
+        playbackStateManager.correctPlaybackState()
     }
     
     func skipBackwards() {
@@ -165,13 +172,14 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         } else {
             musicPlayer.skipToPreviousItem()
         }
+        playbackStateManager.correctPlaybackState()
     }
     
-    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, completionBlock:(()->())?) {
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool) {
         KyoozUtils.doInMainQueueAsync() {
             var newContext = NowPlayingQueueContext(originalQueue: tracks)
             newContext.indexOfNowPlayingItem = index >= tracks.count ? 0 : index
-            newContext.setShuffleActive(self.shuffleActive)
+            newContext.setShuffleActive(self.shuffleActive || shouldShuffleIfOff)
             
             guard let mediaItems = newContext.currentQueue as? [MPMediaItem] else {
                 Logger.error("DRM audio player cannot play tracks that are not MPMediaItem objects")
@@ -180,7 +188,6 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             
             self.nowPlayingQueueContext = newContext
             self.playNowInternal(mediaItems, index: newContext.indexOfNowPlayingItem)
-            completionBlock?()
         }
         
     }
@@ -204,10 +211,11 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         persistToSystemQueue(oldContext)
     }
     
-    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) {
+    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int {
         let oldContext = nowPlayingQueueContext
         nowPlayingQueueContext.insertItemsAtIndex(itemsToInsert, index: index)
         persistToSystemQueue(oldContext)
+        return itemsToInsert.count
     }
     
     func deleteItemsAtIndices(indiciesToRemove:[Int]) {
@@ -365,7 +373,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     func handleApplicationDidBecomeActive(notification:NSNotification) {
         playbackStateManager.correctPlaybackState()
         refreshIndexOfNowPlayingItem()
-        if musicPlayer.shuffleMode != .Off {
+        if musicPlayer.shuffleMode != .Off && nowPlayingItem != nil {
             let ac = UIAlertController(title: "Do you want to turn on Shuffle in Kyooz?", message: "Kyooz has noticed that you turned on shuffle mode in the system music player.  Would you like to use the shuffle mode in Kyooz instead?  Using the shuffle mode in Kyooz allows you to queue up items within the app however you like", preferredStyle: .Alert)
             let turnOnShuffleAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
                 self.musicPlayer.shuffleMode = .Off

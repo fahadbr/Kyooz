@@ -259,13 +259,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {
         KyoozUtils.doInMainQueueAsync() { [audioQueuePlayer = self.audioQueuePlayer, filterQuery = self.filterQuery] in
             if let items = filterQuery.items where !items.isEmpty {
-                audioQueuePlayer.playNow(withTracks: items, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: items.count):0) {
-                    if shouldShuffle && !audioQueuePlayer.shuffleActive {
-                        audioQueuePlayer.shuffleActive = true
-                    } else if !shouldShuffle && audioQueuePlayer.shuffleActive {
-                        audioQueuePlayer.shuffleActive = false
-                    }
-                }
+                audioQueuePlayer.playNow(withTracks: items, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: items.count):0, shouldShuffleIfOff: shouldShuffle)
             }
         }
     }

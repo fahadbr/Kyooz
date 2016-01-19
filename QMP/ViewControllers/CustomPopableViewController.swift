@@ -32,3 +32,28 @@ class CustomPopableViewController: UIViewController {
 
 
 }
+
+class CustomPopableTableViewController: UITableViewController {
+    
+    var transitionAnimator = ViewControllerFadeAnimator.instance
+    var popGestureRecognizer:UIScreenEdgePanGestureRecognizer!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
+        popGestureRecognizer.edges = UIRectEdge.Left
+        view.addGestureRecognizer(popGestureRecognizer)
+    }
+    
+    //MARK: - gesture recognizer handling methods
+    final func handlePan(recognizer:UIPanGestureRecognizer) {
+        if recognizer.state == .Began {
+            transitionAnimator.interactive = true
+            navigationController?.popViewControllerAnimated(true)
+        }
+        transitionAnimator.handlePan(recognizer)
+    }
+    
+    
+}

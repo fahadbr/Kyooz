@@ -67,9 +67,9 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         tableView.sectionHeaderHeight = 40
         tableView.estimatedSectionHeaderHeight = 40
         super.viewDidLoad()
-        tableView.registerClass(MediaCollectionTableViewCell.self, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
+        tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
-        
+        tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         popGestureRecognizer.enabled = false
     }
     
@@ -111,6 +111,8 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         let entity = searchExecutor.searchResults[indexPath.row]
         if let configurableCell = cell as? ConfigurableAudioTableCell {
             configurableCell.configureCellForItems(entity, mediaGroupingType: group.groupingType)
+            configurableCell.indexPath = indexPath
+            configurableCell.delegate = self
         } else {
             cell.textLabel?.text = entity.titleForGrouping(group.groupingType)
         }
@@ -127,22 +129,27 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         }
         let searchExecutor = sections[section]
         let group = searchExecutor.libraryGroup
-        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
             return nil
         }
-        view.headerTitleLabel.text = group.name.uppercaseString
+        view.initializeHeaderView()
+        
+        guard let headerView = view.headerView else {
+            return nil
+        }
+        headerView.headerTitleLabel.text = group.name.uppercaseString
         if sections.count > 1 || selectedHeader != nil {
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "didTapHeaderView:")
-            view.addGestureRecognizer(tapGestureRecognizer)
-            view.disclosureContainerView.hidden = false
+            headerView.addGestureRecognizer(tapGestureRecognizer)
+            headerView.disclosureContainerView.hidden = false
             tapGestureRecognizers[group] = tapGestureRecognizer
         } else {
-            view.disclosureContainerView.hidden = true
+            headerView.disclosureContainerView.hidden = true
         }
         
-        view.applyRotation(shouldExpand: selectedHeader != nil && searchExecutor === selectedHeader!)
+        headerView.applyRotation(shouldExpand: selectedHeader != nil && searchExecutor === selectedHeader!)
         
-        return view
+        return headerView
     }
     
     //MARK: other configuration
@@ -158,7 +165,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         let group = searchExecutor.libraryGroup
         
         if let item = entity as? MPMediaItem where group === LibraryGrouping.Songs {
-            audioQueuePlayer.playNow(withTracks: [item], startingAtIndex: 0, completionBlock: nil)
+            audioQueuePlayer.playNow(withTracks: [item], startingAtIndex: 0, shouldShuffleIfOff: false)
             return
         }
         

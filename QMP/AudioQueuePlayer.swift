@@ -29,13 +29,14 @@ protocol AudioQueuePlayer:class {
     
     func skipForwards()
     
-    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, completionBlock:(()->())?)
+    func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool)
     
     func playItemWithIndexInCurrentQueue(index index:Int)
     
     func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition)
     
-    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int)
+    //returns the number of items inserted
+    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int
     
     func deleteItemsAtIndices(indicies:[Int])
     

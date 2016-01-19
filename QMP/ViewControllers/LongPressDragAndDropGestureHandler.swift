@@ -118,12 +118,11 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
             if let itemsToInsert = localItemsToInsert {
                 var indexPaths = [NSIndexPath]()
                 let startingIndex = localIndexPathForInserting.row
-                let noOfItemsToInsert = itemsToInsert.count
+                let noOfItemsToInsert = dropDestination.setDropItems(itemsToInsert, atIndex:localIndexPathForInserting)
                 for index in startingIndex ..< (startingIndex + noOfItemsToInsert)  {
                     indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
                 }
                 
-                dropDestination.setDropItems(itemsToInsert, atIndex:localIndexPathForInserting)
                 tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: noOfItemsToInsert == 1 ? .Fade : .Automatic)
             }
         }
@@ -144,6 +143,6 @@ protocol DropDestination {
     
     var destinationTableView:UITableView { get }
     
-    func setDropItems(dropItems:[AudioTrack], atIndex:NSIndexPath)
+    func setDropItems(dropItems:[AudioTrack], atIndex:NSIndexPath) -> Int
     
 }
