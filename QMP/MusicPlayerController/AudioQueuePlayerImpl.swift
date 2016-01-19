@@ -17,6 +17,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     //MARK: STATIC INSTANCE
     static let instance:AudioQueuePlayerImpl = AudioQueuePlayerImpl()
     
+    private static let repeatStateKey = "AudioQueuePlayerImpl.repeatStateKey"
     
     //MARK: Class Properties
     let nowPlayingInfoHelper = NowPlayingInfoHelper.instance
@@ -26,9 +27,36 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     let audioController:AudioController = AudioEngineController()
     let lastFmScrobbler = LastFmScrobbler.instance
     
-    var nowPlayingQueue:[AudioTrack] = [AudioTrack]() {
+    private var nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack]()) {
         didSet {
             publishNotification(updateType: .QueueUpdate, sender: self)
+        }
+    }
+    
+    private var previousIndex:Int {
+        switch repeatMode {
+        case .Off:
+            return indexOfNowPlayingItem - 1
+        case .One:
+            return indexOfNowPlayingItem
+        case .All:
+            let index = indexOfNowPlayingItem - 1
+            return index < 0 ? (nowPlayingQueue.count - 1) : index
+        }
+    }
+    
+    private var nextIndex:Int {
+        switch repeatMode {
+        case .Off:
+            return indexOfNowPlayingItem + 1
+        case .One:
+            return indexOfNowPlayingItem
+        case .All:
+            let queue = nowPlayingQueue
+            if queue.isEmpty {
+                return 0
+            }
+            return (indexOfNowPlayingItem + 1)%queue.count
         }
     }
     
@@ -39,13 +67,31 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         
         audioController.delegate = self
         if let snapshot = TempDataDAO.instance.getPlaybackStateSnapshotFromTempStorage() {
-            if let filteredTracks = filter(snapshot.nowPlayingQueueContext.currentQueue) {
-                nowPlayingQueue = filteredTracks
+            var context = snapshot.nowPlayingQueueContext
+            let shuffleQueue:[AudioTrack]?
+            if context.shuffleActive {
+                shuffleQueue = context.currentQueue
+                context.setShuffleActive(false)
+            } else {
+                shuffleQueue = nil
             }
+            
+            if let filteredTracks = filter(snapshot.nowPlayingQueueContext.currentQueue, presentUnplayableTracks: shuffleQueue == nil) {
+                nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: filteredTracks)
+            }
+            
+            if let queue = shuffleQueue, let filteredShuffledQueue = filter(queue) {
+                nowPlayingQueueContext.overrideShuffleQueue(filteredShuffledQueue)
+            }
+            
             KyoozUtils.doInMainQueueAsync() {
                 self.updateNowPlayingStateToIndex(snapshot.indexOfNowPlayingItem)
                 self.currentPlaybackTime = snapshot.currentPlaybackTime.isNormal ? snapshot.currentPlaybackTime : 0
             }
+        }
+        
+        if let repeatStateRawValue = (TempDataDAO.instance.getPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey) as? NSNumber)?.integerValue, let repeatState = RepeatState(rawValue: repeatStateRawValue) {
+            repeatMode = repeatState
         }
 
         registerForNotifications()
@@ -60,6 +106,10 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     //MARK: AudioQueuePlayer - Properties
     var playbackStateSnapshot:PlaybackStateSnapshot {
         return PlaybackStateSnapshot(nowPlayingQueueContext: NowPlayingQueueContext(originalQueue: nowPlayingQueue), currentPlaybackTime: currentPlaybackTime, indexOfNowPlayingItem: indexOfNowPlayingItem)
+    }
+    
+    var nowPlayingQueue:[AudioTrack] {
+        return nowPlayingQueueContext.currentQueue
     }
     
     var nowPlayingItem:AudioTrack? {
@@ -98,11 +148,28 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             }
         }
     }
-    var indexOfNowPlayingItem:Int = 0
+    var indexOfNowPlayingItem:Int {
+        get {
+            return nowPlayingQueueContext.indexOfNowPlayingItem
+        } set {
+            nowPlayingQueueContext.indexOfNowPlayingItem = newValue
+        }
+    }
     
-    var shuffleActive:Bool = false
+    var shuffleActive:Bool {
+        get {
+            return nowPlayingQueueContext.shuffleActive
+        } set {
+            nowPlayingQueueContext.setShuffleActive(newValue)
+            publishNotification(updateType: .SystematicQueueUpdate, sender: self)
+        }
+    }
 
-    var repeatMode:RepeatState = .Off
+    var repeatMode:RepeatState = .Off {
+        didSet {
+            TempDataDAO.instance.addPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey, value: NSNumber(integer: repeatMode.rawValue))
+        }
+    }
 
     
     //MARK: AudioQueuePlayer - Functions
@@ -121,12 +188,12 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     func skipForwards() {
 //        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
-        updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1)
+        updateNowPlayingStateToIndex(nextIndex)
     }
     
     func skipBackwards() {
         if(currentPlaybackTime < 2.0) {
-            updateNowPlayingStateToIndex(indexOfNowPlayingItem - 1)
+            updateNowPlayingStateToIndex(previousIndex)
         } else {
             currentPlaybackTime = 0.0
         }
@@ -136,9 +203,12 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         guard let nowPlayingQueue = filter(tracks) else {
             return
         }
-        self.nowPlayingQueue = nowPlayingQueue
+        var newContext = NowPlayingQueueContext(originalQueue: nowPlayingQueue)
+        newContext.indexOfNowPlayingItem = index >= nowPlayingQueue.count ? 0 : index
+        newContext.setShuffleActive(shuffleActive || shouldShuffleIfOff)
+        nowPlayingQueueContext = newContext
         shouldPlayAfterLoading = true
-        updateNowPlayingStateToIndex(index)
+        updateNowPlayingStateToIndex(newContext.indexOfNowPlayingItem)
     }
     
     func playItemWithIndexInCurrentQueue(index index:Int) {
@@ -153,67 +223,40 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         guard let items = filter(itemsToEnqueue) else {
             return
         }
-        nowPlayingQueue.appendContentsOf(items)
+        nowPlayingQueueContext.enqueue(items: items, atPosition: position)
+        updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
     }
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int {
         guard let items = filter(itemsToInsert) else {
             return 0
         }
-        nowPlayingQueue.insertAtIndex(items, index: index, placeHolderItem: MPMediaItem())
+        nowPlayingQueueContext.insertItemsAtIndex(items, index: index)
         
-        if(index <= indexOfNowPlayingItem) {
-            updateNowPlayingStateToIndex(indexOfNowPlayingItem + items.count, shouldLoadAfterUpdate: false)
-        }
+        updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
         return items.count
     }
     
     func deleteItemsAtIndices(indiciesToRemove:[Int]) {
-        var indicies = indiciesToRemove
-        if(indicies.count > 1) {
-            //if removing more than 1 element, sort the array otherwise we will run into index out of bounds issues
-            indicies.sortInPlace { $0 > $1 }
-        }
-        var nowPlayingItemRemoved = false
-        for index in indicies {
-            nowPlayingQueue.removeAtIndex(index)
-            if(index < indexOfNowPlayingItem) {
-                updateNowPlayingStateToIndex(indexOfNowPlayingItem - 1, shouldLoadAfterUpdate: false)
-            } else if (index == indexOfNowPlayingItem) {
-                nowPlayingItemRemoved = true
-            }
-        }
-        
-        if(nowPlayingItemRemoved) {
-            updateNowPlayingStateToIndex(0)
-        }
+        let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indiciesToRemove)
+        updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: nowPlayingItemRemoved)
     }
     
     func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
-        let tempMediaItem = nowPlayingQueue[fromIndexPath]
-        nowPlayingQueue.removeAtIndex(fromIndexPath)
-        nowPlayingQueue.insert(tempMediaItem, atIndex: toIndexPath)
-        
-        if(fromIndexPath == indexOfNowPlayingItem) {
-            updateNowPlayingStateToIndex(toIndexPath, shouldLoadAfterUpdate: false)
-        } else if(fromIndexPath < indexOfNowPlayingItem && indexOfNowPlayingItem <= toIndexPath) {
-            updateNowPlayingStateToIndex(indexOfNowPlayingItem - 1, shouldLoadAfterUpdate: false)
-        } else if(toIndexPath <= indexOfNowPlayingItem && indexOfNowPlayingItem < fromIndexPath) {
-            updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1, shouldLoadAfterUpdate: false)
-        }
+        nowPlayingQueueContext.moveMediaItem(fromIndexPath: fromIndexPath, toIndexPath: toIndexPath)
+        updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
     }
     
     func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int) {
-        nowPlayingQueue.removeRange((index + 1)..<nowPlayingQueue.count)
-        if(index < indexOfNowPlayingItem) {
-            updateNowPlayingStateToIndex(0, shouldLoadAfterUpdate: true)
-        }
+        let nowPlayingItemRemoved = nowPlayingQueueContext.clearItems(towardsDirection: direction, atIndex: index)
+        
+        updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: nowPlayingItemRemoved)
     }
 
     
     //MARK: Class Functions
     
-    private func filter(tracks:[AudioTrack]) -> [AudioTrack]? {
+    private func filter(tracks:[AudioTrack], presentUnplayableTracks:Bool = true) -> [AudioTrack]? {
         guard !tracks.isEmpty else { return nil }
         var unPlayableTrackNames = [String]()
         unPlayableTrackNames.reserveCapacity(tracks.count)
@@ -229,7 +272,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             }
         }
         
-        if !unPlayableTrackNames.isEmpty {
+        if !unPlayableTrackNames.isEmpty && presentUnplayableTracks {
             KyoozUtils.doInMainQueueAsync() {
                 let message = "Filtered out tracks:\n\n" + unPlayableTrackNames.joinWithSeparator("\n")
                 let ac = UIAlertController(title: "Enable Apple Music/iCloud Music Library in settings to play the following tracks", message: message, preferredStyle: .Alert)
@@ -243,6 +286,8 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
     private func updateNowPlayingStateToIndex(newIndex:Int, shouldLoadAfterUpdate:Bool = true) {
+        let nowPlayingQueue = self.nowPlayingQueue
+        
         let reachedEndOfQueue = newIndex >= nowPlayingQueue.count
         if(reachedEndOfQueue) { pause() }
 
@@ -271,7 +316,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
     func advanceToNextTrack(shouldLoadAfterUpdate:Bool) {
-        updateNowPlayingStateToIndex(indexOfNowPlayingItem + 1, shouldLoadAfterUpdate: shouldLoadAfterUpdate)
+        updateNowPlayingStateToIndex(nextIndex, shouldLoadAfterUpdate: shouldLoadAfterUpdate)
     }
     
     
@@ -325,14 +370,16 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     func audioPlayerDidFinishPlaying(player: AudioController, successfully flag: Bool) {
         if(flag) {
-            advanceToNextTrack(true)
+            KyoozUtils.doInMainQueue() {
+                self.advanceToNextTrack(true)
+            }
         } else {
             Logger.debug("audio player did not finish playing successfully")
         }
     }
     
     func audioPlayerDidRequestNextItemToBuffer(player:AudioController) -> NSURL? {
-        let nextIndex = indexOfNowPlayingItem + 1
+        let nextIndex = self.nextIndex
         let nextItem:AudioTrack? = (nextIndex >= nowPlayingQueue.count) ?  nil : nowPlayingQueue[nextIndex]
         if let url = nextItem?.assetURL {
             return url
@@ -341,10 +388,11 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
     func audioPlayerDidAdvanceToNextItem(player:AudioController) {
-        advanceToNextTrack(false)
-        
-        nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
-        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        KyoozUtils.doInMainQueue() {
+            self.advanceToNextTrack(false)
+            self.nowPlayingInfoHelper.publishNowPlayingInfo(self.nowPlayingItem!)
+            self.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        }
     }
 }
 
