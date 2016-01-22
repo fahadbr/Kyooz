@@ -78,6 +78,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 		get {
 			return PlaybackStateSnapshot(nowPlayingQueueContext: nowPlayingQueueContext, currentPlaybackTime: currentPlaybackTime)
 		} set(newSnapshot) {
+            let musicWasPlaying = musicIsPlaying
 			musicPlayer.stop()
 			guard let items = newSnapshot.nowPlayingQueueContext.currentQueue as? [MPMediaItem] else {
 				Logger.error("trying to restore a queue with objects that are not MPMediaItem")
@@ -86,7 +87,9 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 			nowPlayingQueueContext = newSnapshot.nowPlayingQueueContext
 			playNowInternal(items, index: nowPlayingQueueContext.indexOfNowPlayingItem, shouldPlay: false)
 			currentPlaybackTime = newSnapshot.currentPlaybackTime
-			play()
+            if musicWasPlaying {
+                play()
+            }
 		}
     }
     

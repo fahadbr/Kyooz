@@ -49,6 +49,16 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
     }
     
+    private var _undoManager:NSUndoManager = {
+            let u = NSUndoManager()
+            u.levelsOfUndo = 2
+            return u
+    }()
+    
+    override var undoManager:NSUndoManager! {
+        return _undoManager
+    }
+    
     private var collapsedConstraint:NSLayoutConstraint!
     private var expandedConstraint:NSLayoutConstraint!
     
@@ -95,6 +105,20 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         view.addGestureRecognizer(longPressGestureRecognizer)
         
         addSidePanelViewController()
+    }
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        becomeFirstResponder()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        resignFirstResponder()
     }
     
     func toggleSidePanel() {

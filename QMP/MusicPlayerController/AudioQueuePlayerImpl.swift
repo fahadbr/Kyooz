@@ -110,12 +110,15 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 		get {
 			return PlaybackStateSnapshot(nowPlayingQueueContext: nowPlayingQueueContext, currentPlaybackTime: currentPlaybackTime)
 		} set(newSnapshot) {
+            let musicWasPlaying = musicIsPlaying
 			pause()
 			nowPlayingQueueContext = newSnapshot.nowPlayingQueueContext
 			shouldPlayAfterLoading = false
 			updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem)
 			currentPlaybackTime = newSnapshot.currentPlaybackTime
-			play()
+            if musicWasPlaying {
+                play()
+            }
 		}
     }
     
