@@ -141,21 +141,18 @@ final class AudioEngineController : AudioController {
             if(self.audioToBuffer.sourceAudioFile == nil) { return }
             
             for i in 0..<numberOfBuffersToSchedule {
-                var error:NSError? = nil
                 
                 let bufferToUse = AVAudioPCMBuffer(PCMFormat: self.audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: self.audioToBuffer.defaultBufferCapacity)
                 do {
                     try self.audioToBuffer.sourceAudioFile.readIntoBuffer(bufferToUse)
                 } catch let error1 as NSError {
-                    error = error1
+					Logger.error("Error with reading audio file into buffer: \(error1.localizedDescription)")
+					return
                 } catch {
-                    fatalError()
+                    Logger.error("Unknown error occurred while scheduling buffers")
+					return
                 }
-        
-                if(error != nil) {
-                    Logger.debug("Error with reading audio file into buffer: \(error!.localizedDescription)")
-                    return
-                }
+				
                 
                 var completionHandler = { self.readNextFramesIntoBuffer(newValidationCode) }
                 
@@ -182,9 +179,9 @@ final class AudioEngineController : AudioController {
 
     
     private func audioPlayerDidFinishPlaying() {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), { () -> Void in
+		KyoozUtils.doInMainQueueAsync() {
             self.delegate.audioPlayerDidFinishPlaying(self, successfully: true)
-        })
+        }
     }
     
     

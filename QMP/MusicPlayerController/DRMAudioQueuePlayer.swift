@@ -55,7 +55,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             self.nowPlayingQueueContext = nowPlayingQueueContext
         } else {
             Logger.error("couldnt get queue from temp storage. starting with empty queue")
-            nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack]())
+            nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type)
         }
         
         if let indexBeforeMod = TempDataDAO.instance.getPersistentValue(key: lowestIndexPersistedKey) as? NSNumber {
@@ -72,9 +72,22 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
     
     //MARK: AudioQueuePlayer - Properties
+    var type = AudioQueuePlayerType.AppleDRM
     
-    var playbackStateSnapshot:PlaybackStateSnapshot {
-        return PlaybackStateSnapshot(nowPlayingQueueContext: nowPlayingQueueContext, currentPlaybackTime: currentPlaybackTime, indexOfNowPlayingItem: indexOfNowPlayingItem)
+	var playbackStateSnapshot:PlaybackStateSnapshot {
+		get {
+			return PlaybackStateSnapshot(nowPlayingQueueContext: nowPlayingQueueContext, currentPlaybackTime: currentPlaybackTime)
+		} set(newSnapshot) {
+			musicPlayer.stop()
+			guard let items = newSnapshot.nowPlayingQueueContext.currentQueue as? [MPMediaItem] else {
+				Logger.error("trying to restore a queue with objects that are not MPMediaItem")
+				return
+			}
+			nowPlayingQueueContext = newSnapshot.nowPlayingQueueContext
+			playNowInternal(items, index: nowPlayingQueueContext.indexOfNowPlayingItem, shouldPlay: false)
+			currentPlaybackTime = newSnapshot.currentPlaybackTime
+			play()
+		}
     }
     
     var nowPlayingQueue:[AudioTrack] {
@@ -147,6 +160,8 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
+    var delegate:AudioQueuePlayerDelegate?
+    
     //MARK: AudioQueuePlayer - Functions
     
     func play() {
@@ -177,7 +192,9 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool) {
         KyoozUtils.doInMainQueueAsync() {
-            var newContext = NowPlayingQueueContext(originalQueue: tracks)
+			let oldSnapshot = self.playbackStateSnapshot
+			
+            var newContext = NowPlayingQueueContext(originalQueue: tracks, forType: self.type)
             newContext.indexOfNowPlayingItem = index >= tracks.count ? 0 : index
             newContext.setShuffleActive(self.shuffleActive || shouldShuffleIfOff)
             
@@ -188,6 +205,8 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             
             self.nowPlayingQueueContext = newContext
             self.playNowInternal(mediaItems, index: newContext.indexOfNowPlayingItem)
+			
+			self.delegate?.audioQueuePlayerDidChangeContext(self, previousSnapshot:oldSnapshot)
         }
         
     }
@@ -246,10 +265,12 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     //MARK: - Class functions
     
-    private func playNowInternal(mediaItems:[MPMediaItem], index:Int) {
+	private func playNowInternal(mediaItems:[MPMediaItem], index:Int, shouldPlay:Bool = true) {
         musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: mediaItems))
         musicPlayer.nowPlayingItem = mediaItems[index]
-        musicPlayer.play()
+		if shouldPlay {
+			musicPlayer.play()
+		}
         playbackStateManager.correctPlaybackState()
         
         queueStateInconsistent = false

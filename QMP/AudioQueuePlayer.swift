@@ -11,7 +11,8 @@ import MediaPlayer
 
 protocol AudioQueuePlayer:class {
     
-    var playbackStateSnapshot:PlaybackStateSnapshot { get }
+    var type:AudioQueuePlayerType { get }
+    var playbackStateSnapshot:PlaybackStateSnapshot { get set }
     
     var nowPlayingItem:AudioTrack? { get }
     var musicIsPlaying:Bool { get }
@@ -20,6 +21,8 @@ protocol AudioQueuePlayer:class {
     var nowPlayingQueue:[AudioTrack] { get }
     var shuffleActive:Bool { get set }
     var repeatMode:RepeatState { get set }
+    
+    var delegate:AudioQueuePlayerDelegate? { get set }
     
     func play()
     
@@ -68,6 +71,14 @@ extension AudioQueuePlayer {
             return
         }
     }
+}
+
+protocol AudioQueuePlayerDelegate {
+    
+	func audioQueuePlayerDidChangeContext(audioQueuePlayer: AudioQueuePlayer, previousSnapshot:PlaybackStateSnapshot)
+    
+    func audioQueuePlayerDidEnqueueItems(items:[AudioTrack], position:EnqueuePosition)
+    
 }
 
 enum AudioQueuePlayerUpdate : String {

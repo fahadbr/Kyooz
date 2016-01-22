@@ -15,6 +15,7 @@ struct NowPlayingQueueContext {
         return NowPlayingQueuePersistableContext(context: self)
     }
 
+    let type:AudioQueuePlayerType
     private (set) var shuffleActive:Bool = false
     
     var indexOfNowPlayingItem:Int = 0
@@ -34,8 +35,9 @@ struct NowPlayingQueueContext {
         }
     }
     
-    init(originalQueue:[AudioTrack]) {
+    init(originalQueue:[AudioTrack], forType type:AudioQueuePlayerType) {
         self.originalQueue = originalQueue
+        self.type = type
     }
     
     mutating func setShuffleActive(shuffleActive:Bool) {
@@ -144,7 +146,7 @@ struct NowPlayingQueueContext {
         case .All:
             let shuffleWasActive = shuffleActive
             let item = currentQueue[index]
-            self = NowPlayingQueueContext(originalQueue: [item])
+            self = NowPlayingQueueContext(originalQueue: [item], forType: type)
             setShuffleActive(shuffleWasActive)
         }
         return nowPlayingItemRemoved
@@ -197,6 +199,7 @@ final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
     private static let originalQueueKey = "originalQueue"
     private static let shuffledQueueKey = "shuffledQueue"
     private static let shuffleActiveKey = "shuffleActiveKey"
+    private static let typeKey = "typeKey"
     
     static func supportsSecureCoding() -> Bool {
         return true
@@ -209,11 +212,12 @@ final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
     }
     
     required init?(coder aDecoder: NSCoder) {
+        let type = AudioQueuePlayerType(rawValue: aDecoder.decodeIntegerForKey(NowPlayingQueuePersistableContext.typeKey)) ?? .Default
         guard let originalQueue = aDecoder.decodeObjectOfClass(NSArray.self, forKey: NowPlayingQueuePersistableContext.originalQueueKey) as? [AudioTrack] else {
-            self.context = NowPlayingQueueContext(originalQueue: [AudioTrack]())
+            self.context = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type)
             return
         }
-        var context = NowPlayingQueueContext(originalQueue: originalQueue)
+        var context = NowPlayingQueueContext(originalQueue: originalQueue, forType: type)
         
         let shuffleActive = aDecoder.decodeBoolForKey(NowPlayingQueuePersistableContext.shuffleActiveKey)
         
@@ -233,6 +237,7 @@ final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
             aCoder.encodeBool(context.shuffleActive, forKey: NowPlayingQueuePersistableContext.shuffleActiveKey)
             aCoder.encodeObject(context.shuffledQueue as NSArray, forKey: NowPlayingQueuePersistableContext.shuffledQueueKey)
         }
+        aCoder.encodeInteger(context.type.rawValue, forKey: NowPlayingQueuePersistableContext.typeKey)
     }
 }
 

@@ -13,5 +13,5 @@ struct UserDefaultKeys {
 }
 
 enum AudioQueuePlayerType : Int {
-    case DRM, Custom
+    case Default, AppleDRM
 }

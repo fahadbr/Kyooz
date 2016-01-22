@@ -11,7 +11,6 @@ import Foundation
 struct PlaybackStateSnapshot {
     let nowPlayingQueueContext:NowPlayingQueueContext
     let currentPlaybackTime:Float
-    let indexOfNowPlayingItem:Int
     
     var persistableSnapshot:PlaybackStatePersistableSnapshot {
         return PlaybackStatePersistableSnapshot(snapshot: self)
@@ -21,7 +20,6 @@ struct PlaybackStateSnapshot {
 final class PlaybackStatePersistableSnapshot : NSObject, NSSecureCoding {
     private static let contextKey = "contextKey"
     private static let timeKey = "timeKey"
-    private static let indexKey = "indexKey"
     
     static func supportsSecureCoding() -> Bool {
         return true
@@ -35,18 +33,17 @@ final class PlaybackStatePersistableSnapshot : NSObject, NSSecureCoding {
     
     required init?(coder aDecoder: NSCoder) {
         guard let persistedContext = aDecoder.decodeObjectOfClass(NowPlayingQueuePersistableContext.self, forKey: PlaybackStatePersistableSnapshot.contextKey) else {
-            self.snapshot = PlaybackStateSnapshot(nowPlayingQueueContext: NowPlayingQueueContext(originalQueue: [AudioTrack]()), currentPlaybackTime: 0, indexOfNowPlayingItem: 0)
+			let type = ApplicationDefaults.audioQueuePlayer.type
+            self.snapshot = PlaybackStateSnapshot(nowPlayingQueueContext: NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type), currentPlaybackTime: 0)
             return
         }
         
         let playbackTime = aDecoder.decodeFloatForKey(PlaybackStatePersistableSnapshot.timeKey)
-        let index = aDecoder.decodeIntegerForKey(PlaybackStatePersistableSnapshot.indexKey)
-        self.snapshot = PlaybackStateSnapshot(nowPlayingQueueContext: persistedContext.context, currentPlaybackTime: playbackTime, indexOfNowPlayingItem: index)
+        self.snapshot = PlaybackStateSnapshot(nowPlayingQueueContext: persistedContext.context, currentPlaybackTime: playbackTime)
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(snapshot.nowPlayingQueueContext.persistableContext, forKey: PlaybackStatePersistableSnapshot.contextKey)
         aCoder.encodeFloat(snapshot.currentPlaybackTime, forKey: PlaybackStatePersistableSnapshot.timeKey)
-        aCoder.encodeInteger(snapshot.indexOfNowPlayingItem, forKey: PlaybackStatePersistableSnapshot.indexKey)
     }
 }
