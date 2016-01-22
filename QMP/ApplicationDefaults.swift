@@ -13,15 +13,18 @@ import MediaPlayer
 struct ApplicationDefaults {
     
     static let audioQueuePlayer:AudioQueuePlayer = {
-        let value = AudioQueuePlayerType(rawValue: NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)) ?? AudioQueuePlayerType.DRM
+        let value = AudioQueuePlayerType(rawValue: NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)) ?? AudioQueuePlayerType.Default
+        let player:AudioQueuePlayer
         switch value {
-        case .DRM:
+        case .AppleDRM:
             Logger.debug("Loading DRMAudioQueuePlayer")
-            return DRMAudioQueuePlayer.instance
-        case .Custom:
+            player = DRMAudioQueuePlayer.instance
+        case .Default:
             Logger.debug("Loading AudioQueuePlayerImpl")
-            return AudioQueuePlayerImpl.instance
+            player = AudioQueuePlayerImpl.instance
         }
+        player.delegate = AudioQueuePlayerDelegateImpl()
+        return player
     }()
     
     static func evaluateMinimumFetchInterval() {

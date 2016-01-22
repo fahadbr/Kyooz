@@ -16,7 +16,7 @@ final class SettingsViewController: CustomPopableTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let value = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)
-        enableAppleMusicSwitch.on = value == AudioQueuePlayerType.DRM.rawValue
+        enableAppleMusicSwitch.on = value == AudioQueuePlayerType.AppleDRM.rawValue
         // Do any additional setup after loading the view.
     }
 
@@ -26,7 +26,7 @@ final class SettingsViewController: CustomPopableTableViewController {
     }
     
     @IBAction func switchValueChanged(sender: UISwitch) {
-        let value = enableAppleMusicSwitch.on ? AudioQueuePlayerType.DRM.rawValue : AudioQueuePlayerType.Custom.rawValue
+        let value = enableAppleMusicSwitch.on ? AudioQueuePlayerType.AppleDRM.rawValue : AudioQueuePlayerType.Default.rawValue
         NSUserDefaults.standardUserDefaults().setInteger(value, forKey: UserDefaultKeys.AudioQueuePlayer)
         
         let ac = UIAlertController(title: "Requires Restart", message: "Enabling/Disabling Apple Music won't take effect until Kyooz is restarted.  Please close and then reopen the app", preferredStyle: .Alert)
