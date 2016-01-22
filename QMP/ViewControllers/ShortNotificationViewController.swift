@@ -24,10 +24,9 @@ final class ShortNotificationViewController : UIViewController {
             updateViews()
         }
     }
+    
+    private var startedTransitioningOut = false
 	
-	deinit {
-		Logger.debug("deinit short notification controller")
-	}
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +37,8 @@ final class ShortNotificationViewController : UIViewController {
         updateViews()
 		
 		//fade away after 5 seconds
-		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(5), dispatch_get_main_queue()) {
-			self.transitionOut()
+		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(4), dispatch_get_main_queue()) { [weak self] in
+			self?.transitionOut()
 		}
     }
     
@@ -57,10 +56,14 @@ final class ShortNotificationViewController : UIViewController {
 		transitionOut()
     }
 	
-	private func transitionOut() {
+    func transitionOut() {
 		guard let superView = view.superview else {
 			return
 		}
+        if startedTransitioningOut { return }
+        
+        startedTransitioningOut = true
+        
 		UIView.transitionWithView(superView, duration: 0.5, options: .TransitionCrossDissolve, animations: { () -> Void in
 			self.view.removeFromSuperview()
 			self.removeFromParentViewController()
