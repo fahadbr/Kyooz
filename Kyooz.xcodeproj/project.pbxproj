@@ -119,6 +119,7 @@
 		10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */; };
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
 		10C7B9DB1C45C16E00ADAAB6 /* WarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */; };
+		10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -249,6 +250,7 @@
 		10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListButtonView.swift; sourceTree = "<group>"; };
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
 		10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningViewController.swift; sourceTree = "<group>"; };
+		10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,6 +276,7 @@
 		0B0FE16E1C40B8F7001E4ABE /* ViewControllerUtils */ = {
 			isa = PBXGroup;
 			children = (
+				10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */,
 				0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */,
 			);
 			name = ViewControllerUtils;
@@ -748,6 +751,7 @@
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
+				10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */,
 				0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */,
 				0BCA19501BC73F05008CD0FF /* RemoteCommandHandler.swift in Sources */,
 				0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */,

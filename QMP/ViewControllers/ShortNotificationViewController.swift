@@ -9,21 +9,14 @@
 import UIKit
 
 final class ShortNotificationViewController : UIViewController {
-    
-    @IBOutlet var undoButton:UIButton!
+	
     @IBOutlet var messageLabel:UILabel!
     
 	var message:String! {
 		didSet {
-			updateViews()
+			messageLabel?.text = message
 		}
 	}
-	
-    var undoBlock:(() -> Void)? {
-        didSet {
-            updateViews()
-        }
-    }
     
     private var startedTransitioningOut = false
 	
@@ -33,27 +26,12 @@ final class ShortNotificationViewController : UIViewController {
         view.alpha = 0.9
         view.layer.cornerRadius = 10
 		messageLabel.textColor = UIColor.blackColor()
+		messageLabel.text = message
 		
-        updateViews()
-		
-		//fade away after 5 seconds
+		//fade away after 4 seconds
 		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(4), dispatch_get_main_queue()) { [weak self] in
 			self?.transitionOut()
 		}
-    }
-    
-    private func updateViews() {
-        let hideUndoButton = undoBlock == nil
-        undoButton?.hidden = hideUndoButton
-		messageLabel?.text = message
-        view?.userInteractionEnabled = !hideUndoButton
-    }
-    
-    
-    @IBAction func undoButtonPressed(sender: UIButton) {
-		Logger.debug("undo button pressed")
-        undoBlock?()
-		transitionOut()
     }
 	
     func transitionOut() {

@@ -15,6 +15,16 @@ extension MPMediaQuery {
         query.groupingType = MPMediaGrouping.AlbumArtist
         return query
     }
+	
+	static func audioQueryForGrouping(grouping:MPMediaGrouping, isCompilation:Bool = false) -> MPMediaQuery {
+		let query = MPMediaQuery()
+		query.addFilterPredicate(MPMediaPropertyPredicate(value: MPMediaType.AnyAudio.rawValue, forProperty: MPMediaItemPropertyMediaType))
+		query.groupingType = grouping
+		if isCompilation {
+			query.addFilterPredicate(MPMediaPropertyPredicate(value: true, forProperty: MPMediaItemPropertyIsCompilation))
+		}
+		return query
+	}
     
     func shouldQueryCloudItems(shouldQueryCloudItems:Bool) -> MPMediaQuery {
         if(!shouldQueryCloudItems) {
@@ -22,9 +32,5 @@ extension MPMediaQuery {
         }
         return self
     }
-    
-    func setMusicOnly() -> MPMediaQuery {
-        self.addFilterPredicate(MPMediaPropertyPredicate(value: MPMediaType.Music.rawValue, forProperty: MPMediaItemPropertyMediaType))
-        return self
-    }
+	
 }

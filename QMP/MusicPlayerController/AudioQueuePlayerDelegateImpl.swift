@@ -10,57 +10,50 @@ import UIKit
 
 final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
     
-    private let presentationController:UIViewController = ContainerViewController.instance
-    
-    private weak var shortNotificationVC:ShortNotificationViewController?
+    private let shortNotificationManager = ShortNotificationManager.instance
     
 	func audioQueuePlayerDidChangeContext(audioQueuePlayer:AudioQueuePlayer, previousSnapshot: PlaybackStateSnapshot) {
 		KyoozUtils.doInMainQueueAsync() {
-			self.showUndoNotificationController(audioQueuePlayer, snapshot: previousSnapshot)
+			self.registerUndoAndShowNotification(audioQueuePlayer, snapshot: previousSnapshot)
 		}
     }
     
     func audioQueuePlayerDidEnqueueItems(items: [AudioTrack], position: EnqueuePosition) {
-        
+		let positionString:String
+		switch position {
+		case .Last:
+			positionString = "Last"
+		case .Next:
+			positionString = "Next"
+		case .Random:
+			positionString = "Randomly"
+		}
+		KyoozUtils.doInMainQueueAsync() {
+			self.shortNotificationManager.presentShortNotificationWithMessage("Queued \(items.count) tracks to play \(positionString)")
+		}
     }
 	
-    private func showUndoNotificationController(audioQueuePlayer:AudioQueuePlayer, snapshot:PlaybackStateSnapshot) {
-        if let previousVC = shortNotificationVC {
-            previousVC.transitionOut()
-        }
-        
-		let vc = UIStoryboard.shortNotificationViewController()
+    private func registerUndoAndShowNotification(audioQueuePlayer:AudioQueuePlayer, snapshot:PlaybackStateSnapshot) {
 		guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else {
 			return
 		}
 		
-		
-        vc.message = "Now Playing:\n\(nowPlayingItem.trackTitle) by \(nowPlayingItem.artist).  Shake to Undo/Redo!"
+        let message = "Now Playing:\n\(nowPlayingItem.trackTitle) by \(nowPlayingItem.artist).  Shake to Undo/Redo!"
 		if !snapshot.nowPlayingQueueContext.currentQueue.isEmpty {
-            if let undoManager = presentationController.undoManager {
+            if let undoManager = ContainerViewController.instance.undoManager {
                 undoManager.registerUndoWithTarget(self, selector: "restorePlaybackState:", object: snapshot.persistableSnapshot)
                 undoManager.setActionName("Queue Change")
             }
 		}
 		
-		let size = CGSize(width: presentationController.view.frame.width * 0.85, height: 60)
-		let origin = CGPoint(x: (presentationController.view.frame.width - size.width)/2, y: presentationController.view.frame.height * 0.80)
-		vc.view.frame = CGRect(origin: origin, size: size)
-		self.shortNotificationVC = vc
-		UIView.transitionWithView(presentationController.view, duration: 0.5, options: .TransitionCrossDissolve, animations: { () -> Void in
-			self.presentationController.view.addSubview(vc.view)
-			}) {[presentationController = self.presentationController]_ -> Void in
-				presentationController.addChildViewController(vc)
-				vc.didMoveToParentViewController(presentationController)
-		}
-        
+		shortNotificationManager.presentShortNotificationWithMessage(message)
 	}
 	
 	func restorePlaybackState(stateToRestore:PlaybackStatePersistableSnapshot) {
         let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
         let currentSnapshot = audioQueuePlayer.playbackStateSnapshot
         audioQueuePlayer.playbackStateSnapshot = stateToRestore.snapshot
-        showUndoNotificationController(audioQueuePlayer, snapshot: currentSnapshot)
+        registerUndoAndShowNotification(audioQueuePlayer, snapshot: currentSnapshot)
 	}
 	
 }
