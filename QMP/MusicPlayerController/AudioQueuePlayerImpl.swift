@@ -247,6 +247,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         }
         nowPlayingQueueContext.enqueue(items: items, atPosition: position)
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
+		delegate?.audioQueuePlayerDidEnqueueItems(items, position: position)
     }
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int {
@@ -412,8 +413,11 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     func audioPlayerDidAdvanceToNextItem(player:AudioController) {
         KyoozUtils.doInMainQueue() {
             self.advanceToNextTrack(false)
-            self.nowPlayingInfoHelper.publishNowPlayingInfo(self.nowPlayingItem!)
-            self.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+			self.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+			guard let nowPlayingItem = self.nowPlayingItem else {
+				return
+			}
+            self.nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem)
         }
     }
 }

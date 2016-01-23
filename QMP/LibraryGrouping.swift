@@ -12,33 +12,27 @@ import MediaPlayer
 final class LibraryGrouping : Hashable {
     
     static let Songs = LibraryGrouping(name: "SONGS",
-        baseQuery: MPMediaQuery.songsQuery(),
         groupingType:MPMediaGrouping.Title)
     static let Albums = LibraryGrouping(name: "ALBUMS",
-        baseQuery: MPMediaQuery.albumsQuery(),
         groupingType:MPMediaGrouping.Album,
         nextGroupLevel:Songs)
     static let Composers = LibraryGrouping(name: "COMPOSERS",
-        baseQuery: MPMediaQuery.composersQuery(),
         groupingType:MPMediaGrouping.Composer,
         nextGroupLevel:Albums,
         subGroupsForNextLevel: [Albums, Songs])
     static let Compilations = LibraryGrouping(name: "COMPILATIONS",
-        baseQuery: MPMediaQuery.compilationsQuery(),
         groupingType:MPMediaGrouping.Album,
+		isCompilation:true,
         nextGroupLevel:Songs)
     static let Playlists = LibraryGrouping(name: "PLAYLISTS",
-        baseQuery: MPMediaQuery.playlistsQuery(),
         groupingType:MPMediaGrouping.Playlist,
         nextGroupLevel:Songs,
         subGroupsForNextLevel: [Songs, Artists, Albums, Genres, Composers])
     static let Artists = LibraryGrouping(name: "ARTISTS",
-        baseQuery: MPMediaQuery.albumArtistsQuery(),
         groupingType: MPMediaGrouping.AlbumArtist,
         nextGroupLevel:Albums,
         subGroupsForNextLevel: [Albums, Songs])
     static let Genres = LibraryGrouping(name: "GENRES",
-        baseQuery: MPMediaQuery.genresQuery(),
         groupingType:MPMediaGrouping.Genre,
         nextGroupLevel:Artists,
         subGroupsForNextLevel: [Artists, Albums, Songs])
@@ -57,12 +51,12 @@ final class LibraryGrouping : Hashable {
     }
     
     private init(name:String,
-        baseQuery:MPMediaQuery,
         groupingType:MPMediaGrouping,
         nextGroupLevel:LibraryGrouping? = nil,
+		isCompilation:Bool = false,
         subGroupsForNextLevel:[LibraryGrouping] = [LibraryGrouping]()) {
             self.name = name
-            self.baseQuery = baseQuery
+            self.baseQuery = MPMediaQuery.audioQueryForGrouping(groupingType, isCompilation: isCompilation)
             self.groupingType = groupingType
             self.nextGroupLevel = nextGroupLevel
             self.subGroupsForNextLevel = subGroupsForNextLevel

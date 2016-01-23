@@ -48,8 +48,8 @@ final class LastFmScrobbler {
     let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
     let api_secret = "a0444ceba4d9f49eedc519699cec2624"
     
-    var username_value:String!
-    var session:String!
+    var username_value:String?
+    var session:String?
 
     var shouldCache = false
     let cacheMax = 5
@@ -77,21 +77,19 @@ final class LastFmScrobbler {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self] in
             if(self.validSessionObtained) { return }
             
-            if let session = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_SESSION_KEY),
-                let username_value = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_USERNAME_KEY) {
-                    self.session = session
-                    self.username_value = username_value.lowercaseString
-
-            } else {
+            guard let session = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_SESSION_KEY),
+				let username_value = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_USERNAME_KEY) else {
                 self.validSessionObtained = false
                 return
             }
-            
+			self.session = session
+			self.username_value = username_value.lowercaseString
+			
             let params:[String:String] = [
                 self.api_key:self.api_key_value,
-                self.sk : self.session,
+                self.sk : session,
                 self.method: self.method_getSessionInfo,
-                self.username: self.username_value
+                self.username: username_value
             ]
             self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
                     Logger.debug("logging into lastfm was a SUCCESS")
@@ -137,7 +135,11 @@ final class LastFmScrobbler {
     }
     
     func scrobbleMediaItem() {
-        if(mediaItemToScrobble == nil) { return }
+        if(mediaItemToScrobble == nil || !validSessionObtained) { return }
+		
+		guard let session = self.session else {
+			return
+		}
         
         let mediaItem = mediaItemToScrobble
         mediaItemToScrobble = nil
@@ -152,7 +154,7 @@ final class LastFmScrobbler {
                 self.timestamp:"\(Int(timeStampToScrobble))",
                 self.method:self.method_scrobble,
                 self.api_key:self.api_key_value,
-                self.sk:self.session
+                self.sk:session
             ]
             
             if(mediaItem.albumArtist != mediaItem.artist) {

@@ -231,6 +231,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         let oldContext = nowPlayingQueueContext
         nowPlayingQueueContext.enqueue(items: itemsToEnqueue, atPosition: position)
         persistToSystemQueue(oldContext)
+		delegate?.audioQueuePlayerDidEnqueueItems(itemsToEnqueue, position: position)
     }
     
     func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int {
