@@ -27,9 +27,8 @@ struct IPodLibraryDAO {
     }
     
     static func queryMediaItemFromId(persistentId:AnyObject) -> AudioTrack? {
-        let query = MPMediaQuery.songsQuery()
-        query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentId,
-            forProperty: MPMediaItemPropertyPersistentID, comparisonType: MPMediaPredicateComparison.EqualTo))
+        let query = MPMediaQuery.audioQueryForGrouping(.Title)
+        query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentId, forProperty: MPMediaItemPropertyPersistentID))
         return query.items?.first
     }
     
