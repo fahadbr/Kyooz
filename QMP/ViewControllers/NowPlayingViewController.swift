@@ -138,8 +138,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
     
-    private func showConfirmDeleteAlertController(title:String, deleteBlock:()->Void) {
-        let ac = UIAlertController(title: title, message: nil, preferredStyle: .Alert)
+	private func showConfirmDeleteAlertController(title:String, details:String? = nil, deleteBlock:()->Void) {
+        let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
         ac.addAction(UIAlertAction(title: "Yes", style: .Default, handler: {_ in deleteBlock() }))
         ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         presentViewController(ac, animated: true, completion: nil)
@@ -382,7 +382,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
                 for i in 0..<index {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Above?") {
+                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Above?", details: "Selected Track: \(actionTitle)\n\(actionDetails)") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
@@ -402,7 +402,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
                 for i in (index + 1)...lastIndex {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Below?") {
+                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Below?", details: "Selected Track: \(actionTitle)\n\(actionDetails)") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }

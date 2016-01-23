@@ -259,7 +259,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0cc-IR-9XO">
-                                <rect key="frame" x="12" y="0.0" width="276" height="60"/>
+                                <rect key="frame" x="8" y="0.0" width="284" height="60"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Now Playing: New Track">
                                         <attributes>
@@ -274,9 +274,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="0cc-IR-9XO" secondAttribute="trailing" constant="-4" id="DbL-TQ-v3O"/>
+                            <constraint firstAttribute="trailing" secondItem="0cc-IR-9XO" secondAttribute="trailing" constant="8" id="DbL-TQ-v3O"/>
                             <constraint firstItem="Fh4-Gb-L0v" firstAttribute="top" secondItem="0cc-IR-9XO" secondAttribute="bottom" id="GAO-1d-efS"/>
-                            <constraint firstItem="0cc-IR-9XO" firstAttribute="leading" secondItem="93h-np-6Hd" secondAttribute="leadingMargin" constant="-4" id="I6x-wS-l90"/>
+                            <constraint firstItem="0cc-IR-9XO" firstAttribute="leading" secondItem="93h-np-6Hd" secondAttribute="leading" constant="8" id="I6x-wS-l90"/>
                             <constraint firstItem="0cc-IR-9XO" firstAttribute="top" secondItem="sar-gL-F1N" secondAttribute="bottom" id="iLD-mv-FeG"/>
                         </constraints>
                     </view>
