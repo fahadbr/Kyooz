@@ -10,7 +10,7 @@ import UIKit
 
 final class ShortNotificationViewController : UIViewController {
 	
-    static let fadeOutAnimation:CABasicAnimation = {
+    private let fadeOutAnimation:CABasicAnimation = {
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.duration = 0.5
         animation.fromValue = 1.0
@@ -30,18 +30,18 @@ final class ShortNotificationViewController : UIViewController {
     
     private var startedTransitioningOut = false
 	
-    deinit {
-        Logger.debug("deinit of short notification with message \(message)")
-    }
-    
+//    deinit {
+//        Logger.debug("deinit of short notification with message \(message)")
+//    }
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         view.alpha = 0.9
         view.layer.cornerRadius = 10
 		messageLabel.textColor = UIColor.blackColor()
 		messageLabel.text = message
-		messageLabel.sizeToFit()
-        view.sizeToFit()
+		fadeOutAnimation.delegate = self
+
 		//fade away after 4 seconds
 		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(4), dispatch_get_main_queue()) { [weak self] in
 			self?.transitionOut()
@@ -53,15 +53,11 @@ final class ShortNotificationViewController : UIViewController {
         
         startedTransitioningOut = true
         
-        let animation = ShortNotificationViewController.fadeOutAnimation
-        animation.delegate = self
-        
-        view.layer.addAnimation(animation, forKey: nil)
+        view.layer.addAnimation(fadeOutAnimation, forKey: nil)
         
 	}
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        Logger.debug("fade animation ended")
         view.layer.removeAllAnimations()
         view.removeFromSuperview()
         removeFromParentViewController()
