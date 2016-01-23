@@ -183,7 +183,7 @@
                         <barButtonItem systemItem="trash" id="37S-xH-KYy">
                             <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <action selector="commitDeletionOfIndexPaths:" destination="A5d-sE-21l" id="Vep-mB-8eT"/>
+                                <action selector="confirmDelete:" destination="A5d-sE-21l" id="pLY-JC-lMc"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="v8t-C7-NI9"/>
@@ -265,6 +265,7 @@
                                         <attributes>
                                             <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <font key="NSFont" size="12" name="Avenir-Medium"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
                                 </attributedString>

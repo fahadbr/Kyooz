@@ -131,7 +131,22 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func commitDeletionOfIndexPaths(sender:AnyObject?) {
+    @IBAction func confirmDelete(sender:AnyObject?) {
+        let title = tableView.editing ? "Remove the \(indexPathsToDelete?.count ?? 0) selected tracks?" : "Remove the entire queue?"
+        showConfirmDeleteAlertController(title) {
+            self.commitDeletionOfIndexPaths()
+        }
+    }
+    
+    private func showConfirmDeleteAlertController(title:String, deleteBlock:()->Void) {
+        let ac = UIAlertController(title: title, message: nil, preferredStyle: .Alert)
+        ac.addAction(UIAlertAction(title: "Yes", style: .Default, handler: {_ in deleteBlock() }))
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(ac, animated: true, completion: nil)
+
+    }
+    
+    private func commitDeletionOfIndexPaths() {
         if(tableView.editing && indexPathsToDelete != nil) {
             var indicies = [Int]()
             for indexPath in indexPathsToDelete! {
@@ -367,8 +382,10 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
                 for i in 0..<index {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
-                self.deleteIndexPaths(indiciesToDelete)
+                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Above?") {
+                    self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
+                    self.deleteIndexPaths(indiciesToDelete)
+                }
             }
             controller.addAction(clearPrecedingItemsAction)
         }
@@ -385,8 +402,10 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
                 for i in (index + 1)...lastIndex {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
-                self.deleteIndexPaths(indiciesToDelete)
+                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Below?") {
+                    self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
+                    self.deleteIndexPaths(indiciesToDelete)
+                }
             }
             controller.addAction(clearUpcomingItemsAction)
         }
