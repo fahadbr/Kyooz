@@ -308,12 +308,12 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             }
         }
         
-        KyoozUtils.doInMainQueueAsync() { [musicPlayer = self.musicPlayer] in
+//        KyoozUtils.doInMainQueueAsync() { [musicPlayer = self.musicPlayer] in
             musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
             let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
             musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
-        }
-        
+//        }
+		
         presentNotificationsIfNecessary()
     }
     
