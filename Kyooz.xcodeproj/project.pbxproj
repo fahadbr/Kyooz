@@ -16,7 +16,6 @@
 		0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */; };
 		0B13D9C81AE6F80E00CC5C01 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */; };
 		0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C91AE6F80E00CC5C01 /* LaunchScreen.xib */; };
-		0B13D9D71AE6F80E00CC5C01 /* KyoozTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9D61AE6F80E00CC5C01 /* KyoozTests.swift */; };
 		0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9F91AE6FA9A00CC5C01 /* AudioSessionManager.swift */; };
 		0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */; };
 		0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */; };
@@ -113,6 +112,7 @@
 		0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917401BF7FD7D001AC802 /* SearchIndex.swift */; };
 		0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */; };
 		0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917471BF8F36A001AC802 /* KyoozUtils.swift */; };
+		100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BC41C54423B009FAB17 /* KyoozTests.swift */; };
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
@@ -123,12 +123,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0B13D9D11AE6F80E00CC5C01 /* PBXContainerItemProxy */ = {
+		100A8BC71C54423B009FAB17 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0B13D9B31AE6F80E00CC5C01 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 0B13D9BA1AE6F80E00CC5C01;
-			remoteInfo = QMP;
+			remoteInfo = Kyooz;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -144,9 +144,6 @@
 		0B13D9C51AE6F80E00CC5C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0B13D9CA1AE6F80E00CC5C01 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		0B13D9D01AE6F80E00CC5C01 /* KyoozTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0B13D9D51AE6F80E00CC5C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0B13D9D61AE6F80E00CC5C01 /* KyoozTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyoozTests.swift; sourceTree = "<group>"; };
 		0B13D9F91AE6FA9A00CC5C01 /* AudioSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioSessionManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingInfoHelper.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioQueuePlayerImpl.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -244,6 +241,9 @@
 		0BF917401BF7FD7D001AC802 /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndex.swift; sourceTree = "<group>"; };
 		0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndexEntry.swift; sourceTree = "<group>"; };
 		0BF917471BF8F36A001AC802 /* KyoozUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozUtils.swift; sourceTree = "<group>"; };
+		100A8BC21C54423B009FAB17 /* KyoozTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		100A8BC41C54423B009FAB17 /* KyoozTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyoozTests.swift; sourceTree = "<group>"; };
+		100A8BC61C54423B009FAB17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
@@ -263,7 +263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0B13D9CD1AE6F80E00CC5C01 /* Frameworks */ = {
+		100A8BBF1C54423B009FAB17 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -287,7 +287,7 @@
 			children = (
 				0BD43F6A1AF855E200D5B2D4 /* Frameworks */,
 				0B13D9BD1AE6F80E00CC5C01 /* Kyooz */,
-				0B13D9D31AE6F80E00CC5C01 /* KyoozTests */,
+				100A8BC31C54423B009FAB17 /* KyoozTests */,
 				0B13D9BC1AE6F80E00CC5C01 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -296,7 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */,
-				0B13D9D01AE6F80E00CC5C01 /* KyoozTests.xctest */,
+				100A8BC21C54423B009FAB17 /* KyoozTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -330,24 +330,6 @@
 			children = (
 				0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */,
 				0B13D9BF1AE6F80E00CC5C01 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		0B13D9D31AE6F80E00CC5C01 /* KyoozTests */ = {
-			isa = PBXGroup;
-			children = (
-				0B13D9D61AE6F80E00CC5C01 /* KyoozTests.swift */,
-				0B13D9D41AE6F80E00CC5C01 /* Supporting Files */,
-			);
-			name = KyoozTests;
-			path = QMPTests;
-			sourceTree = "<group>";
-		};
-		0B13D9D41AE6F80E00CC5C01 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				0B13D9D51AE6F80E00CC5C01 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -589,6 +571,15 @@
 			name = Search;
 			sourceTree = "<group>";
 		};
+		100A8BC31C54423B009FAB17 /* KyoozTests */ = {
+			isa = PBXGroup;
+			children = (
+				100A8BC41C54423B009FAB17 /* KyoozTests.swift */,
+				100A8BC61C54423B009FAB17 /* Info.plist */,
+			);
+			path = KyoozTests;
+			sourceTree = "<group>";
+		};
 		10171E041C373342002FD905 /* Test */ = {
 			isa = PBXGroup;
 			children = (
@@ -630,22 +621,22 @@
 			productReference = 0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0B13D9CF1AE6F80E00CC5C01 /* KyoozTests */ = {
+		100A8BC11C54423B009FAB17 /* KyoozTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "KyoozTests" */;
+			buildConfigurationList = 100A8BC91C54423B009FAB17 /* Build configuration list for PBXNativeTarget "KyoozTests" */;
 			buildPhases = (
-				0B13D9CC1AE6F80E00CC5C01 /* Sources */,
-				0B13D9CD1AE6F80E00CC5C01 /* Frameworks */,
-				0B13D9CE1AE6F80E00CC5C01 /* Resources */,
+				100A8BBE1C54423B009FAB17 /* Sources */,
+				100A8BBF1C54423B009FAB17 /* Frameworks */,
+				100A8BC01C54423B009FAB17 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0B13D9D21AE6F80E00CC5C01 /* PBXTargetDependency */,
+				100A8BC81C54423B009FAB17 /* PBXTargetDependency */,
 			);
 			name = KyoozTests;
-			productName = QMPTests;
-			productReference = 0B13D9D01AE6F80E00CC5C01 /* KyoozTests.xctest */;
+			productName = KyoozTests;
+			productReference = 100A8BC21C54423B009FAB17 /* KyoozTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -655,7 +646,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "FAHAD RIAZ";
 				TargetAttributes = {
@@ -668,8 +659,8 @@
 							};
 						};
 					};
-					0B13D9CF1AE6F80E00CC5C01 = {
-						CreatedOnToolsVersion = 6.3;
+					100A8BC11C54423B009FAB17 = {
+						CreatedOnToolsVersion = 7.2;
 						TestTargetID = 0B13D9BA1AE6F80E00CC5C01;
 					};
 				};
@@ -689,7 +680,7 @@
 			projectRoot = "";
 			targets = (
 				0B13D9BA1AE6F80E00CC5C01 /* Kyooz */,
-				0B13D9CF1AE6F80E00CC5C01 /* KyoozTests */,
+				100A8BC11C54423B009FAB17 /* KyoozTests */,
 			);
 		};
 /* End PBXProject section */
@@ -719,7 +710,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0B13D9CE1AE6F80E00CC5C01 /* Resources */ = {
+		100A8BC01C54423B009FAB17 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -829,21 +820,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0B13D9CC1AE6F80E00CC5C01 /* Sources */ = {
+		100A8BBE1C54423B009FAB17 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B13D9D71AE6F80E00CC5C01 /* KyoozTests.swift in Sources */,
+				100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0B13D9D21AE6F80E00CC5C01 /* PBXTargetDependency */ = {
+		100A8BC81C54423B009FAB17 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0B13D9BA1AE6F80E00CC5C01 /* Kyooz */;
-			targetProxy = 0B13D9D11AE6F80E00CC5C01 /* PBXContainerItemProxy */;
+			targetProxy = 100A8BC71C54423B009FAB17 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1010,39 +1001,30 @@
 			};
 			name = Release;
 		};
-		0B13D9DE1AE6F80E00CC5C01 /* Debug */ = {
+		100A8BCA1C54423B009FAB17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = QMPTests/Info.plist;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = KyoozTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = KyoozTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QMP.app/QMP";
+				PRODUCT_BUNDLE_IDENTIFIER = com.riaz.Fahad..KyoozTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kyooz.app/Kyooz";
 			};
 			name = Debug;
 		};
-		0B13D9DF1AE6F80E00CC5C01 /* Release */ = {
+		100A8BCB1C54423B009FAB17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = QMPTests/Info.plist;
+				INFOPLIST_FILE = KyoozTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = KyoozTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QMP.app/QMP";
+				PRODUCT_BUNDLE_IDENTIFIER = com.riaz.Fahad..KyoozTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kyooz.app/Kyooz";
 			};
 			name = Release;
 		};
@@ -1067,14 +1049,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B13D9DD1AE6F80E00CC5C01 /* Build configuration list for PBXNativeTarget "KyoozTests" */ = {
+		100A8BC91C54423B009FAB17 /* Build configuration list for PBXNativeTarget "KyoozTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0B13D9DE1AE6F80E00CC5C01 /* Debug */,
-				0B13D9DF1AE6F80E00CC5C01 /* Release */,
+				100A8BCA1C54423B009FAB17 /* Debug */,
+				100A8BCB1C54423B009FAB17 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

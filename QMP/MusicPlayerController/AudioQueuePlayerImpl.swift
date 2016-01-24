@@ -247,6 +247,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         }
         nowPlayingQueueContext.enqueue(items: items, atPosition: position)
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
+		presentNotificationsIfNecessary()
 		delegate?.audioQueuePlayerDidEnqueueItems(items, position: position)
     }
     
@@ -257,6 +258,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         nowPlayingQueueContext.insertItemsAtIndex(items, index: index)
         
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
+		presentNotificationsIfNecessary()
         return items.count
     }
     
