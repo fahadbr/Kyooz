@@ -19,7 +19,7 @@ protocol AudioController : class {
     
     func pause() -> Bool
     
-    func loadItem(url:NSURL) -> Bool
+    func loadItem(url:NSURL) throws
 
 }
 

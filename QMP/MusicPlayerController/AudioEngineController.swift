@@ -67,17 +67,13 @@ final class AudioEngineController : AudioController {
     
     func play() -> Bool {
         if(!audioEngine.running) {
-            var error:NSError?
-            let successful: Bool
             do {
                 try audioEngine.start()
-                successful = true
-            } catch let error1 as NSError {
-                error = error1
-                successful = false
-            }
-            if(!successful || error != nil) {
-                Logger.debug("Error with starting audio engine: \(error?.description)")
+            } catch let error as NSError {
+                Logger.debug("Error with starting audio engine: \(error.description)")
+                return false
+            } catch {
+                Logger.debug("unknown error occured with starting audio enging")
                 return false
             }
         }
@@ -94,30 +90,15 @@ final class AudioEngineController : AudioController {
         return !playerNode.playing && !audioEngine.running
     }
     
-    func loadItem(url:NSURL) -> Bool {
-        if let audioFile = getAudioFile(url) {
-            currentlyPlayingAudio = AudioFileWrapper(audioFile:audioFile)
-            audioToBuffer = currentlyPlayingAudio
-            scheduleBuffers(AudioEngineController.NO_OF_INITIAL_BUFFERS, shouldInterrupt: true, validationCode:validationCode)
-            return true
-        }
-        return false
+    func loadItem(url:NSURL) throws {
+        let audioFile = try getAudioFile(url)
+        currentlyPlayingAudio = AudioFileWrapper(audioFile:audioFile)
+        audioToBuffer = currentlyPlayingAudio
+        scheduleBuffers(AudioEngineController.NO_OF_INITIAL_BUFFERS, shouldInterrupt: true, validationCode:validationCode)
     }
     
-    private func getAudioFile(url:NSURL) -> AVAudioFile! {
-        var error:NSError?
-        do {
-            let audioFile = try AVAudioFile(forReading: url)
-            if(error != nil) {
-                Logger.debug("Error with loading audio file: \(error!.localizedDescription)")
-                return nil
-            }
-            
-            return audioFile
-        } catch let error1 as NSError {
-            error = error1
-        }
-        return nil
+    private func getAudioFile(url:NSURL) throws -> AVAudioFile {
+       return try AVAudioFile(forReading: url)
     }
     
     private func readNextFramesIntoBuffer(validationCode:UInt8) {
@@ -141,38 +122,48 @@ final class AudioEngineController : AudioController {
             if(self.audioToBuffer.sourceAudioFile == nil) { return }
             
             for i in 0..<numberOfBuffersToSchedule {
-                
-                let bufferToUse = AVAudioPCMBuffer(PCMFormat: self.audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: self.audioToBuffer.defaultBufferCapacity)
-                do {
-                    try self.audioToBuffer.sourceAudioFile.readIntoBuffer(bufferToUse)
-                } catch let error1 as NSError {
-					Logger.error("Error with reading audio file into buffer: \(error1.localizedDescription)")
-					return
-                } catch {
-                    Logger.error("Unknown error occurred while scheduling buffers")
-					return
-                }
-				
-                
-                var completionHandler = { self.readNextFramesIntoBuffer(newValidationCode) }
-                
-                if(self.audioToBuffer.bufferedToEndOfFile) {
-                    Logger.debug("reached end of audio file")
-                    if let url = self.delegate.audioPlayerDidRequestNextItemToBuffer(self), nextAudioFile = self.getAudioFile(url) {
-                        self.audioToBuffer = AudioFileWrapper(audioFile: nextAudioFile)
-                        Logger.debug("loaded next audio file")
-                    } else {
-                        completionHandler = self.audioPlayerDidFinishPlaying
-                        self.audioToBuffer = AudioFileWrapper(audioFile:nil)
-                    }
-                }
-                
-                if(shouldInterrupt && i == 0) {
-                    self.playerNode.scheduleBuffer(bufferToUse, atTime: nil, options: AVAudioPlayerNodeBufferOptions.Interrupts, completionHandler: completionHandler)
-                } else {
-                    self.playerNode.scheduleBuffer(bufferToUse, completionHandler: completionHandler)
-                }
+                self.scheduleBuffer(newValidationCode, shouldInterrupt: shouldInterrupt && i == 0)
             }
+        }
+    }
+    
+    private func scheduleBuffer(newValidationCode:UInt8, shouldInterrupt:Bool) {
+        let bufferToUse = AVAudioPCMBuffer(PCMFormat: audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: audioToBuffer.defaultBufferCapacity)
+        do {
+            try audioToBuffer.sourceAudioFile.readIntoBuffer(bufferToUse)
+        } catch let error1 as NSError {
+            Logger.error("Error with reading audio file into buffer: \(error1.localizedDescription)")
+            return
+        } catch {
+            Logger.error("Unknown error occurred while scheduling buffers")
+            return
+        }
+        
+        
+        var completionHandler = { self.readNextFramesIntoBuffer(newValidationCode) }
+        
+        if(audioToBuffer.bufferedToEndOfFile) {
+            Logger.debug("reached end of audio file")
+            if let url = delegate.audioPlayerDidRequestNextItemToBuffer(self), nextAudioFile = try? getAudioFile(url) {
+                audioToBuffer = AudioFileWrapper(audioFile: nextAudioFile)
+                Logger.debug("loaded next audio file")
+            } else {
+                completionHandler = audioPlayerDidFinishPlaying
+                audioToBuffer = AudioFileWrapper(audioFile:nil)
+            }
+        }
+        
+        if playerNode.outputFormatForBus(0).channelCount != bufferToUse.format.channelCount {
+            Logger.debug("Reconnecting player node for new channel count \(bufferToUse.format.channelCount)")
+            audioEngine.disconnectNodeOutput(playerNode)
+            audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: bufferToUse.format)
+            play()
+        }
+        
+        if(shouldInterrupt) {
+            playerNode.scheduleBuffer(bufferToUse, atTime: nil, options: AVAudioPlayerNodeBufferOptions.Interrupts, completionHandler: completionHandler)
+        } else {
+            playerNode.scheduleBuffer(bufferToUse, completionHandler: completionHandler)
         }
     }
     

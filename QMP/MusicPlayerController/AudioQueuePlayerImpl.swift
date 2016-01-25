@@ -325,19 +325,32 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
 
     private func loadMediaItem(mediaItem:AudioTrack) {
-        guard let url:NSURL = mediaItem.assetURL else {
-            Logger.error("cannot play audio track because assetURL is null")
-            return
+        func handleError() {
+            if repeatMode == .One {
+                repeatMode = .Off
+            }
+            skipForwards()
         }
         
-        let audioPlayerDidLoadItem = audioController.loadItem(url)
-        if(!audioPlayerDidLoadItem) { return }
-        
-        if(shouldPlayAfterLoading) {
-            play()
-            nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
+        do {
+            guard let url:NSURL = mediaItem.assetURL else {
+                throw NSError(domain: "Kyooz", code: 1, userInfo: [NSLocalizedDescriptionKey:"No URL found"])
+            }
+            
+            try audioController.loadItem(url)
+            
+            if(shouldPlayAfterLoading) {
+                play()
+                nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
+            }
+            publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        } catch let error as NSError {
+            Logger.error("Could not load play track because of error [\(error.localizedDescription)] so skipping to next track")
+            handleError()
+        } catch {
+            Logger.error("Unknown error occured when loading media item")
+            handleError()
         }
-        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
     }
     
     func advanceToNextTrack(shouldLoadAfterUpdate:Bool) {
