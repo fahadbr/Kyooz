@@ -11,7 +11,7 @@ import MediaPlayer
 
 extension MPMediaItem : AudioTrack {
     
-    var trackTitle:String! { return title }
+    var trackTitle:String { return title ?? "Error: track not found" }
     var id:UInt64 { return persistentID }
     var albumArtistId:UInt64 { return albumArtistPersistentID }
     var albumId:UInt64 { return albumPersistentID }

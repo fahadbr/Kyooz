@@ -68,7 +68,8 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
-        collapsedBarLayoutGuide.topAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -55).active = true
+//        collapsedBarLayoutGuide.topAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -55).active = true
+        collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(55).active = true
         collapsedBarLayoutGuide.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
         collapsedBarLayoutGuide.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         collapsedBarLayoutGuide.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
@@ -202,7 +203,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         guard let warningVC = self.warningViewController else {
             return
         }
-        warningViewController = nil
         
         guard let heightConstraint = warningVC.view.constraints.filter({
             return $0.firstAttribute == NSLayoutAttribute.Height && $0.firstItem === warningVC.view && $0.secondItem == nil
@@ -212,6 +212,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         UIView.animateWithDuration(0.15, delay: 0, options: .CurveEaseInOut, animations: { self.view.layoutIfNeeded() }, completion: {_ in
             warningVC.view.removeFromSuperview()
             self.lncBottomConstraint.active = true
+            self.warningViewController = nil
         })
     }
     
