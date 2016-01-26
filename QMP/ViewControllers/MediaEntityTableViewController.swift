@@ -106,7 +106,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     
     
     // MARK: - Table view data source and delegate methods
-    //MARK: header configuration
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let sections = self.sections else {
             return nil
@@ -149,8 +148,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
         return titles
     }
-    
-    
+	
     func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         //this synchronizes the parent scroll view with the table view after a section index has been selected
         //doing this asynchronously because the tableView's contentOffset is not updated until after this method is called
@@ -205,8 +203,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         //go to specific album track view controller if we are selecting an album collection
         ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
     }
-    
-    
+	
     //MARK: - Private functions
     
     private func startPlayingWithItemAtIndex(indexPath:NSIndexPath) {
@@ -254,7 +251,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         
         return absoluteIndex
     }
-    
     
     //MARK: - Overriding MediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
