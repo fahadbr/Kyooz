@@ -114,8 +114,8 @@
 		0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917471BF8F36A001AC802 /* KyoozUtils.swift */; };
 		100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BC41C54423B009FAB17 /* KyoozTests.swift */; };
 		100A8BCF1C56EF75009FAB17 /* PlaylistDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */; };
-		100A8BD11C56F35D009FAB17 /* KyoozPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD01C56F35D009FAB17 /* KyoozPlaylist.swift */; };
 		100A8BD31C56F8DE009FAB17 /* KyoozPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD21C56F8DE009FAB17 /* KyoozPlaylistManager.swift */; };
+		100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD41C583695009FAB17 /* DataPersistenceError.swift */; };
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
@@ -248,8 +248,8 @@
 		100A8BC41C54423B009FAB17 /* KyoozTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyoozTests.swift; sourceTree = "<group>"; };
 		100A8BC61C54423B009FAB17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDatasource.swift; sourceTree = "<group>"; };
-		100A8BD01C56F35D009FAB17 /* KyoozPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozPlaylist.swift; sourceTree = "<group>"; };
 		100A8BD21C56F8DE009FAB17 /* KyoozPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozPlaylistManager.swift; sourceTree = "<group>"; };
+		100A8BD41C583695009FAB17 /* DataPersistenceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPersistenceError.swift; sourceTree = "<group>"; };
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
@@ -358,9 +358,10 @@
 			isa = PBXGroup;
 			children = (
 				0BF917421BF7FD83001AC802 /* Search */,
-				0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */,
+				100A8BD41C583695009FAB17 /* DataPersistenceError.swift */,
 				0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */,
 				100A8BD21C56F8DE009FAB17 /* KyoozPlaylistManager.swift */,
+				0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */,
 			);
 			name = DataAccess;
 			path = Persistence;
@@ -434,7 +435,6 @@
 				0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */,
 				0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */,
 				0B4E600B1C2DBC7800BB9D77 /* RepeatState.swift */,
-				100A8BD01C56F35D009FAB17 /* KyoozPlaylist.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -805,7 +805,6 @@
 				0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */,
 				0B7776811BFC078A00B9A088 /* MPMediaItemCollectionExtension.swift in Sources */,
 				0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */,
-				100A8BD11C56F35D009FAB17 /* KyoozPlaylist.swift in Sources */,
 				10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */,
 				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
 				0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */,
@@ -844,6 +843,7 @@
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
 				0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioTrackEntity.swift in Sources */,
+				100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */,
 				0B13DA1B1AE6FA9A00CC5C01 /* ImageTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
