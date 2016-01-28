@@ -106,23 +106,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     
     
     // MARK: - Table view data source and delegate methods
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let sections = self.sections else {
-            return nil
-        }
-        
-        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
-            return nil
-        }
-        view.initializeHeaderView()
-        
-        if let headerView = view.headerView {
-            headerView.headerTitleLabel.text = sections[section].title
-            headerView.disclosureContainerView.hidden = true
-        }
-        return view
-    }
-    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         guard let sections = self.sections else {
             return 1
@@ -185,7 +168,24 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         
         return cell
     }
-    
+	
+	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		guard let sections = self.sections else {
+			return nil
+		}
+		
+		guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
+			return nil
+		}
+		view.initializeHeaderView()
+		
+		if let headerView = view.headerView {
+			headerView.headerTitleLabel.text = sections[section].title
+			headerView.disclosureContainerView.hidden = true
+		}
+		return view
+	}
+	
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if tableView.editing {
             super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
