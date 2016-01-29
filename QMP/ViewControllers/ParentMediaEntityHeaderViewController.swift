@@ -33,8 +33,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
     
-    var libraryGroupingType:LibraryGrouping! = LibraryGrouping.Artists
-    var filterQuery:MPMediaQuery! = LibraryGrouping.Artists.baseQuery
+    var libraryGroupingType:LibraryGrouping = LibraryGrouping.Artists
+    var filterQuery:MPMediaQuery = LibraryGrouping.Artists.baseQuery
     
     @IBOutlet var headerView:UIView!
     @IBOutlet var scrollView:UIScrollView!
@@ -140,7 +140,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     override func reloadAllData() {
         super.reloadAllData()
         if tableView.editing {
-            selectedIndicies.removeAll()
+            selectedIndicies?.removeAll()
         }
         calculateContentSize()
     }

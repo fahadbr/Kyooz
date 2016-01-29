@@ -12,9 +12,20 @@ final class KyoozPlaylistManager {
 	
 	static let instance = KyoozPlaylistManager()
 	
-	static let listDirectory:String = KyoozUtils.libraryDirectory.stringByAppendingPathComponent("kyoozPlaylists")
+	private static let listDirectory:String = KyoozUtils.libraryDirectory.stringByAppendingPathComponent("kyoozPlaylists")
 	
-	private lazy var playlistsSet:NSMutableOrderedSet = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) as? NSMutableOrderedSet ?? NSMutableOrderedSet()
+    private lazy var playlistsSet:NSMutableOrderedSet = {
+        guard let object = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) else {
+            Logger.error("couldnt find playlist set in list directory")
+            return NSMutableOrderedSet()
+        }
+        
+        guard let set = object as? NSMutableOrderedSet else {
+            Logger.error("object is not a mutable set")
+            return NSMutableOrderedSet()
+        }
+        return set
+    }()
 	
 	var playlists:NSOrderedSet {
 		return playlistsSet
@@ -22,18 +33,29 @@ final class KyoozPlaylistManager {
 	
 	func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
 		playlist.count = tracks.count
-		guard NSKeyedArchiver.archiveRootObject(tracks as NSArray, toFile: playlist.name) else {
-			throw DataPersistenceError(errorDescription: "failed to persist the tracks for playlist \(playlist.name)")
+        playlistsSet.addObject(playlist)
+        
+		guard NSKeyedArchiver.archiveRootObject(tracks as NSArray, toFile: KyoozUtils.libraryDirectory.stringByAppendingPathComponent(playlist.name)) else {
+			throw DataPersistenceError(errorDescription: "Failed to save the tracks for playlist \(playlist.name)")
 		}
 		
 		guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory) else {
-			throw DataPersistenceError(errorDescription: "failed update track count for playlist \(playlist.name)")
+			throw DataPersistenceError(errorDescription: "Failed update playlist master file for playlist \(playlist.name)")
 		}
 		
-		playlistsSet.addObject(playlist)
+
+        Logger.debug("saved playlist with name \(playlist.name)")
 	}
 	
-	
+    func deletePlaylist(playlist:KyoozPlaylist) throws {
+        try NSFileManager.defaultManager().removeItemAtPath(KyoozUtils.libraryDirectory.stringByAppendingPathComponent(playlist.name))
+        playlistsSet.removeObject(playlist)
+        guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory) else {
+            playlistsSet.addObject(playlist)
+            throw DataPersistenceError(errorDescription: "Failed update playlist master file for playlist \(playlist.name)")
+        }
+        Logger.debug("deleted playlist \(playlist.name)")
+    }
 }
 
 final class KyoozPlaylist : NSObject, NSSecureCoding {
@@ -52,9 +74,17 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	override var hashValue:Int {
 		return name.hashValue
 	}
+    
+    override func isEqual(object: AnyObject?) -> Bool {
+        guard let otherPlaylist = object as? KyoozPlaylist else {
+            return false
+        }
+        return otherPlaylist.hash == hash
+    }
+    
 	
 	let name:String
-	private var count:Int = 0
+	private (set) var count:Int = 0
 	
 	init(name:String) {
 		self.name = name
@@ -70,6 +100,10 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 		count = aDecoder.decodeIntegerForKey(KyoozPlaylist.countKey)
 		name = persistedName
 	}
+    
+    func getTracks() -> [AudioTrack] {
+        return NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozUtils.libraryDirectory.stringByAppendingPathComponent(name)) as? [AudioTrack] ?? [AudioTrack]()
+    }
 	
 	func encodeWithCoder(aCoder: NSCoder) {
 		aCoder.encodeObject(name, forKey: KyoozPlaylist.nameKey)
@@ -77,3 +111,9 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	}
 	
 }
+
+func ==(lhs:KyoozPlaylist, rhs:KyoozPlaylist) -> Bool {
+    return lhs.hash == rhs.hash
+}
+
+

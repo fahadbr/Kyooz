@@ -28,9 +28,12 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     private var titleLabel:UILabel!
     
     private var kvoContext:NSNumber = NSNumber(char: 10)
+    private var observingHeaderView = false
     
     deinit {
-        headerView.removeObserver(self, forKeyPath: alphaKey)
+        if observingHeaderView {
+            headerView.removeObserver(self, forKeyPath: alphaKey)
+        }
     }
     
     override func viewDidLoad() {
@@ -99,6 +102,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         }
         
         headerView.addObserver(self, forKeyPath: alphaKey, options: .New, context: &kvoContext)
+        observingHeaderView = true
     }
     
 
