@@ -31,6 +31,8 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     private (set) var isBaseLevel:Bool = true
+    
+    private var playlistDatasource:PlaylistDatasource?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -228,6 +230,22 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
             return
         }
         self.entities = entities
+        
+        if libraryGroupingType == LibraryGrouping.Playlists {
+            guard let playlists = entities as? [MPMediaPlaylist] else {
+                return
+            }
+            let playlistDS = PlaylistDatasource(itunesLibraryPlaylists: playlists, mediaEntityTVC: self)
+            tableView.dataSource = playlistDS
+            tableView.delegate = playlistDS
+            playlistDatasource = playlistDS
+            return
+        } else {
+            playlistDatasource = nil
+            tableView.dataSource = self
+            tableView.delegate = self
+        }
+        
         if entities.count >= 15 {
             guard let sections = libraryGroupingType === LibraryGrouping.Songs ? filterQuery.itemSections : filterQuery.collectionSections else {
                 Logger.debug("No sections found for query \(filterQuery)")
@@ -254,6 +272,10 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     
     //MARK: - Overriding MediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+        if libraryGroupingType == LibraryGrouping.Playlists && indexPath.section == 1 {
+            return playlistDatasource?.getMediaItemsFromKyoozPlaylistAtIndex(indexPath.row) ?? [AudioTrack]()
+        }
+        
         let absoluteIndex = getAbsoluteIndex(indexPath: indexPath)
         if absoluteIndex < entities!.count {
             let entity = entities![absoluteIndex]
@@ -266,5 +288,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
         return [AudioTrack]()
     }
+
     
 }

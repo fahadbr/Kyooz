@@ -194,7 +194,13 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="QUEUE" id="TBa-Zq-QGg"/>
+                    <navigationItem key="navigationItem" title="QUEUE" id="TBa-Zq-QGg">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="eiF-B4-tcI">
+                            <connections>
+                                <action selector="saveCurrentQueueAsPlaylist:" destination="A5d-sE-21l" id="kUX-ug-hWd"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>

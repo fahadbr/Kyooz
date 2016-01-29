@@ -131,6 +131,37 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func saveCurrentQueueAsPlaylist(sender:AnyObject?) {
+        let ac = UIAlertController(title: "Save as Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
+        ac.addTextFieldWithConfigurationHandler() { (textField) -> Void in
+            
+        }
+        let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+            guard let text = ac.textFields?.first?.text else {
+                Logger.error("No name found")
+                return
+            }
+            let queue = self.audioQueuePlayer.nowPlayingQueue
+            do {
+                try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: queue)
+            } catch let error as DataPersistenceError {
+                let errorAC = UIAlertController(title: "Failed to save playlist with name \(text)", message: error.errorDescription, preferredStyle: .Alert)
+                errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
+                self.presentViewController(errorAC, animated: true, completion: nil)
+            } catch {
+                let errorAC = UIAlertController(title: "Failed to save playlist with name \(text)", message: "Unknown error", preferredStyle: .Alert)
+                errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
+                self.presentViewController(errorAC, animated: true, completion: nil)
+            }
+            
+        })
+        ac.addAction(saveAction)
+        ac.preferredAction = saveAction
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(ac, animated: true, completion: nil)
+        
+    }
+    
     @IBAction func confirmDelete(sender:AnyObject?) {
         let title = tableView.editing ? "Remove the \(indexPathsToDelete?.count ?? 0) selected tracks?" : "Remove the entire queue?"
         showConfirmDeleteAlertController(title) {
