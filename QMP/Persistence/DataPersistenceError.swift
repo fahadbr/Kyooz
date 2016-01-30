@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct DataPersistenceError : ErrorType {
+struct DataPersistenceError : KyoozErrorProtocol {
 	
 	let errorDescription:String
 	
