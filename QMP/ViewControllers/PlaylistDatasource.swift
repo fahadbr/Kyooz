@@ -127,6 +127,7 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
                 } else {
                     Logger.debug("error while deleting \((error as NSError).localizedDescription)")
                 }
+				tableView.editing = false
                 return
             }
             tableView.beginUpdates()

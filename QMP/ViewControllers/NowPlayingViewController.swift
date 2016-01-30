@@ -144,14 +144,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
             let queue = self.audioQueuePlayer.nowPlayingQueue
             do {
                 try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: queue)
-            } catch let error as DataPersistenceError {
-                let errorAC = UIAlertController(title: "Failed to save playlist with name \(text)", message: error.errorDescription, preferredStyle: .Alert)
-                errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-                self.presentViewController(errorAC, animated: true, completion: nil)
-            } catch {
-                let errorAC = UIAlertController(title: "Failed to save playlist with name \(text)", message: "Unknown error", preferredStyle: .Alert)
-                errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-                self.presentViewController(errorAC, animated: true, completion: nil)
+            } catch let error {
+				KyoozUtils.showPopupError(withTitle: "Failed to save playlist with name \(text)", withMessage: (error as? KyoozErrorProtocol)?.errorDescription ?? "Unkown Error", presentationVC: self)
             }
             
         })

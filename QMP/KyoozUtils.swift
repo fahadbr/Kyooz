@@ -6,7 +6,7 @@
 //  Copyright © 2015 FAHAD RIAZ. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct KyoozUtils {
 	
@@ -58,5 +58,11 @@ struct KyoozUtils {
         let endTime = CFAbsoluteTimeGetCurrent()
         Logger.debug("Took \(endTime - startTime) seconds to perform \(description)")
     }
-    
+	
+	static func showPopupError(withTitle title:String, withMessage message:String, presentationVC:UIViewController) {
+		let errorAC = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+		errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
+		presentationVC.presentViewController(errorAC, animated: true, completion: nil)
+	}
+	
 }
