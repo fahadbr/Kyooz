@@ -57,7 +57,7 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
         switch indexPath.section {
         case 0:
             let entity = itunesLibraryPlaylists[indexPath.row]
-            audioCell.configureCellForItems(entity, mediaGroupingType: MPMediaGrouping.Playlist)
+            audioCell.configureCellForItems(entity, libraryGrouping: LibraryGrouping.Playlists)
         case 1:
             guard let playlist = kyoozPlaylists.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
                 return audioCell
@@ -119,14 +119,11 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
+            let playlist = kyoozPlaylists[indexPath.row] as! KyoozPlaylist
             do {
-                try kyoozPlaylistManager.deletePlaylist(kyoozPlaylists[indexPath.row] as! KyoozPlaylist)
+                try kyoozPlaylistManager.deletePlaylist(playlist)
             } catch let error {
-                if let dataError = error as? DataPersistenceError {
-                    Logger.debug("error while deleting \(dataError.errorDescription)")
-                } else {
-                    Logger.debug("error while deleting \((error as NSError).localizedDescription)")
-                }
+                KyoozUtils.showPopupError(withTitle: "Could not delete playlist \"\(playlist.name)\"", withMessage: "Error Message: \((error as? KyoozErrorProtocol)?.errorDescription ?? "Unknown Error")", presentationVC: mediaEntityTVC)
 				tableView.editing = false
                 return
             }

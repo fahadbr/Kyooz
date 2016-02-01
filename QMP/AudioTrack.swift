@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-@objc protocol AudioTrack : NSSecureCoding {
+@objc protocol AudioTrack : AudioEntity {
     
     var albumArtist:String! { get }
     var albumArtistId:UInt64 { get }
@@ -23,6 +23,8 @@ import MediaPlayer
     var trackTitle:String! { get }
     var artwork:MPMediaItemArtwork! { get }
     var audioTrackSource:AudioTrackSource { get }
+    var isCloudTrack:Bool { get }
+    var genre:String? { get }
     
     func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
     

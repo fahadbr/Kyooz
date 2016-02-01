@@ -151,7 +151,25 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     }
     
     
-    @IBAction final func toggleSelectMode(sender:UIButton?) {
+    @IBAction func toggleSelectMode(sender:UIButton?) {
+        createToolbarItems()
+        
+        let willEdit = !tableView.editing
+        if willEdit {
+            selectedIndicies = [NSIndexPath]()
+            sender?.setTitle("CANCEL", forState: .Normal)
+        } else {
+            selectedIndicies = nil
+            sender?.setTitle("SELECT", forState: .Normal)
+        }
+        
+        tableView.setEditing(willEdit, animated: true)
+        RootViewController.instance.setToolbarHidden(!willEdit)
+        
+        refreshButtonStates()
+    }
+    
+    func createToolbarItems() {
         if toolbarItems == nil || toolbarItems!.isEmpty {
             selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
             playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
@@ -168,20 +186,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
             
             toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
         }
-        
-        let willEdit = !tableView.editing
-        if willEdit {
-            selectedIndicies = [NSIndexPath]()
-            sender?.setTitle("CANCEL", forState: .Normal)
-        } else {
-            selectedIndicies = nil
-            sender?.setTitle("SELECT", forState: .Normal)
-        }
-        
-        tableView.setEditing(willEdit, animated: true)
-        RootViewController.instance.setToolbarHidden(!willEdit)
-        
-        refreshButtonStates()
     }
     
     private func refreshButtonStates() {

@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-final class LibraryGrouping : Hashable {
+final class LibraryGrouping : NSObject {
     
     static let Songs = LibraryGrouping(name: "SONGS",
         groupingType:MPMediaGrouping.Title)
@@ -46,7 +46,7 @@ final class LibraryGrouping : Hashable {
     let nextGroupLevel:LibraryGrouping?
     let subGroupsForNextLevel:[LibraryGrouping]
     
-    var hashValue:Int {
+    override var hashValue:Int {
         return name.hashValue
     }
     

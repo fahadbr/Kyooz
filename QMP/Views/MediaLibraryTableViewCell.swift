@@ -38,17 +38,18 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         titleLabel.font = ThemeHelper.defaultFont
-        detailsLabel.textColor = UIColor.lightGrayColor()
-        cloudLabel.textColor = UIColor.lightGrayColor()
-        drmLabel.textColor = UIColor.lightGrayColor()
+        let color = UIColor.lightGrayColor()
+        detailsLabel.textColor = color
+        cloudLabel.textColor = color
+        drmLabel.textColor = color
     }
     
     @IBAction func menuButtonPressed(sender:UIButton!) {
         delegate?.presentActionsForIndexPath(indexPath, title: titleLabel.text, details: detailsLabel.text)
     }
     
-    final func configureDRMAndCloudLabels(item:MPMediaItem) {
-        let cloudHidden = !item.cloudItem
+    final func configureDRMAndCloudLabels(item:AudioTrack) {
+        let cloudHidden = !item.isCloudTrack
         let drmHidden = !cloudHidden || item.assetURL != nil //hide DRM label when either showing the cloud item or if its not cloud and not drm
         
         cloudLabel.hidden = cloudHidden

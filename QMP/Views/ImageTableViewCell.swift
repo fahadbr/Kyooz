@@ -16,13 +16,13 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
     @IBOutlet weak var albumArtwork: UIImageView!
 
     
-    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
+    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
-        titleLabel.text = entity.titleForGrouping(mediaGroupingType)
+        titleLabel.text = entity.titleForGrouping(libraryGrouping)
         
         let pluralText = entity.count > 1 ? "s" : ""
         var text = "\(entity.count) Track\(pluralText)"
-        if let mediaItem = entity.representativeItem {
+        if let mediaItem = entity.representativeItem as? MPMediaItem {
             if let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
                 text = text + " • \(releaseDate)"
             }

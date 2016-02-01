@@ -16,7 +16,7 @@ protocol ConfigurableAudioTableCell : class {
     var indexPath:NSIndexPath! { get set }
     var isNowPlayingItem:Bool { get set }
     
-    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping)
+    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping)
 
 }
 

@@ -13,18 +13,18 @@ final class MediaCollectionTableViewCell: MediaLibraryTableViewCell, Configurabl
 
     static let reuseIdentifier = "mediaEntityCellIdentifier"
     
-    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
+    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
-        titleLabel.text =  entity.titleForGrouping(mediaGroupingType)
+        titleLabel.text =  entity.titleForGrouping(libraryGrouping)
         if let mediaItem = entity as? MPMediaItem {
-            let artist:String = mediaItem.artist == nil ?  "" : mediaItem.artist!
-            let album:String = mediaItem.albumTitle == nil ?  "" : mediaItem.albumTitle!
+            let artist:String = mediaItem.artist ?? ""
+            let album:String = mediaItem.albumTitle ?? ""
             detailsLabel.text = "\(artist) - \(album)"
             configureDRMAndCloudLabels(mediaItem)
         } else {
             let pluralText = entity.count > 1 ? "s" : ""
             detailsLabel?.text = "\(entity.count) Track\(pluralText)"
-            if let mediaItem = entity.representativeItem {
+            if let mediaItem = entity.representativeTrack {
                 configureDRMAndCloudLabels(mediaItem)
             }
         }

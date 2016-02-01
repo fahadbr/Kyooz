@@ -151,8 +151,8 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         let entity = entities[getAbsoluteIndex(indexPath: indexPath)]
         
         
-        if let audioCell = cell as? ConfigurableAudioTableCell {
-            audioCell.configureCellForItems(entity, mediaGroupingType: libraryGroupingType.groupingType)
+        if let audioCell = cell as? ConfigurableAudioTableCell, let audioEntity = entity as? AudioEntity {
+            audioCell.configureCellForItems(audioEntity, libraryGrouping: libraryGroupingType)
             audioCell.isNowPlayingItem = false
             audioCell.indexPath = indexPath
             audioCell.delegate = self
@@ -165,7 +165,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
                 }
             }
         } else {
-            cell.textLabel?.text = title
+            cell.textLabel?.text = entity.representativeItem?.trackTitle
         }
         
         return cell

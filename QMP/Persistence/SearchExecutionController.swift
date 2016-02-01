@@ -106,9 +106,8 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController<MPM
         self.searchIndex = nil
         if let values:[MPMediaEntity] = libraryGroup == LibraryGrouping.Songs ? libraryGroup.baseQuery.items : libraryGroup.baseQuery.collections {
             let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
-            let groupingType = libraryGroup.groupingType
             let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:MPMediaEntity) -> (String, String) in
-                if let primaryKey = entity.titleForGrouping(groupingType)?.normalizedString {
+                if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
                     return (titlePropertyName, primaryKey)
                 }
                 return (titlePropertyName,"null")

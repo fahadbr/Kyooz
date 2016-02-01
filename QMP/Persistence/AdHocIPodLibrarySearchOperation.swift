@@ -49,7 +49,7 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEn
         let title = MPMediaItem.titlePropertyForGroupingType(group.groupingType)
         for i in startIndex...endIndex {
             let value = entities[i]
-            guard let primaryKey = value.titleForGrouping(group.groupingType)?.normalizedString else {
+            guard let primaryKey = value.titleForGrouping(group)?.normalizedString else {
                 continue
             }
             if searchPredicate.evaluateWithObject(SearchIndexEntry(object: value, primaryKeyValue: (title,primaryKey))) {
@@ -67,7 +67,7 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEn
         //now do a full library search
         var secondaryResults = [MPMediaEntity]()
         for entity in entities {
-            guard let primaryKey = entity.titleForGrouping(group.groupingType)?.normalizedString else {
+            guard let primaryKey = entity.titleForGrouping(group)?.normalizedString else {
                 continue
             }
             if searchPredicate.evaluateWithObject(SearchIndexEntry(object: entity, primaryKeyValue: (title,primaryKey))) {
