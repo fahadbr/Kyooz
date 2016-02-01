@@ -32,9 +32,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
 //    }()
     
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
-    
-    var libraryGroupingType:LibraryGrouping = LibraryGrouping.Artists
-    var filterQuery:MPMediaQuery = LibraryGrouping.Artists.baseQuery
+	
+	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
     
     @IBOutlet var headerView:UIView!
     @IBOutlet var scrollView:UIScrollView!
@@ -261,8 +260,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     }
     
     private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {
-        KyoozUtils.doInMainQueueAsync() { [audioQueuePlayer = self.audioQueuePlayer, filterQuery = self.filterQuery] in
-            if let items = filterQuery.items where !items.isEmpty {
+        KyoozUtils.doInMainQueueAsync() { [audioQueuePlayer = self.audioQueuePlayer, sourceData = self.sourceData] in
+            if let items = (sourceData as? MediaQuerySourceData)?.filterQuery.items where !items.isEmpty {
                 audioQueuePlayer.playNow(withTracks: items, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: items.count):0, shouldShuffleIfOff: shouldShuffle)
             }
         }

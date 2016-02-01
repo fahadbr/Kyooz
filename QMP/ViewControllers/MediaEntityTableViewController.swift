@@ -91,12 +91,11 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     func groupingTypeDidChange(sender:UISegmentedControl) {
         let index = sender.selectedSegmentIndex
         let selectedGroup = subGroups[index]
-        libraryGroupingType = selectedGroup
         
         if isBaseLevel {
-            filterQuery = libraryGroupingType.baseQuery
+            sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
         } else {
-            filterQuery.groupingType = selectedGroup.groupingType
+            sourceData.libraryGrouping = selectedGroup
         }
         
         reloadAllData()
