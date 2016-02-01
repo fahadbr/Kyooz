@@ -119,6 +119,7 @@
 		100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD41C583695009FAB17 /* DataPersistenceError.swift */; };
 		100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */; };
 		100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */; };
+		100A8BDB1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */; };
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
@@ -256,6 +257,7 @@
 		100A8BD41C583695009FAB17 /* DataPersistenceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPersistenceError.swift; sourceTree = "<group>"; };
 		100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozErrorProtocol.swift; sourceTree = "<group>"; };
 		100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSErrorExtension.swift; sourceTree = "<group>"; };
+		100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioCollectionTVDelegate.swift; sourceTree = "<group>"; };
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
@@ -527,6 +529,7 @@
 			children = (
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
 				0BC3179C1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift */,
+				100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */,
 				0BC317A01C5D8F66002BF431 /* AudioTrackTVDelegate.swift */,
 				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift */,
 				0B179D5B1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift */,
@@ -768,6 +771,7 @@
 			files = (
 				0BCA194E1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift in Sources */,
 				0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */,
+				100A8BDB1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,

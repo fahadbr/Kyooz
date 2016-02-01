@@ -65,7 +65,7 @@ final class MediaQuerySourceData :  AudioEntitySourceData {
     private var _sectionNames:[String]?
     
     private var sections:[MPMediaQuerySection]?
-    private var filterQuery:MPMediaQuery
+    private (set) var filterQuery:MPMediaQuery
     
     init(filterQuery:MPMediaQuery, libraryGrouping:LibraryGrouping) {
         self.filterQuery = filterQuery
