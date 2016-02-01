@@ -170,14 +170,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             if IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.id)) == nil {
                 var name = parentGroup.name.capitalizedString
                 name.removeAtIndex(name.endIndex.predecessor())
-                let ac = UIAlertController(title: "Track Not Found In Library", message: "Kyooz can't show details about this track's \(name) because it's not in your music library.", preferredStyle: .Alert)
-                ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-                presentViewController(ac, animated: true, completion: nil)
+                KyoozUtils.showPopupError(withTitle: "Track Not Found In Library",
+                    withMessage: "Kyooz can't show details about this track's \(name) because it's not in your music library.",
+                    presentationVC: self)
                 return
             }
         }
         
-        let title = entity.titleForGrouping(parentGroup.groupingType)
+        let title = entity.titleForGrouping(parentGroup)
         let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentGroup.groupingType)
         let propertyValue:AnyObject?
         if let playlist = entity as? MPMediaPlaylist {

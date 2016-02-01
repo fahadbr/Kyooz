@@ -13,8 +13,6 @@ private let alphaKey = "alpha"
 
 final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController {
     
-    var albumCollection:MPMediaItemCollection!
-    
     @IBOutlet var albumImageView: UIImageView!
     
     @IBOutlet var albumTitleLabel: UILabel!
@@ -30,6 +28,19 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     private var kvoContext:NSNumber = NSNumber(char: 10)
     private var observingHeaderView = false
     
+    
+    private var sourceData:AudioEntitySourceData!
+    private var dataSource:UITableViewDataSource! {
+        didSet {
+            tableView.dataSource = dataSource
+        }
+    }
+    private var delegate:UITableViewDelegate! {
+        didSet {
+            tableView.delegate = delegate
+        }
+    }
+    
     deinit {
         if observingHeaderView {
             headerView.removeObserver(self, forKeyPath: alphaKey)
@@ -37,10 +48,14 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     }
     
     override func viewDidLoad() {
+        sourceData = MediaQuerySourceData(filterQuery: filterQuery, libraryGrouping: LibraryGrouping.Songs)
+        dataSource = AudioEntityTVDataSource(sourceData: sourceData, reuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier, audioCellDelegate: self)
+        delegate = AudioTrackTVDelegate(sourceData: sourceData)
+        
         super.viewDidLoad()
         self.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
         
-        guard let track = albumCollection.representativeItem else {
+        guard let track = sourceData.entities.first?.representativeTrack else {
             Logger.debug("couldnt get representative item for album collection")
             return
         }
@@ -59,13 +74,13 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         albumArtistLabel.text = track.albumArtist ?? track.artist
         
         var details = [String]()
-        if let releaseDate = MediaItemUtils.getReleaseDateString(track) {
+        if let mediaItem = track as? MPMediaItem, let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
             details.append(releaseDate)
         }
         if let genre = track.genre {
             details.append(genre)
         }
-        details.append("\(albumCollection.count) Tracks")
+        details.append("\(sourceData.entities.count) Tracks")
         
         albumDetailsLabel.text = details.joinWithSeparator(" • ")
         albumDetailsLabel.textColor = UIColor.lightGrayColor()
@@ -87,7 +102,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         KyoozUtils.doInMainQueueAsync() { [weak self] in
             self?.titleLabel.alpha = 0 //doing this here because for some reason it wont take effect when done synchronously with setting the navigation item
             
-            if let items = self?.albumCollection?.items {
+            if let items = self?.sourceData.entities as? [AudioTrack] {
                 var duration:NSTimeInterval = 0
                 for item in items {
                     duration += item.playbackDuration
@@ -105,62 +120,33 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         observingHeaderView = true
     }
     
+    @IBAction override func toggleSelectMode(sender: UIButton?) {
 
-    // MARK: - Table view data source
-
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return albumCollection.count
-    }
-    
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(AlbumTrackTableViewCell.reuseIdentifier, forIndexPath: indexPath) as? AlbumTrackTableViewCell else {
-            return UITableViewCell()
-        }
-
-        let track = albumCollection.items[indexPath.row]
-        cell.configureCellForItems(track, mediaGroupingType: .Title)
-        cell.indexPath = indexPath
-        cell.delegate = self
-        
-        if let currentTrack = audioQueuePlayer.nowPlayingItem {
-            cell.isNowPlayingItem = (currentTrack.id == track.id)
-        }
-
-        return cell
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if tableView.editing {
-            super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
-            return
+        let willEdit = !tableView.editing
+        if willEdit {
+            let delegate = AudioEntitySelectorTVDelegate(sourceData: sourceData, tableView: tableView)
+            toolbarItems = delegate.toolbarItems
+            sender?.setTitle("CANCEL", forState: .Normal)
+            self.delegate = delegate
+        } else {
+            sender?.setTitle("SELECT", forState: .Normal)
+            self.delegate = AudioTrackTVDelegate(sourceData: sourceData)
         }
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        audioQueuePlayer.playNow(withTracks: albumCollection.items, startingAtIndex: indexPath.row, shouldShuffleIfOff: false)
+        tableView.setEditing(willEdit, animated: true)
+        RootViewController.instance.setToolbarHidden(!willEdit)
+
     }
     
 
     //MARK: - Overriding MediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        if albumCollection.count > 0 {
-            let mediaItem = albumCollection.items[indexPath.row]
-            return [mediaItem]
-        }
-        return [AudioTrack]()
+        return sourceData.getTracksAtIndex(indexPath)
     }
     
     
     override func reloadSourceData() {
-        if let mediaItems = filterQuery.items {
-            albumCollection = MPMediaItemCollection(items: mediaItems)
-        } else {
-            Logger.error("Could not find items for query \(filterQuery.description)")
-        }
+        sourceData?.reloadSourceData()
     }
     
     //MARK: KVO

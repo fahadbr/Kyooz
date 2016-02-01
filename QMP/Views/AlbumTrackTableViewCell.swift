@@ -24,8 +24,8 @@ final class AlbumTrackTableViewCell: MediaLibraryTableViewCell, ConfigurableAudi
         shouldHideAccessoryStack = false
     }
     
-    func configureCellForItems(entity:MPMediaEntity, mediaGroupingType:MPMediaGrouping) {
-        guard let mediaItem = entity as? MPMediaItem else {
+    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+        guard let mediaItem = entity as? AudioTrack else {
             return
         }
         

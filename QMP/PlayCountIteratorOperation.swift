@@ -23,14 +23,12 @@ final class PlayCountIteratorOperation: NSOperation {
         super.init()
     }
     
-    deinit {
-        Logger.debug("deinit of playcount op")
-    }
+//    deinit {
+//        Logger.debug("deinit of playcount op")
+//    }
     
     override func main() {
-        KyoozUtils.performWithMetrics(blockDescription: "iterateThroughPlaycounts") {
-            self.iterateThroughPlaycounts()
-        }
+        iterateThroughPlaycounts()
     }
     
     private func iterateThroughPlaycounts() {

@@ -109,12 +109,12 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
             return UITableViewCell()
         }
         let entity = searchExecutor.searchResults[indexPath.row]
-        if let configurableCell = cell as? ConfigurableAudioTableCell {
-            configurableCell.configureCellForItems(entity, mediaGroupingType: group.groupingType)
+        if let configurableCell = cell as? ConfigurableAudioTableCell, let audioEntity = entity as? AudioEntity {
+            configurableCell.configureCellForItems(audioEntity, libraryGrouping: group)
             configurableCell.indexPath = indexPath
             configurableCell.delegate = self
         } else {
-            cell.textLabel?.text = entity.titleForGrouping(group.groupingType)
+            cell.textLabel?.text = entity.titleForGrouping(group)
         }
         
         return cell
