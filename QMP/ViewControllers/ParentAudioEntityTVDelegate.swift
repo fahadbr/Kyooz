@@ -25,7 +25,7 @@ class ParentAudioEntityTVDelegate : NSObject, UITableViewDelegate {
         view.initializeHeaderView()
         
         if let headerView = view.headerView {
-            headerView.headerTitleLabel.text = sourceData.sectionNames[section]
+            headerView.headerTitleLabel.text = sourceData.sectionNames?[section]
             headerView.disclosureContainerView.hidden = true
         }
         return view

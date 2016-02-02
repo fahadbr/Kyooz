@@ -34,7 +34,17 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
-    
+	var dataSource:UITableViewDataSource! {
+		didSet {
+			tableView.dataSource = dataSource
+		}
+	}
+	var delegate:UITableViewDelegate! {
+		didSet {
+			tableView.delegate = delegate
+		}
+	}
+	
     @IBOutlet var headerView:UIView!
     @IBOutlet var scrollView:UIScrollView!
     

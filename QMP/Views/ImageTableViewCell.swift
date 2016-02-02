@@ -22,7 +22,7 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
         
         let pluralText = entity.count > 1 ? "s" : ""
         var text = "\(entity.count) Track\(pluralText)"
-        if let mediaItem = entity.representativeItem as? MPMediaItem {
+        if let mediaItem = entity.representativeTrack as? MPMediaItem {
             if let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
                 text = text + " • \(releaseDate)"
             }
@@ -30,7 +30,7 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
         }
         detailsLabel.text = text
         KyoozUtils.doInMainQueueAsync() {
-            let albumArtworkTemp = entity.representativeItem?.artwork?.imageWithSize(self.albumArtwork.frame.size)
+            let albumArtworkTemp = entity.representativeTrack?.artwork?.imageWithSize(self.albumArtwork.frame.size)
             if(albumArtworkTemp == nil) {
                 self.albumArtwork?.image = ImageContainer.defaultAlbumArtworkImage
             } else {
