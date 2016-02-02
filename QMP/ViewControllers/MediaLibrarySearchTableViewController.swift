@@ -170,9 +170,11 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         }
         
         (presentingViewController as? UINavigationController)?.popToRootViewControllerAnimated(false)
-        
-        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: group.nextGroupLevel!.baseQuery.filterPredicates, parentGroup: group, entity: entity)
-        
+		
+		if let audioEntity = entity as? AudioEntity {
+			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: group.nextGroupLevel!.baseQuery.filterPredicates, parentGroup: group, entity: audioEntity)
+		}
+		
         //doing this asynchronously because it must be effective after the previous animations have taken place
         KyoozUtils.doInMainQueueAsync() {
             RootViewController.instance.previousSearchText = self.searchText

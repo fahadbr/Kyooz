@@ -9,20 +9,8 @@
 import UIKit
 import MediaPlayer
 
-final class MediaEntityTableViewController: ParentMediaEntityHeaderViewController, UITableViewDelegate, UITableViewDataSource {
+final class MediaEntityTableViewController: ParentMediaEntityHeaderViewController {
 
-    private var sections:[MPMediaQuerySection]? {
-        didSet {
-            if sections != nil {
-                tableView.estimatedSectionHeaderHeight = 40
-                tableView.sectionHeaderHeight = 40
-            } else {
-                tableView.estimatedSectionHeaderHeight = 0
-                tableView.sectionHeaderHeight = 0
-            }
-        }
-    }
-    private var entities:[MPMediaEntity]!
     
     var subGroups:[LibraryGrouping] = LibraryGrouping.values {
         didSet {
@@ -31,8 +19,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     private (set) var isBaseLevel:Bool = true
-    
-    private var playlistDatasource:PlaylistDatasource?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,195 +83,59 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         } else {
             sourceData.libraryGrouping = selectedGroup
         }
-        
+		
         reloadAllData()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    
-    // MARK: - Table view data source and delegate methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        guard let sections = self.sections else {
-            return 1
-        }
-        
-        return sections.count
-    }
-
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let sections = self.sections else {
-            return entities!.count
-        }
-        return sections[section].range.length
-    }
-    
-    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
-        guard let sections = self.sections else {
-            return nil
-        }
-        var titles = [String]()
-        for section in sections {
-            titles.append(section.title)
-        }
-        return titles
-    }
 	
-    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-        //this synchronizes the parent scroll view with the table view after a section index has been selected
-        //doing this asynchronously because the tableView's contentOffset is not updated until after this method is called
-        KyoozUtils.doInMainQueueAsync() { [weak self] in self?.synchronizeOffsetWithScrollview(tableView) }
-        return index
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let reuseIdentifier = libraryGroupingType === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
-
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
-            return UITableViewCell()
-        }
-        
-        let entity = entities[getAbsoluteIndex(indexPath: indexPath)]
-        
-        
-        if let audioCell = cell as? ConfigurableAudioTableCell, let audioEntity = entity as? AudioEntity {
-            audioCell.configureCellForItems(audioEntity, libraryGrouping: libraryGroupingType)
-            audioCell.isNowPlayingItem = false
-            audioCell.indexPath = indexPath
-            audioCell.delegate = self
-            let persistentIdPropertyName = MPMediaItem.persistentIDPropertyForGroupingType(libraryGroupingType.groupingType)
-            if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem,
-                let persistentIdForGroupingType = nowPlayingItem.valueForProperty(persistentIdPropertyName) as? NSNumber {
-                
-                if persistentIdForGroupingType.unsignedLongLongValue == entity.persistentID {
-                    audioCell.isNowPlayingItem = true
-                }
-            }
-        } else {
-            cell.textLabel?.text = entity.representativeItem?.trackTitle
-        }
-        
-        return cell
-    }
-	
-	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		guard let sections = self.sections else {
-			return nil
-		}
-		
-		guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
-			return nil
-		}
-		view.initializeHeaderView()
-		
-		if let headerView = view.headerView {
-			headerView.headerTitleLabel.text = sections[section].title
-			headerView.disclosureContainerView.hidden = true
-		}
-		return view
-	}
-	
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if tableView.editing {
-            super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
-            return
-        }
-        
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let entity = entities[getAbsoluteIndex(indexPath: indexPath)]
-        
-        if libraryGroupingType === LibraryGrouping.Songs {
-            startPlayingWithItemAtIndex(indexPath)
-            return
-        }
-        
-        //go to specific album track view controller if we are selecting an album collection
-        ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: libraryGroupingType, entity: entity)
-    }
 	
     //MARK: - Private functions
-    
-    private func startPlayingWithItemAtIndex(indexPath:NSIndexPath) {
-        //note the different behaviours.  if the current entities representation is a mpmediaItem then we play with the entire collection in the view
-        //otherwise we play the selected entity only, assuming it is a media item collecion
-        if let mediaItems = entities as? [MPMediaItem] {
-            audioQueuePlayer.playNow(withTracks: mediaItems, startingAtIndex: getAbsoluteIndex(indexPath: indexPath), shouldShuffleIfOff: false)
-        } else if let collections = entities as? [MPMediaItemCollection] {
-            let collection = collections[getAbsoluteIndex(indexPath: indexPath)]
-            if collection.count > 0 {
-                audioQueuePlayer.playNow(withTracks: collection.items, startingAtIndex: 0, shouldShuffleIfOff: false)
-            }
-        }
-    }
-    
     override func reloadSourceData() {
-        entities = nil
-        sections = nil
-        let currentGroupIsSongs = libraryGroupingType === LibraryGrouping.Songs
-        guard let entities:[MPMediaEntity] = currentGroupIsSongs ? filterQuery.items : filterQuery.collections else {
-            Logger.debug("No items found for query \(filterQuery)")
-            return
-        }
-        self.entities = entities
-        
-        if libraryGroupingType == LibraryGrouping.Playlists {
-            guard let playlists = entities as? [MPMediaPlaylist] else {
-                return
-            }
-            let playlistDS = PlaylistDatasource(itunesLibraryPlaylists: playlists, mediaEntityTVC: self)
-            tableView.dataSource = playlistDS
-            tableView.delegate = playlistDS
-            playlistDatasource = playlistDS
-            return
-        } else {
-            playlistDatasource = nil
-            tableView.dataSource = self
-            tableView.delegate = self
-        }
-        
-        if entities.count >= 15 {
-            guard let sections = libraryGroupingType === LibraryGrouping.Songs ? filterQuery.itemSections : filterQuery.collectionSections else {
-                Logger.debug("No sections found for query \(filterQuery)")
-                return
-            }
-            if sections.count <= 1 {
-                return
-            }
-            self.sections = sections
-        }
+        sourceData.reloadSourceData()
+		
+		switch sourceData.libraryGrouping {
+		case LibraryGrouping.Songs:
+			if !(dataSource is AudioEntityTVDataSource) {
+				dataSource = AudioEntityTVDataSource(sourceData: sourceData,
+					reuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier,
+					audioCellDelegate: self)
+			}
+			if !(delegate is AudioTrackTVDelegate) {
+				delegate = AudioTrackTVDelegate(sourceData: sourceData)
+			}
+		case LibraryGrouping.Playlists:
+			guard let playlists = sourceData.entities as? [MPMediaPlaylist] else {
+				break
+			}
+			if !(dataSource is PlaylistDatasource) || !(delegate is PlaylistDatasource) {
+			
+				let playlistDataSource = PlaylistDatasource(itunesLibraryPlaylists: playlists, mediaEntityTVC: self)
+				dataSource = playlistDataSource
+				delegate = playlistDataSource
+			}
+		default:
+			if !(dataSource is AudioEntityTVDataSource) {
+				dataSource = AudioEntityTVDataSource(sourceData: sourceData,
+					reuseIdentifier: (sourceData.libraryGrouping === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier),
+					audioCellDelegate: self)
+			}
+			if !(delegate is AudioCollectionTVDelegate) {
+				delegate = AudioCollectionTVDelegate(sourceData: sourceData)
+			}
+		}
     }
 
-    private func getAbsoluteIndex(indexPath indexPath: NSIndexPath) -> Int{
-        guard let sections = self.sections else {
-            return indexPath.row
-        }
-        
-        let offset =  sections[indexPath.section].range.location
-        let index = indexPath.row
-        let absoluteIndex = offset + index
-        
-        return absoluteIndex
-    }
     
     //MARK: - Overriding MediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        if libraryGroupingType == LibraryGrouping.Playlists && indexPath.section == 1 {
-            return playlistDatasource?.getMediaItemsFromKyoozPlaylistAtIndex(indexPath.row) ?? [AudioTrack]()
+        if let playlistDatasource = dataSource as? PlaylistDatasource where indexPath.section == 1 {
+            return playlistDatasource.getMediaItemsFromKyoozPlaylistAtIndex(indexPath.row) ?? [AudioTrack]()
         }
         
-        let absoluteIndex = getAbsoluteIndex(indexPath: indexPath)
-        if absoluteIndex < entities!.count {
-            let entity = entities![absoluteIndex]
-            if let collection = entity as? MPMediaItemCollection {
-                return collection.items
-            } else if let mediaItem = entity as? MPMediaItem {
-                return [mediaItem]
-            }
-            
-        }
-        return [AudioTrack]()
+        return sourceData.getTracksAtIndex(indexPath)
     }
 
     

@@ -12,7 +12,7 @@ import MediaPlayer
 protocol AudioEntitySourceData {
     
     var numberOfSections:Int { get }
-    var sectionNames:[String] { get }
+    var sectionNames:[String]? { get }
     
     var entities:[AudioEntity] { get }
     var libraryGrouping:LibraryGrouping { get set }
@@ -55,11 +55,11 @@ final class MediaQuerySourceData :  AudioEntitySourceData {
         return sections?.count ?? 1
     }
     
-    var sectionNames:[String] {
+    var sectionNames:[String]? {
         if _sectionNames == nil {
             _sectionNames = sections?.map() { $0.title } ?? [""]
         }
-        return _sectionNames!
+        return _sectionNames
     }
     
     private var _sectionNames:[String]?

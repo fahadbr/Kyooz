@@ -11,16 +11,18 @@ import UIKit
 final class AudioEntityTVDataSource : NSObject, UITableViewDataSource {
     
     weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
+	weak var parentMediaEntityHeaderVC:ParentMediaEntityHeaderViewController?
     
     private var sourceData:AudioEntitySourceData
     private var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     private let reuseIdentifier:String
     
-    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
+    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ParentMediaEntityHeaderViewController?) {
         self.sourceData = sourceData
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
+		self.parentMediaEntityHeaderVC = audioCellDelegate
         super.init()
     }
 
@@ -31,6 +33,15 @@ final class AudioEntityTVDataSource : NSObject, UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sourceData.numberOfItemsInSection(section)
     }
+	
+	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+		return sourceData.sectionNames
+	}
+	
+	func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+		KyoozUtils.doInMainQueueAsync() { [weak self] in self?.parentMediaEntityHeaderVC?.synchronizeOffsetWithScrollview(tableView) }
+		return index
+	}
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
@@ -57,4 +68,6 @@ final class AudioEntityTVDataSource : NSObject, UITableViewDataSource {
         return cell
         
     }
+	
+
 }

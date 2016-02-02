@@ -34,10 +34,6 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="40" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NuC-r9-W2u">
                                 <rect key="frame" x="0.0" y="139" width="600" height="461"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="wLc-JZ-LmB" id="67Y-la-WtI"/>
-                                    <outlet property="delegate" destination="wLc-JZ-LmB" id="CIg-fl-XYV"/>
-                                </connections>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="jSA-1O-B47">
                                 <rect key="frame" x="20" y="104" width="560" height="35"/>
@@ -889,10 +885,6 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tNd-OV-fLc">
                                 <rect key="frame" x="0.0" y="219" width="600" height="381"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="ZAO-9q-JeO" id="Pkc-rb-oGS"/>
-                                    <outlet property="delegate" destination="ZAO-9q-JeO" id="VLt-qb-TAp"/>
-                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>

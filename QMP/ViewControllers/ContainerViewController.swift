@@ -160,7 +160,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         rootViewController.pushViewController(vc)
     }
     
-    func pushNewMediaEntityControllerWithProperties(basePredicates basePredicates:Set<MPMediaPredicate>?, parentGroup:LibraryGrouping, entity:MPMediaEntity) {
+    func pushNewMediaEntityControllerWithProperties(basePredicates basePredicates:Set<MPMediaPredicate>?, parentGroup:LibraryGrouping, entity:AudioEntity) {
         guard let nextGroupingType = parentGroup.nextGroupLevel else {
             Logger.error("tried to push vc without a next group level")
             return
@@ -179,13 +179,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         let title = entity.titleForGrouping(parentGroup)
         let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentGroup.groupingType)
-        let propertyValue:AnyObject?
-        if let playlist = entity as? MPMediaPlaylist {
-            propertyValue = NSNumber(unsignedLongLong: playlist.persistentID)
-        } else {
-            propertyValue = entity.representativeItem?.valueForProperty(propertyName)
-        }
-        
+		let propertyValue = NSNumber(unsignedLongLong: entity.persistentIdForGrouping(parentGroup))
+		
+		
         let filterQuery = MPMediaQuery(filterPredicates: basePredicates ?? parentGroup.baseQuery.filterPredicates)
         filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
         filterQuery.groupingType = nextGroupingType.groupingType
@@ -200,9 +196,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             mvc.subGroups = parentGroup.subGroupsForNextLevel
             vc = mvc
         }
-        
-        vc.filterQuery = filterQuery
-        vc.libraryGroupingType = nextGroupingType
+		
+		vc.sourceData = MediaQuerySourceData(filterQuery: filterQuery, libraryGrouping: nextGroupingType)
 
         pushViewController(vc)
     }

@@ -27,19 +27,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     
     private var kvoContext:NSNumber = NSNumber(char: 10)
     private var observingHeaderView = false
-    
-    
-    private var sourceData:AudioEntitySourceData!
-    private var dataSource:UITableViewDataSource! {
-        didSet {
-            tableView.dataSource = dataSource
-        }
-    }
-    private var delegate:UITableViewDelegate! {
-        didSet {
-            tableView.delegate = delegate
-        }
-    }
+	
     
     deinit {
         if observingHeaderView {
@@ -48,7 +36,6 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     }
     
     override func viewDidLoad() {
-        sourceData = MediaQuerySourceData(filterQuery: filterQuery, libraryGrouping: LibraryGrouping.Songs)
         dataSource = AudioEntityTVDataSource(sourceData: sourceData, reuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier, audioCellDelegate: self)
         delegate = AudioTrackTVDelegate(sourceData: sourceData)
         
@@ -146,7 +133,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     
     
     override func reloadSourceData() {
-        sourceData?.reloadSourceData()
+        sourceData.reloadSourceData()
     }
     
     //MARK: KVO
