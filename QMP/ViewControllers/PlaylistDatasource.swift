@@ -35,7 +35,13 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
 	
 	
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		return kyoozPlaylists.count == 0 ? 1 : 2
+		let sections = kyoozPlaylists.count == 0 ? 1 : 2
+        if sections > 1 {
+            tableView.sectionHeaderHeight = 40
+        } else {
+            tableView.sectionHeaderHeight = 0
+        }
+        return sections
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,7 +101,7 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		switch indexPath.section {
 		case 0:
-			mediaEntityTVC.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+			mediaEntityTVC.delegate?.tableView?(tableView, didSelectRowAtIndexPath: indexPath)
 		case 1:
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             guard let kPlaylist = kyoozPlaylists.objectAtIndex(indexPath.row) as? KyoozPlaylist else {

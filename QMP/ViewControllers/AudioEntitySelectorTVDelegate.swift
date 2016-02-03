@@ -37,7 +37,6 @@ final class AudioEntitySelectorTVDelegate : ParentAudioEntityTVDelegate  {
         
         toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
         super.init(sourceData: sourceData)
-        
         let tintColor = ThemeHelper.defaultTintColor
         toolbarItems.forEach() {
             $0.target = self

@@ -41,7 +41,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
 	}
 	var delegate:UITableViewDelegate! {
 		didSet {
-			tableView.delegate = delegate
+            tableView.delegate = delegate
+            toolbarItems = (delegate as? AudioEntitySelectorTVDelegate)?.toolbarItems
 		}
 	}
 	
@@ -59,12 +60,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     private var headerState:HeaderState = .Expanded
     
     private var headerTranslationTransform:CATransform3D!
-    
-    private var playNextButton:UIBarButtonItem!
-    private var playLastButton:UIBarButtonItem!
-    private var playRandomlyButton:UIBarButtonItem!
-    private var selectAllButton:UIBarButtonItem!
-    private var selectedIndicies:[NSIndexPath]!
     
     var testDelegate:TestTableViewDataSourceDelegate!
     
@@ -90,8 +85,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         testDelegate.mediaEntityTVC = self
         tableView.dataSource = testDelegate
         tableView.delegate = testDelegate
-        tableView.estimatedSectionHeaderHeight = 40
-        tableView.estimatedRowHeight = 60
+        tableView.sectionHeaderHeight = 40
+        tableView.rowHeight = 60
     }
     
     private func configureOverlayScrollView() {
@@ -101,10 +96,10 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     private func calculateContentSize() {
         if scrollView == nil { return }
-        let heightForSections = tableView.estimatedSectionHeaderHeight * CGFloat(tableView.numberOfSections > 1 ? tableView.numberOfSections : 0)
+        let heightForSections = tableView.sectionHeaderHeight * CGFloat(tableView.numberOfSections > 1 ? tableView.numberOfSections : 0)
         var heightForCells:CGFloat = 0
         for i in 0..<tableView.numberOfSections {
-            heightForCells += (tableView.estimatedRowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
+            heightForCells += (tableView.rowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
         }
         let estimatedHeight = heightForSections + heightForCells
         let totalHeight = estimatedHeight + headerHeightConstraint.constant + (subHeaderHeightConstraint?.constant ?? 0)!
@@ -121,145 +116,28 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if(tableView.editing) {
-            selectedIndicies?.append(indexPath)
-            refreshButtonStates()
-        }
-    }
-    
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if(tableView.editing) {
-            var indexToRemove:Int?
-            for (index, indexPathToDelete) in selectedIndicies.enumerate() {
-                if(indexPathToDelete == indexPath) {
-                    indexToRemove = index
-                    break;
-                }
-            }
-            if(indexToRemove != nil) {
-                selectedIndicies?.removeAtIndex(indexToRemove!)
-            }
-            refreshButtonStates()
-        }
-    }
-
-    
     //MARK: - Class functions
     override func reloadAllData() {
         super.reloadAllData()
-        if tableView.editing {
-            selectedIndicies?.removeAll()
-        }
         calculateContentSize()
-    }
-    
-    override func reloadTableViewData() {
-        super.reloadTableViewData()
-        refreshButtonStates()
     }
     
     
     @IBAction func toggleSelectMode(sender:UIButton?) {
-        createToolbarItems()
-        
         let willEdit = !tableView.editing
-        if willEdit {
-            selectedIndicies = [NSIndexPath]()
-            sender?.setTitle("CANCEL", forState: .Normal)
-        } else {
-            selectedIndicies = nil
-            sender?.setTitle("SELECT", forState: .Normal)
-        }
         
         tableView.setEditing(willEdit, animated: true)
         RootViewController.instance.setToolbarHidden(!willEdit)
         
-        refreshButtonStates()
-    }
-    
-    func createToolbarItems() {
-        if toolbarItems == nil || toolbarItems!.isEmpty {
-            selectAllButton = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: self, action: "selectOrDeselectAll")
-            playNextButton = UIBarButtonItem(title: "Play Next", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            playLastButton = UIBarButtonItem(title: "Play Last", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            playRandomlyButton = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: self, action: "insertSelectedItemsIntoQueue:")
-            selectAllButton.tintColor = ThemeHelper.defaultTintColor
-            playNextButton.tintColor = ThemeHelper.defaultTintColor
-            playLastButton.tintColor = ThemeHelper.defaultTintColor
-            playRandomlyButton.tintColor = ThemeHelper.defaultTintColor
-            
-            func createFlexibleSpace() -> UIBarButtonItem {
-                return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-            }
-            
-            toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
-        }
-    }
-    
-    private func refreshButtonStates() {
-        if selectedIndicies == nil { return }
-        
-        let isNotEmpty = !selectedIndicies.isEmpty
-
-        playNextButton.enabled = isNotEmpty
-        playLastButton.enabled = isNotEmpty
-        playRandomlyButton.enabled = isNotEmpty && audioQueuePlayer.shuffleActive
-        selectAllButton.title = isNotEmpty ? deselectAllString : selectAllString
-    }
-    
-    final func selectOrDeselectAll() {
-        if selectedIndicies == nil {
-            return
-        }
-        
-        if selectedIndicies.isEmpty {
-            for section in 0 ..< tableView.numberOfSections {
-                for row in 0 ..< tableView.numberOfRowsInSection(section) {
-                    let indexPath = NSIndexPath(forRow: row, inSection: section)
-                    tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
-                    selectedIndicies.append(indexPath)
-                }
-            }
+        if willEdit {
+            sender?.setTitle("CANCEL", forState: .Normal)
+            self.delegate = AudioEntitySelectorTVDelegate(sourceData: sourceData, tableView: tableView)
         } else {
-            for indexPath in selectedIndicies {
-                tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            }
-            selectedIndicies.removeAll()
+            sender?.setTitle("SELECT", forState: .Normal)
+            applyDataSourceAndDelegate()
         }
-        
-        refreshButtonStates()
     }
     
-    final func insertSelectedItemsIntoQueue(sender:UIBarButtonItem!) {
-        if selectedIndicies == nil || selectedIndicies.isEmpty {
-            return
-        }
-        
-        selectedIndicies.sortInPlace { (first, second) -> Bool in
-            if first.section < second.section {
-                return true
-            }
-            if first.row < second.row {
-                return true
-            }
-            return false
-        }
-        
-        var items = [AudioTrack]()
-        for indexPath in selectedIndicies {
-            items.appendContentsOf(getMediaItemsForIndexPath(indexPath))
-        }
-        
-        if sender === playNextButton {
-            audioQueuePlayer.enqueue(items: items, atPosition: .Next)
-        } else if sender === playLastButton {
-            audioQueuePlayer.enqueue(items: items, atPosition: .Last)
-        } else if sender === playRandomlyButton {
-            audioQueuePlayer.enqueue(items: items, atPosition: .Random)
-        }
-        selectOrDeselectAll()
-    }
     
     @IBAction final func shuffleAllItems(sender:UIButton?) {
         playAllItems(sender, shouldShuffle: true)
@@ -267,6 +145,10 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     @IBAction final func playAllItems(sender:UIButton?) {
         playAllItems(sender, shouldShuffle: false)
+    }
+    
+    func applyDataSourceAndDelegate() {
+        fatalError(fatalErrorMessage)
     }
     
     private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {

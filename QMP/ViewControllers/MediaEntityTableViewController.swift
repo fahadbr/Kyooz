@@ -95,37 +95,41 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     //MARK: - Private functions
     override func reloadSourceData() {
         sourceData.reloadSourceData()
-		
-		switch sourceData.libraryGrouping {
-		case LibraryGrouping.Songs:
-//			if !(dataSource is AudioEntityTVDataSource) {
-				dataSource = AudioEntityTVDataSource(sourceData: sourceData,
-					reuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier,
-					audioCellDelegate: self)
-//			}
-			if !(delegate is AudioTrackTVDelegate) {
-				delegate = AudioTrackTVDelegate(sourceData: sourceData)
-			}
-		case LibraryGrouping.Playlists:
-			guard let playlists = sourceData.entities as? [MPMediaPlaylist] else {
-				break
-			}
-			if !(dataSource is PlaylistDatasource) || !(delegate is PlaylistDatasource) {
-			
-				let playlistDataSource = PlaylistDatasource(itunesLibraryPlaylists: playlists, mediaEntityTVC: self)
-				dataSource = playlistDataSource
-				delegate = playlistDataSource
-			}
-		default:
-//			if !(dataSource is AudioEntityTVDataSource) {
-				dataSource = AudioEntityTVDataSource(sourceData: sourceData,
-					reuseIdentifier: (sourceData.libraryGrouping === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier),
-					audioCellDelegate: self)
-//			}
-			if !(delegate is AudioCollectionTVDelegate) {
-				delegate = AudioCollectionTVDelegate(sourceData: sourceData)
-			}
-		}
+        applyDataSourceAndDelegate()
+    }
+    
+    override func applyDataSourceAndDelegate() {
+        switch sourceData.libraryGrouping {
+        case LibraryGrouping.Songs:
+            dataSource = AudioEntityTVDataSource(sourceData: sourceData,
+                reuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier,
+                audioCellDelegate: self)
+            if !(delegate is AudioTrackTVDelegate) && !tableView.editing{
+                delegate = AudioTrackTVDelegate(sourceData: sourceData)
+            }
+        case LibraryGrouping.Playlists:
+            guard let playlists = sourceData.entities as? [MPMediaPlaylist] else {
+                break
+            }
+            if !(dataSource is PlaylistDatasource) || !(delegate is PlaylistDatasource) {
+                
+                let playlistDataSource = PlaylistDatasource(itunesLibraryPlaylists: playlists, mediaEntityTVC: self)
+                dataSource = playlistDataSource
+                if !tableView.editing {
+                    delegate = playlistDataSource
+                }
+            }
+        default:
+            dataSource = AudioEntityTVDataSource(sourceData: sourceData,
+                reuseIdentifier: (sourceData.libraryGrouping === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier),
+                audioCellDelegate: self)
+            if !(delegate is AudioCollectionTVDelegate) && !tableView.editing {
+                delegate = AudioCollectionTVDelegate(sourceData: sourceData)
+            }
+        }
+        if tableView.editing {
+            delegate = AudioEntitySelectorTVDelegate(sourceData: sourceData, tableView: tableView)
+        }
     }
 
     

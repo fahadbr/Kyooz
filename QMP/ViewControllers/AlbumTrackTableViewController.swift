@@ -36,8 +36,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     }
     
     override func viewDidLoad() {
-        dataSource = AudioEntityTVDataSource(sourceData: sourceData, reuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier, audioCellDelegate: self)
-        delegate = AudioTrackTVDelegate(sourceData: sourceData)
+        applyDataSourceAndDelegate()
         
         super.viewDidLoad()
         self.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
@@ -107,22 +106,10 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         observingHeaderView = true
     }
     
-    @IBAction override func toggleSelectMode(sender: UIButton?) {
-
-        let willEdit = !tableView.editing
-        if willEdit {
-            let delegate = AudioEntitySelectorTVDelegate(sourceData: sourceData, tableView: tableView)
-            toolbarItems = delegate.toolbarItems
-            sender?.setTitle("CANCEL", forState: .Normal)
-            self.delegate = delegate
-        } else {
-            sender?.setTitle("SELECT", forState: .Normal)
-            self.delegate = AudioTrackTVDelegate(sourceData: sourceData)
-        }
-        
-        tableView.setEditing(willEdit, animated: true)
-        RootViewController.instance.setToolbarHidden(!willEdit)
-
+    
+    override func applyDataSourceAndDelegate() {
+        dataSource = AudioEntityTVDataSource(sourceData: sourceData, reuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier, audioCellDelegate: self)
+        delegate = AudioTrackTVDelegate(sourceData: sourceData)
     }
     
 
