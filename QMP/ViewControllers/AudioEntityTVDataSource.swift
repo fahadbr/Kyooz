@@ -27,7 +27,13 @@ final class AudioEntityTVDataSource : NSObject, UITableViewDataSource {
     }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sourceData.numberOfSections
+        let sections = sourceData.numberOfSections
+		if sections > 1 {
+			tableView.sectionHeaderHeight = 40
+		} else {
+			tableView.sectionHeaderHeight = 0
+		}
+		return sections
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
