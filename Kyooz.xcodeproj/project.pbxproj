@@ -533,6 +533,7 @@
 				0BC317A01C5D8F66002BF431 /* AudioTrackTVDelegate.swift */,
 				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift */,
 				0B179D5B1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift */,
+				100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */,
 			);
 			name = TableView;
 			sourceTree = "<group>";
@@ -610,7 +611,6 @@
 				0B31FE081BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift */,
 				0BCA194D1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift */,
 				0B650A5E1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift */,
-				100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */,
 			);
 			name = MediaLibrary;
 			sourceTree = "<group>";

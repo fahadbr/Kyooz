@@ -21,7 +21,7 @@ import Foundation
     
 }
 
-protocol AudioTrackCollection : AudioEntity {
+@objc protocol AudioTrackCollection : AudioEntity {
     
     var tracks:[AudioTrack] { get }
     

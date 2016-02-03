@@ -98,11 +98,11 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
 		
 		switch sourceData.libraryGrouping {
 		case LibraryGrouping.Songs:
-			if !(dataSource is AudioEntityTVDataSource) {
+//			if !(dataSource is AudioEntityTVDataSource) {
 				dataSource = AudioEntityTVDataSource(sourceData: sourceData,
 					reuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier,
 					audioCellDelegate: self)
-			}
+//			}
 			if !(delegate is AudioTrackTVDelegate) {
 				delegate = AudioTrackTVDelegate(sourceData: sourceData)
 			}
@@ -117,11 +117,11 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
 				delegate = playlistDataSource
 			}
 		default:
-			if !(dataSource is AudioEntityTVDataSource) {
+//			if !(dataSource is AudioEntityTVDataSource) {
 				dataSource = AudioEntityTVDataSource(sourceData: sourceData,
 					reuseIdentifier: (sourceData.libraryGrouping === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier),
 					audioCellDelegate: self)
-			}
+//			}
 			if !(delegate is AudioCollectionTVDelegate) {
 				delegate = AudioCollectionTVDelegate(sourceData: sourceData)
 			}

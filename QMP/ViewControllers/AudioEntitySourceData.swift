@@ -42,6 +42,33 @@ extension AudioEntitySourceData {
     
 }
 
+final class KyoozPlaylistSourceData : AudioEntitySourceData {
+	let numberOfSections:Int = 1
+	var sectionNames:[String]?
+	
+	var entities:[AudioEntity]
+	var libraryGrouping:LibraryGrouping = LibraryGrouping.Songs
+	
+	let playlist:KyoozPlaylist
+	
+	init(playlist:KyoozPlaylist) {
+		sectionNames = [playlist.name]
+		entities = playlist.getTracks()
+		self.playlist = playlist
+	}
+	
+	func numberOfItemsInSection(section:Int) -> Int {
+		return entities.count
+	}
+	func reloadSourceData() {
+		entities = playlist.getTracks()
+	}
+	
+	subscript(i:NSIndexPath) -> AudioEntity {
+		return entities[i.row]
+	}
+}
+
 final class MediaQuerySourceData :  AudioEntitySourceData {
 
     var entities:[AudioEntity] = [AudioEntity]()
@@ -57,14 +84,18 @@ final class MediaQuerySourceData :  AudioEntitySourceData {
     
     var sectionNames:[String]? {
         if _sectionNames == nil {
-            _sectionNames = sections?.map() { $0.title } ?? [""]
+            _sectionNames = sections?.map() { $0.title }
         }
         return _sectionNames
     }
     
     private var _sectionNames:[String]?
     
-    private var sections:[MPMediaQuerySection]?
+	private var sections:[MPMediaQuerySection]? {
+		didSet {
+			_sectionNames = nil
+		}
+	}
     private (set) var filterQuery:MPMediaQuery
     
     init(filterQuery:MPMediaQuery, libraryGrouping:LibraryGrouping) {

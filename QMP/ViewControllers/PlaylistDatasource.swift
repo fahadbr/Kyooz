@@ -104,8 +104,7 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
             }
             
 			let vc = UIStoryboard.albumTrackTableViewController()
-            vc.filterQuery = DummyQuery(items: kPlaylist.getTracks() as! [MPMediaItem])
-            vc.libraryGroupingType = LibraryGrouping.Songs
+            vc.sourceData = KyoozPlaylistSourceData(playlist: kPlaylist)
             ContainerViewController.instance.pushViewController(vc)
             break
 		default:
@@ -143,33 +142,12 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
     
     //MARK: - class functions
     func getMediaItemsFromKyoozPlaylistAtIndex(index:Int) -> [AudioTrack] {
-        return kyoozPlaylists[index].getTracks()
+        return (kyoozPlaylists.objectAtIndex(index) as? KyoozPlaylist)?.getTracks() ?? [AudioTrack]()
     }
     
     
 	
 }
 
-final class DummyQuery : MPMediaQuery {
-    
-    private let _items:[MPMediaItem]
-    
-    init(items:[MPMediaItem]) {
-        _items = items
-        super.init(filterPredicates: nil)
-    }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override var items:[MPMediaItem]! {
-        return _items
-    }
-    
-    override var collections:[MPMediaItemCollection]! {
-        return [MPMediaItemCollection(items: _items)]
-    }
-    
-}
 

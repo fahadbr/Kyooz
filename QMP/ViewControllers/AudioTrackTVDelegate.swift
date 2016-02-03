@@ -8,19 +8,10 @@
 
 import UIKit
 
-final class AudioTrackTVDelegate : NSObject, UITableViewDelegate {
-    
-    private var sourceData:AudioEntitySourceData
+final class AudioTrackTVDelegate : ParentAudioEntityTVDelegate {
+	
     private var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    
-    init(sourceData:AudioEntitySourceData) {
-        self.sourceData = sourceData
-        super.init()
-    }
-    
-    deinit {
-        Logger.debug("deinit audiotrack tvdelegate")
-    }
+	
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         defer {
