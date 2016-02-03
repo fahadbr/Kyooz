@@ -23,7 +23,6 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         
-        tableView.estimatedRowHeight = 60
         tableView.rowHeight = 60
         tableView.allowsMultipleSelectionDuringEditing = true
         reloadSourceData()
