@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class AudioEntityTVDataSource : NSObject, UITableViewDataSource {
+final class AudioEntityTVDataSource : NSObject, AudioEntityTVDataSourceProtocol {
     
     weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
 	weak var parentMediaEntityHeaderVC:ParentMediaEntityHeaderViewController?
@@ -17,6 +17,10 @@ final class AudioEntityTVDataSource : NSObject, UITableViewDataSource {
     private var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     private let reuseIdentifier:String
+	
+	var hasData:Bool {
+		return !sourceData.entities.isEmpty
+	}
     
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ParentMediaEntityHeaderViewController?) {
         self.sourceData = sourceData
