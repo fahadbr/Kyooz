@@ -161,3 +161,13 @@ extension MPMediaQuery {
     
 }
 
+extension MPMediaQuerySection : SectionDescription {
+	
+	var name:String {
+		return title
+	}
+	
+	var count:Int {
+		return range.length
+	}
+}

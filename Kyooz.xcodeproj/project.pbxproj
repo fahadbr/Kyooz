@@ -120,6 +120,9 @@
 		100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */; };
 		100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */; };
 		100A8BDB1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */; };
+		100A8BDD1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDC1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift */; };
+		100A8BDF1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDE1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift */; };
+		100A8BE11C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BE01C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift */; };
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
@@ -258,6 +261,9 @@
 		100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozErrorProtocol.swift; sourceTree = "<group>"; };
 		100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSErrorExtension.swift; sourceTree = "<group>"; };
 		100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioCollectionTVDelegate.swift; sourceTree = "<group>"; };
+		100A8BDC1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionedTVDataSourceDelegator.swift; sourceTree = "<group>"; };
+		100A8BDE1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityTVProtocol.swift; sourceTree = "<group>"; };
+		100A8BE01C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionedTVDelegateDelegator.swift; sourceTree = "<group>"; };
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
@@ -529,11 +535,14 @@
 			children = (
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
 				0BC3179C1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift */,
+				100A8BDE1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift */,
 				100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */,
 				0BC317A01C5D8F66002BF431 /* AudioTrackTVDelegate.swift */,
 				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift */,
 				0B179D5B1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift */,
 				100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */,
+				100A8BDC1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift */,
+				100A8BE01C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift */,
 			);
 			name = TableView;
 			sourceTree = "<group>";
@@ -819,11 +828,14 @@
 				0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */,
 				0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */,
 				0B650A5F1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift in Sources */,
+				100A8BDD1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift in Sources */,
 				0BC317A31C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift in Sources */,
 				0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */,
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
+				100A8BE11C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift in Sources */,
+				100A8BDF1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift in Sources */,
 				0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */,
 				0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */,
 				10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */,
