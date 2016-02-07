@@ -108,8 +108,10 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     
     
     override func applyDataSourceAndDelegate() {
-        dataSource = AudioEntityTVDataSource(sourceData: sourceData, reuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier, audioCellDelegate: self)
-        delegate = AudioTrackTVDelegate(sourceData: sourceData)
+        guard !tableView.editing else {
+            return
+        }
+        datasourceDelegate = AudioTrackDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
     }
     
 

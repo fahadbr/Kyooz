@@ -34,17 +34,14 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
-	var dataSource:UITableViewDataSource! {
-		didSet {
-			tableView.dataSource = dataSource
-		}
-	}
-	var delegate:UITableViewDelegate! {
-		didSet {
-            tableView.delegate = delegate
-            toolbarItems = (delegate as? AudioEntitySelectorTVDelegate)?.toolbarItems
-		}
-	}
+    
+    var datasourceDelegate:AudioEntityDSDProtocol! {
+        didSet {
+            tableView.dataSource = datasourceDelegate
+            tableView.delegate = datasourceDelegate
+            toolbarItems = (datasourceDelegate as? AudioEntitySelectorDSD)?.toolbarItems
+        }
+    }
 	
     @IBOutlet var headerView:UIView!
     @IBOutlet var scrollView:UIScrollView!
@@ -55,6 +52,17 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     var headerHeight:CGFloat {
         return headerHeightConstraint.constant
+    }
+    
+    var reuseIdentifier:String {
+        if self is AlbumTrackTableViewController {
+            return AlbumTrackTableViewCell.reuseIdentifier
+        }
+        
+        if sourceData.libraryGrouping == LibraryGrouping.Albums {
+            return ImageTableViewCell.reuseIdentifier
+        }
+        return MediaCollectionTableViewCell.reuseIdentifier
     }
     
     private var headerState:HeaderState = .Expanded
@@ -131,7 +139,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         
         if willEdit {
             sender?.setTitle("CANCEL", forState: .Normal)
-            self.delegate = AudioEntitySelectorTVDelegate(sourceData: sourceData, tableView: tableView)
+            self.datasourceDelegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
         } else {
             sender?.setTitle("SELECT", forState: .Normal)
             applyDataSourceAndDelegate()

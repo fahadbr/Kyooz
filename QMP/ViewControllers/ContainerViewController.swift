@@ -160,14 +160,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         rootViewController.pushViewController(vc)
     }
     
-    func pushNewMediaEntityControllerWithProperties(basePredicates basePredicates:Set<MPMediaPredicate>?, parentGroup:LibraryGrouping, entity:AudioEntity) {
-        guard let nextGroupingType = parentGroup.nextGroupLevel else {
-            Logger.error("tried to push vc without a next group level")
-            return
-        }
+    func pushNewMediaEntityControllerWithProperties(sourceData:AudioEntitySourceData, parentGroup:LibraryGrouping, entity:AudioEntity) {
         
         if let item = entity as? MPMediaItem {
-            if IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.id)) == nil {
+            if IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.persistentID)) == nil {
                 var name = parentGroup.name.capitalizedString
                 name.removeAtIndex(name.endIndex.predecessor())
                 KyoozUtils.showPopupError(withTitle: "Track Not Found In Library",
@@ -178,13 +174,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
         
         let title = entity.titleForGrouping(parentGroup)
-        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentGroup.groupingType)
-		let propertyValue = NSNumber(unsignedLongLong: entity.persistentIdForGrouping(parentGroup))
-		
-		
-        let filterQuery = MPMediaQuery(filterPredicates: basePredicates ?? parentGroup.baseQuery.filterPredicates)
-        filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
-        filterQuery.groupingType = nextGroupingType.groupingType
         
         let vc:ParentMediaEntityHeaderViewController!
         
@@ -197,7 +186,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             vc = mvc
         }
 		
-		vc.sourceData = MediaQuerySourceData(filterQuery: filterQuery, libraryGrouping: nextGroupingType)
+		vc.sourceData = sourceData
 
         pushViewController(vc)
     }

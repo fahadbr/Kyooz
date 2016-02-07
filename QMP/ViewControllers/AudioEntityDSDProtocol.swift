@@ -8,9 +8,9 @@
 
 import UIKit
 
-
-protocol AudioEntityTVDataSourceProtocol : UITableViewDataSource {
-	
-	var hasData:Bool { get }
-	
+protocol AudioEntityDSDProtocol : UITableViewDelegate, UITableViewDataSource {
+    
+    var hasData:Bool { get }
+    
 }
+

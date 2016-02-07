@@ -39,7 +39,6 @@
 		0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */; };
 		0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA651AED584700CC5C01 /* ImageContainer.swift */; };
 		0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */; };
-		0B179D5C1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B179D5B1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift */; };
 		0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */; };
 		0B31FE091BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B31FE081BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift */; };
 		0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
@@ -88,10 +87,10 @@
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
 		0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */; };
-		0BC3179D1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179C1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift */; };
+		0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179C1C5D7BB2002BF431 /* AudioEntityDSD.swift */; };
 		0BC3179F1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179E1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift */; };
-		0BC317A11C5D8F66002BF431 /* AudioTrackTVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC317A01C5D8F66002BF431 /* AudioTrackTVDelegate.swift */; };
-		0BC317A31C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC317A21C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift */; };
+		0BC317A11C5D8F66002BF431 /* AudioTrackDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC317A01C5D8F66002BF431 /* AudioTrackDSD.swift */; };
+		0BC317A31C5D99C9002BF431 /* AudioEntitySelectorDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC317A21C5D99C9002BF431 /* AudioEntitySelectorDSD.swift */; };
 		0BCA194E1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCA194D1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift */; };
 		0BCA19501BC73F05008CD0FF /* RemoteCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCA194F1BC73F05008CD0FF /* RemoteCommandHandler.swift */; };
 		0BCA4DE81C41BC2E004EE698 /* CustomPopableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */; };
@@ -119,10 +118,9 @@
 		100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD41C583695009FAB17 /* DataPersistenceError.swift */; };
 		100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */; };
 		100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */; };
-		100A8BDB1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */; };
-		100A8BDD1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDC1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift */; };
-		100A8BDF1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDE1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift */; };
-		100A8BE11C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BE01C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift */; };
+		100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */; };
+		100A8BDD1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */; };
+		100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */; };
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
@@ -177,7 +175,6 @@
 		0B13DA611AED49AF00CC5C01 /* SongDetailsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SongDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		0B13DA651AED584700CC5C01 /* ImageContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContainer.swift; sourceTree = "<group>"; };
 		0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItemUtils.swift; sourceTree = "<group>"; };
-		0B179D5B1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParentAudioEntityTVDelegate.swift; sourceTree = "<group>"; };
 		0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LastFmScrobbler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B31FE081BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLibrarySearchTableViewController.swift; sourceTree = "<group>"; };
 		0B476C6E1B1BFE5700626810 /* CancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelView.swift; sourceTree = "<group>"; };
@@ -227,10 +224,10 @@
 		0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KyoozBridge.h; sourceTree = "<group>"; };
 		0BBE16011AF6AC9B007C6189 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Logger.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySourceData.swift; sourceTree = "<group>"; };
-		0BC3179C1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityTVDataSource.swift; sourceTree = "<group>"; };
+		0BC3179C1C5D7BB2002BF431 /* AudioEntityDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSD.swift; sourceTree = "<group>"; };
 		0BC3179E1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerFrameworkExtensions.swift; sourceTree = "<group>"; };
-		0BC317A01C5D8F66002BF431 /* AudioTrackTVDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackTVDelegate.swift; sourceTree = "<group>"; };
-		0BC317A21C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySelectorTVDelegate.swift; sourceTree = "<group>"; };
+		0BC317A01C5D8F66002BF431 /* AudioTrackDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackDSD.swift; sourceTree = "<group>"; };
+		0BC317A21C5D99C9002BF431 /* AudioEntitySelectorDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySelectorDSD.swift; sourceTree = "<group>"; };
 		0BCA194D1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParentMediaEntityHeaderViewController.swift; sourceTree = "<group>"; };
 		0BCA194F1BC73F05008CD0FF /* RemoteCommandHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteCommandHandler.swift; sourceTree = "<group>"; };
 		0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPopableViewController.swift; sourceTree = "<group>"; };
@@ -260,10 +257,9 @@
 		100A8BD41C583695009FAB17 /* DataPersistenceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPersistenceError.swift; sourceTree = "<group>"; };
 		100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozErrorProtocol.swift; sourceTree = "<group>"; };
 		100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSErrorExtension.swift; sourceTree = "<group>"; };
-		100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioCollectionTVDelegate.swift; sourceTree = "<group>"; };
-		100A8BDC1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionedTVDataSourceDelegator.swift; sourceTree = "<group>"; };
-		100A8BDE1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityTVProtocol.swift; sourceTree = "<group>"; };
-		100A8BE01C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionedTVDelegateDelegator.swift; sourceTree = "<group>"; };
+		100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackCollectionDSD.swift; sourceTree = "<group>"; };
+		100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDSectionDelegator.swift; sourceTree = "<group>"; };
+		100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDProtocol.swift; sourceTree = "<group>"; };
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
@@ -533,16 +529,14 @@
 		0BC317991C5D7AC2002BF431 /* TableView */ = {
 			isa = PBXGroup;
 			children = (
+				0BC3179C1C5D7BB2002BF431 /* AudioEntityDSD.swift */,
+				100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */,
+				100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */,
+				0BC317A01C5D8F66002BF431 /* AudioTrackDSD.swift */,
+				100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */,
+				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorDSD.swift */,
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
-				0BC3179C1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift */,
-				100A8BDE1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift */,
-				100A8BDA1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift */,
-				0BC317A01C5D8F66002BF431 /* AudioTrackTVDelegate.swift */,
-				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift */,
-				0B179D5B1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift */,
 				100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */,
-				100A8BDC1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift */,
-				100A8BE01C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift */,
 			);
 			name = TableView;
 			sourceTree = "<group>";
@@ -780,7 +774,7 @@
 			files = (
 				0BCA194E1BC35EFD008CD0FF /* ParentMediaEntityHeaderViewController.swift in Sources */,
 				0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */,
-				100A8BDB1C5EFB6C009FAB17 /* AudioCollectionTVDelegate.swift in Sources */,
+				100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
@@ -802,7 +796,7 @@
 				0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */,
 				0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */,
 				0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */,
-				0BC3179D1C5D7BB2002BF431 /* AudioEntityTVDataSource.swift in Sources */,
+				0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
 				100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
@@ -828,18 +822,16 @@
 				0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */,
 				0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */,
 				0B650A5F1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift in Sources */,
-				100A8BDD1C62C12A009FAB17 /* SectionedTVDataSourceDelegator.swift in Sources */,
-				0BC317A31C5D99C9002BF431 /* AudioEntitySelectorTVDelegate.swift in Sources */,
+				100A8BDD1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift in Sources */,
+				0BC317A31C5D99C9002BF431 /* AudioEntitySelectorDSD.swift in Sources */,
 				0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */,
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
-				100A8BE11C62C64A009FAB17 /* SectionedTVDelegateDelegator.swift in Sources */,
-				100A8BDF1C62C1DF009FAB17 /* AudioEntityTVProtocol.swift in Sources */,
+				100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */,
 				0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */,
 				0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */,
 				10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */,
-				0B179D5C1C5DB64C009BE5FB /* ParentAudioEntityTVDelegate.swift in Sources */,
 				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
 				0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,
@@ -851,7 +843,7 @@
 				0B31FE091BF04B7100B33F0A /* MediaLibrarySearchTableViewController.swift in Sources */,
 				100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */,
 				0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */,
-				0BC317A11C5D8F66002BF431 /* AudioTrackTVDelegate.swift in Sources */,
+				0BC317A11C5D8F66002BF431 /* AudioTrackDSD.swift in Sources */,
 				0B533AC01BC1878900EA71B7 /* LibraryGrouping.swift in Sources */,
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
 				0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */,

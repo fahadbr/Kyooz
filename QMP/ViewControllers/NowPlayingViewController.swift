@@ -388,14 +388,15 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         
         if mediaItem.albumId != 0 {
             let goToAlbumAction = UIAlertAction(title: "☞ Album", style: .Default) { action in
-                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Albums, entity: mediaItem as! MPMediaItem)
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!,
+                    parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
             controller.addAction(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
             let goToArtistAction = UIAlertAction(title: "☞ Artist", style: .Default) { action in
-                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Artists, entity: mediaItem as! MPMediaItem)
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
             controller.addAction(goToArtistAction)
         }

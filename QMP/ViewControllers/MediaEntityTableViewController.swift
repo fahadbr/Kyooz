@@ -99,44 +99,31 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     override func applyDataSourceAndDelegate() {
+        guard !tableView.editing else{
+            datasourceDelegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            return
+        }
+        
         switch sourceData.libraryGrouping {
         case LibraryGrouping.Songs:
-            dataSource = AudioEntityTVDataSource(sourceData: sourceData,
-                reuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier,
-                audioCellDelegate: self)
-            if !(delegate is AudioTrackTVDelegate) && !tableView.editing{
-                delegate = AudioTrackTVDelegate(sourceData: sourceData)
-            }
+            datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier:  reuseIdentifier, audioCellDelegate: self)
         case LibraryGrouping.Playlists:
-            guard let playlists = sourceData.entities as? [MPMediaPlaylist] else {
-                break
-            }
-            if !(dataSource is PlaylistDatasource) || !(delegate is PlaylistDatasource) {
-                
-                let playlistDataSource = PlaylistDatasource(itunesLibraryPlaylists: playlists, mediaEntityTVC: self)
-                dataSource = playlistDataSource
-                if !tableView.editing {
-                    delegate = playlistDataSource
-                }
-            }
+            let playlistDSD = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            let kPlaylistDSD = KyoozPlaylistDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            let delegator = AudioEntityDSDSectionDelegator(datasources: [playlistDSD, kPlaylistDSD])
+            
+            datasourceDelegate = delegator
         default:
-            dataSource = AudioEntityTVDataSource(sourceData: sourceData,
-                reuseIdentifier: (sourceData.libraryGrouping === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier),
-                audioCellDelegate: self)
-            if !(delegate is AudioCollectionTVDelegate) && !tableView.editing {
-                delegate = AudioCollectionTVDelegate(sourceData: sourceData)
-            }
+            datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
         }
-        if tableView.editing {
-            delegate = AudioEntitySelectorTVDelegate(sourceData: sourceData, tableView: tableView)
-        }
+
     }
 
     
     //MARK: - Overriding MediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        if let playlistDatasource = dataSource as? PlaylistDatasource where indexPath.section == 1 {
-            return playlistDatasource.getMediaItemsFromKyoozPlaylistAtIndex(indexPath.row) ?? [AudioTrack]()
+        if datasourceDelegate is AudioEntityDSDSectionDelegator && indexPath.section == 1 {
+            return KyoozPlaylistManager.instance.getTracksAtIndex(indexPath)
         }
         
         return sourceData.getTracksAtIndex(indexPath)

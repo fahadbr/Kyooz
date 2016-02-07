@@ -13,3 +13,7 @@ protocol KyoozErrorProtocol : ErrorType {
 	var errorDescription:String { get }
 	
 }
+
+struct InitializationError : KyoozErrorProtocol {
+    let errorDescription:String
+}

@@ -8,13 +8,13 @@
 
 import UIKit
 
-final class AudioEntityTVDataSource : NSObject, AudioEntityTVDataSourceProtocol {
+class AudioEntityDSD : NSObject, AudioEntityDSDProtocol {
     
     weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
 	weak var parentMediaEntityHeaderVC:ParentMediaEntityHeaderViewController?
     
-    private var sourceData:AudioEntitySourceData
-    private var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    var sourceData:AudioEntitySourceData
+    var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     private let reuseIdentifier:String
 	
@@ -29,23 +29,24 @@ final class AudioEntityTVDataSource : NSObject, AudioEntityTVDataSourceProtocol 
 		self.parentMediaEntityHeaderVC = audioCellDelegate
         super.init()
     }
+    
+    //MARK: - TableView Datasource Methods
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        let sections = sourceData.numberOfSections
-		if sections > 1 {
-			tableView.sectionHeaderHeight = 40
-		} else {
-			tableView.sectionHeaderHeight = 0
-		}
+        let sections = sourceData.sections.count
+        tableView.sectionHeaderHeight = sections > 1 ? 40 : 0
 		return sections
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sourceData.numberOfItemsInSection(section)
+        return sourceData.sections[section].count
     }
 	
 	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
-		return sourceData.sectionNames
+        if !sourceData.sectionNamesCanBeUsedAsIndexTitles {
+            return nil
+        }
+        return sourceData.sections.map() { return $0.name }
 	}
 	
 	func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
@@ -53,7 +54,7 @@ final class AudioEntityTVDataSource : NSObject, AudioEntityTVDataSourceProtocol 
 		return index
 	}
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    final func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
             return UITableViewCell()
         }
@@ -66,7 +67,7 @@ final class AudioEntityTVDataSource : NSObject, AudioEntityTVDataSourceProtocol 
             audioCell.indexPath = indexPath
             audioCell.delegate = audioCellDelegate
             
-            if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping), let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping) where nowPlayingItemId == trackId {
+            if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping), let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping) where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
                 audioCell.isNowPlayingItem = true
             } else {
                 audioCell.isNowPlayingItem = false
@@ -77,6 +78,20 @@ final class AudioEntityTVDataSource : NSObject, AudioEntityTVDataSourceProtocol 
         
         return cell
         
+    }
+    
+    //MARK: - TableView delegate methods
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
+            return nil
+        }
+        view.initializeHeaderView()
+        
+        if let headerView = view.headerView {
+            headerView.headerTitleLabel.text = sourceData.sections[section].name
+            headerView.disclosureContainerView.hidden = true
+        }
+        return view
     }
 	
 

@@ -11,10 +11,7 @@ import UIKit
 private let selectAllString = "Select All"
 private let deselectAllString = "Deselect All"
 
-final class AudioEntitySelectorTVDelegate : ParentAudioEntityTVDelegate  {
-    
-    private var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    
+final class AudioEntitySelectorDSD : AudioEntityDSD  {
     
     private let playNextButton:UIBarButtonItem = UIBarButtonItem(title: "Play Next", style: .Plain, target: nil, action: "insertSelectedItemsIntoQueue:")
     private let playLastButton:UIBarButtonItem = UIBarButtonItem(title: "Play Last", style: .Plain, target: nil, action: "insertSelectedItemsIntoQueue:")
@@ -27,7 +24,7 @@ final class AudioEntitySelectorTVDelegate : ParentAudioEntityTVDelegate  {
     private let tableView:UITableView
 
     
-    init(sourceData:AudioEntitySourceData, tableView:UITableView) {
+    init(sourceData:AudioEntitySourceData, tableView:UITableView, reuseIdentifier:String, audioCellDelegate:ParentMediaEntityHeaderViewController) {
         self.tableView = tableView
         selectedIndicies = [NSIndexPath]()
         
@@ -36,7 +33,7 @@ final class AudioEntitySelectorTVDelegate : ParentAudioEntityTVDelegate  {
         }
         
         toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
-        super.init(sourceData: sourceData)
+        super.init(sourceData: sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:audioCellDelegate)
         let tintColor = ThemeHelper.defaultTintColor
         toolbarItems.forEach() {
             $0.target = self
