@@ -8,11 +8,8 @@
 
 import UIKit
 
-final class AudioTrackTVDelegate : ParentAudioEntityTVDelegate {
+final class AudioTrackDSD : AudioEntityDSD {
 	
-    private var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-	
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         defer {
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -22,7 +19,7 @@ final class AudioTrackTVDelegate : ParentAudioEntityTVDelegate {
             Logger.error("entities are not tracks, cannot play them")
             return
         }
-        audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: indexPath.row, shouldShuffleIfOff: false)
+        audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: sourceData.flattenedIndex(indexPath), shouldShuffleIfOff: false)
 
     }
     

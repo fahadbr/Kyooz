@@ -111,13 +111,15 @@ class NowPlayingSummaryViewController: UIViewController {
     
     
     @IBAction func goToArtist(sender: AnyObject) {
-        if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem {
-            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Artists, entity: nowPlayingItem)
-        }
+        goToVCWithGrouping(LibraryGrouping.Artists)
     }
     @IBAction func goToAlbum(sender: AnyObject) {
-        if let nowPlayingItem = audioQueuePlayer.nowPlayingItem as? MPMediaItem {
-            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: nil, parentGroup: LibraryGrouping.Albums, entity: nowPlayingItem)
+        goToVCWithGrouping(LibraryGrouping.Albums)
+    }
+    
+    private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
+        if let nowPlayingItem = audioQueuePlayer.nowPlayingItem, let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {
+            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: libraryGrouping, entity: nowPlayingItem)
         }
     }
     

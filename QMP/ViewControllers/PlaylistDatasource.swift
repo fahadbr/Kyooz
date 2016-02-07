@@ -9,9 +9,13 @@
 import UIKit
 import MediaPlayer
 
-final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDelegate {
+final class PlaylistDatasource : NSObject, AudioEntityDSDProtocol {
 	
 	private var kyoozPlaylistManager = KyoozPlaylistManager.instance
+    
+    var hasData:Bool {
+        return !itunesLibraryPlaylists.isEmpty || kyoozPlaylists.count != 0
+    }
 	
 	let itunesLibraryPlaylists:[MPMediaPlaylist]
 	let kyoozPlaylists:NSOrderedSet
@@ -101,7 +105,13 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		switch indexPath.section {
 		case 0:
-			mediaEntityTVC.delegate?.tableView?(tableView, didSelectRowAtIndexPath: indexPath)
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            let _ = itunesLibraryPlaylists[indexPath.row]
+            
+            let _ = LibraryGrouping.Playlists.baseQuery
+            
+            //go to specific album track view controller if we are selecting an album collection
+//            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates:filterQuery.filterPredicates, parentGroup: LibraryGrouping.Playlists, entity: entity)
 		case 1:
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             guard let kPlaylist = kyoozPlaylists.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
@@ -148,7 +158,7 @@ final class PlaylistDatasource : NSObject, UITableViewDataSource, UITableViewDel
     
     //MARK: - class functions
     func getMediaItemsFromKyoozPlaylistAtIndex(index:Int) -> [AudioTrack] {
-        return (kyoozPlaylists.objectAtIndex(index) as? KyoozPlaylist)?.getTracks() ?? [AudioTrack]()
+        return (kyoozPlaylists.objectAtIndex(index) as? KyoozPlaylist)?.tracks ?? [AudioTrack]()
     }
     
     

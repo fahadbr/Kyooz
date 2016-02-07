@@ -17,8 +17,6 @@ import Foundation
     
     func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64
     
-    func valueForProperty(property:String) -> AnyObject?
-    
 }
 
 @objc protocol AudioTrackCollection : AudioEntity {

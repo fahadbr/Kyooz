@@ -8,28 +8,21 @@
 
 import Foundation
 
-final class KyoozPlaylistManager {
+final class KyoozPlaylistManager  {
 	
 	static let instance = KyoozPlaylistManager()
 	
 	private static let listDirectory:String = KyoozUtils.libraryDirectory.stringByAppendingPathComponent("kyoozPlaylists")
 	
-    private lazy var playlistsSet:NSMutableOrderedSet = {
-        guard let object = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) else {
-            Logger.error("couldnt find playlist set in list directory")
-            return NSMutableOrderedSet()
-        }
-        
-        guard let set = object as? NSMutableOrderedSet else {
-            Logger.error("object is not a mutable set")
-            return NSMutableOrderedSet()
-        }
-        return set
-    }()
+    private var playlistsSet:NSMutableOrderedSet = NSMutableOrderedSet()
 	
 	var playlists:NSOrderedSet {
-		return playlistsSet
+        return playlistsSet
 	}
+    
+    init() {
+        reloadSourceData()
+    }
 	
 	func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
 		playlist.count = tracks.count
@@ -60,6 +53,50 @@ final class KyoozPlaylistManager {
 	}
 }
 
+extension KyoozPlaylistManager : AudioEntitySourceData {
+    var sectionNamesCanBeUsedAsIndexTitles:Bool {
+        return false
+    }
+    
+    var sections:[SectionDescription] {
+        return [SectionDTO(name: "KYOOZ PLAYLISTS", count: playlistsSet.count)]
+    }
+    
+    var entities:[AudioEntity] {
+        return playlistsSet.array as! [KyoozPlaylist]
+    }
+    
+    var libraryGrouping:LibraryGrouping {
+        get {
+            return LibraryGrouping.Playlists
+        } set { } //setter does nothing
+    }
+    
+    func reloadSourceData() {
+        guard let object = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) else {
+            Logger.error("couldnt find playlist set in list directory")
+            return
+        }
+        
+        guard let set = object as? NSMutableOrderedSet else {
+            Logger.error("object is not a mutable set")
+            return
+        }
+        playlistsSet = set
+    }
+    
+    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
+        guard let playlist = playlistsSet.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
+            return nil
+        }
+        return KyoozPlaylistSourceData(playlist: playlist)
+    }
+    
+    subscript(i:NSIndexPath) -> AudioEntity {
+        return playlistsSet.objectAtIndex(i.row) as! KyoozPlaylist
+    }
+}
+
 final class KyoozPlaylist : NSObject, NSSecureCoding {
 	
 	static let nameKey = "kyoozPlaylist.name"
@@ -87,7 +124,8 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	
 	let name:String
 	private (set) var count:Int = 0
-	private var tracks:[AudioTrack]!
+    
+	private var _tracks:[AudioTrack]!
 	
 	init(name:String) {
 		self.name = name
@@ -107,14 +145,6 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	private func playlistTracksFileName() -> String {
 		return KyoozUtils.libraryDirectory.stringByAppendingPathComponent(name)
 	}
-    
-    func getTracks() -> [AudioTrack] {
-		if tracks == nil {
-			tracks = NSKeyedUnarchiver.unarchiveObjectWithFile(playlistTracksFileName()) as? [AudioTrack] ?? [AudioTrack]()
-			
-		}
-		return tracks
-    }
 	
 	private func setTracks(tracks:[AudioTrack]?) throws {
 		guard let newTracks = tracks else {
@@ -132,6 +162,32 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 		aCoder.encodeInteger(count, forKey: KyoozPlaylist.countKey)
 	}
 	
+}
+
+extension KyoozPlaylist : AudioTrackCollection {
+    var representativeTrack:AudioTrack? {
+        return tracks.first
+    }
+    
+    func titleForGrouping(libraryGrouping:LibraryGrouping) -> String? {
+        if libraryGrouping == LibraryGrouping.Playlists {
+            return name
+        }
+        return tracks.first?.titleForGrouping(libraryGrouping)
+    }
+    
+    func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64 {
+        return tracks.first?.persistentIdForGrouping(libraryGrouping) ?? 0
+    }
+    
+    var tracks:[AudioTrack] {
+        if _tracks == nil {
+            _tracks = NSKeyedUnarchiver.unarchiveObjectWithFile(playlistTracksFileName()) as? [AudioTrack] ?? [AudioTrack]()
+        }
+        return _tracks
+    }
+    
+    
 }
 
 func ==(lhs:KyoozPlaylist, rhs:KyoozPlaylist) -> Bool {

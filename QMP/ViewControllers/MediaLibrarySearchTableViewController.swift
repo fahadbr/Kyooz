@@ -171,8 +171,8 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         
         (presentingViewController as? UINavigationController)?.popToRootViewControllerAnimated(false)
 		
-		if let audioEntity = entity as? AudioEntity {
-			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(basePredicates: group.nextGroupLevel!.baseQuery.filterPredicates, parentGroup: group, entity: audioEntity)
+		if let audioEntity = entity as? AudioTrackCollection, let sourceData = MediaQuerySourceData(filterEntity: audioEntity, parentLibraryGroup: group, baseQuery: nil) {
+			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: group, entity: audioEntity)
 		}
 		
         //doing this asynchronously because it must be effective after the previous animations have taken place

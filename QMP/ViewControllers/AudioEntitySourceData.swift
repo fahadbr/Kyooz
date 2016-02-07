@@ -18,19 +18,11 @@ protocol AudioEntitySourceData {
     var libraryGrouping:LibraryGrouping { get set }
 	
     func reloadSourceData()
-
-    subscript(i:NSIndexPath) -> AudioEntity { get }
+    func flattenedIndex(indexPath:NSIndexPath) -> Int
+    func getTracksAtIndex(indexPath:NSIndexPath) -> [AudioTrack]
+    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData?
     
-}
-
-protocol SectionDescription {
-	var name:String { get }
-	var count:Int { get }
-}
-
-struct SectionDTO : SectionDescription {
-	let name:String
-	let count:Int
+    subscript(i:NSIndexPath) -> AudioEntity { get }
 }
 
 extension AudioEntitySourceData {
@@ -49,7 +41,34 @@ extension AudioEntitySourceData {
         return [AudioTrack]()
     }
     
+    func flattenedIndex(indexPath:NSIndexPath) -> Int {
+        return indexPath.row
+    }
+    
+    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
+        return nil
+    }
+    
+    subscript(i:NSIndexPath) -> AudioEntity {
+        return entities[flattenedIndex(i)]
+    }
 }
+
+@objc protocol SectionDescription {
+	var name:String { get }
+	var count:Int { get }
+}
+
+class SectionDTO : SectionDescription {
+	@objc let name:String
+	@objc let count:Int
+    init(name:String, count:Int) {
+        self.name = name
+        self.count = count
+    }
+}
+
+
 
 final class KyoozPlaylistSourceData : AudioEntitySourceData {
 	
@@ -65,23 +84,19 @@ final class KyoozPlaylistSourceData : AudioEntitySourceData {
 	
 	init(playlist:KyoozPlaylist) {
 		sections = [SectionDTO(name: playlist.name, count: playlist.count)]
-		entities = playlist.getTracks()
+		entities = playlist.tracks
 		self.playlist = playlist
 	}
 
 	func reloadSourceData() {
-		entities = playlist.getTracks()
-	}
-	
-	subscript(i:NSIndexPath) -> AudioEntity {
-		return entities[i.row]
+		entities = playlist.tracks
 	}
 }
 
 final class MediaQuerySourceData : AudioEntitySourceData {
 
 	var sectionNamesCanBeUsedAsIndexTitles:Bool {
-		return true
+		return _sections != nil
 	}
 	
 	var sections:[SectionDescription] {
@@ -90,7 +105,7 @@ final class MediaQuerySourceData : AudioEntitySourceData {
 	
 	var entities:[AudioEntity] = [AudioEntity]() {
 		didSet {
-			singleSectionArray = [SectionDTO(name: "", count: entities.count)]
+			singleSectionArray = [SectionDTO(name: libraryGrouping.name, count: entities.count)]
 		}
 	}
 	
@@ -110,6 +125,25 @@ final class MediaQuerySourceData : AudioEntitySourceData {
         reloadSourceData()
     }
     
+    init?(filterEntity:AudioEntity, parentLibraryGroup:LibraryGrouping, baseQuery:MPMediaQuery?) {
+        guard let nextLibraryGroup = parentLibraryGroup.nextGroupLevel else {
+            self.filterQuery = MPMediaQuery()
+            self.libraryGrouping = parentLibraryGroup
+            return nil
+        }
+        
+        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentLibraryGroup.groupingType)
+        let propertyValue = NSNumber(unsignedLongLong: filterEntity.persistentIdForGrouping(parentLibraryGroup))
+        
+        let filterQuery = MPMediaQuery(filterPredicates: baseQuery?.filterPredicates ?? parentLibraryGroup.baseQuery.filterPredicates)
+        filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
+        filterQuery.groupingType = nextLibraryGroup.groupingType
+        
+        self.filterQuery = filterQuery
+        self.libraryGrouping = nextLibraryGroup
+        reloadSourceData()
+    }
+    
     func reloadSourceData() {
         let isSongGrouping = libraryGrouping == LibraryGrouping.Songs
         entities = (isSongGrouping ? filterQuery.items : filterQuery.collections) ?? [AudioEntity]()
@@ -126,11 +160,13 @@ final class MediaQuerySourceData : AudioEntitySourceData {
 		
     }
     
-    subscript(i:NSIndexPath) -> AudioEntity {
-        return entities[getAbsoluteIndex(i)]
+    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
+        let entity = self[indexPath]
+        
+        return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: filterQuery)
     }
     
-    private func getAbsoluteIndex(indexPath: NSIndexPath) -> Int{
+    func flattenedIndex(indexPath: NSIndexPath) -> Int {
         guard let sections = self._sections else {
             return indexPath.row
         }
@@ -141,5 +177,6 @@ final class MediaQuerySourceData : AudioEntitySourceData {
         
         return absoluteIndex
     }
+    
     
 }
