@@ -10,9 +10,13 @@ import UIKit
 
 final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	
-	private let originalOrderedDatasources:[AudioEntityDSDProtocol]
-	private var sections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
+    let originalOrderedDatasources:[AudioEntityDSDProtocol]
+	private var dsdSections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
 	
+    var sourceData:AudioEntitySourceData {
+        return self
+    }
+    
 	init(datasources:[AudioEntityDSDProtocol]) {
 		self.originalOrderedDatasources = datasources
         super.init()
@@ -20,32 +24,32 @@ final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	}
     
     var hasData:Bool {
-        return !sections.isEmpty
+        return !dsdSections.isEmpty
     }
 	
     //MARK: - Table View Datasource
     
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		let count = sections.count
+		let count = dsdSections.count
         tableView.sectionHeaderHeight = count > 1 ? 40 : 0
         return count
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return sections[section].tableView(tableView, numberOfRowsInSection: 0)
+		return dsdSections[section].tableView(tableView, numberOfRowsInSection: 0)
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		return sections[indexPath.section].tableView(tableView, cellForRowAtIndexPath: indexPath)
+		return dsdSections[indexPath.section].tableView(tableView, cellForRowAtIndexPath: indexPath)
 	}
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return sections[indexPath.section].tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? false
+        return dsdSections[indexPath.section].tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? false
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         tableView.beginUpdates()
-        sections[indexPath.section].tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
+        dsdSections[indexPath.section].tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
         reloadSections()
         tableView.endUpdates()
     }
@@ -53,17 +57,65 @@ final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
     //MARK: - Table View Delegate
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return sections[section].tableView?(tableView, viewForHeaderInSection: 0)
+        return dsdSections[section].tableView?(tableView, viewForHeaderInSection: 0)
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        sections[indexPath.section].tableView?(tableView, didSelectRowAtIndexPath:indexPath)
+        dsdSections[indexPath.section].tableView?(tableView, didSelectRowAtIndexPath:indexPath)
     }
 	
 	private func reloadSections() {
-		sections = originalOrderedDatasources.filter() {
+		dsdSections = originalOrderedDatasources.filter() {
 			return $0.hasData
 		}
 	}
 	
+}
+
+extension AudioEntityDSDSectionDelegator : AudioEntitySourceData {
+    
+    var sections:[SectionDescription] {
+        return dsdSections.map() {
+            return $0.sourceData.sections.first ?? SectionDTO(name: "Unknown Section", count: 0)
+        }
+    }
+    
+    var entities:[AudioEntity] {
+        return dsdSections.flatMap() { return $0.sourceData.entities }
+    }
+    
+    var libraryGrouping:LibraryGrouping {
+        get {
+            return dsdSections.first?.sourceData.libraryGrouping ?? LibraryGrouping.Artists
+        } set {}
+    }
+    
+    func reloadSourceData() {
+        dsdSections.forEach() { $0.sourceData.reloadSourceData() }
+    }
+    
+    func flattenedIndex(indexPath: NSIndexPath) -> Int {
+        var offset = 0
+        for i in 0...indexPath.section {
+            offset += dsdSections[i].sourceData.sections.first?.count ?? 0
+        }
+        return offset + indexPath.row
+    }
+    
+    func getTracksAtIndex(indexPath: NSIndexPath) -> [AudioTrack] {
+        return dsdSections[indexPath.section].sourceData.getTracksAtIndex(convertIndexPath(indexPath))
+    }
+    
+    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
+        return dsdSections[indexPath.section].sourceData.sourceDataForIndex(convertIndexPath(indexPath))
+    }
+    
+    subscript(i:NSIndexPath) -> AudioEntity {
+        return dsdSections[i.section].sourceData[convertIndexPath(i)]
+    }
+    
+    private func convertIndexPath(indexPath:NSIndexPath) -> NSIndexPath {
+        return NSIndexPath(forRow: indexPath.row, inSection: 0)
+    }
+    
 }

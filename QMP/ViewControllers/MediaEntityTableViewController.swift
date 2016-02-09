@@ -41,7 +41,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
         
         let scrollView = UIScrollView(frame: headerView.bounds)
-//        let scrollView = UIScrollView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: tableView.frame.width, height: 40)))
         scrollView.contentSize = control.frame.size
         
         scrollView.addSubview(control)
@@ -106,12 +105,17 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         
         switch sourceData.libraryGrouping {
         case LibraryGrouping.Songs:
-            datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier:  reuseIdentifier, audioCellDelegate: self)
+            if sourceData is KyoozPlaylistSourceData {
+                datasourceDelegate = KyoozPlaylistDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            } else {
+                datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier:  reuseIdentifier, audioCellDelegate: self)
+            }
         case LibraryGrouping.Playlists:
             let playlistDSD = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
-            let kPlaylistDSD = KyoozPlaylistDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            let kPlaylistDSD = KyoozPlaylistManagerDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             let delegator = AudioEntityDSDSectionDelegator(datasources: [playlistDSD, kPlaylistDSD])
             
+            sourceData = delegator
             datasourceDelegate = delegator
         default:
             datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)

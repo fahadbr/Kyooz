@@ -10,6 +10,8 @@ import UIKit
 
 protocol AudioEntityDSDProtocol : UITableViewDelegate, UITableViewDataSource {
     
+    var sourceData:AudioEntitySourceData { get }
+    
     var hasData:Bool { get }
     
 }

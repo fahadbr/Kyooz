@@ -14,6 +14,8 @@ protocol KyoozErrorProtocol : ErrorType {
 	
 }
 
-struct InitializationError : KyoozErrorProtocol {
+struct KyoozError : KyoozErrorProtocol {
     let errorDescription:String
 }
+
+
