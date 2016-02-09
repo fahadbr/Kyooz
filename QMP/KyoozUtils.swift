@@ -59,10 +59,15 @@ struct KyoozUtils {
         Logger.debug("Took \(endTime - startTime) seconds to perform \(description)")
     }
 	
-	static func showPopupError(withTitle title:String, withMessage message:String, presentationVC:UIViewController) {
+	static func showPopupError(withTitle title:String?, withMessage message:String?, presentationVC:UIViewController?) {
 		let errorAC = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 		errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-		presentationVC.presentViewController(errorAC, animated: true, completion: nil)
+		(presentationVC ?? ContainerViewController.instance).presentViewController(errorAC, animated: true, completion: nil)
 	}
+    
+    static func showPopupError(withTitle title:String, withThrownError error:ErrorType, presentationVC:UIViewController?) {
+        let message = "Error Description: \((error as? KyoozErrorProtocol)?.errorDescription ?? _stdlib_getDemangledTypeName(error))"
+        showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
+    }
 	
 }

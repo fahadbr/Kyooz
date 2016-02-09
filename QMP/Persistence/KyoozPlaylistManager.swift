@@ -26,9 +26,11 @@ final class KyoozPlaylistManager  {
 	
 	func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
 		playlist.count = tracks.count
+        let oldCount = playlistsSet.count
 		try playlist.setTracks(tracks)
 		try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: false)
-        ShortNotificationManager.instance.presentShortNotificationWithMessage("Saved playlist with name \(playlist.name)", withSize: .Small)
+        let newCount = playlistsSet.count
+        ShortNotificationManager.instance.presentShortNotificationWithMessage("Saved \(oldCount < newCount ? "" : "changes to ")playlist: \(playlist.name)", withSize: .Small)
 	}
 	
     func deletePlaylist(playlist:KyoozPlaylist) throws {
@@ -54,9 +56,6 @@ final class KyoozPlaylistManager  {
 }
 
 extension KyoozPlaylistManager : AudioEntitySourceData {
-    var sectionNamesCanBeUsedAsIndexTitles:Bool {
-        return false
-    }
     
     var sections:[SectionDescription] {
         return [SectionDTO(name: "KYOOZ PLAYLISTS", count: playlistsSet.count)]
@@ -125,7 +124,15 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	let name:String
 	private (set) var count:Int = 0
     
-	private var _tracks:[AudioTrack]!
+    private var _tracks:[AudioTrack]! {
+        didSet {
+            count = _tracks?.count ?? 0
+        }
+    }
+    
+    private var playlistTracksFileName : String {
+        return KyoozUtils.libraryDirectory.stringByAppendingPathComponent(name)
+    }
 	
 	init(name:String) {
 		self.name = name
@@ -142,19 +149,18 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 		name = persistedName
 	}
 	
-	private func playlistTracksFileName() -> String {
-		return KyoozUtils.libraryDirectory.stringByAppendingPathComponent(name)
-	}
+
 	
 	private func setTracks(tracks:[AudioTrack]?) throws {
 		guard let newTracks = tracks else {
-			try NSFileManager.defaultManager().removeItemAtPath(playlistTracksFileName())
+			try NSFileManager.defaultManager().removeItemAtPath(playlistTracksFileName)
 			return
 		}
 		
-		guard NSKeyedArchiver.archiveRootObject(newTracks as NSArray, toFile: playlistTracksFileName()) else {
+		guard NSKeyedArchiver.archiveRootObject(newTracks as NSArray, toFile: playlistTracksFileName) else {
 			throw DataPersistenceError(errorDescription: "Failed to save the tracks for playlist \(name)")
 		}
+        _tracks = tracks
 	}
 	
 	func encodeWithCoder(aCoder: NSCoder) {
@@ -182,7 +188,7 @@ extension KyoozPlaylist : AudioTrackCollection {
     
     var tracks:[AudioTrack] {
         if _tracks == nil {
-            _tracks = NSKeyedUnarchiver.unarchiveObjectWithFile(playlistTracksFileName()) as? [AudioTrack] ?? [AudioTrack]()
+            _tracks = NSKeyedUnarchiver.unarchiveObjectWithFile(playlistTracksFileName) as? [AudioTrack] ?? [AudioTrack]()
         }
         return _tracks
     }

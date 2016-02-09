@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class PlaylistDatasource : NSObject, AudioEntityDSDProtocol {
+final class PlaylistDatasource : NSObject {
 	
 	private var kyoozPlaylistManager = KyoozPlaylistManager.instance
     

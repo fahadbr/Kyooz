@@ -27,6 +27,10 @@ protocol AudioEntitySourceData {
 
 extension AudioEntitySourceData {
     
+    var sectionNamesCanBeUsedAsIndexTitles:Bool {
+        return false
+    }
+    
     func getTracksAtIndex(indexPath:NSIndexPath) -> [AudioTrack] {
         
         if !entities.isEmpty {
@@ -72,18 +76,15 @@ class SectionDTO : SectionDescription {
 
 final class KyoozPlaylistSourceData : AudioEntitySourceData {
 	
-	var sectionNamesCanBeUsedAsIndexTitles:Bool {
-		return false
-	}
-	
-	var sections:[SectionDescription]
+    var sections:[SectionDescription] {
+        return [SectionDTO(name: playlist.name, count: playlist.count)]
+    }
 	var entities:[AudioEntity]
 	var libraryGrouping:LibraryGrouping = LibraryGrouping.Songs
 	
 	let playlist:KyoozPlaylist
 	
 	init(playlist:KyoozPlaylist) {
-		sections = [SectionDTO(name: playlist.name, count: playlist.count)]
 		entities = playlist.tracks
 		self.playlist = playlist
 	}

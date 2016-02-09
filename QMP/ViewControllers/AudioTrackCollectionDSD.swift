@@ -26,7 +26,7 @@ class AudioTrackCollectionDSD : AudioEntityDSD {
 	
 }
 
-final class KyoozPlaylistDSD : AudioTrackCollectionDSD {
+final class KyoozPlaylistManagerDSD : AudioTrackCollectionDSD {
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
