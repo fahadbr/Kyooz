@@ -8,12 +8,11 @@
 
 import UIKit
 
-class AudioEntityDSD : NSObject, AudioEntityDSDProtocol {
+class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     
     weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
 	weak var parentMediaEntityHeaderVC:ParentMediaEntityHeaderViewController?
     
-    var sourceData:AudioEntitySourceData
     var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     private let reuseIdentifier:String
@@ -23,11 +22,10 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol {
 	}
     
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ParentMediaEntityHeaderViewController?) {
-        self.sourceData = sourceData
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
 		self.parentMediaEntityHeaderVC = audioCellDelegate
-        super.init()
+        super.init(sourceData: sourceData)
     }
     
     //MARK: - TableView Datasource Methods
@@ -79,20 +77,5 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol {
         return cell
         
     }
-    
-    //MARK: - TableView delegate methods
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
-            return nil
-        }
-        view.initializeHeaderView()
-        
-        if let headerView = view.headerView {
-            headerView.headerTitleLabel.text = sourceData.sections[section].name
-            headerView.disclosureContainerView.hidden = true
-        }
-        return view
-    }
-	
 
 }

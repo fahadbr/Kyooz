@@ -69,6 +69,7 @@
 		0B778B0D1B938E2500004A1B /* SkipTrackButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */; };
 		0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */; };
 		0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */; };
+		0B7FAC1F1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */; };
 		0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */; };
 		0B83FE1E1B24CA1E00746A9E /* log_in-mobile.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */; };
 		0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */; };
@@ -205,6 +206,7 @@
 		0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkipTrackButtonView.xib; sourceTree = "<group>"; };
 		0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
+		0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityTableViewDelegate.swift; sourceTree = "<group>"; };
 		0B83FE171B24BB9700746A9E /* SpotifyDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyDAO.swift; sourceTree = "<group>"; };
 		0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "log_in-mobile.png"; sourceTree = "<group>"; };
 		0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMAudioQueuePlayer.swift; sourceTree = "<group>"; };
@@ -536,6 +538,7 @@
 				100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */,
 				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorDSD.swift */,
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
+				0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */,
 				100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */,
 			);
 			name = TableView;
@@ -868,6 +871,7 @@
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
 				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
+				0B7FAC1F1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift in Sources */,
 				0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioEntity.swift in Sources */,
 				0BC3179F1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift in Sources */,

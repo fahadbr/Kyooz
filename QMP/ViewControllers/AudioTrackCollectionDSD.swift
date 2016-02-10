@@ -32,6 +32,12 @@ final class KyoozPlaylistManagerDSD : AudioTrackCollectionDSD {
         return true
     }
     
+//    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+//        return [UITableViewRowAction(style: .Default, title: "Delete", handler: { [weak self](action, indexPath) -> Void in
+//            self?.tableView(tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+//        })]
+//    }
+    
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             guard let playlist = sourceData[indexPath] as? KyoozPlaylist, let kyoozPlaylistManager = sourceData as? KyoozPlaylistManager else {
