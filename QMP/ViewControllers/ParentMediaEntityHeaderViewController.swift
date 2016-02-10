@@ -38,8 +38,14 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     var datasourceDelegate:AudioEntityDSDProtocol! {
         didSet {
             tableView.dataSource = datasourceDelegate
-            tableView.delegate = datasourceDelegate
-            toolbarItems = (datasourceDelegate as? AudioEntitySelectorDSD)?.toolbarItems
+            delegate = datasourceDelegate
+        }
+    }
+    
+    var delegate:UITableViewDelegate! {
+        didSet {
+            tableView.delegate = delegate
+            toolbarItems = (delegate as? AudioEntitySelectorDSD)?.toolbarItems
         }
     }
 	
@@ -139,7 +145,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         
         if willEdit {
             sender?.setTitle("CANCEL", forState: .Normal)
-            self.datasourceDelegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            self.delegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView)
         } else {
             sender?.setTitle("SELECT", forState: .Normal)
             applyDataSourceAndDelegate()

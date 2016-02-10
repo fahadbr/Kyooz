@@ -44,8 +44,12 @@ final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	}
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return dsdSections[indexPath.section].tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? false
+        return dsdSections[indexPath.section].tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? true
     }
+    
+//    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+//        return dsdSections[indexPath.section].tableView?(tableView, editActionsForRowAtIndexPath: indexPath) ?? [UITableViewRowAction]()
+//    }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         tableView.beginUpdates()

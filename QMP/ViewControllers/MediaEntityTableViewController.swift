@@ -98,10 +98,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     override func applyDataSourceAndDelegate() {
-        guard !tableView.editing else{
-            datasourceDelegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
-            return
-        }
+
         
         switch sourceData.libraryGrouping {
         case LibraryGrouping.Songs:
@@ -119,6 +116,10 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
             datasourceDelegate = delegator
         default:
             datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
+        }
+        
+        if tableView.editing {
+            delegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView)
         }
 
     }
