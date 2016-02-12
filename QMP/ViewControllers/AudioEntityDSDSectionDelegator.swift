@@ -47,10 +47,6 @@ final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
         return dsdSections[indexPath.section].tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? true
     }
     
-//    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-//        return dsdSections[indexPath.section].tableView?(tableView, editActionsForRowAtIndexPath: indexPath) ?? [UITableViewRowAction]()
-//    }
-    
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         tableView.beginUpdates()
         dsdSections[indexPath.section].tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
@@ -68,7 +64,7 @@ final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
         dsdSections[indexPath.section].tableView?(tableView, didSelectRowAtIndexPath:indexPath)
     }
 	
-	private func reloadSections() {
+    func reloadSections() {
 		dsdSections = originalOrderedDatasources.filter() {
 			return $0.hasData
 		}

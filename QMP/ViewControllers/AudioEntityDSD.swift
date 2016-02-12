@@ -21,10 +21,10 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
 		return !sourceData.entities.isEmpty
 	}
     
-    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ParentMediaEntityHeaderViewController?) {
+    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
-		self.parentMediaEntityHeaderVC = audioCellDelegate
+		self.parentMediaEntityHeaderVC = audioCellDelegate as? ParentMediaEntityHeaderViewController
         super.init(sourceData: sourceData)
     }
     

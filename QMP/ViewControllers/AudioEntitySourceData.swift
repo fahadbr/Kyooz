@@ -76,6 +76,14 @@ class SectionDTO : SectionDescription {
     }
 }
 
+class RowLimit {
+    let limit:Int
+    var isExpanded:Bool = false
+    init(limit:Int) {
+        self.limit = limit
+    }
+}
+
 
 
 final class KyoozPlaylistSourceData : AudioEntitySourceData {
@@ -188,13 +196,19 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
 
 
 final class SearchResultsSourceData : AudioEntitySourceData {
-	
+    
 	var sectionNamesCanBeUsedAsIndexTitles:Bool {
 		return false
 	}
 	
 	var sections:[SectionDescription] {
-		return [SectionDTO(name: "", count: entities.count)]
+        let count = entities.count
+        var countToUse = count
+        if !rowLimit.isExpanded {
+            countToUse = min(rowLimit.limit, count)
+        }
+        
+		return [SectionDTO(name: libraryGrouping.name, count: countToUse)]
 	}
 	var entities:[AudioEntity] {
 		return searchExecutionController.searchResults
@@ -204,10 +218,12 @@ final class SearchResultsSourceData : AudioEntitySourceData {
 		return searchExecutionController.libraryGroup
 	}
 	
-	var searchExecutionController:SearchExecutionController<AudioEntity>
-	
-	init(searchExecutionController:SearchExecutionController<AudioEntity>) {
+	let searchExecutionController:SearchExecutionController<AudioEntity>
+    let rowLimit:RowLimit
+    
+    init(searchExecutionController:SearchExecutionController<AudioEntity>, rowLimit:RowLimit) {
 		self.searchExecutionController = searchExecutionController
+        self.rowLimit = rowLimit
 	}
 	
 	func reloadSourceData() {
@@ -215,7 +231,7 @@ final class SearchResultsSourceData : AudioEntitySourceData {
 	}
 	
 	func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
-		return nil
+		return MediaQuerySourceData(filterEntity: self[indexPath], parentLibraryGroup: libraryGrouping, baseQuery: nil)
 	}
 	
 
