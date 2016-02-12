@@ -10,15 +10,7 @@ import Foundation
 import UIKit
 import MediaPlayer
 
-final class MediaLibrarySearchTableViewController : ParentMediaEntityViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, UITableViewDelegate, UITableViewDataSource {
-    
-    private class RowLimit {
-        let limit:Int
-        var isExpanded:Bool = false
-        init(limit:Int) {
-            self.limit = limit
-        }
-    }
+final class MediaLibrarySearchTableViewController : ParentMediaEntityViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate {
 
 
     static let instance = MediaLibrarySearchTableViewController()
@@ -38,10 +30,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         return [artistSearchExecutor, albumSearchExecutor, songSearchExecutor, playlistSearchExecutor]
     }()
     
-    private let rowLimitPerSection = [LibraryGrouping.Artists:RowLimit(limit: 3),
-        LibraryGrouping.Albums:RowLimit(limit: 4),
-        LibraryGrouping.Songs:RowLimit(limit: 6),
-        LibraryGrouping.Playlists:RowLimit(limit: 3)]
+    private let rowLimitPerSection = [LibraryGrouping.Albums:RowLimit(limit: 4), LibraryGrouping.Songs:RowLimit(limit: 6)]
     
     
     private var sections = [SearchExecutionController<AudioEntity>]()
@@ -50,11 +39,16 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
     
     private (set) var searchText:String!
     
+    private var sourceData:AudioEntitySourceData!
+    private var datasourceDelegate:AudioEntityDSDSectionDelegator! {
+        didSet {
+            tableView.dataSource = datasourceDelegate
+            tableView.delegate = datasourceDelegate
+        }
+    }
+    
     //MARK: - View life cycle
     override func viewDidLoad() {
-        for se in searchExecutionControllers {
-            se.delegate = self
-        }
         tableView = UITableView()
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -62,65 +56,38 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         tableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
         tableView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         tableView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.sectionHeaderHeight = 40
-        tableView.estimatedSectionHeaderHeight = 40
+        
         super.viewDidLoad()
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
+        
+        var datasourceDelegates = [AudioEntityDSDProtocol]()
+        
+        for searchExecutionController in searchExecutionControllers {
+            searchExecutionController.delegate = self
+            let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController, rowLimit: rowLimitPerSection[searchExecutionController.libraryGroup] ?? RowLimit(limit: 3))
+            let datasourceDelegate:AudioEntityDSDProtocol
+            let reuseIdentifier = searchExecutionController.libraryGroup == LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
+            
+            switch searchExecutionController.libraryGroup {
+            case LibraryGrouping.Songs:
+                datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: nil)
+            default:
+                datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: nil)
+            }
+            
+            datasourceDelegates.append(datasourceDelegate)
+        }
+        let sectionDelegator = AudioEntityDSDSectionDelegator(datasources: datasourceDelegates)
+        sourceData = sectionDelegator
+        datasourceDelegate = sectionDelegator
+        
+        
         popGestureRecognizer.enabled = false
     }
     
-    //MARK: - Table View Datasource
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sections.count
-    }
-
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section >= sections.count {
-            Logger.error("section index received is greater than the number of sections avaliable")
-            return 0
-        }
-        let searchExecutor = sections[section]
-        let rowLimit = rowLimitPerSection[searchExecutor.libraryGroup]!
-        
-        if rowLimit.isExpanded {
-            return searchExecutor.searchResults.count
-        }
-        
-        return rowLimit.limit < searchExecutor.searchResults.count ? rowLimit.limit : searchExecutor.searchResults.count
-    }
-    
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let searchExecutor = sections[indexPath.section]
-        let group = searchExecutor.libraryGroup
-        let reuseIdentifier = group === LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
-        
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
-            return UITableViewCell()
-        }
-        
-        guard indexPath.row < searchExecutor.searchResults.count else {
-            return UITableViewCell()
-        }
-        let entity = searchExecutor.searchResults[indexPath.row]
-        if let configurableCell = cell as? ConfigurableAudioTableCell{
-            configurableCell.configureCellForItems(entity, libraryGrouping: group)
-            configurableCell.indexPath = indexPath
-            configurableCell.delegate = self
-        } else {
-            cell.textLabel?.text = entity.titleForGrouping(group)
-        }
-        
-        return cell
-    }
-    
-    //MARK: - Table View Delegate
     //MARK: header configuration
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section >= sections.count {

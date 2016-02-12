@@ -8,15 +8,20 @@
 
 import Foundation
 
-class Logger {
+final class Logger {
     
     static let loggerQueue = dispatch_queue_create("com.riaz.fahad.Kyooz.Logger", DISPATCH_QUEUE_SERIAL)
+    
+    private static let debugEnabled = true
+    
     
     private static var threadName:String {
         return NSOperationQueue.currentQueue()?.name ?? "null"
     }
     
-    class func debug(@autoclosure messageBlock: ()->String) {
+    static func debug(@autoclosure messageBlock: ()->String) {
+        if !debugEnabled { return }
+        
         let date = NSDate()
         let threadId = threadName
         let message = messageBlock()
@@ -25,7 +30,7 @@ class Logger {
         }
     }
     
-    class func error(message:String) {
+    static func error(message:String) {
         let date = NSDate()
         let threadId = threadName
         dispatch_async(loggerQueue) {
