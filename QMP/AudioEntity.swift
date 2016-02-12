@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc protocol AudioEntity : NSSecureCoding, NSObjectProtocol {
+@objc protocol AudioEntity : NSSecureCoding, NSObjectProtocol, SearchIndexValue {
     
     var count:Int { get }
     var representativeTrack:AudioTrack? { get }

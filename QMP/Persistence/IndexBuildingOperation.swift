@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class IndexBuildingOperation<T:NSObject> : AbstractResultOperation<SearchIndex<T>> {
+final class IndexBuildingOperation<T:SearchIndexValue> : AbstractResultOperation<SearchIndex<T>> {
     
     private let stopWords = ["the ", "a "]
     
@@ -69,7 +69,7 @@ private enum IndexBuildError : ErrorType {
     case Cancelled
 }
 
-private class IndexBuilder<BASE:NSObject,INPUT> {
+private class IndexBuilder<BASE:SearchIndexValue,INPUT> {
     
     weak var originatingOperation:NSOperation?
     
@@ -130,7 +130,7 @@ private class IndexBuilder<BASE:NSObject,INPUT> {
     }
 }
 
-private class FromValuesIndexBuilder<T:NSObject> : IndexBuilder<T, T> {
+private class FromValuesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, T> {
     
     private let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
     
@@ -144,7 +144,7 @@ private class FromValuesIndexBuilder<T:NSObject> : IndexBuilder<T, T> {
     }
 }
 
-private class FromEntriesIndexBuilder<T:NSObject> : IndexBuilder<T, SearchIndexEntry<T>> {
+private class FromEntriesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, SearchIndexEntry<T>> {
     
     override init(maxValuesAmount: Int) {
         super.init(maxValuesAmount: maxValuesAmount)

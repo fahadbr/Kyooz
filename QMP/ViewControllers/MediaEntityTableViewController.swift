@@ -80,7 +80,9 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         if isBaseLevel {
             sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
         } else {
-            sourceData.libraryGrouping = selectedGroup
+			if var groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
+				groupMutableSourceData.libraryGrouping = selectedGroup
+			}
         }
 		
         reloadAllData()

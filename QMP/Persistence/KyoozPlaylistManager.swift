@@ -66,11 +66,9 @@ extension KyoozPlaylistManager : AudioEntitySourceData {
     }
     
     var libraryGrouping:LibraryGrouping {
-        get {
-            return LibraryGrouping.Playlists
-        } set { } //setter does nothing
+		return LibraryGrouping.Playlists
     }
-    
+	
     func reloadSourceData() {
         guard let object = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) else {
             Logger.error("couldnt find playlist set in list directory")

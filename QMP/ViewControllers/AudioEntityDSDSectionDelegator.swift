@@ -89,9 +89,7 @@ extension AudioEntityDSDSectionDelegator : AudioEntitySourceData {
     }
     
     var libraryGrouping:LibraryGrouping {
-        get {
-            return dsdSections.first?.sourceData.libraryGrouping ?? LibraryGrouping.Artists
-        } set {}
+		return dsdSections.first?.sourceData.libraryGrouping ?? LibraryGrouping.Artists
     }
     
     func reloadSourceData() {

@@ -15,7 +15,7 @@ protocol SearchExecutionControllerDelegate: class {
     func searchResultsDidGetUpdated()
 }
 
-class SearchExecutionController<T:NSObject> : NSObject {
+class SearchExecutionController<T:SearchIndexValue> : NSObject {
     
     let libraryGroup:LibraryGrouping
     
@@ -96,7 +96,7 @@ class SearchExecutionController<T:NSObject> : NSObject {
     
 }
 
-final class IPodLibrarySearchExecutionController : SearchExecutionController<MPMediaEntity> {
+final class IPodLibrarySearchExecutionController : SearchExecutionController<AudioEntity> {
     
     override init(libraryGroup: LibraryGrouping, searchKeys: [String]) {
         super.init(libraryGroup: libraryGroup, searchKeys: searchKeys)
@@ -104,9 +104,9 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController<MPM
     
     override func rebuildSearchIndex() {
         self.searchIndex = nil
-        if let values:[MPMediaEntity] = libraryGroup == LibraryGrouping.Songs ? libraryGroup.baseQuery.items : libraryGroup.baseQuery.collections {
+        if let values:[AudioEntity] = libraryGroup == LibraryGrouping.Songs ? libraryGroup.baseQuery.items : libraryGroup.baseQuery.collections {
             let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
-            let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:MPMediaEntity) -> (String, String) in
+            let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
                 if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
                     return (titlePropertyName, primaryKey)
                 }
@@ -124,7 +124,7 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController<MPM
         }
     }
     
-    private override func createSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[MPMediaEntity]> {
+    private override func createSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
         if let searchIndex = self.searchIndex {
             return IndexSearchOperation(searchIndex: searchIndex, searchPredicate: searchPredicate, searchString: searchString)
         } else {

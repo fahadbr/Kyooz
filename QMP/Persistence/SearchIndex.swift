@@ -15,7 +15,7 @@ let indexQueue:NSOperationQueue = {
     return queue
 }()
 
-final class SearchIndex<T:NSObject> {
+final class SearchIndex<T:SearchIndexValue> {
     
     let name:String
     

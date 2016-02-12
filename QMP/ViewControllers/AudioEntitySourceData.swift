@@ -15,7 +15,7 @@ protocol AudioEntitySourceData {
 	var sections:[SectionDescription] { get }
     var entities:[AudioEntity] { get }
 	
-    var libraryGrouping:LibraryGrouping { get set }
+    var libraryGrouping:LibraryGrouping { get }
 	
     func reloadSourceData()
     func flattenedIndex(indexPath:NSIndexPath) -> Int
@@ -23,6 +23,10 @@ protocol AudioEntitySourceData {
     func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData?
     
     subscript(i:NSIndexPath) -> AudioEntity { get }
+}
+
+protocol GroupMutableAudioEntitySourceData : AudioEntitySourceData {
+	var libraryGrouping:LibraryGrouping { get set }
 }
 
 extension AudioEntitySourceData {
@@ -94,7 +98,7 @@ final class KyoozPlaylistSourceData : AudioEntitySourceData {
 	}
 }
 
-final class MediaQuerySourceData : AudioEntitySourceData {
+final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
 
 	var sectionNamesCanBeUsedAsIndexTitles:Bool {
 		return _sections != nil
@@ -180,4 +184,39 @@ final class MediaQuerySourceData : AudioEntitySourceData {
     }
     
     
+}
+
+
+final class SearchResultsSourceData : AudioEntitySourceData {
+	
+	var sectionNamesCanBeUsedAsIndexTitles:Bool {
+		return false
+	}
+	
+	var sections:[SectionDescription] {
+		return [SectionDTO(name: "", count: entities.count)]
+	}
+	var entities:[AudioEntity] {
+		return searchExecutionController.searchResults
+	}
+	
+	var libraryGrouping:LibraryGrouping {
+		return searchExecutionController.libraryGroup
+	}
+	
+	var searchExecutionController:SearchExecutionController<AudioEntity>
+	
+	init(searchExecutionController:SearchExecutionController<AudioEntity>) {
+		self.searchExecutionController = searchExecutionController
+	}
+	
+	func reloadSourceData() {
+		searchExecutionController.rebuildSearchIndex()
+	}
+	
+	func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
+		return nil
+	}
+	
+
 }
