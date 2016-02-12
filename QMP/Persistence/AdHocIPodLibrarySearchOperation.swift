@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEntity]> {
+final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[AudioEntity]> {
     
 
     private let group:LibraryGrouping
@@ -26,7 +26,7 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEn
         if cancelled { return }
         
         let isItemQuery:Bool = group == LibraryGrouping.Songs
-        guard let entities:[MPMediaEntity] = isItemQuery ? group.baseQuery.items : group.baseQuery.collections else {
+        guard let entities:[AudioEntity] = isItemQuery ? group.baseQuery.items : group.baseQuery.collections else {
             return
         }
         
@@ -45,7 +45,7 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEn
             endIndex = startIndex + section.range.length
         }
         
-        var finalResults = [MPMediaEntity]()
+        var finalResults = [AudioEntity]()
         let title = MPMediaItem.titlePropertyForGroupingType(group.groupingType)
         for i in startIndex...endIndex {
             let value = entities[i]
@@ -65,7 +65,7 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEn
         if cancelled { return }
 
         //now do a full library search
-        var secondaryResults = [MPMediaEntity]()
+        var secondaryResults = [AudioEntity]()
         for entity in entities {
             guard let primaryKey = entity.titleForGrouping(group)?.normalizedString else {
                 continue
@@ -78,12 +78,16 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[MPMediaEn
         }
         
         if(secondaryResults.isEmpty) { return }
-        
-        let primarySet = Set<MPMediaEntity>(finalResults)
-        let resultsSet = Set<MPMediaEntity>(secondaryResults)
-        let differenceSet = resultsSet.subtract(primarySet)
-    
-        finalResults.appendContentsOf(differenceSet)
+		
+		let primarySet = NSSet(array: finalResults)
+		let resultsSet = NSMutableSet(array: secondaryResults)
+		resultsSet.minusSet(primarySet as Set<NSObject>)
+		
+		guard let differences = resultsSet.allObjects as? [AudioEntity] else {
+			return
+		}
+		
+        finalResults.appendContentsOf(differences)
         
         if cancelled { return }
         

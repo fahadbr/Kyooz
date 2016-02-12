@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class SearchIndexEntry<T:NSObject> : NSObject {
+final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
     
     private var normalizedKeyValues = [String:String]()
     
@@ -48,5 +48,10 @@ final class SearchIndexEntry<T:NSObject> : NSObject {
         return nil
     }
     
+}
+
+@objc protocol SearchIndexValue {
+	var hashValue:Int { get }
+	func valueForKey(key:String) -> AnyObject?
 }
 

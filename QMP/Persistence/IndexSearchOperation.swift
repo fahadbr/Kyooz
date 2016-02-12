@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class IndexSearchOperation<T:NSObject> : AbstractResultOperation<[T]> {
+final class IndexSearchOperation<T:SearchIndexValue> : AbstractResultOperation<[T]> {
     
     let searchIndex:SearchIndex<T>
     let searchPredicate:NSPredicate
@@ -34,12 +34,18 @@ final class IndexSearchOperation<T:NSObject> : AbstractResultOperation<[T]> {
         let secondaryResults = searchIndex.searchValuesWithString(searchString, searchPredicate: searchPredicate)
         
         if(secondaryResults.isEmpty) { return }
-        
-        let tracksSet = Set<T>(results)
-        let resultsSet = Set<T>(secondaryResults)
-        let differenceSet = resultsSet.subtract(tracksSet)
-        
-        results.appendContentsOf(differenceSet)
+		
+//        let tracksSet = Set<T>(results)
+//        let resultsSet = Set<T>(secondaryResults)
+//        let differenceSet = resultsSet.subtract(tracksSet)
+		let tracksSet = NSSet(array: results)
+		let resultsSet = NSMutableSet(array: secondaryResults)
+		resultsSet.minusSet(tracksSet as Set<NSObject>)
+		guard let differences = resultsSet.allObjects as? [T] else {
+			return
+		}
+		
+        results.appendContentsOf(differences)
         
         if cancelled { return }
             

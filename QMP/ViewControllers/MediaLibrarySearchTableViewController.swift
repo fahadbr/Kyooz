@@ -26,7 +26,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
     //MARK: - Properties
     var searchController:UISearchController!
     
-    private let searchExecutionControllers:[SearchExecutionController<MPMediaEntity>] = {
+    private let searchExecutionControllers:[SearchExecutionController<AudioEntity>] = {
         let artistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Artists,
             searchKeys: [MPMediaItemPropertyAlbumArtist])
         let albumSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Albums,
@@ -44,9 +44,9 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         LibraryGrouping.Playlists:RowLimit(limit: 3)]
     
     
-    private var sections = [SearchExecutionController<MPMediaEntity>]()
+    private var sections = [SearchExecutionController<AudioEntity>]()
     private var tapGestureRecognizers = [LibraryGrouping:UITapGestureRecognizer]()
-    private var selectedHeader:SearchExecutionController<MPMediaEntity>?
+    private var selectedHeader:SearchExecutionController<AudioEntity>?
     
     private (set) var searchText:String!
     
@@ -109,8 +109,8 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
             return UITableViewCell()
         }
         let entity = searchExecutor.searchResults[indexPath.row]
-        if let configurableCell = cell as? ConfigurableAudioTableCell, let audioEntity = entity as? AudioEntity {
-            configurableCell.configureCellForItems(audioEntity, libraryGrouping: group)
+        if let configurableCell = cell as? ConfigurableAudioTableCell{
+            configurableCell.configureCellForItems(entity, libraryGrouping: group)
             configurableCell.indexPath = indexPath
             configurableCell.delegate = self
         } else {
@@ -267,7 +267,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
     }
     
     private func reloadSections() {
-        var newSections = [SearchExecutionController<MPMediaEntity>]()
+        var newSections = [SearchExecutionController<AudioEntity>]()
         if let selectedHeader = self.selectedHeader {
             newSections = [selectedHeader]
         } else {
@@ -295,7 +295,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         }
     }
     
-    private func collapseSelectedSectionAndInsertSections(sender:UITapGestureRecognizer, selectedHeader:SearchExecutionController<MPMediaEntity>) {
+    private func collapseSelectedSectionAndInsertSections(sender:UITapGestureRecognizer, selectedHeader:SearchExecutionController<AudioEntity>) {
         (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:false)
         self.selectedHeader = nil
         
@@ -336,7 +336,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         tableView.endUpdates()
     }
     
-    private func removeSectionsAndExpandSelectedSection(sender:UITapGestureRecognizer, searchExecutor:SearchExecutionController<MPMediaEntity>) {
+    private func removeSectionsAndExpandSelectedSection(sender:UITapGestureRecognizer, searchExecutor:SearchExecutionController<AudioEntity>) {
         (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:true)
 
         let indexSet = NSMutableIndexSet()
