@@ -8,10 +8,10 @@
 
 import UIKit
 
-final class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
+class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	
     let originalOrderedDatasources:[AudioEntityDSDProtocol]
-	private var dsdSections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
+	var dsdSections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
 	
     var sourceData:AudioEntitySourceData {
         return self

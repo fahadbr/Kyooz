@@ -76,15 +76,6 @@ class SectionDTO : SectionDescription {
     }
 }
 
-class RowLimit {
-    let limit:Int
-    var isExpanded:Bool = false
-    init(limit:Int) {
-        self.limit = limit
-    }
-}
-
-
 
 final class KyoozPlaylistSourceData : AudioEntitySourceData {
 	
@@ -202,13 +193,7 @@ final class SearchResultsSourceData : AudioEntitySourceData {
 	}
 	
 	var sections:[SectionDescription] {
-        let count = entities.count
-        var countToUse = count
-        if !rowLimit.isExpanded {
-            countToUse = min(rowLimit.limit, count)
-        }
-        
-		return [SectionDTO(name: libraryGrouping.name, count: countToUse)]
+		return [SectionDTO(name: libraryGrouping.name, count: entities.count)]
 	}
 	var entities:[AudioEntity] {
 		return searchExecutionController.searchResults
@@ -219,11 +204,9 @@ final class SearchResultsSourceData : AudioEntitySourceData {
 	}
 	
 	let searchExecutionController:SearchExecutionController<AudioEntity>
-    let rowLimit:RowLimit
     
-    init(searchExecutionController:SearchExecutionController<AudioEntity>, rowLimit:RowLimit) {
+    init(searchExecutionController:SearchExecutionController<AudioEntity>) {
 		self.searchExecutionController = searchExecutionController
-        self.rowLimit = rowLimit
 	}
 	
 	func reloadSourceData() {
