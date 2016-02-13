@@ -129,6 +129,7 @@
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
 		10C7B9DB1C45C16E00ADAAB6 /* WarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */; };
 		10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */; };
+		10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -269,6 +270,7 @@
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
 		10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningViewController.swift; sourceTree = "<group>"; };
 		10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationManager.swift; sourceTree = "<group>"; };
+		10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowLimitedSectionDelegator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -539,6 +541,7 @@
 				0BC317A21C5D99C9002BF431 /* AudioEntitySelectorDSD.swift */,
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
 				0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */,
+				10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */,
 				100A8BCE1C56EF75009FAB17 /* PlaylistDatasource.swift */,
 			);
 			name = TableView;
@@ -802,6 +805,7 @@
 				0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
 				100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */,
+				10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,

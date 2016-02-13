@@ -30,7 +30,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         return [artistSearchExecutor, albumSearchExecutor, songSearchExecutor, playlistSearchExecutor]
     }()
     
-    private let rowLimitPerSection = [LibraryGrouping.Albums:RowLimit(limit: 4), LibraryGrouping.Songs:RowLimit(limit: 6)]
+    private let rowLimitPerSection = [LibraryGrouping.Albums:4, LibraryGrouping.Songs:6]
     
     
     private var sections = [SearchExecutionController<AudioEntity>]()
@@ -66,7 +66,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
         
         for searchExecutionController in searchExecutionControllers {
             searchExecutionController.delegate = self
-            let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController, rowLimit: rowLimitPerSection[searchExecutionController.libraryGroup] ?? RowLimit(limit: 3))
+            let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController)
             let datasourceDelegate:AudioEntityDSDProtocol
             let reuseIdentifier = searchExecutionController.libraryGroup == LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
             

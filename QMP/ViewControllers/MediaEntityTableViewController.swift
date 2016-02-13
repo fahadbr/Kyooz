@@ -112,7 +112,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         case LibraryGrouping.Playlists:
             let playlistDSD = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             let kPlaylistDSD = KyoozPlaylistManagerDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
-            let delegator = AudioEntityDSDSectionDelegator(datasources: [playlistDSD, kPlaylistDSD])
+            let delegator = AudioEntityDSDSectionDelegator(datasources: [kPlaylistDSD, playlistDSD])
             
             sourceData = delegator
             datasourceDelegate = delegator
