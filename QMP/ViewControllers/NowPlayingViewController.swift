@@ -15,16 +15,12 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     
     private let notificationCenter = NSNotificationCenter.defaultCenter()
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    private let nowPlayingInfoCenter = MPNowPlayingInfoCenter.defaultCenter()
     
     private var longPressGestureRecognizer:UILongPressGestureRecognizer!
     private var menuButtonTapGestureRecognizer:UITapGestureRecognizer!
     
     private var tempImageCache = [MPMediaEntityPersistentID:UIImage]()
     private var noAlbumArtCellImage:UIImage!
-    private var playingImage:UIImage!
-    private var pausedImage:UIImage!
-    
     
     private (set) var laidOutSubviews:Bool = false
     private var indexPathsToDelete:[NSIndexPath]?
@@ -86,6 +82,11 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         ContainerViewController.instance.pushViewController(UIStoryboard.settingsViewController())
     }
     
+    
+    deinit {
+        unregisterForNotifications()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
@@ -120,9 +121,14 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         laidOutSubviews = true
     }
     
-    deinit {
-        unregisterForNotifications()
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
+        indexPathsToDelete = !editing ? nil : [NSIndexPath]()
+        menuButtonTapGestureRecognizer.enabled = !editing
+        longPressGestureRecognizer.enabled = !editing
     }
+
 
 
     override func didReceiveMemoryWarning() {
@@ -144,7 +150,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     
 	private func showConfirmDeleteAlertController(title:String, details:String? = nil, deleteBlock:()->Void) {
         let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
-        ac.addAction(UIAlertAction(title: "Yes", style: .Default, handler: {_ in deleteBlock() }))
+        ac.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: {_ in deleteBlock() }))
         ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         presentViewController(ac, animated: true, completion: nil)
 
@@ -184,14 +190,6 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         return insertMode ? insertModeCount : count
     }
 
-    override func setEditing(editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        tableView.setEditing(editing, animated: animated)
-        indexPathsToDelete = !editing ? nil : [NSIndexPath]()
-        menuButtonTapGestureRecognizer.enabled = !editing
-        longPressGestureRecognizer.enabled = !editing
-    }
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if(insertMode && indexPath.row == indexPathOfMovingItem.row) {
             return insertCellView
@@ -205,11 +203,12 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     
         let mediaItem = audioQueuePlayer.nowPlayingQueue[indexToUse]
         let isNowPlayingItem = (indexToUse == audioQueuePlayer.indexOfNowPlayingItem)
-        cell.configureTextLabelsForMediaItem(mediaItem, isNowPlayingItem:isNowPlayingItem)
-        cell.albumArtImageView.image = self.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
+        cell.configureCellForItems(mediaItem, libraryGrouping: LibraryGrouping.Songs)
+        cell.isNowPlayingItem = isNowPlayingItem
+        cell.indexPath = indexPath
+        
         return cell
     }
-    
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if(tableView.editing) {
@@ -223,22 +222,11 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
         if(tableView.editing) {
-            var indexToRemove:Int?
-            var i=0
-            for indexPathToDelete in indexPathsToDelete! {
-                if(indexPathToDelete == indexPath) {
-                    Logger.debug("removing indexPath from deletion list \(indexPath.description)")
-                    indexToRemove = i
-                    break;
-                }
-                i++
-            }
-            if(indexToRemove != nil) {
-                indexPathsToDelete?.removeAtIndex(indexToRemove!)
+            if let indexToRemove = indexPathsToDelete?.indexOf(indexPath) {
+                indexPathsToDelete?.removeAtIndex(indexToRemove)
             }
         }
     }
-    
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
@@ -366,7 +354,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         
         
         if mediaItem.albumId != 0 {
-            let goToAlbumAction = UIAlertAction(title: "☞ Album", style: .Default) { action in
+            let goToAlbumAction = UIAlertAction(title: "Jump To Album", style: .Default) { action in
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!,
                     parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
@@ -374,7 +362,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = UIAlertAction(title: "☞ Artist", style: .Default) { action in
+            let goToArtistAction = UIAlertAction(title: "Jump To Artist", style: .Default) { action in
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
             controller.addAction(goToArtistAction)

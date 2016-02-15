@@ -9,18 +9,41 @@
 import UIKit
 import MediaPlayer
 
-final class SongDetailsTableViewCell: AbstractTableViewCell {
+final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTableCell {
 
     static let reuseIdentifier = "songDetailsTableViewCell"
     
     private static let normalFont = UIFont(name:ThemeHelper.defaultFontName, size:12.0)
     private static let boldFont = UIFont(name:ThemeHelper.defaultFontNameMedium, size:12.0)
     
+    private static let delegateInstance = SongDetailsTableViewCell()
+    private static let albumImageCache:NSCache = {
+        let cache = NSCache()
+        cache.delegate = SongDetailsTableViewCell.delegateInstance
+        return cache
+    }()
+    
+    
     @IBOutlet var albumArtImageView: UIImageView!
     @IBOutlet var songTitleLabel: UILabel!
     @IBOutlet var albumArtistAndAlbumLabel: UILabel!
     @IBOutlet var totalPlaybackTImeLabel: UILabel!
     @IBOutlet var menuButton:UIButton!
+    
+    weak var delegate:ConfigurableAudioTableCellDelegate?
+    
+    var indexPath:NSIndexPath!
+    var isNowPlayingItem:Bool = false {
+        didSet {
+            if isNowPlayingItem != oldValue {
+                if isNowPlayingItem {
+                    songTitleLabel.textColor = ThemeHelper.defaultVividColor
+                } else {
+                    songTitleLabel.textColor = ThemeHelper.defaultFontColor
+                }
+            }
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,23 +53,50 @@ final class SongDetailsTableViewCell: AbstractTableViewCell {
         menuButton.userInteractionEnabled = false
     }
     
-    func configureTextLabelsForMediaItem(mediaItem:AudioTrack, isNowPlayingItem:Bool) {
-        songTitleLabel.text = mediaItem.trackTitle
+    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+        guard let track = entity as? AudioTrack else { return }
+        songTitleLabel.text = track.trackTitle
         var details = [String]()
-        if let albumArtist = mediaItem.albumArtist {
+        if let albumArtist = track.albumArtist {
             details.append(albumArtist)
-        } else if let artist = mediaItem.artist {
+        } else if let artist = track.artist {
             details.append(artist)
         }
-        if let albumTitle = mediaItem.albumTitle {
+        if let albumTitle = track.albumTitle {
             details.append(albumTitle)
         }
         
         albumArtistAndAlbumLabel.text = details.joinWithSeparator(" - ")
-        totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(mediaItem.playbackDuration)
-        songTitleLabel.textColor = isNowPlayingItem ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
+        totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(track.playbackDuration)
+        albumArtImageView.image = SongDetailsTableViewCell.getAlbumImageForTrack(track, imageSize: albumArtImageView.frame.size)
     }
     
+    static func getAlbumImageForTrack(track:AudioTrack, imageSize:CGSize) -> UIImage {
+        
+        let key = NSNumber(unsignedLongLong: track.albumId)
+        if let albumArtImage = SongDetailsTableViewCell.albumImageCache.objectForKey(key) as? UIImage {
+            return albumArtImage
+        } else if let albumArtwork = track.artwork?.imageWithSize(imageSize) {
+            SongDetailsTableViewCell.albumImageCache.setObject(albumArtwork, forKey: key)
+            return albumArtwork
+        }
+        
+        let defaultKey = "defaultAlbumArtImage"
+        guard let defaultAlbumArtImage = SongDetailsTableViewCell.albumImageCache.objectForKey(defaultKey) as? UIImage else {
+            let noAlbumArtCellImage = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: imageSize)
+            SongDetailsTableViewCell.albumImageCache.setObject(noAlbumArtCellImage, forKey: defaultKey)
+            return noAlbumArtCellImage
+        }
+        return defaultAlbumArtImage
+        
+    }
+
+}
+
+extension SongDetailsTableViewCell : NSCacheDelegate {
+    func cache(cache: NSCache, willEvictObject obj: AnyObject) {
+        Logger.debug("evicting object \(obj)")
+    }
 }
 
 
