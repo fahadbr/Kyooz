@@ -60,6 +60,7 @@
 		0B5F13501C714F83009A1FDD /* SearchResultsSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */; };
 		0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */; };
 		0B5F13541C714FBD009A1FDD /* SectionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F13531C714FBD009A1FDD /* SectionDescription.swift */; };
+		0B5F13561C71682F009A1FDD /* AudioQueuePlayerSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F13551C71682F009A1FDD /* AudioQueuePlayerSourceData.swift */; };
 		0B650A5F1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B650A5E1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift */; };
 		0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B70702A1B9767080000673E /* AlbumTrackTableViewCell.swift */; };
 		0B70702D1B9767080000673E /* AlbumTrackTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B70702B1B9767080000673E /* AlbumTrackTableViewCell.xib */; };
@@ -201,6 +202,7 @@
 		0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsSourceData.swift; sourceTree = "<group>"; };
 		0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozPlaylistSourceData.swift; sourceTree = "<group>"; };
 		0B5F13531C714FBD009A1FDD /* SectionDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionDescription.swift; sourceTree = "<group>"; };
+		0B5F13551C71682F009A1FDD /* AudioQueuePlayerSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerSourceData.swift; sourceTree = "<group>"; };
 		0B650A5E1C39CF2D00C0DC51 /* ParentMediaEntityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParentMediaEntityViewController.swift; sourceTree = "<group>"; };
 		0B70702A1B9767080000673E /* AlbumTrackTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTrackTableViewCell.swift; sourceTree = "<group>"; };
 		0B70702B1B9767080000673E /* AlbumTrackTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumTrackTableViewCell.xib; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 			isa = PBXGroup;
 			children = (
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
+				0B5F13551C71682F009A1FDD /* AudioQueuePlayerSourceData.swift */,
 				0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */,
 				0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */,
 				0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */,
@@ -864,6 +867,7 @@
 				0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,
 				0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */,
+				0B5F13561C71682F009A1FDD /* AudioQueuePlayerSourceData.swift in Sources */,
 				100A8BD31C56F8DE009FAB17 /* KyoozPlaylistManager.swift in Sources */,
 				10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,

@@ -17,6 +17,7 @@ class AbstractTableViewCell : UITableViewCell {
         return grayView
     }()
     
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setSelectedBackgroundView()
@@ -34,6 +35,8 @@ class AbstractTableViewCell : UITableViewCell {
     private func setSelectedBackgroundView() {
         selectedBackgroundView = cellBackgroundView
     }
+    
+    
     
     
 }

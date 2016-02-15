@@ -20,7 +20,7 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
     
     var entities:[AudioEntity] = [AudioEntity]() {
         didSet {
-            singleSectionArray = [SectionDTO(name: libraryGrouping.name, count: entities.count)]
+            singleSectionArray = [SectionDTO(name: singleSectionName ?? libraryGrouping.name, count: entities.count)]
         }
     }
     

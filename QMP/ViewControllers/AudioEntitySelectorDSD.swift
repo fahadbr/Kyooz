@@ -64,15 +64,8 @@ final class AudioEntitySelectorDSD : AudioEntityTableViewDelegate  {
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
         if(!tableView.editing) { return }
         
-        var indexToRemove:Int?
-        for (index, indexPathToDelete) in selectedIndicies.enumerate() {
-            if(indexPathToDelete == indexPath) {
-                indexToRemove = index
-                break;
-            }
-        }
-        if(indexToRemove != nil) {
-            selectedIndicies.removeAtIndex(indexToRemove!)
+        if let indexToRemove = selectedIndicies.indexOf(indexPath) {
+            selectedIndicies.removeAtIndex(indexToRemove)
         }
         refreshButtonStates()
     }
