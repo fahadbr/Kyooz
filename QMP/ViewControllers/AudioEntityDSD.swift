@@ -21,6 +21,9 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
 		return !sourceData.entities.isEmpty
 	}
     
+    var rowLimit:Int = 0
+    var rowLimitActive:Bool = false
+    
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
@@ -37,7 +40,11 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sourceData.sections[section].count
+        let count = sourceData.sections[section].count
+        if rowLimitActive {
+            return min(count, rowLimit)
+        }
+        return count
     }
 	
 	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {

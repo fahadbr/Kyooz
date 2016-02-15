@@ -25,6 +25,9 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
         
         tableView.rowHeight = 60
         tableView.allowsMultipleSelectionDuringEditing = true
+        tableView.showsVerticalScrollIndicator = true
+        tableView.indicatorStyle = .White
+        
         reloadSourceData()
         registerForNotifications()
     }
@@ -57,9 +60,30 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
     
     //MARK: - MediaLibraryTableViewCellDelegate
     func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?) {
-        let mediaItems = getMediaItemsForIndexPath(indexPath)
-        ContainerViewController.instance.presentActionsForTracks(mediaItems, title: title, details: details)
+        let tracks = getMediaItemsForIndexPath(indexPath)
+        let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
+        
+        if tracks.count == 1 {
+            ac.addAction(UIAlertAction(title: "Play Only This", style: .Default) { (action) -> Void in
+                self.audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: 0, shouldShuffleIfOff: false)
+            })
+        }
+        KyoozUtils.addDefaultQueueingActions(tracks, alertController: ac)
+        ac.addAction(UIAlertAction(title: "Add to Playlist..", style: .Default, handler:{ _ -> Void in
+            KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
+        }))
+        
+        
+        addCustomMenuActions(indexPath, alertController: ac)
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(ac, animated: true, completion: nil)
     }
+    
+    func addCustomMenuActions(indexPath:NSIndexPath, alertController:UIAlertController) {
+        //empty implementation
+    }
+    
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()

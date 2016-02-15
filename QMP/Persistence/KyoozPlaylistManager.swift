@@ -8,10 +8,11 @@
 
 import Foundation
 
-final class KyoozPlaylistManager  {
+final class KyoozPlaylistManager : NSObject {
 	
 	static let instance = KyoozPlaylistManager()
 	
+    static let PlaylistSetUpdate = "KyoozPlaylistManagerPlaylistSetUpdate"
 	private static let listDirectory:String = KyoozUtils.libraryDirectory.stringByAppendingPathComponent("kyoozPlaylists")
 	
     private var playlistsSet:NSMutableOrderedSet = NSMutableOrderedSet()
@@ -20,15 +21,19 @@ final class KyoozPlaylistManager  {
         return playlistsSet
 	}
     
-    init() {
+    override init() {
+        super.init()
         reloadSourceData()
     }
 	
 	func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
 		playlist.count = tracks.count
+        
         let oldCount = playlistsSet.count
-		try playlist.setTracks(tracks)
+		
+        try playlist.setTracks(tracks)
 		try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: false)
+        
         let newCount = playlistsSet.count
         ShortNotificationManager.instance.presentShortNotificationWithMessage("Saved \(oldCount < newCount ? "" : "changes to ")playlist: \(playlist.name)", withSize: .Small)
 	}
@@ -52,10 +57,14 @@ final class KyoozPlaylistManager  {
 			addOrRemove(!actionIsDelete)
 			throw DataPersistenceError(errorDescription: "Failed update playlist master file for playlist \(playlist.name)")
 		}
+        //
+        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(1.0), dispatch_get_main_queue()) {
+            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: KyoozPlaylistManager.PlaylistSetUpdate, object: self))
+        }
 	}
 }
 
-extension KyoozPlaylistManager : AudioEntitySourceData {
+extension KyoozPlaylistManager : MutableAudioEntitySourceData {
     
     var sections:[SectionDescription] {
         return [SectionDTO(name: "KYOOZ PLAYLISTS", count: playlistsSet.count)]
@@ -87,6 +96,20 @@ extension KyoozPlaylistManager : AudioEntitySourceData {
             return nil
         }
         return KyoozPlaylistSourceData(playlist: playlist)
+    }
+    
+    func deleteEntitiesAtIndexPaths(var indexPaths: [NSIndexPath]) throws {
+        indexPaths.sortInPlace() { $0.row > $1.row }
+        for indexPath in indexPaths {
+            guard let playlist = playlistsSet.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
+                return
+            }
+            try deletePlaylist(playlist)
+        }
+    }
+    
+    func moveEntity(fromIndexPath originalIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) throws {
+        //reordering is not supported
     }
     
     subscript(i:NSIndexPath) -> AudioEntity {

@@ -84,24 +84,29 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
 				groupMutableSourceData.libraryGrouping = selectedGroup
 			}
         }
-		
+        
+        applyDataSourceAndDelegate()
         reloadAllData()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-	
-	
-    //MARK: - Private functions
-    override func reloadSourceData() {
-        sourceData.reloadSourceData()
-        applyDataSourceAndDelegate()
+    
+    override func addCustomMenuActions(indexPath: NSIndexPath, alertController: UIAlertController) {
+        switch sourceData.libraryGrouping {
+        case LibraryGrouping.Playlists:
+            guard sourceData[indexPath] is KyoozPlaylist else { return }
+            alertController.addAction(UIAlertAction(title: "Delete", style: UIAlertActionStyle.Destructive, handler: {_ in
+                self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+            }))
+        default:
+            break
+        }
     }
+	
     
     override func applyDataSourceAndDelegate() {
-
-        
         switch sourceData.libraryGrouping {
         case LibraryGrouping.Songs:
             if sourceData is KyoozPlaylistSourceData {
@@ -110,7 +115,8 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
                 datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier:  reuseIdentifier, audioCellDelegate: self)
             }
         case LibraryGrouping.Playlists:
-            let playlistDSD = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            let playlistSourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Playlists.baseQuery, libraryGrouping: LibraryGrouping.Playlists, singleSectionName: "ITUNES PLAYLISTS")
+            let playlistDSD = AudioTrackCollectionDSD(sourceData:playlistSourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             let kPlaylistDSD = KyoozPlaylistManagerDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             let delegator = AudioEntityDSDSectionDelegator(datasources: [kPlaylistDSD, playlistDSD])
             
@@ -129,10 +135,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     
     //MARK: - Overriding MediaItemTableViewController methods
     override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        if datasourceDelegate is AudioEntityDSDSectionDelegator && indexPath.section == 1 {
-            return KyoozPlaylistManager.instance.getTracksAtIndex(indexPath)
-        }
-        
         return sourceData.getTracksAtIndex(indexPath)
     }
 

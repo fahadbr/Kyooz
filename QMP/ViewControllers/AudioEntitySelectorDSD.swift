@@ -13,11 +13,15 @@ private let deselectAllString = "Deselect All"
 
 final class AudioEntitySelectorDSD : AudioEntityTableViewDelegate  {
     
-    private let playNextButton:UIBarButtonItem = UIBarButtonItem(title: "Play Next", style: .Plain, target: nil, action: "insertSelectedItemsIntoQueue:")
-    private let playLastButton:UIBarButtonItem = UIBarButtonItem(title: "Play Last", style: .Plain, target: nil, action: "insertSelectedItemsIntoQueue:")
-    private let playRandomlyButton:UIBarButtonItem = UIBarButtonItem(title: "Play Randomly", style: .Plain, target: nil, action: "insertSelectedItemsIntoQueue:")
+    private let playButton:UIBarButtonItem = UIBarButtonItem(title: "Play", style: .Plain, target: nil, action: "playSelectedTracks:")
+    private let queueButton:UIBarButtonItem = UIBarButtonItem(title: "Queue..", style: .Plain, target: nil, action: "showQueueOptions:")
+    private let addToButton:UIBarButtonItem = UIBarButtonItem(title: "Add To..", style: .Plain, target: nil, action: "addToPlaylist")
     private let selectAllButton:UIBarButtonItem = UIBarButtonItem(title: selectAllString, style: UIBarButtonItemStyle.Done, target: nil, action: "selectOrDeselectAll")
+    private let deleteButton:UIBarButtonItem = UIBarButtonItem(title: "Delete", style: .Plain, target: nil, action: "deleteSelectedItems")
+    
     let toolbarItems:[UIBarButtonItem]
+    
+    
     
     private var selectedIndicies:[NSIndexPath]
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
@@ -32,10 +36,18 @@ final class AudioEntitySelectorDSD : AudioEntityTableViewDelegate  {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         }
         
-        toolbarItems = [playNextButton, createFlexibleSpace(), playLastButton, createFlexibleSpace(), playRandomlyButton, createFlexibleSpace(), selectAllButton]
+        var toolbarItems = [playButton, createFlexibleSpace(), queueButton, createFlexibleSpace(), addToButton, createFlexibleSpace(), selectAllButton]
+        
+        if sourceData is MutableAudioEntitySourceData {
+            toolbarItems.append(createFlexibleSpace())
+            toolbarItems.append(deleteButton)
+        }
+        
+        self.toolbarItems = toolbarItems
+        
         super.init(sourceData: sourceData)
         let tintColor = ThemeHelper.defaultTintColor
-        toolbarItems.forEach() {
+        self.toolbarItems.forEach() {
             $0.target = self
             $0.tintColor = tintColor
         }
@@ -68,9 +80,10 @@ final class AudioEntitySelectorDSD : AudioEntityTableViewDelegate  {
     private func refreshButtonStates() {
         let isNotEmpty = !selectedIndicies.isEmpty
         
-        playNextButton.enabled = isNotEmpty
-        playLastButton.enabled = isNotEmpty
-        playRandomlyButton.enabled = isNotEmpty
+        playButton.enabled = isNotEmpty
+        queueButton.enabled = isNotEmpty
+        deleteButton.enabled = isNotEmpty
+        addToButton.enabled = isNotEmpty
         selectAllButton.title = isNotEmpty ? deselectAllString : selectAllString
     }
     
@@ -93,35 +106,76 @@ final class AudioEntitySelectorDSD : AudioEntityTableViewDelegate  {
         refreshButtonStates()
     }
     
-    func insertSelectedItemsIntoQueue(sender:UIBarButtonItem!) {
-        if selectedIndicies.isEmpty {
-            return
-        }
+    private func getOrderedTracks() -> [AudioTrack]? {
+        guard !selectedIndicies.isEmpty else { return nil }
         
         selectedIndicies.sortInPlace { (first, second) -> Bool in
-            if first.section < second.section {
-                return true
+            if first.section != second.section {
+                return first.section < second.section
             }
-            if first.row < second.row {
-                return true
-            }
-            return false
+            return first.row < second.row
         }
         
         var items = [AudioTrack]()
         for indexPath in selectedIndicies {
-            
             items.appendContentsOf(sourceData.getTracksAtIndex(indexPath))
         }
+        return items
+    }
+    
+    func playSelectedTracks(sender:UIBarButtonItem!) {
+        guard let items = getOrderedTracks() else { return }
         
-        if sender === playNextButton {
-            audioQueuePlayer.enqueue(items: items, atPosition: .Next)
-        } else if sender === playLastButton {
-            audioQueuePlayer.enqueue(items: items, atPosition: .Last)
-        } else if sender === playRandomlyButton {
-            audioQueuePlayer.enqueue(items: items, atPosition: .Random)
-        }
+        audioQueuePlayer.playNow(withTracks: items, startingAtIndex: 0, shouldShuffleIfOff: false)
+
         selectOrDeselectAll()
+    }
+    
+    func showQueueOptions(sender:UIBarButtonItem!) {
+        guard let items = getOrderedTracks() else { return }
+        
+        let ac = UIAlertController(title: "\(selectedIndicies.count) Selected Items", message: nil, preferredStyle: .Alert)
+        KyoozUtils.addDefaultQueueingActions(items, alertController: ac) {
+            self.selectOrDeselectAll()
+        }
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
+    }
+    
+    func addToPlaylist() {
+        guard let items = getOrderedTracks() else { return }
+        KyoozUtils.showAvailablePlaylistsForAddingTracks(items) {
+            self.selectOrDeselectAll()
+        }
+    }
+    
+    func deleteSelectedItems() {
+
+        let ac = UIAlertController(title: "Delete \(selectedIndicies.count) Selected Items?", message: nil, preferredStyle: .Alert)
+        ac.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { _ -> Void in
+            self.deleteInternal()
+        }))
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
+                
+    }
+    
+    private func deleteInternal() {
+        guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
+            return
+        }
+        do {
+            try mutableSourceData.deleteEntitiesAtIndexPaths(selectedIndicies)
+            tableView.deleteRowsAtIndexPaths(selectedIndicies, withRowAnimation: .Automatic)
+            selectOrDeselectAll()
+        } catch let error {
+            KyoozUtils.showPopupError(withTitle: "Error occured while deleting items", withThrownError: error, presentationVC: nil)
+        }
+
     }
     
     

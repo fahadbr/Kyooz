@@ -79,6 +79,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyDataSourceAndDelegate()
         navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
         
         headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
@@ -92,6 +93,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         }
         
         popGestureRecognizer.delegate = self
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadAllData",
+            name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
     }
     
     private func configureTestDelegates() {
@@ -134,6 +137,11 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     override func reloadAllData() {
         super.reloadAllData()
         calculateContentSize()
+    }
+    
+    
+    override func reloadSourceData() {
+        sourceData.reloadSourceData()
     }
     
     

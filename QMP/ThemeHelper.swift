@@ -29,6 +29,8 @@ struct ThemeHelper {
     
     static let barsAreTranslucent = true
     
+    static let tableViewSectionHeaderHeight:CGFloat = 40
+    
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()
         titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontNameBold, size:defaultFontSize)

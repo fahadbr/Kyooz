@@ -69,5 +69,70 @@ struct KyoozUtils {
         let message = "Error Description: \((error as? KyoozErrorProtocol)?.errorDescription ?? _stdlib_getDemangledTypeName(error))"
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
+    
+    static func addDefaultQueueingActions(tracks:[AudioTrack], alertController:UIAlertController, completionAction:(()->Void)? = nil) {
+        let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+        let queueLastAction = UIAlertAction(title: "Queue Last", style: .Default) { (action) -> Void in
+            audioQueuePlayer.enqueue(items: tracks, atPosition: .Last)
+            completionAction?()
+        }
+        let queueNextAction = UIAlertAction(title: "Queue Next", style: .Default) { (action) -> Void in
+            audioQueuePlayer.enqueue(items: tracks, atPosition: .Next)
+            completionAction?()
+        }
+        let queueRandomlyAction = UIAlertAction(title: "Queue Randomly", style: .Default) { (action) -> Void in
+            audioQueuePlayer.enqueue(items: tracks, atPosition: .Random)
+            completionAction?()
+        }
+        
+        alertController.addAction(queueNextAction)
+        alertController.addAction(queueLastAction)
+        alertController.addAction(queueRandomlyAction)
+    }
+    
+    static func showAvailablePlaylistsForAddingTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+        let ac = UIAlertController(title: "Select the playlist to add to", message: "\(tracks.count) tracks", preferredStyle: .ActionSheet)
+        for obj in KyoozPlaylistManager.instance.playlists {
+            guard let playlist = obj as? KyoozPlaylist else { return }
+            ac.addAction(UIAlertAction(title: playlist.name, style: .Default, handler: { _ -> Void in
+                var playlistTracks = playlist.tracks
+                playlistTracks.appendContentsOf(tracks)
+                do {
+                    try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: playlistTracks)
+                    completionAction?()
+                } catch let error {
+                    showPopupError(withTitle: "Failed to add \(tracks.count) tracks to playlist: \(playlist.name)", withThrownError: error, presentationVC: nil)
+                }
+            }))
+        }
+        ac.addAction(UIAlertAction(title: "New Playlist..", style: .Default) { _ -> Void in
+            showPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+        })
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+    }
+    
+    static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+        let ac = UIAlertController(title: "Save as Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
+        ac.addTextFieldWithConfigurationHandler(nil)
+        let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+            guard let text = ac.textFields?.first?.text else {
+                Logger.error("No name found")
+                return
+            }
+            do {
+                try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: tracks)
+                completionAction?()
+            } catch let error {
+                showPopupError(withTitle: "Failed to save playlist with name \(text)", withThrownError: error, presentationVC: nil)
+            }
+            
+        })
+        ac.addAction(saveAction)
+        ac.preferredAction = saveAction
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+
+    }
 	
 }

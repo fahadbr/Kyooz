@@ -1,5 +1,5 @@
 //
-//  AudioEntityDataSource.swift
+//  AudioEntitySourceData.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 1/30/16.
@@ -27,6 +27,13 @@ protocol AudioEntitySourceData {
 
 protocol GroupMutableAudioEntitySourceData : AudioEntitySourceData {
 	var libraryGrouping:LibraryGrouping { get set }
+}
+
+protocol MutableAudioEntitySourceData : AudioEntitySourceData {
+    
+    func deleteEntitiesAtIndexPaths(indexPaths:[NSIndexPath]) throws
+    
+    func moveEntity(fromIndexPath originalIndexPath:NSIndexPath, toIndexPath destinationIndexPath:NSIndexPath) throws
 }
 
 extension AudioEntitySourceData {
@@ -62,160 +69,3 @@ extension AudioEntitySourceData {
     }
 }
 
-@objc protocol SectionDescription {
-	var name:String { get }
-	var count:Int { get }
-}
-
-class SectionDTO : SectionDescription {
-	@objc let name:String
-	@objc let count:Int
-    init(name:String, count:Int) {
-        self.name = name
-        self.count = count
-    }
-}
-
-
-final class KyoozPlaylistSourceData : AudioEntitySourceData {
-	
-    var sections:[SectionDescription] {
-        return [SectionDTO(name: playlist.name, count: playlist.count)]
-    }
-	var entities:[AudioEntity]
-	var libraryGrouping:LibraryGrouping = LibraryGrouping.Songs
-	
-	let playlist:KyoozPlaylist
-	
-	init(playlist:KyoozPlaylist) {
-		entities = playlist.tracks
-		self.playlist = playlist
-	}
-
-	func reloadSourceData() {
-		entities = playlist.tracks
-	}
-}
-
-final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
-
-	var sectionNamesCanBeUsedAsIndexTitles:Bool {
-		return _sections != nil
-	}
-	
-	var sections:[SectionDescription] {
-		return _sections ?? singleSectionArray
-	}
-	
-	var entities:[AudioEntity] = [AudioEntity]() {
-		didSet {
-			singleSectionArray = [SectionDTO(name: libraryGrouping.name, count: entities.count)]
-		}
-	}
-	
-    var libraryGrouping:LibraryGrouping {
-        didSet {
-            filterQuery.groupingType = libraryGrouping.groupingType
-        }
-    }
-	
-	private var _sections:[MPMediaQuerySection]?
-	private var singleSectionArray:[SectionDescription] = [SectionDTO(name: "", count: 0)]
-    private (set) var filterQuery:MPMediaQuery
-    
-    init(filterQuery:MPMediaQuery, libraryGrouping:LibraryGrouping) {
-        self.filterQuery = filterQuery
-        self.libraryGrouping = libraryGrouping
-        reloadSourceData()
-    }
-    
-    init?(filterEntity:AudioEntity, parentLibraryGroup:LibraryGrouping, baseQuery:MPMediaQuery?) {
-        guard let nextLibraryGroup = parentLibraryGroup.nextGroupLevel else {
-            self.filterQuery = MPMediaQuery()
-            self.libraryGrouping = parentLibraryGroup
-            return nil
-        }
-        
-        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentLibraryGroup.groupingType)
-        let propertyValue = NSNumber(unsignedLongLong: filterEntity.persistentIdForGrouping(parentLibraryGroup))
-        
-        let filterQuery = MPMediaQuery(filterPredicates: baseQuery?.filterPredicates ?? parentLibraryGroup.baseQuery.filterPredicates)
-        filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
-        filterQuery.groupingType = nextLibraryGroup.groupingType
-        
-        self.filterQuery = filterQuery
-        self.libraryGrouping = nextLibraryGroup
-        reloadSourceData()
-    }
-    
-    func reloadSourceData() {
-        let isSongGrouping = libraryGrouping == LibraryGrouping.Songs
-        entities = (isSongGrouping ? filterQuery.items : filterQuery.collections) ?? [AudioEntity]()
-        
-        if entities.count < 15 {
-            self._sections = nil
-            return
-        }
-        
-        let sections = isSongGrouping ? filterQuery.itemSections : filterQuery.collectionSections
-        if sections != nil && sections!.count > 1 {
-            self._sections = sections
-        }
-		
-    }
-    
-    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
-        let entity = self[indexPath]
-        
-        return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: filterQuery)
-    }
-    
-    func flattenedIndex(indexPath: NSIndexPath) -> Int {
-        guard let sections = self._sections else {
-            return indexPath.row
-        }
-        
-        let offset =  sections[indexPath.section].range.location
-        let index = indexPath.row
-        let absoluteIndex = offset + index
-        
-        return absoluteIndex
-    }
-    
-    
-}
-
-
-final class SearchResultsSourceData : AudioEntitySourceData {
-    
-	var sectionNamesCanBeUsedAsIndexTitles:Bool {
-		return false
-	}
-	
-	var sections:[SectionDescription] {
-		return [SectionDTO(name: libraryGrouping.name, count: entities.count)]
-	}
-	var entities:[AudioEntity] {
-		return searchExecutionController.searchResults
-	}
-	
-	var libraryGrouping:LibraryGrouping {
-		return searchExecutionController.libraryGroup
-	}
-	
-	let searchExecutionController:SearchExecutionController<AudioEntity>
-    
-    init(searchExecutionController:SearchExecutionController<AudioEntity>) {
-		self.searchExecutionController = searchExecutionController
-	}
-	
-	func reloadSourceData() {
-		searchExecutionController.rebuildSearchIndex()
-	}
-	
-	func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
-		return MediaQuerySourceData(filterEntity: self[indexPath], parentLibraryGroup: libraryGrouping, baseQuery: nil)
-	}
-	
-
-}

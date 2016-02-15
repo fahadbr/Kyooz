@@ -36,8 +36,6 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
     }
     
     override func viewDidLoad() {
-        applyDataSourceAndDelegate()
-        
         super.viewDidLoad()
         self.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
         
@@ -120,10 +118,7 @@ final class AlbumTrackTableViewController: ParentMediaEntityHeaderViewController
         return sourceData.getTracksAtIndex(indexPath)
     }
     
-    
-    override func reloadSourceData() {
-        sourceData.reloadSourceData()
-    }
+
     
     //MARK: KVO
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
