@@ -191,32 +191,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         pushViewController(vc)
     }
     
-    func presentActionsForTracks(tracks:[AudioTrack], title:String?, details:String?) {
-        let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
-        
-        let playLastAction = UIAlertAction(title: "Queue Last", style: .Default) { (action) -> Void in
-            ApplicationDefaults.audioQueuePlayer.enqueue(items: tracks, atPosition: .Last)
-        }
-        let playNextAction = UIAlertAction(title: "Queue Next", style: .Default) { (action) -> Void in
-            ApplicationDefaults.audioQueuePlayer.enqueue(items: tracks, atPosition: .Next)
-        }
-        let playRandomlyAction = UIAlertAction(title: "Queue Randomly", style: .Default) { (action) -> Void in
-            ApplicationDefaults.audioQueuePlayer.enqueue(items: tracks, atPosition: .Random)
-        }
-        
-        if tracks.count == 1 {
-            ac.addAction(UIAlertAction(title: "Play Only This", style: .Default) { (action) -> Void in
-              ApplicationDefaults.audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: 0, shouldShuffleIfOff: false)
-            })
-        }
-        
-        ac.addAction(playNextAction)
-        ac.addAction(playLastAction)
-        ac.addAction(playRandomlyAction)
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(ac, animated: true, completion: nil)
-    }
-    
     //MARK: NOTIFICATION REGISTRATIONS
     
     private func registerForNotifications() {

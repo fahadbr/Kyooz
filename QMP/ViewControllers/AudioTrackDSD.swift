@@ -10,6 +10,8 @@ import UIKit
 
 class AudioTrackDSD : AudioEntityDSD {
 	
+    var playAllTracksOnSelection = true
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         defer {
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -19,7 +21,12 @@ class AudioTrackDSD : AudioEntityDSD {
             Logger.error("entities are not tracks, cannot play them")
             return
         }
-        audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: sourceData.flattenedIndex(indexPath), shouldShuffleIfOff: false)
+        
+        if playAllTracksOnSelection {
+            audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: sourceData.flattenedIndex(indexPath), shouldShuffleIfOff: false)
+        } else {
+            audioQueuePlayer.playNow(withTracks: [tracks[sourceData.flattenedIndex(indexPath)]], startingAtIndex: 0, shouldShuffleIfOff: false)
+        }
 
     }
     
@@ -38,13 +45,11 @@ final class KyoozPlaylistDSD : AudioTrackDSD {
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle != .Delete { return }
         
-        let success = performPlaylistUpdate { (var tracks) throws -> [AudioTrack] in
-            guard indexPath.row < tracks.count else {
-                throw KyoozError(errorDescription:"Cannot delete track \(indexPath.row + 1) because there are only \(tracks.count) tracks in the playlist")
+        let success = performPlaylistUpdate {
+            guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
+                throw KyoozError(errorDescription:"Source Data is not Mutable")
             }
-            
-            tracks.removeAtIndex(indexPath.row)
-            return tracks
+            try mutableSourceData.deleteEntitiesAtIndexPaths([indexPath])
         }
         
         if success {
@@ -53,28 +58,19 @@ final class KyoozPlaylistDSD : AudioTrackDSD {
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        performPlaylistUpdate { (var tracks) throws -> [AudioTrack] in
-            guard sourceIndexPath.row < tracks.count && destinationIndexPath.row < tracks.count else {
-                throw KyoozError(errorDescription: "Source or Destination Position is not within the Playlist count")
+        performPlaylistUpdate {
+            guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
+                throw KyoozError(errorDescription:"Source Data is not Mutable")
             }
-            
-            let temp = tracks.removeAtIndex(sourceIndexPath.row)
-            tracks.insert(temp, atIndex: destinationIndexPath.row)
-            
-            return tracks
+            try mutableSourceData.moveEntity(fromIndexPath: sourceIndexPath, toIndexPath: destinationIndexPath)
         }
     }
     
-    private func performPlaylistUpdate(tracksUpdatingBlock:(([AudioTrack]) throws -> [AudioTrack])) -> Bool {
-        guard let playlist = (sourceData as? KyoozPlaylistSourceData)?.playlist else {
-            return false
-        }
-        
+    private func performPlaylistUpdate(tracksUpdatingBlock:(() throws -> Void)) -> Bool {
         do {
-            let updatedTracks = try tracksUpdatingBlock(playlist.tracks)
-            try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: updatedTracks)
+            try tracksUpdatingBlock()
         } catch let error {
-            KyoozUtils.showPopupError(withTitle: "Could not make changes to playlist \(playlist.name)", withThrownError: error, presentationVC: nil)
+            KyoozUtils.showPopupError(withTitle: "Could not make changes to playlist: \((sourceData as? KyoozPlaylistSourceData)?.playlist.name ?? "Unknown Playlist")", withThrownError: error, presentationVC: nil)
             return false
         }
         return true

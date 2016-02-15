@@ -132,28 +132,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @IBAction func saveCurrentQueueAsPlaylist(sender:AnyObject?) {
-        let ac = UIAlertController(title: "Save as Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
-        ac.addTextFieldWithConfigurationHandler() { (textField) -> Void in
-            
-        }
-        let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
-            guard let text = ac.textFields?.first?.text else {
-                Logger.error("No name found")
-                return
-            }
-            let queue = self.audioQueuePlayer.nowPlayingQueue
-            do {
-                try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: queue)
-            } catch let error {
-				KyoozUtils.showPopupError(withTitle: "Failed to save playlist with name \(text)", withMessage: (error as? KyoozErrorProtocol)?.errorDescription ?? "Unkown Error", presentationVC: self)
-            }
-            
-        })
-        ac.addAction(saveAction)
-        ac.preferredAction = saveAction
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(ac, animated: true, completion: nil)
-        
+        KyoozUtils.showPlaylistCreationControllerForTracks(audioQueuePlayer.nowPlayingQueue)
     }
     
     @IBAction func confirmDelete(sender:AnyObject?) {

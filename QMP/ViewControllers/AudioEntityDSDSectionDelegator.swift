@@ -11,7 +11,7 @@ import UIKit
 class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	
     let originalOrderedDatasources:[AudioEntityDSDProtocol]
-	var dsdSections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
+    var dsdSections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
 	
     var sourceData:AudioEntitySourceData {
         return self
@@ -23,9 +23,13 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
         reloadSections()
 	}
     
+    //do i need to use audioEntityDSDProtocol?
     var hasData:Bool {
         return !dsdSections.isEmpty
     }
+    
+    var rowLimit = 0
+    var rowLimitActive = false
 	
     //MARK: - Table View Datasource
     
@@ -43,15 +47,19 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 		return dsdSections[indexPath.section].tableView(tableView, cellForRowAtIndexPath: indexPath)
 	}
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return dsdSections[indexPath.section].tableView?(tableView, canEditRowAtIndexPath: indexPath) ?? true
-    }
-    
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         tableView.beginUpdates()
-        dsdSections[indexPath.section].tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
+        let datasourceDelegate = dsdSections[indexPath.section]
+        datasourceDelegate.tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
+        if !datasourceDelegate.hasData {
+            tableView.deleteSections(NSIndexSet(index: indexPath.section), withRowAnimation: .Automatic)
+        }
         reloadSections()
         tableView.endUpdates()
+    }
+    
+    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        return dsdSections[indexPath.section].tableView?(tableView, editingStyleForRowAtIndexPath: indexPath) ?? .None
     }
     
     //MARK: - Table View Delegate
@@ -90,6 +98,7 @@ extension AudioEntityDSDSectionDelegator : AudioEntitySourceData {
     
     func reloadSourceData() {
         dsdSections.forEach() { $0.sourceData.reloadSourceData() }
+        reloadSections()
     }
     
     func flattenedIndex(indexPath: NSIndexPath) -> Int {

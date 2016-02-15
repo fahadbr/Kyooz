@@ -8,11 +8,15 @@
 
 import UIKit
 
-protocol AudioEntityDSDProtocol : UITableViewDelegate, UITableViewDataSource {
+protocol RowLimitingDSDProtocol : UITableViewDelegate, UITableViewDataSource {
+    var rowLimit:Int { get set }
+    var rowLimitActive:Bool { get set }
+    var hasData:Bool { get }
+}
+
+protocol AudioEntityDSDProtocol : RowLimitingDSDProtocol {
     
     var sourceData:AudioEntitySourceData { get }
-    
-    var hasData:Bool { get }
-    
+
 }
 
