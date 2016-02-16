@@ -86,7 +86,7 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         let mediaItem = previewQueue[indexToUse]
         
         cell.configureCellForItems(mediaItem, libraryGrouping: LibraryGrouping.Songs)
-        cell.isNowPlayingItem = isNowPlayingItem
+        cell.isNowPlaying = isNowPlayingItem
         cell.menuButton.hidden = true
 //        cell.albumArtImageView.image = nowPlayingViewController.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
         return cell

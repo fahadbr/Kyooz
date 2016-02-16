@@ -16,12 +16,7 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
     private static let normalFont = UIFont(name:ThemeHelper.defaultFontName, size:12.0)
     private static let boldFont = UIFont(name:ThemeHelper.defaultFontNameMedium, size:12.0)
     
-    private static let delegateInstance = SongDetailsTableViewCell()
-    private static let albumImageCache:NSCache = {
-        let cache = NSCache()
-        cache.delegate = SongDetailsTableViewCell.delegateInstance
-        return cache
-    }()
+    private static let albumImageCache:NSCache = NSCache()
     
     
     @IBOutlet var albumArtImageView: UIImageView!
@@ -33,14 +28,10 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
     weak var delegate:ConfigurableAudioTableCellDelegate?
     
     var indexPath:NSIndexPath!
-    var isNowPlayingItem:Bool = false {
+    var isNowPlaying:Bool = false {
         didSet {
-            if isNowPlayingItem != oldValue {
-                if isNowPlayingItem {
-                    songTitleLabel.textColor = ThemeHelper.defaultVividColor
-                } else {
-                    songTitleLabel.textColor = ThemeHelper.defaultFontColor
-                }
+            if isNowPlaying != oldValue {
+                songTitleLabel.textColor = isNowPlaying ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
             }
         }
     }
@@ -50,7 +41,10 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
         songTitleLabel.font = SongDetailsTableViewCell.boldFont
         albumArtistAndAlbumLabel.font =  SongDetailsTableViewCell.normalFont
         albumArtistAndAlbumLabel.textColor = UIColor.lightGrayColor()
-        menuButton.userInteractionEnabled = false
+    }
+    
+    @IBAction func menuButtonPressed(sender:UIButton!) {
+        delegate?.presentActionsForIndexPath(indexPath, title: songTitleLabel.text, details: albumArtistAndAlbumLabel.text)
     }
     
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
@@ -91,12 +85,6 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
         
     }
 
-}
-
-extension SongDetailsTableViewCell : NSCacheDelegate {
-    func cache(cache: NSCache, willEvictObject obj: AnyObject) {
-        Logger.debug("evicting object \(obj)")
-    }
 }
 
 

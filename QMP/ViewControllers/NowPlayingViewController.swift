@@ -9,43 +9,37 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DropDestination {
+final class NowPlayingViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate {
 
     @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
     
-    private let notificationCenter = NSNotificationCenter.defaultCenter()
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     private var longPressGestureRecognizer:UILongPressGestureRecognizer!
-    private var menuButtonTapGestureRecognizer:UITapGestureRecognizer!
-    
-    private var tempImageCache = [MPMediaEntityPersistentID:UIImage]()
-    private var noAlbumArtCellImage:UIImage!
     
     private (set) var laidOutSubviews:Bool = false
-    private var indexPathsToDelete:[NSIndexPath]?
     private var multipleDeleteButton:UIBarButtonItem!
-    private var insertCellView:UITableViewCell!
     
     var menuButtonTouched:Bool = false
     var viewExpanded:Bool = false {
         didSet {
             if(viewExpanded) {
-                reloadTableData(nil)
+                reloadTableData()
             } else {
                 editing = false
                 insertMode = false
+                if !(datasourceDelegate is NowPlayingQueueDSD) {
+                    datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
+                }
             }
         }
     }
     
     var destinationTableView:UITableView {
-        get {
-            return tableView
-        }
+        return tableView
     }
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
     
     
     //MARK: GESTURE PROPERTIES
@@ -53,21 +47,17 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     
     var indexPathOfMovingItem:NSIndexPath! {
         didSet {
-            if indexPathOfMovingItem == nil { return }
-            if indexPathOfMovingItem.row == audioQueuePlayer.nowPlayingQueue.count || indexPathOfMovingItem.row == 0 {
-                insertCellView.hidden = false
-            } else {
-                insertCellView.hidden = true
-            }
+            (datasourceDelegate as? DragAndDropDSDWrapper)?.indexPathOfMovingItem = indexPathOfMovingItem
         }
     }
-    var insertModeCount:Int!
     var insertMode:Bool = false {
         didSet {
             if(insertMode) {
-                insertModeCount = audioQueuePlayer.nowPlayingQueue.count + 1
+                datasourceDelegate = DragAndDropDSDWrapper(datasourceDelegate: datasourceDelegate)
             } else {
-                indexPathOfMovingItem = nil
+                if let dragAndDropDSDWrapper = datasourceDelegate as? DragAndDropDSDWrapper {
+                    dragAndDropDSDWrapper.endingInsert = true
+                }
             }
             longPressGestureRecognizer.enabled = !insertMode
             for item in toolbarItems! {
@@ -82,6 +72,12 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         ContainerViewController.instance.pushViewController(UIStoryboard.settingsViewController())
     }
     
+    var datasourceDelegate:AudioEntityDSDProtocol! {
+        didSet {
+            tableView.dataSource = datasourceDelegate
+            tableView.delegate = datasourceDelegate
+        }
+    }
     
     deinit {
         unregisterForNotifications()
@@ -97,20 +93,9 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragToRearrangeGestureHandler, action: "handleGesture:")
-        menuButtonTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
         tableView.addGestureRecognizer(longPressGestureRecognizer)
-        tableView.addGestureRecognizer(menuButtonTapGestureRecognizer)
         
-        let cell = UITableViewCell()
-        cell.backgroundColor = ThemeHelper.defaultTableCellColor
-        cell.textLabel?.text = "Insert Here"
-        cell.textLabel?.textAlignment = NSTextAlignment.Center
-        cell.textLabel?.font = ThemeHelper.defaultFont
-        cell.textLabel?.textColor = UIColor.grayColor()
-        cell.layer.rasterizationScale = UIScreen.mainScreen().scale
-        cell.layer.shouldRasterize = true
-        cell.hidden = true
-        insertCellView = cell
+        datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
         
         registerForNotifications()
 
@@ -124,16 +109,11 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
-        indexPathsToDelete = !editing ? nil : [NSIndexPath]()
-        menuButtonTapGestureRecognizer.enabled = !editing
         longPressGestureRecognizer.enabled = !editing
     }
 
-
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        tempImageCache.removeAll()
         // Dispose of any resources that can be recreated.
     }
     
@@ -142,7 +122,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @IBAction func confirmDelete(sender:AnyObject?) {
-        let title = tableView.editing ? "Remove the \(indexPathsToDelete?.count ?? 0) selected tracks?" : "Remove the entire queue?"
+        let title = tableView.editing ? "Remove the \(tableView.indexPathsForSelectedRows?.count ?? 0) selected tracks?" : "Remove the entire queue?"
         showConfirmDeleteAlertController(title) {
             self.commitDeletionOfIndexPaths()
         }
@@ -157,20 +137,19 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     private func commitDeletionOfIndexPaths() {
-        if(tableView.editing && indexPathsToDelete != nil) {
-            var indicies = [Int]()
-            for indexPath in indexPathsToDelete! {
-                indicies.append(indexPath.row)
-            }
+        if let indexPathsToDelete = tableView.indexPathsForSelectedRows where tableView.editing {
+            let indicies = indexPathsToDelete.map() { $0.row }
             audioQueuePlayer.deleteItemsAtIndices(indicies)
-            deleteIndexPaths(indexPathsToDelete!)
-            indexPathsToDelete!.removeAll(keepCapacity: false)
+            deleteIndexPaths(indexPathsToDelete)
         } else if (!tableView.editing && !audioQueuePlayer.nowPlayingQueue.isEmpty) {
-            var indicies = [Int]()
             var indexPaths = [NSIndexPath]()
-            for var i=0 ; i < audioQueuePlayer.nowPlayingQueue.count; i++ {
-                if(i != audioQueuePlayer.indexOfNowPlayingItem) {
-                    indicies.append(i)
+            let count = audioQueuePlayer.nowPlayingQueue.count
+            
+            indexPaths.reserveCapacity(count)
+            
+            let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
+            for i in 0 ..< count {
+                if i != indexOfNowPlayingItem {
                     indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
                 }
             }
@@ -179,133 +158,38 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         }
     }
 
-    // MARK: - Table view data source
-
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let count = audioQueuePlayer.nowPlayingQueue.count
-        return insertMode ? insertModeCount : count
-    }
-
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if(insertMode && indexPath.row == indexPathOfMovingItem.row) {
-            return insertCellView
-        }
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("songDetailsTableViewCell", forIndexPath: indexPath) as! SongDetailsTableViewCell
-        var indexToUse = indexPath.row
-        if(insertMode && indexPathOfMovingItem.row < indexPath.row){
-            indexToUse--
-        }
-    
-        let mediaItem = audioQueuePlayer.nowPlayingQueue[indexToUse]
-        let isNowPlayingItem = (indexToUse == audioQueuePlayer.indexOfNowPlayingItem)
-        cell.configureCellForItems(mediaItem, libraryGrouping: LibraryGrouping.Songs)
-        cell.isNowPlayingItem = isNowPlayingItem
-        cell.indexPath = indexPath
-        
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if(tableView.editing) {
-            indexPathsToDelete?.append(indexPath)
-            return
-        }
-        
-        audioQueuePlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    }
-    
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if(tableView.editing) {
-            if let indexToRemove = indexPathsToDelete?.indexOf(indexPath) {
-                indexPathsToDelete?.removeAtIndex(indexToRemove)
-            }
-        }
-    }
-    
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .Delete
-    }
-    
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            audioQueuePlayer.deleteItemsAtIndices([indexPath.row])
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-        }
-    }
-    
-    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        audioQueuePlayer.moveMediaItem(fromIndexPath:sourceIndexPath.row, toIndexPath: destinationIndexPath.row)
-    }
-    
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
     //MARK: INSERT MODE FUNCITONS
-    
     func setDropItems(dropItems: [AudioTrack], atIndex:NSIndexPath) -> Int {
         return audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
     }
-    
 
     //MARK: CLASS Functions
-    func reloadTableData(notification:NSNotification?) {
+    func reloadTableData() {
         tableView.reloadData()
     }
     
-    func reloadIfCollapsed(notification:NSNotification?) {
+    func reloadIfCollapsed() {
         if !viewExpanded {
-            reloadTableData(notification)
+            reloadTableData()
         }
     }
     
-    
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "reloadTableData:",
+        notificationCenter.addObserver(self, selector: "reloadTableData",
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData:",
+        notificationCenter.addObserver(self, selector: "reloadTableData",
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData:",
+        notificationCenter.addObserver(self, selector: "reloadTableData",
             name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadIfCollapsed:",
+        notificationCenter.addObserver(self, selector: "reloadIfCollapsed",
             name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData:",
+        notificationCenter.addObserver(self, selector: "reloadTableData",
             name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    func getImageForCell(imageSize cellImageSize:CGSize, withMediaItem mediaItem:AudioTrack, isNowPlayingItem:Bool) -> UIImage! {
-        
-        if let albumArtworkObject = mediaItem.artwork {
-            var albumArtwork = tempImageCache[mediaItem.albumId]
-            if(albumArtwork == nil) {
-                albumArtwork = albumArtworkObject.imageWithSize(cellImageSize)
-                tempImageCache[mediaItem.albumId] = albumArtwork
-            }
-            
-            return albumArtwork
-        }
-        
-        if(noAlbumArtCellImage == nil) {
-            noAlbumArtCellImage = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: cellImageSize)
-        }
-        return noAlbumArtCellImage
-
     }
     
     private func deleteIndexPaths(indiciesToDelete:[NSIndexPath]) {
@@ -325,27 +209,13 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
     final func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
         return viewExpanded
     }
-
-    //MARK: gesture recognizer handlers
-    func handleTapGesture(sender:UITapGestureRecognizer) {
-        let location = sender.locationInView(tableView)
-        let indexPath = tableView.indexPathForRowAtPoint(location)
-        if(indexPath == nil) { return }
-        
-        let touchedCell = tableView.cellForRowAtIndexPath(indexPath!)! as! SongDetailsTableViewCell
-        let locationInMenuButton = sender.locationInView(touchedCell.menuButton)
-        if(!touchedCell.menuButton.pointInside(locationInMenuButton, withEvent: nil)) {
-            tableView(tableView, didSelectRowAtIndexPath: indexPath!)
-            return
-        }
-        
-        let index = indexPath!.row
-        
+    
+    func presentActionsForIndexPath(indexPath: NSIndexPath, title: String?, details: String?) {
+        let index = indexPath.row
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
-        let actionTitle = mediaItem.trackTitle
-        let actionDetails = "\(mediaItem.albumArtist ?? mediaItem.artist ?? "Unknown Artist") - \(mediaItem.albumTitle ?? "Unknown Album")"
-        let controller = UIAlertController(title: actionTitle, message: actionDetails, preferredStyle: UIAlertControllerStyle.Alert)
 
+        let controller = UIAlertController(title: title, message: details, preferredStyle: UIAlertControllerStyle.Alert)
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         controller.addAction(cancelAction)
         
@@ -375,7 +245,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
                 for i in 0..<index {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Above?", details: "Selected Track: \(actionTitle)\n\(actionDetails)") {
+                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Above?", details: "Selected Track: \(title ?? "" )\n\(details ?? "")") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
@@ -384,8 +254,8 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
         }
         
         let deleteAction = UIAlertAction(title: "Remove", style: .Destructive) { action in
-            self.tableView(self.tableView, commitEditingStyle: .Delete,
-                forRowAtIndexPath: NSIndexPath(forRow: index, inSection: 0))
+            self.datasourceDelegate.tableView?(self.tableView, commitEditingStyle: .Delete,
+                forRowAtIndexPath: indexPath)
         }
         controller.addAction(deleteAction)
         
@@ -395,7 +265,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
                 for i in (index + 1)...lastIndex {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Below?", details: "Selected Track: \(actionTitle)\n\(actionDetails)") {
+                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Below?", details: "Selected Track: \(title ?? "")\n\(details ?? "")") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
@@ -403,7 +273,7 @@ final class NowPlayingViewController: UIViewController, UITableViewDelegate, UIT
             controller.addAction(clearUpcomingItemsAction)
         }
         
-        self.presentViewController(controller, animated: true, completion: nil)
+        presentViewController(controller, animated: true, completion: nil)
     }
 
 }

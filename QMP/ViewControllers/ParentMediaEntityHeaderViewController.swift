@@ -158,6 +158,9 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
             sender?.setTitle("SELECT", forState: .Normal)
             applyDataSourceAndDelegate()
         }
+        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.5), dispatch_get_main_queue()) {
+            self.tableView.reloadData()
+        }
     }
     
     

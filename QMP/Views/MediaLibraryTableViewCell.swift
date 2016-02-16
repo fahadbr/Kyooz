@@ -23,14 +23,10 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     var indexPath:NSIndexPath!
     var shouldHideAccessoryStack:Bool = true
     
-    var isNowPlayingItem:Bool = false {
+    var isNowPlaying:Bool = false {
         didSet {
-            if isNowPlayingItem != oldValue {
-                if isNowPlayingItem {
-                    titleLabel.textColor = ThemeHelper.defaultVividColor
-                } else {
-                    titleLabel.textColor = ThemeHelper.defaultFontColor
-                }
+            if isNowPlaying != oldValue {
+                titleLabel.textColor = isNowPlaying ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
             }
         }
     }
