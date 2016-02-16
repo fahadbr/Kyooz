@@ -35,23 +35,21 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         let sections = sourceData.sections.count
-        tableView.sectionHeaderHeight = sections > 1 ? 40 : 0
+        tableView.sectionHeaderHeight = sections > 1 ? ThemeHelper.tableViewSectionHeaderHeight : 0
 		return sections
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = sourceData.sections[section].count
-        if rowLimitActive {
-            return min(count, rowLimit)
-        }
-        return count
+
+        return rowLimitActive ? min(count, rowLimit) : count
     }
 	
 	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
         if !sourceData.sectionNamesCanBeUsedAsIndexTitles {
             return nil
         }
-        return sourceData.sections.map() { return $0.name }
+        return sourceData.sections.map() { $0.name }
 	}
 	
 	func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
@@ -71,18 +69,20 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
             audioCell.configureCellForItems(entity, libraryGrouping: libraryGrouping)
             audioCell.indexPath = indexPath
             audioCell.delegate = audioCellDelegate
-            
-            if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping), let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping) where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
-                audioCell.isNowPlayingItem = true
-            } else {
-                audioCell.isNowPlayingItem = false
-            }
+            audioCell.isNowPlaying = entityIsNowPlaying(entity, libraryGrouping: libraryGrouping, indexPath: indexPath)
         } else {
-            cell.textLabel?.text = entity.representativeTrack?.trackTitle
+            cell.textLabel?.text = entity.titleForGrouping(libraryGrouping)
         }
         
         return cell
         
+    }
+    
+    func entityIsNowPlaying(entity:AudioEntity, libraryGrouping:LibraryGrouping, indexPath:NSIndexPath) -> Bool {
+        if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping), let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping) where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
+            return true
+        }
+        return false
     }
 
 }

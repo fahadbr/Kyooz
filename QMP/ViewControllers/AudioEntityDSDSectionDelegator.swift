@@ -35,7 +35,7 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
     
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
 		let count = dsdSections.count
-        tableView.sectionHeaderHeight = count > 1 ? 40 : 0
+        tableView.sectionHeaderHeight = count > 1 ? ThemeHelper.tableViewSectionHeaderHeight : 0
         return count
 	}
 	

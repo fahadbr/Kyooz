@@ -110,7 +110,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         switch sourceData.libraryGrouping {
         case LibraryGrouping.Songs:
             if sourceData is KyoozPlaylistSourceData {
-                datasourceDelegate = KyoozPlaylistDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+                datasourceDelegate = EditableAudioTrackDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             } else {
                 datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier:  reuseIdentifier, audioCellDelegate: self)
             }

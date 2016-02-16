@@ -14,7 +14,7 @@ protocol ConfigurableAudioTableCell : class {
     weak var delegate:ConfigurableAudioTableCellDelegate? { get set }
     
     var indexPath:NSIndexPath! { get set }
-    var isNowPlayingItem:Bool { get set }
+    var isNowPlaying:Bool { get set }
     
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping)
 

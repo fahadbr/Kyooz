@@ -32,7 +32,7 @@ class AudioTrackDSD : AudioEntityDSD {
     
 }
 
-final class KyoozPlaylistDSD : AudioTrackDSD {
+class EditableAudioTrackDSD : AudioTrackDSD {
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
@@ -45,7 +45,7 @@ final class KyoozPlaylistDSD : AudioTrackDSD {
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle != .Delete { return }
         
-        let success = performPlaylistUpdate {
+        let success = executeSourceDataUpdate {
             guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
                 throw KyoozError(errorDescription:"Source Data is not Mutable")
             }
@@ -58,7 +58,7 @@ final class KyoozPlaylistDSD : AudioTrackDSD {
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        performPlaylistUpdate {
+        executeSourceDataUpdate {
             guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
                 throw KyoozError(errorDescription:"Source Data is not Mutable")
             }
@@ -66,7 +66,7 @@ final class KyoozPlaylistDSD : AudioTrackDSD {
         }
     }
     
-    private func performPlaylistUpdate(tracksUpdatingBlock:(() throws -> Void)) -> Bool {
+    private func executeSourceDataUpdate(tracksUpdatingBlock:(() throws -> Void)) -> Bool {
         do {
             try tracksUpdatingBlock()
         } catch let error {
@@ -76,4 +76,25 @@ final class KyoozPlaylistDSD : AudioTrackDSD {
         return true
     }
     
+}
+
+final class NowPlayingQueueDSD : EditableAudioTrackDSD {
+    
+    init(reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
+        super.init(sourceData: AudioQueuePlayerSourceData(), reuseIdentifier: reuseIdentifier, audioCellDelegate: audioCellDelegate)
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        guard !tableView.editing else { return }
+        
+        defer {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        }
+        
+        audioQueuePlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
+    }
+    
+    override func entityIsNowPlaying(entity: AudioEntity, libraryGrouping: LibraryGrouping, indexPath: NSIndexPath) -> Bool {
+        return audioQueuePlayer.indexOfNowPlayingItem == indexPath.row
+    }
 }
