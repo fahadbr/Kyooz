@@ -125,11 +125,6 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         default:
             datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
         }
-        
-        if tableView.editing {
-            delegate = AudioEntitySelectorDSD(sourceData: sourceData, tableView: tableView)
-        }
-
     }
 
     
