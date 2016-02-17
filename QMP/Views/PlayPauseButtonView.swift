@@ -21,24 +21,43 @@ final class PlayPauseButtonView: UIButton {
     @IBInspectable
     var hasOuterFrame:Bool = true
     
+    var color:UIColor = ThemeHelper.defaultFontColor {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override var highlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
+    override var enabled:Bool {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override func drawRect(rect: CGRect) {
+        if !enabled {
+            UIColor.darkGrayColor().setFill()
+            UIColor.darkGrayColor().setStroke()
+        } else if highlighted {
+            if let highlightColor = titleColorForState(.Highlighted) {
+                highlightColor.setFill()
+                highlightColor.setStroke()
+            } else {
+                UIColor.darkGrayColor().setFill()
+                UIColor.darkGrayColor().setStroke()
+            }
+        } else {
+            color.setFill()
+            color.setStroke()
+        }
         
         let path = isPlayButton ? drawPlayButton(rect) : drawPauseButton(rect)
         
-        
-        if highlighted {
-            UIColor.lightGrayColor().setFill()
-            UIColor.lightGrayColor().setStroke()
-        } else {
-            UIColor.whiteColor().setFill()
-            UIColor.whiteColor().setStroke()
-        }
         
         path.fill()
         

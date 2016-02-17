@@ -69,9 +69,6 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
             })
         }
         KyoozUtils.addDefaultQueueingActions(tracks, alertController: ac)
-        ac.addAction(UIAlertAction(title: "Add to Playlist..", style: .Default, handler:{ _ -> Void in
-            KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
-        }))
         
         
         addCustomMenuActions(indexPath, alertController: ac)
