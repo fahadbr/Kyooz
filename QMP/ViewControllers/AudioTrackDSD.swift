@@ -13,6 +13,8 @@ class AudioTrackDSD : AudioEntityDSD {
     var playAllTracksOnSelection = true
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		guard !tableView.editing else { return }
+		
         defer {
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }

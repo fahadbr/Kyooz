@@ -11,6 +11,7 @@ import UIKit
 class AudioTrackCollectionDSD : AudioEntityDSD {
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		guard !tableView.editing else { return }
 		
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 		let entity = sourceData[indexPath]
