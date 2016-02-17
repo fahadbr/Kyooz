@@ -88,6 +88,9 @@ struct KyoozUtils {
         alertController.addAction(queueNextAction)
         alertController.addAction(queueLastAction)
         alertController.addAction(queueRandomlyAction)
+        alertController.addAction(UIAlertAction(title: "Add to Playlist..", style: .Default, handler:{ _ -> Void in
+            KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
+        }))
     }
     
     static func showAvailablePlaylistsForAddingTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
