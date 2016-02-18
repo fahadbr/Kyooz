@@ -24,11 +24,11 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     var originalIndexPathOfMovingItem:NSIndexPath!
     var delegate:GestureHandlerDelegate?
     
-    var positionChangeUpdatesDataSource = true
     var shouldHideSourceView = true
     var updateSnapshotXPosition = false
     
     var snapshotScale:CGFloat = 1.10
+    var cornerRadiusForSnapshot:CGFloat = 0
     
     init(tableView:UITableView) {
         self.tableView = tableView
@@ -41,7 +41,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     
     final func handleGesture(sender: UILongPressGestureRecognizer) {
         let state:UIGestureRecognizerState = sender.state
-        
+
         switch(state) {
         case .Began:
             if let result = getCellForSnapshot(sender, tableView:tableView) {
@@ -146,6 +146,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         //add the snapshot as a subview, centered at cell's center
         let locationInView = sender.locationInView(sender.view)
         updateSnapshotPosition(locationInView)
+        self.snapshot.layer.cornerRadius = self.cornerRadiusForSnapshot
         sender.view?.addSubview(snapshot)
         beginningAnimationEnded = false
         UIView.animateWithDuration(0.25, animations: { () -> Void in
@@ -154,7 +155,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
             self.updateSnapshotPosition(locationInView)
             self.snapshot.transform = CGAffineTransformMakeScale(self.snapshotScale, self.snapshotScale)
             self.snapshot.alpha = 0.80
-            
+
             if(self.shouldHideSourceView) {
                 //Fade out the cell in the tableview
                 viewForSnapshot.alpha = 0.0

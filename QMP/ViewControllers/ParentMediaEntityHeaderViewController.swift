@@ -66,7 +66,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     }
     
     private var headerState:HeaderState = .Expanded
-    
+    var shouldCollapseHeaderView = true
     private var headerTranslationTransform:CATransform3D!
     
     var testDelegate:TestTableViewDataSourceDelegate!
@@ -98,10 +98,12 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         applyDataSourceAndDelegate()
         navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
         
-        headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
-        headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeightConstraint.constant/2, 0)
-        headerView.layer.transform = headerTranslationTransform
-        headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+        if shouldCollapseHeaderView {
+            headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
+            headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeightConstraint.constant/2, 0)
+            headerView.layer.transform = headerTranslationTransform
+            headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+        }
         
 //        configureTestDelegates()
         if scrollView != nil {
@@ -139,7 +141,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
-        let shouldUseOverlay = totalHeight >= view.frame.height
+        let shouldUseOverlay = totalHeight >= view.frame.height && shouldCollapseHeaderView
         scrollView.userInteractionEnabled = shouldUseOverlay
         scrollView.scrollsToTop = shouldUseOverlay
         tableView.scrollEnabled = !shouldUseOverlay
@@ -167,18 +169,10 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         tableView.setEditing(willEdit, animated: true)
         RootViewController.instance.setToolbarHidden(!willEdit)
         
-        if willEdit {
-			if toolbarItems == nil {
-				toolbarItems = createToolbarItems()
-			}
-            sender?.setTitle("CANCEL", forState: .Normal)
-
-        } else {
-            sender?.setTitle("SELECT", forState: .Normal)
+        if willEdit && toolbarItems == nil {
+            toolbarItems = createToolbarItems()
         }
-        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.5), dispatch_get_main_queue()) {
-            self.tableView.reloadData()
-        }
+        refreshButtonStates()
     }
     
     
@@ -204,7 +198,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     //MARK: - Scroll View Delegate
     final func scrollViewDidScroll(scrollView: UIScrollView) {
-        if scrollView === tableView { return }
+        if !shouldCollapseHeaderView || scrollView === tableView { return }
         let currentOffset = scrollView.contentOffset.y
         
         
@@ -291,7 +285,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
 			$0.tintColor = tintColor
 		}
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshButtonStates", name: UITableViewSelectionDidChangeNotification, object: tableView)
-		refreshButtonStates()
 		return toolbarItems
 	}
 	
