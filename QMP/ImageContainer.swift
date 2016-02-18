@@ -11,7 +11,7 @@ import UIKit
 
 struct ImageContainer {
     
-    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "blueplayicon")!
+    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "upward-linked-node")!
     
     static func resizeImage(image:UIImage, toSize newSize:CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
@@ -35,11 +35,10 @@ struct ImageHelper {
         
         //Create an image view
         let snapshot = UIImageView(image: image)
-        snapshot.layer.masksToBounds = false
-        snapshot.layer.cornerRadius = 0.0
-        snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0)
+        snapshot.layer.masksToBounds = true
+        snapshot.layer.shadowOffset = CGSizeMake(0.0, 0.0)
         snapshot.layer.shadowRadius = 5.0
-        snapshot.layer.shadowOpacity = 0.4
+        snapshot.layer.shadowOpacity = 0.6
         
         return snapshot
     }

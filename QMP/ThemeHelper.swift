@@ -25,7 +25,9 @@ struct ThemeHelper {
     static let defaultTableCellColor = UIColor(white: 0.09, alpha: 1.0)
     
     static let defaultFontColor = UIColor.whiteColor()
-    static let defaultVividColor = UIColor(red: 64.0/225.0, green: 224.0/225.0, blue: 208.0/225.0, alpha: 1.0)
+//    static let defaultVividColor = UIColor(red: 64.0/255.0, green: 224.0/255.0, blue: 208.0/255.0, alpha: 1.0)
+    static let defaultVividColor = UIColor(red: 255.0/255.0, green: 93/255.0, blue: 53/255.0, alpha: 1.0)
+    static let darkAccentColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 1.0)
     
     static let barsAreTranslucent = true
     

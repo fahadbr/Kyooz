@@ -57,6 +57,14 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("systemQueueResyncWorkflowController") as! SystemQueueResyncWorkflowController
     }
     
+    static func utilHeaderViewController() -> UtilHeaderViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("utilHeaderViewController") as! UtilHeaderViewController
+    }
+    
+    static func collectionDetailsHeaderViewController() -> CollectionDetailsHeaderViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("collectionDetailsHeaderViewController") as! CollectionDetailsHeaderViewController
+    }
+    
     static func settingsViewController() -> UIViewController {
         return settingsStoryboard().instantiateInitialViewController()!
     }

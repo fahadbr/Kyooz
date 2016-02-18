@@ -37,10 +37,11 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         cancelView = CancelView(frame: frame)
         
         super.init(tableView: dropDestination.destinationTableView)
-        self.positionChangeUpdatesDataSource = false
-        self.shouldHideSourceView = false
-        self.snapshotScale = 0.9
-        self.updateSnapshotXPosition = true
+
+        shouldHideSourceView = false
+        snapshotScale = 0.9
+        updateSnapshotXPosition = true
+        cornerRadiusForSnapshot = 10
     }
     
 
