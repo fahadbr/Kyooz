@@ -51,8 +51,13 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
             (headerVC as? UtilHeaderViewController)?.subGroups = subGroups
         }
         
-        if let tracks = sourceData.entities as? [AudioTrack] {
-            (headerVC as? CollectionDetailsHeaderViewController)?.configureViewWithCollection(tracks)
+        if let tracks = sourceData.entities as? [AudioTrack], let cdhvc = headerVC as? CollectionDetailsHeaderViewController {
+//            (headerVC as? CollectionDetailsHeaderViewController)?.configureViewWithCollection(tracks)
+			cdhvc.configureViewWithCollection(tracks)
+			headerTopAnchorConstraint.active = false
+			headerView.removeConstraint(headerTopAnchorConstraint)
+			headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
+			headerTopAnchorConstraint.active = true
         }
         
         

@@ -178,7 +178,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         let vc:ParentMediaEntityHeaderViewController!
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
-            vc = UIStoryboard.albumTrackTableViewController()
+//            vc = UIStoryboard.albumTrackTableViewController()
+			let mvc = UIStoryboard.mediaEntityTableViewController()
+//			mvc.title = title?.uppercaseString
+			mvc.subGroups = parentGroup.subGroupsForNextLevel
+			mvc.useCollectionDetailsHeader = true
+			vc = mvc
         } else {
             let mvc = UIStoryboard.mediaEntityTableViewController()
             mvc.title = title?.uppercaseString
