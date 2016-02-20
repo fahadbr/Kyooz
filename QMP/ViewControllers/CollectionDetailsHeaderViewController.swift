@@ -16,7 +16,7 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     @IBOutlet var shuffleButton: ShuffleButtonView!
     @IBOutlet var selectModeButton: ListButtonView!
     
-    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var headerTitleLabel: UILabel!
     
     @IBOutlet var detailsLabel1: UILabel!
     @IBOutlet var detailsLabel2: UILabel!
@@ -25,8 +25,14 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var blurView: UIVisualEffectView!
     
-    
-    
+	let gradiant:CAGradientLayer = {
+		let gradiant = CAGradientLayer()
+		gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
+		gradiant.endPoint = CGPoint(x: 0.5, y: 0.75)
+		gradiant.colors = [UIColor.blackColor().CGColor, UIColor.clearColor().CGColor]
+		return gradiant
+	}()
+	
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -36,9 +42,11 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
             Logger.debug("couldnt get representative item for album collection")
             return
         }
+		
+		gradiant.frame = imageView.bounds
+		imageView.layer.addSublayer(gradiant)
         
-        titleLabel.text = track.albumTitle
-        
+        headerTitleLabel.text = track.albumTitle?.uppercaseString
         
         detailsLabel1.text = track.albumArtist ?? track.artist
         
@@ -68,17 +76,16 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         }
         
         KyoozUtils.doInMainQueueAsync() { [weak self] in
-            self?.titleLabel.alpha = 0 //doing this here because for some reason it wont take effect when done synchronously with setting the navigation item
             
             var duration:NSTimeInterval = 0
             for item in tracks {
                 duration += item.playbackDuration
             }
             if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
-                self?.detailsLabel3.text = albumDurationString
-                self?.detailsLabel3.textColor = UIColor.lightGrayColor()
+                self?.detailsLabel2.text = albumDurationString
+                self?.detailsLabel2.textColor = UIColor.lightGrayColor()
             } else {
-                self?.detailsLabel3.hidden = true
+                self?.detailsLabel2.hidden = true
             }
         }
         

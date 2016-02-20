@@ -377,10 +377,10 @@
                         <outlet property="detailsLabel1" destination="dAW-VW-iUK" id="sVw-ju-0Wk"/>
                         <outlet property="detailsLabel2" destination="3nU-KZ-UZY" id="G0L-yj-u6d"/>
                         <outlet property="detailsLabel3" destination="Fom-L1-k4O" id="kcd-dR-Hvg"/>
+                        <outlet property="headerTitleLabel" destination="emV-0W-Fc3" id="mxS-zL-OY7"/>
                         <outlet property="imageView" destination="1Xu-rP-4ez" id="bmH-NQ-B6M"/>
                         <outlet property="selectModeButton" destination="E3e-hG-15u" id="C92-EE-Wg3"/>
                         <outlet property="shuffleButton" destination="wQ1-OV-8Kt" id="Wzc-D0-r4K"/>
-                        <outlet property="titleLabel" destination="emV-0W-Fc3" id="jmf-lr-7eU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qdB-Mv-bON" userLabel="First Responder" sceneMemberID="firstResponder"/>
