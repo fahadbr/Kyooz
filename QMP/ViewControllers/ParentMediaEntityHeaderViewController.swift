@@ -24,13 +24,6 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         case Collapsed, Expanded, Transitioning
     }
     
-//    static let queueButton:UIBarButtonItem = {
-//        let view = ListButtonView()
-//        view.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-//        view.addTarget(ContainerViewController.instance, action: "toggleSidePanel", forControlEvents: .TouchUpInside)
-//        return UIBarButtonItem(customView: view)
-//    }()
-    
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
@@ -48,14 +41,15 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     @IBOutlet var headerTopAnchorConstraint:NSLayoutConstraint!
     @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var subHeaderHeightConstraint: NSLayoutConstraint!
     
     var headerHeight:CGFloat {
         return headerHeightConstraint.constant
     }
+    var maxHeight:CGFloat!
+    var collapsedTargetOffset:CGFloat!
     
     var reuseIdentifier:String {
-        if self is AlbumTrackTableViewController {
+        if self is AlbumTrackTableViewController || useCollectionDetailsHeader {
             return AlbumTrackTableViewCell.reuseIdentifier
         }
         
@@ -64,11 +58,13 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         }
         return MediaCollectionTableViewCell.reuseIdentifier
     }
-    
-    private var headerState:HeaderState = .Expanded
+
     var shouldCollapseHeaderView = true
-    private var headerTranslationTransform:CATransform3D!
+    var useCollectionDetailsHeader:Bool = false
+    private var headerState:HeaderState = .Expanded
     
+    
+    var testMode = false
     var testDelegate:TestTableViewDataSourceDelegate!
 	
 	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "showAddToOptions:")
@@ -95,18 +91,16 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        applyDataSourceAndDelegate()
-        navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
         
-        if shouldCollapseHeaderView {
-            headerView.layer.anchorPoint = CGPoint(x: 0.5, y: 1.0)
-            headerTranslationTransform = CATransform3DMakeTranslation(0, headerHeightConstraint.constant/2, 0)
-            headerView.layer.transform = headerTranslationTransform
-            headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+        if testMode {
+            configureTestDelegates()
+        } else {
+            applyDataSourceAndDelegate()
         }
         
-//        configureTestDelegates()
-        if scrollView != nil {
+        navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
+        headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+        if shouldCollapseHeaderView {
             configureOverlayScrollView()
         }
         
@@ -125,6 +119,15 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     }
     
     private func configureOverlayScrollView() {
+        scrollView = UIScrollView()
+        view.insertSubview(scrollView, atIndex: 0)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        scrollView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+        scrollView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        scrollView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        scrollView.delegate = self
+        
         view.addGestureRecognizer(scrollView.panGestureRecognizer)
         calculateContentSize()
     }
@@ -137,7 +140,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
             heightForCells += (tableView.rowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
         }
         let estimatedHeight = heightForSections + heightForCells
-        let totalHeight = estimatedHeight + headerHeightConstraint.constant + (subHeaderHeightConstraint?.constant ?? 0)!
+        let totalHeight = estimatedHeight + headerHeightConstraint.constant
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
@@ -172,6 +175,9 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         if willEdit && toolbarItems == nil {
             toolbarItems = createToolbarItems()
         }
+        
+        (sender as? ListButtonView)?.showBullets = !willEdit
+        
         refreshButtonStates()
     }
     
@@ -202,21 +208,14 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
         let currentOffset = scrollView.contentOffset.y
         
         
-        if currentOffset > 0 && currentOffset < headerHeight {
-            headerView.layer.shouldRasterize = true
+        if  currentOffset < collapsedTargetOffset {
             applyTransformToHeaderUsingOffset(currentOffset)
-        } else if currentOffset <= 0 {
-            if headerState != .Expanded {
-                headerView.layer.shouldRasterize = false
-                applyTransformToHeaderUsingOffset(0)
-            }
-            tableView.contentOffset.y = currentOffset
+            tableView.contentOffset.y = 0
         } else {
             if headerState != .Collapsed {
-                headerView.layer.shouldRasterize = false
-                applyTransformToHeaderUsingOffset(headerHeight)
+                applyTransformToHeaderUsingOffset(collapsedTargetOffset)
             }
-            tableView.contentOffset.y = currentOffset - headerHeight
+            tableView.contentOffset.y = currentOffset - collapsedTargetOffset
         }
         
     }
@@ -227,14 +226,10 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     
     private func applyTransformToHeaderUsingOffset(offset:CGFloat) {
-        headerTopAnchorConstraint.constant = -offset
-        let fraction = offset/headerHeight
+        headerHeightConstraint.constant = maxHeight - offset
+        let fraction = offset/collapsedTargetOffset
         
-        let angle = fraction * CGFloat(M_PI_2)
-        
-        let rotateTransform = CATransform3DRotate(identityTransform, angle, 1.0, 0.0, 0.0)
-        headerView.layer.transform = CATransform3DConcat(rotateTransform, headerTranslationTransform)
-        headerView.alpha = 1 - fraction
+//        headerView.alpha = 1 - fraction
         
         if fraction == 1 {
             headerState = .Collapsed
@@ -386,7 +381,8 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     //MARK: - GESTURE RECOGNIZER DELEGATE
     final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer === popGestureRecognizer {
-            return gestureRecognizer === scrollView.panGestureRecognizer || gestureRecognizer === tableView.panGestureRecognizer
+            
+            return gestureRecognizer === scrollView?.panGestureRecognizer || gestureRecognizer === tableView.panGestureRecognizer
         }
         return false
     }
@@ -396,7 +392,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
     
     final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === popGestureRecognizer {
-            return otherGestureRecognizer === scrollView.panGestureRecognizer || otherGestureRecognizer === tableView.panGestureRecognizer
+            return otherGestureRecognizer === scrollView?.panGestureRecognizer || otherGestureRecognizer === tableView.panGestureRecognizer
         }
         return false
     }

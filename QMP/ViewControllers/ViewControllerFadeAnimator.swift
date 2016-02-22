@@ -60,12 +60,12 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             vcToAnimate = fromVC
             transitionContext.containerView()?.insertSubview(viewToAdd, belowSubview: fromVC.view)
             
-            var animations = { vcToAnimate.view.layer.opacity = 0.0 }
+            var animations = { vcToAnimate.view.alpha = 0.0 }
             if interactive {
-                let transform = CATransform3DMakeTranslation(vcToAnimate.view.frame.width * 0.75, 0, 0)
+                let transform = CGAffineTransformMakeTranslation(vcToAnimate.view.frame.width * 0.75, 0)
                 animations = {
-                    vcToAnimate.view.layer.transform = transform
-                    vcToAnimate.view.layer.opacity = 0.0
+                    vcToAnimate.view.transform = transform
+                    vcToAnimate.view.alpha = 0.0
                 }
             }
             UIView.animateWithDuration(animationDuration, animations: animations) {_ in

@@ -10,6 +10,6 @@
 #define Kyooz_KyoozBridge_h
 
 #import <CommonCrypto/CommonDigest.h>
-
+#import <UIImage+ImageEffects.h>
 
 #endif

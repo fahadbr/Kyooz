@@ -19,18 +19,16 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     private (set) var isBaseLevel:Bool = true
-    
-    var useCollectionDetailsHeader:Bool = false
+    var headerVC:UIViewController!
 
     override func viewDidLoad() {
-        shouldCollapseHeaderView = false
+        shouldCollapseHeaderView = useCollectionDetailsHeader
         
-        super.viewDidLoad()
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         
-        let headerVC = getHeaderViewController()
+        headerVC = getHeaderViewController()
         headerView.addSubview(headerVC.view)
 
         headerVC.view.translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +40,10 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         headerVC.didMoveToParentViewController(self)
         
         if let header = headerVC as? HeaderViewControllerProtocol {
-            headerHeightConstraint.constant = header.dynamicType.height
+            headerHeightConstraint.constant = header.height
+            maxHeight = header.height
+            collapsedTargetOffset = maxHeight - header.minimumHeight
+            
             header.shuffleButton.addTarget(self, action: "shuffleAllItems:", forControlEvents: .TouchUpInside)
             header.selectModeButton.addTarget(self, action: "toggleSelectMode:", forControlEvents: .TouchUpInside)
         }
@@ -52,16 +53,26 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
         
         if let tracks = sourceData.entities as? [AudioTrack], let cdhvc = headerVC as? CollectionDetailsHeaderViewController {
-//            (headerVC as? CollectionDetailsHeaderViewController)?.configureViewWithCollection(tracks)
 			cdhvc.configureViewWithCollection(tracks)
-			headerTopAnchorConstraint.active = false
-			headerView.removeConstraint(headerTopAnchorConstraint)
-			headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
-			headerTopAnchorConstraint.active = true
+            tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
+            KyoozUtils.doInMainQueueAsync() {
+                self.updateConstraints()
+            }
         }
-        
-        
+
+        super.viewDidLoad()
         popGestureRecognizer.enabled = !isBaseLevel
+        
+    }
+    
+    
+    private func updateConstraints() {
+        if headerVC is CollectionDetailsHeaderViewController {
+            headerTopAnchorConstraint.active = false
+            headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
+            headerTopAnchorConstraint.identifier = "collectionDetailsTopAnchorConstraint"
+            headerTopAnchorConstraint.active = true
+        }
     }
     
     private func getHeaderViewController() -> UIViewController {

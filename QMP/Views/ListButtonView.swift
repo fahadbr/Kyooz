@@ -25,7 +25,11 @@ final class ListButtonView: UIButton {
     var color:UIColor = ThemeHelper.defaultFontColor
     
     @IBInspectable
-    var showBullets:Bool = false
+    var showBullets:Bool = false {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     
     override var highlighted:Bool {
         didSet {
