@@ -60,6 +60,7 @@
 		0B58794D1C74140C009E713F /* UtilHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */; };
 		0B58794F1C756000009E713F /* HeaderViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794E1C756000009E713F /* HeaderViewControllerProtocol.swift */; };
 		0B5879511C756097009E713F /* CollectionDetailsHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5879501C756097009E713F /* CollectionDetailsHeaderViewController.swift */; };
+		0B5879541C7A38F1009E713F /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B5879531C7A38F1009E713F /* UIImage+ImageEffects.m */; };
 		0B5F134E1C714F56009A1FDD /* MediaQuerySourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */; };
 		0B5F13501C714F83009A1FDD /* SearchResultsSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */; };
 		0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */; };
@@ -204,6 +205,8 @@
 		0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilHeaderViewController.swift; sourceTree = "<group>"; };
 		0B58794E1C756000009E713F /* HeaderViewControllerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewControllerProtocol.swift; sourceTree = "<group>"; };
 		0B5879501C756097009E713F /* CollectionDetailsHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionDetailsHeaderViewController.swift; sourceTree = "<group>"; };
+		0B5879521C7A38F1009E713F /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		0B5879531C7A38F1009E713F /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQuerySourceData.swift; sourceTree = "<group>"; };
 		0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsSourceData.swift; sourceTree = "<group>"; };
 		0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozPlaylistSourceData.swift; sourceTree = "<group>"; };
@@ -308,6 +311,7 @@
 		0B0FE16E1C40B8F7001E4ABE /* VC Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				0BD11B6B1B09235A00565471 /* GestureHandler */,
 				10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */,
 				0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */,
 			);
@@ -396,14 +400,11 @@
 		0B13D9FE1AE6FA9A00CC5C01 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				0BD11B6B1B09235A00565471 /* GestureHandler */,
 				100A8BCC1C56EBAE009FAB17 /* MediaLibrary */,
 				0BD11B641B082C1000565471 /* Settings */,
 				100A8BCD1C56EBEB009FAB17 /* Util VCs */,
 				0B0FE16E1C40B8F7001E4ABE /* VC Helpers */,
 				0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */,
-				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
-				0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */,
 				0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */,
 				0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
@@ -440,6 +441,8 @@
 		0B1BFDAA1AF535DB009838A5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0B5879521C7A38F1009E713F /* UIImage+ImageEffects.h */,
+				0B5879531C7A38F1009E713F /* UIImage+ImageEffects.m */,
 				0BD11B671B08FB2B00565471 /* ArrayExtension.swift */,
 				0BC3179E1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift */,
 				100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */,
@@ -650,8 +653,10 @@
 		100A8BCD1C56EBEB009FAB17 /* Util VCs */ = {
 			isa = PBXGroup;
 			children = (
+				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
 				0B5879501C756097009E713F /* CollectionDetailsHeaderViewController.swift */,
 				0B58794E1C756000009E713F /* HeaderViewControllerProtocol.swift */,
+				0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */,
 				104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */,
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
@@ -830,6 +835,7 @@
 				0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */,
 				0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
+				0B5879541C7A38F1009E713F /* UIImage+ImageEffects.m in Sources */,
 				100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */,
 				10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,

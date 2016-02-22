@@ -10,7 +10,8 @@ import UIKit
 
 protocol HeaderViewControllerProtocol {
     
-    static var height:CGFloat { get }
+    var height:CGFloat { get }
+    var minimumHeight:CGFloat { get }
     
     var shuffleButton: ShuffleButtonView! { get }
     var selectModeButton: ListButtonView! { get }

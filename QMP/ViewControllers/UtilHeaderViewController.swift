@@ -8,9 +8,17 @@
 
 import UIKit
 
+let fixedHeight:CGFloat = 40
+
 final class UtilHeaderViewController: UIViewController, HeaderViewControllerProtocol {
 
-    static let height:CGFloat = 40
+    var height:CGFloat {
+        return fixedHeight
+    }
+    
+    var minimumHeight:CGFloat {
+        return fixedHeight
+    }
     
     @IBOutlet var shuffleButton: ShuffleButtonView!
     @IBOutlet var libraryGroupingButton: UIButton!
@@ -28,7 +36,7 @@ final class UtilHeaderViewController: UIViewController, HeaderViewControllerProt
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        view.layer.cornerRadius = 10
+
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
         
