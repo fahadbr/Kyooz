@@ -128,6 +128,12 @@
     return [self applyBlurWithRadius:blurRadius tintColor:tintColor saturationDeltaFactor:1.8 maskImage:nil];
 }
 
+- (UIImage *)applyBlurWithRadius:(CGFloat)blurRadius
+{
+	UIColor *tintColor = [UIColor clearColor];
+	return [self applyBlurWithRadius:blurRadius tintColor:tintColor saturationDeltaFactor:1.8 maskImage:nil];
+}
+
 
 - (UIImage *)applyTintEffectWithColor:(UIColor *)tintColor
 {
@@ -215,28 +221,28 @@
       vImageBoxConvolve_ARGB8888(&effectInBuffer, &effectOutBuffer, NULL, 0, 0, radius, radius, 0, kvImageEdgeExtend);
     }
     BOOL effectImageBuffersAreSwapped = NO;
-    if (hasSaturationChange) {
-      CGFloat s = saturationDeltaFactor;
-      CGFloat floatingPointSaturationMatrix[] = {
-        0.0722 + 0.9278 * s,  0.0722 - 0.0722 * s,  0.0722 - 0.0722 * s,  0,
-        0.7152 - 0.7152 * s,  0.7152 + 0.2848 * s,  0.7152 - 0.7152 * s,  0,
-        0.2126 - 0.2126 * s,  0.2126 - 0.2126 * s,  0.2126 + 0.7873 * s,  0,
-        0,                    0,                    0,  1,
-      };
-      const int32_t divisor = 256;
-      NSUInteger matrixSize = sizeof(floatingPointSaturationMatrix)/sizeof(floatingPointSaturationMatrix[0]);
-      int16_t saturationMatrix[matrixSize];
-      for (NSUInteger i = 0; i < matrixSize; ++i) {
-        saturationMatrix[i] = (int16_t)roundf(floatingPointSaturationMatrix[i] * divisor);
-      }
-      if (hasBlur) {
-        vImageMatrixMultiply_ARGB8888(&effectOutBuffer, &effectInBuffer, saturationMatrix, divisor, NULL, NULL, kvImageNoFlags);
-        effectImageBuffersAreSwapped = YES;
-      }
-      else {
-        vImageMatrixMultiply_ARGB8888(&effectInBuffer, &effectOutBuffer, saturationMatrix, divisor, NULL, NULL, kvImageNoFlags);
-      }
-    }
+//    if (hasSaturationChange) {
+//      CGFloat s = saturationDeltaFactor;
+//      CGFloat floatingPointSaturationMatrix[] = {
+//        0.0722 + 0.9278 * s,  0.0722 - 0.0722 * s,  0.0722 - 0.0722 * s,  0,
+//        0.7152 - 0.7152 * s,  0.7152 + 0.2848 * s,  0.7152 - 0.7152 * s,  0,
+//        0.2126 - 0.2126 * s,  0.2126 - 0.2126 * s,  0.2126 + 0.7873 * s,  0,
+//        0,                    0,                    0,  1,
+//      };
+//      const int32_t divisor = 256;
+//      NSUInteger matrixSize = sizeof(floatingPointSaturationMatrix)/sizeof(floatingPointSaturationMatrix[0]);
+//      int16_t saturationMatrix[matrixSize];
+//      for (NSUInteger i = 0; i < matrixSize; ++i) {
+//        saturationMatrix[i] = (int16_t)roundf(floatingPointSaturationMatrix[i] * divisor);
+//      }
+//      if (hasBlur) {
+//        vImageMatrixMultiply_ARGB8888(&effectOutBuffer, &effectInBuffer, saturationMatrix, divisor, NULL, NULL, kvImageNoFlags);
+//        effectImageBuffersAreSwapped = YES;
+//      }
+//      else {
+//        vImageMatrixMultiply_ARGB8888(&effectInBuffer, &effectOutBuffer, saturationMatrix, divisor, NULL, NULL, kvImageNoFlags);
+//      }
+//    }
     if (!effectImageBuffersAreSwapped)
       effectImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

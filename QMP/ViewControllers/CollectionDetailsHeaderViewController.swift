@@ -44,6 +44,7 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     var blurView:UIVisualEffectView!
     
     var originalImage:UIImage!
+	var lowQualityImage:UIImage!
     var blurFilter:CIFilter!
     var blurContext:CIContext { return CollectionDetailsHeaderViewController.blurContext }
     
@@ -119,11 +120,17 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         
         if let albumArt = track.artwork {
             KyoozUtils.doInMainQueueAsync() { [weak self, albumImageView = self.imageView] in
-                if let image = albumArt.imageWithSize(albumImageView.frame.size) {
-                    if let filter = CIFilter(name: "CIBoxBlur"), let ciImage = CIImage(image: image) {
-                        filter.setValue(ciImage, forKey: kCIInputImageKey)
-                        filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
-                        self?.blurFilter = filter
+				
+				let lqScale:CGFloat = 10
+				
+                if let image = albumArt.imageWithSize(albumImageView.frame.size), lqImage = albumArt.imageWithSize(CGSize(width: albumImageView.frame.width/lqScale, height: albumImageView.frame.height/lqScale)) {
+					self?.lowQualityImage = lqImage
+                    if let filter = CIFilter(name: "CIBoxBlur") {
+						if let imageData = UIImageJPEGRepresentation(lqImage, 0.01), ciImage = CIImage(data: imageData) {
+							filter.setValue(ciImage, forKey: kCIInputImageKey)
+							filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
+							self?.blurFilter = filter
+						}
                     }
                     
                     self?.originalImage = image
@@ -166,11 +173,16 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
 
 //            if blurFilter?.setValue(NSNumber(float: (1 - Float(expandedFraction)) * 20), forKey: kCIInputRadiusKey) != nil {
 //                if let blurImage = blurFilter.outputImage {
-//                    imageView.image = UIImage(CGImage: blurContext.createCGImage(blurImage, fromRect: blurImage.extent))
+//                    imageView.layer.contents = blurContext.createCGImage(blurImage, fromRect: blurImage.extent)
 //                } else {
 //                    imageView.image = originalImage
 //                }
 //            }
+			if expandedFraction >= 0.5 {
+				imageView.image = originalImage
+			} else {
+				imageView.image = lowQualityImage.applyBlurWithRadius((1 - (expandedFraction * 2)) * 21)
+			}
 
             
             CATransaction.begin()
@@ -178,17 +190,18 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
             gradiant.frame = view.bounds
             tintLayer.frame = view.bounds
             tintLayer.opacity = (1 - Float(expandedFraction)) * 0.7
-            
+			
             if expandedFraction < 0.25 {
                 let scaledFraction = Float(expandedFraction) * 4
                 let inverseScaledFraction = 1 - scaledFraction
                 view.layer.shadowOpacity =  inverseScaledFraction
                 gradiant.opacity = scaledFraction
-                
+                imageView.image = lowQualityImage.applyBlurWithRadius(CGFloat(inverseScaledFraction) * 21)
 
             } else {
                 view.layer.shadowOpacity = 0
                 gradiant.opacity = 1
+				imageView.image = originalImage
             }
             CATransaction.commit()
             
