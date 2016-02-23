@@ -97,6 +97,8 @@
 
 @interface UIImage (ImageEffects)
 
+- (UIImage*)uie_boxblurImageWithBlur:(CGFloat)blur;
+
 - (UIImage *)applyLightEffect;
 - (UIImage *)applyExtraLightEffect;
 - (UIImage *)applyDarkEffect;
