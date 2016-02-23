@@ -62,7 +62,7 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     
     let tintLayer:CALayer = {
         let tint = CALayer()
-        tint.backgroundColor = UIColor.blackColor().CGColor
+        tint.backgroundColor = ThemeHelper.defaultTableCellColor.CGColor
         tint.opacity = 0
         return tint
     }()
@@ -121,17 +121,17 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         if let albumArt = track.artwork {
             KyoozUtils.doInMainQueueAsync() { [weak self, albumImageView = self.imageView] in
 				
-				let lqScale:CGFloat = 10
+				let lqScale:CGFloat = 3
 				
                 if let image = albumArt.imageWithSize(albumImageView.frame.size), lqImage = albumArt.imageWithSize(CGSize(width: albumImageView.frame.width/lqScale, height: albumImageView.frame.height/lqScale)) {
 					self?.lowQualityImage = lqImage
-                    if let filter = CIFilter(name: "CIBoxBlur") {
-						if let imageData = UIImageJPEGRepresentation(lqImage, 0.01), ciImage = CIImage(data: imageData) {
-							filter.setValue(ciImage, forKey: kCIInputImageKey)
-							filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
-							self?.blurFilter = filter
-						}
-                    }
+//                    if let filter = CIFilter(name: "CIBoxBlur") {
+//						if let imageData = UIImageJPEGRepresentation(lqImage, 0.01), ciImage = CIImage(data: imageData) {
+//							filter.setValue(ciImage, forKey: kCIInputImageKey)
+//							filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
+//							self?.blurFilter = filter
+//						}
+//                    }
                     
                     self?.originalImage = image
                     albumImageView.image = image
@@ -178,15 +178,15 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
 //                    imageView.image = originalImage
 //                }
 //            }
-			if expandedFraction >= 0.5 {
-				imageView.image = originalImage
-			} else {
-				imageView.image = lowQualityImage.applyBlurWithRadius((1 - (expandedFraction * 2)) * 21)
-			}
+//			if expandedFraction >= 0.5 {
+//				imageView.image = originalImage
+//			} else {
+//				imageView.image = lowQualityImage.applyBlurWithRadius((1 - (expandedFraction * 2)) * 21)
+//			}
 
-            
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+            imageView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
             gradiant.frame = view.bounds
             tintLayer.frame = view.bounds
             tintLayer.opacity = (1 - Float(expandedFraction)) * 0.7
@@ -196,7 +196,8 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
                 let inverseScaledFraction = 1 - scaledFraction
                 view.layer.shadowOpacity =  inverseScaledFraction
                 gradiant.opacity = scaledFraction
-                imageView.image = lowQualityImage.applyBlurWithRadius(CGFloat(inverseScaledFraction) * 21)
+//                imageView.image = lowQualityImage.applyBlurWithRadius(CGFloat(inverseScaledFraction) * 21, tintColor: UIColor.clearColor(), saturationDeltaFactor: 1.0, maskImage: nil)
+                imageView.image = lowQualityImage.uie_boxblurImageWithBlur(CGFloat(inverseScaledFraction))
 
             } else {
                 view.layer.shadowOpacity = 0
