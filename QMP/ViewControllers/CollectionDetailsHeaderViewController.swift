@@ -8,16 +8,20 @@
 
 import UIKit
 import MediaPlayer
+import GLKit
 
 let observationKey = "bounds"
 
 final class CollectionDetailsHeaderViewController : UIViewController, HeaderViewControllerProtocol {
     
     static let blurContext:CIContext = {
-        let eaglContext = EAGLContext(API: EAGLRenderingAPI.OpenGLES2)
         let options:[String:AnyObject] = [kCIContextWorkingColorSpace:NSNull()]
         return CIContext(EAGLContext: eaglContext, options: options)
     }()
+	
+	static let eaglContext:EAGLContext = {
+		return EAGLContext(API: EAGLRenderingAPI.OpenGLES3)
+	}()
     
     
     var height:CGFloat {
@@ -40,14 +44,15 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     @IBOutlet var imageViewContainer: UIView!
     
     //MARK: - properties
-    
-    var blurView:UIVisualEffectView!
+	
+	var glkView:GLKView!
     
     var originalImage:UIImage!
 	var lowQualityImage:UIImage!
+	var originalCIImage:CIImage!
     var blurFilter:CIFilter!
     var blurContext:CIContext { return CollectionDetailsHeaderViewController.blurContext }
-    
+	var eaglContext:EAGLContext { return CollectionDetailsHeaderViewController.eaglContext }
     var observingHeaderView = false
     var kvoContext:UInt8 = 123
     
@@ -73,11 +78,15 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         
         view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
-        
-//        blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
-//        blurView.frame = imageView.bounds
-//        imageView.addSubview(blurView)
-//        blurView.alpha = 0
+		
+		glkView = GLKView(frame: imageView.frame, context: eaglContext)
+		imageViewContainer.insertSubview(glkView, aboveSubview: imageView)
+		glkView.translatesAutoresizingMaskIntoConstraints = false
+		glkView.topAnchor.constraintEqualToAnchor(imageView.topAnchor).active = true
+		glkView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
+		glkView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
+		glkView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
+		glkView.hidden = true
         
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         observingHeaderView = true
@@ -125,14 +134,18 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
 				
                 if let image = albumArt.imageWithSize(albumImageView.frame.size), lqImage = albumArt.imageWithSize(CGSize(width: albumImageView.frame.width/lqScale, height: albumImageView.frame.height/lqScale)) {
 					self?.lowQualityImage = lqImage
-//                    if let filter = CIFilter(name: "CIBoxBlur") {
-//						if let imageData = UIImageJPEGRepresentation(lqImage, 0.01), ciImage = CIImage(data: imageData) {
-//							filter.setValue(ciImage, forKey: kCIInputImageKey)
-//							filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
-//							self?.blurFilter = filter
-//						}
-//                    }
-                    
+                    if let filter = CIFilter(name: "CIGaussianBlur") {
+						if let ciImage = CIImage(image: lqImage) {
+							self?.originalCIImage = ciImage
+							Logger.debug("max input image size = \(self?.blurContext.inputImageMaximumSize())")
+							Logger.debug("max output image size = \(self?.blurContext.outputImageMaximumSize())")
+							Logger.debug("ciImage extent = \(ciImage.extent)")
+							filter.setValue(ciImage, forKey: kCIInputImageKey)
+							filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
+							self?.blurFilter = filter
+						}
+                    }
+					
                     self?.originalImage = image
                     albumImageView.image = image
                 }
@@ -168,25 +181,27 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
             let expandedFraction = (view.frame.height - minimumHeight)/(height - minimumHeight)
  
             detailsLabel1.alpha = expandedFraction
-//            blurView.alpha = 1 - fraction
 
+			if expandedFraction <= 0.5 {
+				if blurFilter?.setValue(NSNumber(float: (1 - Float(expandedFraction * 2)) * 20), forKey: kCIInputRadiusKey) != nil {
+					if let blurImage = blurFilter.outputImage {
+						glkView.hidden = false
+						imageView.hidden = true
+						blurContext.drawImage(blurImage, inRect: CGRect(origin: CGPoint.zero, size: CGSize(width: glkView.drawableWidth, height: glkView.drawableHeight)), fromRect: originalCIImage.extent)
+						glkView.setNeedsDisplay()
+					}
+				}
+			} else {
+				imageView.hidden = false
+				glkView.hidden = true
+			}
 
-//            if blurFilter?.setValue(NSNumber(float: (1 - Float(expandedFraction)) * 20), forKey: kCIInputRadiusKey) != nil {
-//                if let blurImage = blurFilter.outputImage {
-//                    imageView.layer.contents = blurContext.createCGImage(blurImage, fromRect: blurImage.extent)
-//                } else {
-//                    imageView.image = originalImage
-//                }
-//            }
-//			if expandedFraction >= 0.5 {
-//				imageView.image = originalImage
-//			} else {
-//				imageView.image = lowQualityImage.applyBlurWithRadius((1 - (expandedFraction * 2)) * 21)
-//			}
 
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
             imageView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
+			glkView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
+			
             gradiant.frame = view.bounds
             tintLayer.frame = view.bounds
             tintLayer.opacity = (1 - Float(expandedFraction)) * 0.7
@@ -196,13 +211,12 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
                 let inverseScaledFraction = 1 - scaledFraction
                 view.layer.shadowOpacity =  inverseScaledFraction
                 gradiant.opacity = scaledFraction
-//                imageView.image = lowQualityImage.applyBlurWithRadius(CGFloat(inverseScaledFraction) * 21, tintColor: UIColor.clearColor(), saturationDeltaFactor: 1.0, maskImage: nil)
-                imageView.image = lowQualityImage.uie_boxblurImageWithBlur(CGFloat(inverseScaledFraction))
+//                imageView.image = lowQualityImage.uie_boxblurImageWithBlur(CGFloat(inverseScaledFraction))
 
             } else {
                 view.layer.shadowOpacity = 0
                 gradiant.opacity = 1
-				imageView.image = originalImage
+//				imageView.image = originalImage
             }
             CATransaction.commit()
             
