@@ -92,7 +92,7 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
 		glkView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
 		glkView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
 		glkView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
-//		glkView.hidden = true
+		glkView.hidden = true
         glkView.delegate = self
         glkView.enableSetNeedsDisplay = false
         EAGLContext.setCurrentContext(eaglContext)
@@ -192,8 +192,8 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
  
             detailsLabel1.alpha = expandedFraction
 
-            dispatch_async(CollectionDetailsHeaderViewController.backgroundQueue) {
-                self.updateBlur(expandedFraction)
+            dispatch_async(CollectionDetailsHeaderViewController.backgroundQueue) { [weak self] in
+                self?.updateBlur(expandedFraction)
             }
 
 
@@ -221,27 +221,29 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         }
     }
     
-//    private func updateBlur(expandedFraction:CGFloat) {
-//        var imageToSet:UIImage?
-//        if expandedFraction <= 0.5 {
+    private func updateBlur(expandedFraction:CGFloat) {
+        var imageToSet:UIImage?
+        if expandedFraction <= 0.5 {
 //            if self.blurFilter?.setValue(NSNumber(float: (1 - Float(expandedFraction * 2)) * 20), forKey: kCIInputRadiusKey) != nil {
 //                if let blurImage = self.blurFilter.outputImage {
 //                    let cgImage = self.blurContext.createCGImage(blurImage, fromRect: self.originalCIImage.extent)
 //                    imageToSet = UIImage(CGImage: cgImage)
 //                }
 //            }
-////            imageView.image = lowQualityImage.uie_boxblurImageWithBlur(1 - (expandedFraction * 2))
-//        }
-//        
-//        KyoozUtils.doInMainQueue() {
-//            self.imageView.image = imageToSet ?? self.originalImage
-//        }
-//    }
-    
-    private func updateBlur(expandedFraction:CGFloat) {
-        glkView?.display()
+			imageToSet = lowQualityImage.uie_boxblurImageWithBlur(1 - (expandedFraction * 2))
+//			let radius = UInt((1 - (expandedFraction * 2)) * 20)
+//			imageToSet = lowQualityImage.stackBlur(radius)
+        }
+        
+        KyoozUtils.doInMainQueue() {
+            self.imageView.layer.contents = (imageToSet ?? self.originalImage)?.CGImage
+        }
     }
-    
+	
+//    private func updateBlur(expandedFraction:CGFloat) {
+//        glkView?.display()
+//    }
+	
     func glkView(view: GLKView, drawInRect rect: CGRect) {
         let expandedFraction = (self.view.frame.height - minimumHeight)/(height - minimumHeight)
         let blurRadius:Float = expandedFraction > 0.5 ? 0 : (1 - Float(expandedFraction * 2)) * 20
@@ -251,7 +253,7 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
                 glClear(UInt32(GL_COLOR_BUFFER_BIT))
                 glEnable(UInt32(GL_BLEND))
                 glBlendFunc(UInt32(GL_ONE), UInt32(GL_ONE_MINUS_SRC_ALPHA))
-                
+				
                
                 blurContext.drawImage(blurImage, inRect: CGRect(origin: CGPoint.zero, size: CGSize(width: glkView.drawableWidth, height: glkView.drawableHeight)), fromRect: originalCIImage.extent)
             }

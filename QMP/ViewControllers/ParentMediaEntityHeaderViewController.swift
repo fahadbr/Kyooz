@@ -140,7 +140,7 @@ class ParentMediaEntityHeaderViewController : ParentMediaEntityViewController, U
             heightForCells += (tableView.rowHeight * CGFloat(tableView.numberOfRowsInSection(i)))
         }
         let estimatedHeight = heightForSections + heightForCells
-        let totalHeight = estimatedHeight + headerHeightConstraint.constant
+        let totalHeight = estimatedHeight + maxHeight
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
