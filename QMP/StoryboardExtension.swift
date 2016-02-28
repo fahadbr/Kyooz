@@ -61,8 +61,8 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("utilHeaderViewController") as! UtilHeaderViewController
     }
     
-    static func collectionDetailsHeaderViewController() -> CollectionDetailsHeaderViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("collectionDetailsHeaderViewController") as! CollectionDetailsHeaderViewController
+    static func artworkHeaderViewController() -> ArtworkHeaderViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("ArtworkHeaderViewController") as! ArtworkHeaderViewController
     }
     
     static func settingsViewController() -> UIViewController {

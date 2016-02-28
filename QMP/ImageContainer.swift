@@ -36,7 +36,7 @@ struct ImageHelper {
         //Create an image view
         let snapshot = UIImageView(image: image)
         snapshot.layer.masksToBounds = true
-        snapshot.layer.shadowOffset = CGSizeMake(0.0, 0.0)
+        snapshot.layer.shadowOffset = CGSize.zero
         snapshot.layer.shadowRadius = 5.0
         snapshot.layer.shadowOpacity = 0.6
         

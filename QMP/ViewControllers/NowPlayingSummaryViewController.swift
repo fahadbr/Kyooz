@@ -11,26 +11,26 @@ import MediaPlayer
 
 class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
-    @IBOutlet weak var albumArtwork: UIImageView!
-    @IBOutlet weak var albumArtistAndAlbumTitleLabel: UILabel!
-    @IBOutlet weak var songTitleLabel: UILabel!
+    @IBOutlet var albumArtwork: UIImageView!
+    @IBOutlet var albumArtistAndAlbumTitleLabel: UILabel!
+    @IBOutlet var songTitleLabel: UILabel!
 
 
-    @IBOutlet weak var songTitleCollapsedLabel: UILabel!
-    @IBOutlet weak var albumArtistAndAlbumTitleCollapsedLabel: UILabel!
+    @IBOutlet var songTitleCollapsedLabel: UILabel!
+    @IBOutlet var albumArtistAndAlbumTitleCollapsedLabel: UILabel!
     
-    @IBOutlet weak var playbackProgressBar: UISlider!
-    @IBOutlet weak var totalPlaybackTimeLabel: UILabel!
-    @IBOutlet weak var currentPlaybackTimeLabel: UILabel!
+    @IBOutlet var playbackProgressBar: UISlider!
+    @IBOutlet var totalPlaybackTimeLabel: UILabel!
+    @IBOutlet var currentPlaybackTimeLabel: UILabel!
     
-    @IBOutlet weak var playPauseButton: PlayPauseButtonView!
-    @IBOutlet weak var playPauseCollapsedButton: PlayPauseButtonView!
+    @IBOutlet var playPauseButton: PlayPauseButtonView!
+    @IBOutlet var playPauseCollapsedButton: PlayPauseButtonView!
     
-    @IBOutlet weak var nowPlayingCollapsedBar: UIView!
-    @IBOutlet weak var playbackProgressCollapsedBar: UIProgressView!
+    @IBOutlet var nowPlayingCollapsedBar: UIView!
+    @IBOutlet var playbackProgressCollapsedBar: UIProgressView!
     
-    @IBOutlet weak var repeatButton: RepeatButtonView!
-    @IBOutlet weak var shuffleButton: ShuffleButtonView!
+    @IBOutlet var repeatButton: RepeatButtonView!
+    @IBOutlet var shuffleButton: ShuffleButtonView!
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private let timeDelayInNanoSeconds = Int64(0.5 * Double(NSEC_PER_SEC))

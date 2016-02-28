@@ -248,10 +248,10 @@
             </objects>
             <point key="canvasLocation" x="3792.5" y="-1206"/>
         </scene>
-        <!--Collection Details Header View Controller-->
+        <!--Artwork Header View Controller-->
         <scene sceneID="NxX-ws-XH7">
             <objects>
-                <viewController storyboardIdentifier="collectionDetailsHeaderViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Jbk-XA-SMT" customClass="CollectionDetailsHeaderViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ArtworkHeaderViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Jbk-XA-SMT" customClass="ArtworkHeaderViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="nbz-mF-krK"/>
                         <viewControllerLayoutGuide type="bottom" id="Bio-AK-FXu"/>
@@ -310,7 +310,7 @@
                                 </userDefinedRuntimeAttributes>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ZdG-Cu-6A0">
-                                <rect key="frame" x="56" y="330" width="263" height="37"/>
+                                <rect key="frame" x="56" y="313" width="263" height="54"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TP5-qk-k9o" userLabel="albumArtistName">
                                         <rect key="frame" x="0.0" y="0.0" width="263" height="20"/>
@@ -318,7 +318,7 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="blw-tJ-iXh" userLabel="albumDetails">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="blw-tJ-iXh" userLabel="detailsLabel2">
                                         <rect key="frame" x="0.0" y="20" width="263" height="17"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="17" id="yzb-3V-VZw"/>
@@ -329,6 +329,20 @@
                                         <variation key="default">
                                             <mask key="constraints">
                                                 <exclude reference="yzb-3V-VZw"/>
+                                            </mask>
+                                        </variation>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F9K-9N-dxA" userLabel="detailsLabel3">
+                                        <rect key="frame" x="0.0" y="37" width="263" height="17"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="17" id="Yk1-ZX-A8d"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="Yk1-ZX-A8d"/>
                                             </mask>
                                         </variation>
                                     </label>
@@ -376,6 +390,7 @@
                     <connections>
                         <outlet property="detailsLabel1" destination="TP5-qk-k9o" id="L5v-DM-2rL"/>
                         <outlet property="detailsLabel2" destination="blw-tJ-iXh" id="K85-Ha-uz3"/>
+                        <outlet property="detailsLabel3" destination="F9K-9N-dxA" id="AKJ-ox-VRG"/>
                         <outlet property="headerTitleLabel" destination="aCS-5h-tk7" id="Jxm-Fj-0ci"/>
                         <outlet property="imageView" destination="6lE-dh-J8v" id="ttm-nq-iYO"/>
                         <outlet property="imageViewContainer" destination="hfl-26-ghB" id="afl-JD-WGe"/>
