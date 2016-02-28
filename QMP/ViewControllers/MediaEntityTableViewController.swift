@@ -52,7 +52,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
             (headerVC as? UtilHeaderViewController)?.subGroups = subGroups
         }
         
-        if let tracks = sourceData.entities as? [AudioTrack], let cdhvc = headerVC as? CollectionDetailsHeaderViewController {
+        if let tracks = sourceData.entities as? [AudioTrack], let cdhvc = headerVC as? ArtworkHeaderViewController {
 			cdhvc.configureViewWithCollection(tracks)
             tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
             KyoozUtils.doInMainQueueAsync() {
@@ -67,17 +67,16 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     
     
     private func updateConstraints() {
-        if headerVC is CollectionDetailsHeaderViewController {
+        if headerVC is ArtworkHeaderViewController {
             headerTopAnchorConstraint.active = false
             headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
-            headerTopAnchorConstraint.identifier = "collectionDetailsTopAnchorConstraint"
             headerTopAnchorConstraint.active = true
         }
     }
     
     private func getHeaderViewController() -> UIViewController {
         if useCollectionDetailsHeader {
-            return UIStoryboard.collectionDetailsHeaderViewController()
+            return UIStoryboard.artworkHeaderViewController()
         }
         return UIStoryboard.utilHeaderViewController()
     }

@@ -9,10 +9,9 @@
 import UIKit
 import MediaPlayer
 
-final class CollectionDetailsHeaderViewController : UIViewController, HeaderViewControllerProtocol {
+final class ArtworkHeaderViewController : UIViewController, HeaderViewControllerProtocol {
     
     var height:CGFloat {
-        //        return (parentViewController?.view?.frame.height ?? UIScreen.mainScreen().bounds.height)/2
         return 375
     }
     
@@ -53,9 +52,10 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         }
     }
     
-    private var observingHeaderView = false
+    private var observingViewBounds = false
     private var kvoContext:UInt8 = 123
-    private var viewHasDisappeared = false
+    private var removedFromViewHierarchy = true
+    private var blurAnimationRemoved = true
     
     private let gradiant:CAGradientLayer = {
         let gradiant = CAGradientLayer()
@@ -77,12 +77,11 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
         blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
         blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
-        blurView.layer.speed = 0
-        resetBlurAnimation()
+        blurView.layer.speed = 0 //setting the layer speed to 0 because we want to control the animation so that we can control the blur
         
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
-        observingHeaderView = true
+        observingViewBounds = true //this is to ensure we dont remove the observer before adding one
 
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
         
@@ -94,26 +93,28 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     }
     
     deinit {
-        if observingHeaderView {
+        if observingViewBounds {
             view.removeObserver(self, forKeyPath: observationKey)
         }
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
-        if viewHasDisappeared {
+        super.viewWillAppear(animated)
+        
+        if removedFromViewHierarchy {
+            removedFromViewHierarchy = false
             resetBlurAnimation()
             removeSnapshotBlur()
-            viewHasDisappeared = false
         }
-        super.viewWillAppear(animated)
     }
     
     override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
         createSnapshotBlur()
         removeBlurAnimation()
-        viewHasDisappeared = true
-        super.viewDidDisappear(animated)
+        removedFromViewHierarchy = true
     }
     
     //MARK: - class functions
@@ -213,19 +214,24 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     func removeBlurAnimation() {
         blurView.layer.removeAllAnimations()
         blurView.layer.timeOffset = 0
+        blurAnimationRemoved = true
     }
     
+    //the blur animation must be reset once it has been brought back on screen after being off screen
     func resetBlurAnimation() {
-        removeBlurAnimation()
+        //only reset if the view has not been removed from the view hierarchy and we know that the blur animation has already been removed
+        guard !removedFromViewHierarchy && blurAnimationRemoved else { return }
+        
         blurView.effect = nil
         UIView.animateWithDuration(1) { [blurView = self.blurView, finalBlurEffect = self.finalBlurEffect] in
             blurView.effect = finalBlurEffect
         }
+        blurAnimationRemoved = false
         
-        let timeOffset = timeOffsetForBlur(expandedFraction)
-        KyoozUtils.doInMainQueueAsync() { [blurView = self.blurView] in
+        KyoozUtils.doInMainQueueAsync() { [blurView = self.blurView, timeOffset = timeOffsetForBlur(expandedFraction)] in
             blurView.layer.timeOffset = timeOffset
         }
+        
     }
     
     func removeSnapshotBlur() {
