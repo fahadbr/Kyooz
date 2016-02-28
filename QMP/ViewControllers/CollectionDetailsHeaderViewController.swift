@@ -8,34 +8,24 @@
 
 import UIKit
 import MediaPlayer
-import GLKit
 
-let observationKey = "bounds"
-
-final class CollectionDetailsHeaderViewController : UIViewController, HeaderViewControllerProtocol, GLKViewDelegate {
-    
-    static let blurContext:CIContext = {
-        let options:[String:AnyObject] = [kCIContextWorkingColorSpace:NSNull()]
-        return CIContext(EAGLContext: eaglContext, options: options)
-    }()
-	
-	static let eaglContext:EAGLContext = {
-		return EAGLContext(API: EAGLRenderingAPI.OpenGLES2)
-	}()
-    
-    static let backgroundQueue:dispatch_queue_t = {
-        let attribute = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INTERACTIVE, -1)
-        let queue = dispatch_queue_create("kyooz.BlurBackgroundQueue", attribute)
-        return queue
-    }()
+final class CollectionDetailsHeaderViewController : UIViewController, HeaderViewControllerProtocol {
     
     var height:CGFloat {
-//        return (parentViewController?.view?.frame.height ?? UIScreen.mainScreen().bounds.height)/2
+        //        return (parentViewController?.view?.frame.height ?? UIScreen.mainScreen().bounds.height)/2
         return 375
     }
     
     var minimumHeight:CGFloat {
         return 110
+    }
+    
+    private var expandedFraction:CGFloat {
+        return (view.frame.height - minimumHeight)/(height - minimumHeight)
+    }
+    
+    private var observationKey:String {
+        return "bounds"
     }
     
     //MARK: - IBOutlets
@@ -45,66 +35,85 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
     @IBOutlet var headerTitleLabel: UILabel!
     @IBOutlet var detailsLabel1: UILabel!
     @IBOutlet var detailsLabel2: UILabel!
+    @IBOutlet var detailsLabel3: UILabel!
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var imageViewContainer: UIView!
     
     //MARK: - properties
-	
-	var glkView:GLKView!
     
-    var originalImage:UIImage!
-	var lowQualityImage:UIImage!
-	var originalCIImage:CIImage!
-    var blurFilter:CIFilter!
-    var blurContext:CIContext { return CollectionDetailsHeaderViewController.blurContext }
-	var eaglContext:EAGLContext { return CollectionDetailsHeaderViewController.eaglContext }
-    var observingHeaderView = false
-    var kvoContext:UInt8 = 123
+    private var blurView:UIVisualEffectView!
+    private var finalBlurEffect:UIVisualEffect = UIBlurEffect(style: .Dark)
+    private var blurSnapshotView:UIView? {
+        willSet {
+            if let snapshot = newValue {
+                imageViewContainer?.addSubview(snapshot)
+            } else {
+                blurSnapshotView?.removeFromSuperview()
+            }
+        }
+    }
     
-	let gradiant:CAGradientLayer = {
-		let gradiant = CAGradientLayer()
-		gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
-		gradiant.endPoint = CGPoint(x: 0.5, y: 0)
-		gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
+    private var observingHeaderView = false
+    private var kvoContext:UInt8 = 123
+    private var viewHasDisappeared = false
+    
+    private let gradiant:CAGradientLayer = {
+        let gradiant = CAGradientLayer()
+        gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
+        gradiant.endPoint = CGPoint(x: 0.5, y: 0)
+        gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
         gradiant.locations = [0.0, 0.25, 0.75, 1.0]
-		return gradiant
-	}()
-    
-    let tintLayer:CALayer = {
-        let tint = CALayer()
-        tint.backgroundColor = ThemeHelper.defaultTableCellColor.CGColor
-        tint.opacity = 0
-        return tint
+        return gradiant
     }()
-	
+    
     //MARK: - vc life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
-        view.layer.shadowOffset = CGSize(width: 0, height: 3)
-		
-		glkView = GLKView(frame: imageView.frame, context: eaglContext)
 
-		imageViewContainer.insertSubview(glkView, aboveSubview: imageView)
-		glkView.translatesAutoresizingMaskIntoConstraints = false
-		glkView.topAnchor.constraintEqualToAnchor(imageView.topAnchor).active = true
-		glkView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
-		glkView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
-		glkView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
-		glkView.hidden = true
-        glkView.delegate = self
-        glkView.enableSetNeedsDisplay = false
-        EAGLContext.setCurrentContext(eaglContext)
+        blurView = UIVisualEffectView()
+        imageViewContainer.insertSubview(blurView, aboveSubview: imageView)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        blurView.topAnchor.constraintEqualToAnchor(imageView.topAnchor).active = true
+        blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
+        blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
+        blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
+        blurView.layer.speed = 0
+        resetBlurAnimation()
         
         view.backgroundColor = ThemeHelper.defaultTableCellColor
+        view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
         observingHeaderView = true
+
+        view.layer.shadowOffset = CGSize(width: 0, height: 3)
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: "createSnapshotBlur", name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
+        notificationCenter.addObserver(self, selector: "removeBlurAnimation", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
+        notificationCenter.addObserver(self, selector: "resetBlurAnimation", name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
+        notificationCenter.addObserver(self, selector: "removeSnapshotBlur", name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     
     deinit {
         if observingHeaderView {
             view.removeObserver(self, forKeyPath: observationKey)
         }
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if viewHasDisappeared {
+            resetBlurAnimation()
+            removeSnapshotBlur()
+            viewHasDisappeared = false
+        }
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        createSnapshotBlur()
+        removeBlurAnimation()
+        viewHasDisappeared = true
+        super.viewDidDisappear(animated)
     }
     
     //MARK: - class functions
@@ -114,10 +123,8 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
             Logger.debug("couldnt get representative item for album collection")
             return
         }
-		
-		gradiant.frame = view.bounds
-        tintLayer.frame = view.bounds
-        view.layer.insertSublayer(tintLayer, above: imageViewContainer.layer)
+        
+        gradiant.frame = view.bounds
         view.layer.insertSublayer(gradiant, above: imageViewContainer.layer)
         
         headerTitleLabel.text = track.albumTitle?.uppercaseString
@@ -133,31 +140,13 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         }
         details.append("\(tracks.count) Tracks")
         
-        detailsLabel2.text = details.joinWithSeparator(" • ")
+        detailsLabel3.text = details.joinWithSeparator(" • ")
+        detailsLabel3.textColor = UIColor.lightGrayColor()
         detailsLabel2.textColor = UIColor.lightGrayColor()
-        
         if let albumArt = track.artwork {
-            KyoozUtils.doInMainQueueAsync() { [weak self, albumImageView = self.imageView] in
-				
-				let lqScale:CGFloat = 2
-				
-                if let image = albumArt.imageWithSize(albumImageView.frame.size), lqImage = albumArt.imageWithSize(CGSize(width: albumImageView.frame.width/lqScale, height: albumImageView.frame.height/lqScale)) {
-					self?.lowQualityImage = lqImage
-                    if let filter = CIFilter(name: "CIGaussianBlur") {
-						if let ciImage = CIImage(image: image) {
-							self?.originalCIImage = ciImage
-							filter.setValue(ciImage, forKey: kCIInputImageKey)
-							filter.setValue(NSNumber(integer: 0), forKey: kCIInputRadiusKey)
-							self?.blurFilter = filter
-						}
-                    }
-                    
-                    self?.originalImage = image
-                    albumImageView.image = image
-                    
-                    dispatch_async(CollectionDetailsHeaderViewController.backgroundQueue) {
-                        self?.updateBlur(1)
-                    }
+            KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView] in
+                if let image = albumArt.imageWithSize(imageView.frame.size) {
+                    imageView.image = image
                 }
             }
         } else {
@@ -168,50 +157,41 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         headerTitleLabel.layer.rasterizationScale = UIScreen.mainScreen().scale
         detailsLabel2.layer.shouldRasterize = true
         detailsLabel2.layer.rasterizationScale = UIScreen.mainScreen().scale
+        detailsLabel3.layer.shouldRasterize = true
+        detailsLabel3.layer.rasterizationScale = UIScreen.mainScreen().scale
         
-        KyoozUtils.doInMainQueueAsync() { [weak self] in
-            
+        KyoozUtils.doInMainQueueAsync() { [detailsLabel2 = self.detailsLabel2] in
             var duration:NSTimeInterval = 0
             for item in tracks {
                 duration += item.playbackDuration
             }
             if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
-                self?.detailsLabel2.text = "\(albumDurationString) • \(self?.detailsLabel2.text ?? "")"
+                detailsLabel2.text = "\(albumDurationString)"
             } else {
-                self?.detailsLabel2.hidden = true
+                detailsLabel2.hidden = true
             }
         }
-        
-        
     }
     
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath != nil && keyPath! == observationKey {
-            let expandedFraction = (view.frame.height - minimumHeight)/(height - minimumHeight)
- 
+            let expandedFraction = self.expandedFraction
+            
             detailsLabel1.alpha = expandedFraction
-
-            dispatch_async(CollectionDetailsHeaderViewController.backgroundQueue) { [weak self] in
-                self?.updateBlur(expandedFraction)
-            }
-
-
+            
+            blurView.layer.timeOffset = timeOffsetForBlur(expandedFraction)
+            
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
             imageView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
-            glkView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
-            
             gradiant.frame = view.bounds
-            tintLayer.frame = view.bounds
-            tintLayer.opacity = (1 - Float(expandedFraction)) * 0.7
-			
+            
             if expandedFraction < 0.25 {
                 let scaledFraction = Float(expandedFraction) * 4
-                let inverseScaledFraction = 1 - scaledFraction
-                view.layer.shadowOpacity =  inverseScaledFraction
+                view.layer.shadowOpacity =  1 - scaledFraction
                 gradiant.opacity = scaledFraction
-
+                
             } else {
                 view.layer.shadowOpacity = 0
                 gradiant.opacity = 1
@@ -221,44 +201,35 @@ final class CollectionDetailsHeaderViewController : UIViewController, HeaderView
         }
     }
     
-    private func updateBlur(expandedFraction:CGFloat) {
-        var imageToSet:UIImage?
-        if expandedFraction <= 0.5 {
-//            if self.blurFilter?.setValue(NSNumber(float: (1 - Float(expandedFraction * 2)) * 20), forKey: kCIInputRadiusKey) != nil {
-//                if let blurImage = self.blurFilter.outputImage {
-//                    let cgImage = self.blurContext.createCGImage(blurImage, fromRect: self.originalCIImage.extent)
-//                    imageToSet = UIImage(CGImage: cgImage)
-//                }
-//            }
-			imageToSet = lowQualityImage.uie_boxblurImageWithBlur(1 - (expandedFraction * 2))
-//			let radius = UInt((1 - (expandedFraction * 2)) * 20)
-//			imageToSet = lowQualityImage.stackBlur(radius)
+    private func timeOffsetForBlur(expandedFraction:CGFloat) -> Double {
+        return expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
+    }
+    
+    func createSnapshotBlur() {
+        removeSnapshotBlur()
+        blurSnapshotView = imageViewContainer.snapshotViewAfterScreenUpdates(false)
+    }
+    
+    func removeBlurAnimation() {
+        blurView.layer.removeAllAnimations()
+        blurView.layer.timeOffset = 0
+    }
+    
+    func resetBlurAnimation() {
+        removeBlurAnimation()
+        blurView.effect = nil
+        UIView.animateWithDuration(1) { [blurView = self.blurView, finalBlurEffect = self.finalBlurEffect] in
+            blurView.effect = finalBlurEffect
         }
         
-        KyoozUtils.doInMainQueue() {
-            self.imageView.layer.contents = (imageToSet ?? self.originalImage)?.CGImage
-        }
-    }
-	
-//    private func updateBlur(expandedFraction:CGFloat) {
-//        glkView?.display()
-//    }
-	
-    func glkView(view: GLKView, drawInRect rect: CGRect) {
-        let expandedFraction = (self.view.frame.height - minimumHeight)/(height - minimumHeight)
-        let blurRadius:Float = expandedFraction > 0.5 ? 0 : (1 - Float(expandedFraction * 2)) * 20
-        if blurFilter?.setValue(NSNumber(float: blurRadius), forKey: kCIInputRadiusKey) != nil {
-            if let blurImage = blurFilter.outputImage {
-                glClearColor(0.5, 0.5, 0.5, 1.0)
-                glClear(UInt32(GL_COLOR_BUFFER_BIT))
-                glEnable(UInt32(GL_BLEND))
-                glBlendFunc(UInt32(GL_ONE), UInt32(GL_ONE_MINUS_SRC_ALPHA))
-				
-               
-                blurContext.drawImage(blurImage, inRect: CGRect(origin: CGPoint.zero, size: CGSize(width: glkView.drawableWidth, height: glkView.drawableHeight)), fromRect: originalCIImage.extent)
-            }
+        let timeOffset = timeOffsetForBlur(expandedFraction)
+        KyoozUtils.doInMainQueueAsync() { [blurView = self.blurView] in
+            blurView.layer.timeOffset = timeOffset
         }
     }
     
-
+    func removeSnapshotBlur() {
+        blurSnapshotView = nil
+    }
+    
 }
