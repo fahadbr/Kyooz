@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate {
+final class NowPlayingViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate, UIScrollViewDelegate {
 
     @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
     
@@ -96,9 +96,31 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         tableView.addGestureRecognizer(longPressGestureRecognizer)
         
         datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
-        
+//        KyoozUtils.doInMainQueueAsync() {
+//            self.configureHeader()
+//        }
         registerForNotifications()
 
+    }
+    
+//    private func configureHeader() {
+//        let headerVC = UIStoryboard.artworkHeaderViewController()
+//        headerVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.width)
+////        tableView.tableHeaderView = headerVC.view
+//        view.backgroundColor = ThemeHelper.defaultTableCellColor
+//        headerVC.view.frame.origin.y += tableView.contentInset.top
+//        tableView.contentInset.top += view.frame.width
+//        tableView.addSubview(headerVC.view)
+//        tableView.backgroundColor = UIColor.clearColor()
+//        tableView.contentOffset.y = -tableView.contentInset.top
+//        tableView.scrollIndicatorInsets.top = tableView.contentInset.top
+//        addChildViewController(headerVC)
+//        headerVC.configureViewWithCollection(audioQueuePlayer.nowPlayingQueue)
+//        headerVC.didMoveToParentViewController(self)
+//    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -168,6 +190,9 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         tableView.reloadData()
     }
     
+    //for data source updates originating from the UI, we dont want to reload the table view in response to the queue changes
+    //because there should already be animations taking place to reflect that content and reloading the data will interfere 
+    //with the visual effect
     func reloadIfCollapsed() {
         if !viewExpanded {
             reloadTableData()

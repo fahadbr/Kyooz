@@ -11,7 +11,7 @@ import UIKit
 class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     
     weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
-	weak var parentMediaEntityHeaderVC:ParentMediaEntityHeaderViewController?
+    weak var scrollViewDelegate:UIScrollViewDelegate?
     
     var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -27,7 +27,7 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
-		self.parentMediaEntityHeaderVC = audioCellDelegate as? ParentMediaEntityHeaderViewController
+        self.scrollViewDelegate = audioCellDelegate as? UIScrollViewDelegate
         super.init(sourceData: sourceData)
     }
     
@@ -50,11 +50,6 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
             return nil
         }
         return sourceData.sections.map() { $0.name }
-	}
-	
-	func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-		KyoozUtils.doInMainQueueAsync() { [weak self] in self?.parentMediaEntityHeaderVC?.synchronizeOffsetWithScrollview(tableView) }
-		return index
 	}
     
     final func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -83,6 +78,10 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
             return true
         }
         return false
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewDidScroll?(scrollView)
     }
 
 }

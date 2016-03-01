@@ -43,7 +43,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
             headerHeightConstraint.constant = header.height
             maxHeight = header.height
             collapsedTargetOffset = maxHeight - header.minimumHeight
-            
+            minHeight = header.minimumHeight
             header.shuffleButton.addTarget(self, action: "shuffleAllItems:", forControlEvents: .TouchUpInside)
             header.selectModeButton.addTarget(self, action: "toggleSelectMode:", forControlEvents: .TouchUpInside)
         }

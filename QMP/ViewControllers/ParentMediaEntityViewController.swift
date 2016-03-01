@@ -34,13 +34,11 @@ class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTa
     
     deinit {
         unregisterForNotifications()
-        Logger.debug("deinitializing media entity vc")
     }
 
     
     //MARK: - Class functions
     func reloadAllData() {
-        Logger.debug("Reloading all media entity data")
         reloadSourceData()
         reloadTableViewData()
     }

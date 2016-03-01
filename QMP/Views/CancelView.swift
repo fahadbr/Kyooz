@@ -15,7 +15,7 @@ class CancelView : UIView {
     let cancelLabel:UILabel
     
     override init(frame: CGRect) {
-        blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
+        blurView = UIVisualEffectView()
         blurView.frame = frame
 
         cancelLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50))

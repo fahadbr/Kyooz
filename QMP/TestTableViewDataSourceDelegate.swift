@@ -12,7 +12,6 @@ class TestTableViewDataSourceDelegate: NSObject, UITableViewDataSource, UITableV
     
     let sections = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     
-    var mediaEntityTVC:ParentMediaEntityHeaderViewController?
 
     //MARK: - DATASOUCE
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -45,10 +44,6 @@ class TestTableViewDataSourceDelegate: NSObject, UITableViewDataSource, UITableV
         return sections[section]
     }
     
-    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-        KyoozUtils.doInMainQueueAsync() { [weak self] in self?.mediaEntityTVC?.synchronizeOffsetWithScrollview(tableView) }
-        return index
-    }
     //MARK: - DELEGATE
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
