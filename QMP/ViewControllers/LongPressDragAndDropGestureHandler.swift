@@ -79,14 +79,15 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     
     override func gestureDidChange(sender: UIGestureRecognizer, newLocationInsideTableView: CGPoint?) {
         if newLocationInsideTableView == nil && !cancelViewVisible {
-            cancelView.alpha = 0
+            cancelView.cancelLabel.alpha = 0
             cancelViewVisible = true
             let tableView = dropDestination.destinationTableView
             tableView.addSubview(cancelView)
             cancelView.center.x = tableView.center.x
             cancelView.frame.origin.y = tableView.contentOffset.y + tableView.contentInset.top
-            UIView.animateWithDuration(0.25, animations: { () -> Void in
-                self.cancelView.alpha = 1.0
+            UIView.animateWithDuration(0.5, animations: { () -> Void in
+                self.cancelView.blurView.effect = UIBlurEffect(style: .Light)
+                self.cancelView.cancelLabel.alpha = 1.0
             })
         } else if newLocationInsideTableView != nil && cancelViewVisible {
             removeCancelView()
@@ -94,10 +95,11 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     }
     
     private func removeCancelView() {
-        cancelView.alpha = 1.0
+        cancelView.cancelLabel.alpha = 1.0
         cancelViewVisible = false
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
-            self.cancelView.alpha = 0.0
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.cancelView.blurView.effect = nil
+            self.cancelView.cancelLabel.alpha = 0.0
             }, completion: { (finished:Bool) -> Void in
                 self.cancelView.removeFromSuperview()
         })

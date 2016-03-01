@@ -18,11 +18,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="40" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NuC-r9-W2u">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="40" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NuC-r9-W2u" customClass="ControlledScrollingTableView" customModule="Kyooz" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="124" width="600" height="476"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6fs-lg-4Sw" userLabel="headerView">
+                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="6fs-lg-4Sw" userLabel="headerView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="60"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -48,6 +48,7 @@
                         <outlet property="headerTopAnchorConstraint" destination="y4Q-FI-BIv" id="31C-L4-h74"/>
                         <outlet property="headerView" destination="6fs-lg-4Sw" id="yhE-EM-0DH"/>
                         <outlet property="tableView" destination="NuC-r9-W2u" id="pvk-Tn-6Ni"/>
+                        <outlet property="tableViewTopAnchorConstraint" destination="aOP-Ll-deg" id="kfh-hE-3QC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cP3-x9-QAn" userLabel="First Responder" sceneMemberID="firstResponder"/>

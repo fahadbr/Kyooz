@@ -1,5 +1,5 @@
 //
-//  CollectionDetailsHeaderViewController.swift
+//  ArtworkHeaderViewController.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 2/17/16.

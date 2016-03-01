@@ -13,7 +13,6 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
 
     private static let greenHeaderColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
     
-    private lazy var nowPlayingViewController = ContainerViewController.instance.nowPlayingViewController!
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private var previewQueue = ApplicationDefaults.audioQueuePlayer.nowPlayingQueue
     private var nowPlayingItem:AudioTrack!
@@ -88,7 +87,6 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         cell.configureCellForItems(mediaItem, libraryGrouping: LibraryGrouping.Songs)
         cell.isNowPlaying = isNowPlayingItem
         cell.menuButton.hidden = true
-//        cell.albumArtImageView.image = nowPlayingViewController.getImageForCell(imageSize: cell.albumArtImageView.frame.size, withMediaItem: mediaItem, isNowPlayingItem:isNowPlayingItem)
         return cell
     }
     

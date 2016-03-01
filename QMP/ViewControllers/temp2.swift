@@ -18,15 +18,15 @@ private let identityTransform:CATransform3D = {
     return identity
 }()
 
-class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
+class ParentMediaEntityHeaderViewController3 : ParentMediaEntityViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     private enum HeaderState : Int {
         case Collapsed, Expanded, Transitioning
     }
     
     static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
-	
-	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
+    
+    var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
     
     var datasourceDelegate:AudioEntityDSDProtocol! {
         didSet {
@@ -34,8 +34,8 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
             tableView.delegate = datasourceDelegate
         }
     }
-	
-	
+    
+    
     @IBOutlet var headerView:UIView!
     @IBOutlet var scrollView:UIScrollView!
     
@@ -60,7 +60,7 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
         }
         return MediaCollectionTableViewCell.reuseIdentifier
     }
-
+    
     var shouldCollapseHeaderView = true
     var useCollectionDetailsHeader:Bool = false
     private var headerState:HeaderState = .Expanded
@@ -68,13 +68,13 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
     
     var testMode = false
     var testDelegate:TestTableViewDataSourceDelegate!
-	
-	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "showAddToOptions:")
-	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: selectAllString, style: .Plain, target: self, action: "selectOrDeselectAll")
-	private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteSelectedItems")
+    
+    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "showAddToOptions:")
+    private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: selectAllString, style: .Plain, target: self, action: "selectOrDeselectAll")
+    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteSelectedItems")
     
     private lazy var playButton:UIBarButtonItem = {
-       let playButtonView = PlayPauseButtonView()
+        let playButtonView = PlayPauseButtonView()
         playButtonView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
         playButtonView.isPlayButton = true
         playButtonView.hasOuterFrame = false
@@ -103,7 +103,19 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
         navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
         headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
         if shouldCollapseHeaderView {
-            configureOverlayScrollView()
+            //            configureOverlayScrollView()
+            //            (tableView as? ControlledScrollingTableView)?.canScroll = false
+
+            
+            KyoozUtils.doInMainQueueAsync() {
+                self.tableViewTopAnchorConstraint.active = false
+                self.tableViewTopAnchorConstraint = self.tableView.topAnchor.constraintEqualToAnchor(self.view.topAnchor, constant: self.minHeight)
+                self.tableViewTopAnchorConstraint.active = true
+                (self.tableView as? ControlledScrollingTableView)?.extendedContentSize = self.collapsedTargetOffset
+//                self.tableView.contentInset.top = self.collapsedTargetOffset
+//                self.tableView.contentOffset.y = -(self.collapsedTargetOffset)
+                self.tableView.scrollIndicatorInsets.top = self.collapsedTargetOffset
+            }
         }
         
         popGestureRecognizer.delegate = self
@@ -113,6 +125,7 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
     
     private func configureTestDelegates() {
         testDelegate = TestTableViewDataSourceDelegate()
+        //        testDelegate.mediaEntityTVC = self
         tableView.dataSource = testDelegate
         tableView.delegate = testDelegate
         tableView.sectionHeaderHeight = 40
@@ -204,22 +217,64 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
     }
     
     //MARK: - Scroll View Delegate
+    //    final func scrollViewDidScroll(scrollView: UIScrollView) {
+    //        if !shouldCollapseHeaderView || scrollView === tableView { return }
+    //        let currentOffset = scrollView.contentOffset.y
+    //
+    //
+    //        if  currentOffset < collapsedTargetOffset {
+    //            applyTransformToHeaderUsingOffset(currentOffset)
+    //            tableView.contentOffset.y = 0
+    //        } else {
+    //            if headerState != .Collapsed {
+    //                applyTransformToHeaderUsingOffset(collapsedTargetOffset)
+    //            }
+    //            tableView.contentOffset.y = currentOffset - collapsedTargetOffset
+    //        }
+    //
+    //    }
+    
     final func scrollViewDidScroll(scrollView: UIScrollView) {
-        if !shouldCollapseHeaderView || scrollView === tableView { return }
-        let currentOffset = scrollView.contentOffset.y
+        if !shouldCollapseHeaderView { return }
+        let currentOffset = scrollView.contentOffset.y + scrollView.contentInset.top
         
         
         if  currentOffset < collapsedTargetOffset {
             applyTransformToHeaderUsingOffset(currentOffset)
-            tableView.contentOffset.y = 0
+            scrollView.scrollIndicatorInsets.top = -(scrollView.contentOffset.y)
         } else {
             if headerState != .Collapsed {
                 applyTransformToHeaderUsingOffset(collapsedTargetOffset)
             }
-            tableView.contentOffset.y = currentOffset - collapsedTargetOffset
+            //                tableView.contentOffset.y = currentOffset - collapsedTargetOffset
         }
         
     }
+    
+    //    final func scrollViewDidScroll(scrollView: UIScrollView) {
+    //        guard shouldCollapseHeaderView else { return }
+    //
+    //        let currentOffset = scrollView.contentOffset.y
+    ////        Logger.debug("current offset \(currentOffset)")
+    //        if currentOffset == 0 { return }
+    //
+    ////        let currentHeight = headerHeightConstraint.constant
+    //        let currentHeight = maxHeight - currentOffset
+    //        if minHeight < currentHeight && currentHeight < maxHeight{
+    //            headerHeightConstraint.constant = currentHeight
+    ////            headerHeightConstraint.constant -= currentOffset
+    //            headerState = .Transitioning
+    //        } else if currentHeight <= minHeight && headerState != .Collapsed {
+    //            headerHeightConstraint.constant = minHeight
+    //            (tableView as? ControlledScrollingTableView)?.canScroll = true
+    //            headerState = .Collapsed
+    //        } else if currentHeight == maxHeight && headerState != .Expanded {
+    //            headerHeightConstraint.constant = maxHeight
+    //            headerState = .Expanded
+    //        }
+    //
+    //
+    //    }
     
     
     final func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
@@ -239,127 +294,127 @@ class ParentMediaEntityHeaderViewController2 : ParentMediaEntityViewController, 
             headerState = .Transitioning
         }
     }
-	
-	//MARK: - Multi selection methods
-
-	
-	private func createToolbarItems() -> [UIBarButtonItem] {
-		func createFlexibleSpace() -> UIBarButtonItem {
-			return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-		}
-		
-		var toolbarItems = [playButton, createFlexibleSpace(), shuffleButton, createFlexibleSpace(), addToButton]
-		
-		if sourceData is MutableAudioEntitySourceData {
-			toolbarItems.append(createFlexibleSpace())
-			toolbarItems.append(deleteButton)
-		}
+    
+    //MARK: - Multi selection methods
+    
+    
+    private func createToolbarItems() -> [UIBarButtonItem] {
+        func createFlexibleSpace() -> UIBarButtonItem {
+            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        }
+        
+        var toolbarItems = [playButton, createFlexibleSpace(), shuffleButton, createFlexibleSpace(), addToButton]
+        
+        if sourceData is MutableAudioEntitySourceData {
+            toolbarItems.append(createFlexibleSpace())
+            toolbarItems.append(deleteButton)
+        }
         toolbarItems.append(createFlexibleSpace())
         toolbarItems.append(selectAllButton)
-		
-		let tintColor = ThemeHelper.defaultTintColor
-		toolbarItems.forEach() {
-			$0.tintColor = tintColor
-		}
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshButtonStates", name: UITableViewSelectionDidChangeNotification, object: tableView)
-		return toolbarItems
-	}
-	
-	
-	func refreshButtonStates() {
-		let isNotEmpty = tableView.indexPathsForSelectedRows != nil
-		
-		playButton.enabled = isNotEmpty
-		deleteButton.enabled = isNotEmpty
-		addToButton.enabled = isNotEmpty
-		shuffleButton.enabled = isNotEmpty
-		selectAllButton.title = isNotEmpty ? deselectAllString : selectAllString
-	}
-	
-	func selectOrDeselectAll() {
-		if let selectedIndicies = tableView.indexPathsForSelectedRows {
-			for indexPath in selectedIndicies {
-				tableView.deselectRowAtIndexPath(indexPath, animated: false)
-			}
-		} else {
-			for section in 0 ..< tableView.numberOfSections {
-				for row in 0 ..< tableView.numberOfRowsInSection(section) {
-					let indexPath = NSIndexPath(forRow: row, inSection: section)
-					tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
-				}
-			}
-		}
-		
-		refreshButtonStates()
-	}
-	
-	private func getOrderedTracks() -> [AudioTrack]? {
-		guard var selectedIndicies = tableView.indexPathsForSelectedRows else { return nil }
-		
-		selectedIndicies.sortInPlace { (first, second) -> Bool in
-			if first.section != second.section {
-				return first.section < second.section
-			}
-			return first.row < second.row
-		}
-		
-		var items = [AudioTrack]()
-		for indexPath in selectedIndicies {
-			items.appendContentsOf(sourceData.getTracksAtIndex(indexPath))
-		}
-		return items
-	}
-	
-	func playSelectedTracks(sender:AnyObject!) {
-		guard let tracks = getOrderedTracks() else { return }
-		
+        
+        let tintColor = ThemeHelper.defaultTintColor
+        toolbarItems.forEach() {
+            $0.tintColor = tintColor
+        }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshButtonStates", name: UITableViewSelectionDidChangeNotification, object: tableView)
+        return toolbarItems
+    }
+    
+    
+    func refreshButtonStates() {
+        let isNotEmpty = tableView.indexPathsForSelectedRows != nil
+        
+        playButton.enabled = isNotEmpty
+        deleteButton.enabled = isNotEmpty
+        addToButton.enabled = isNotEmpty
+        shuffleButton.enabled = isNotEmpty
+        selectAllButton.title = isNotEmpty ? deselectAllString : selectAllString
+    }
+    
+    func selectOrDeselectAll() {
+        if let selectedIndicies = tableView.indexPathsForSelectedRows {
+            for indexPath in selectedIndicies {
+                tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            }
+        } else {
+            for section in 0 ..< tableView.numberOfSections {
+                for row in 0 ..< tableView.numberOfRowsInSection(section) {
+                    let indexPath = NSIndexPath(forRow: row, inSection: section)
+                    tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
+                }
+            }
+        }
+        
+        refreshButtonStates()
+    }
+    
+    private func getOrderedTracks() -> [AudioTrack]? {
+        guard var selectedIndicies = tableView.indexPathsForSelectedRows else { return nil }
+        
+        selectedIndicies.sortInPlace { (first, second) -> Bool in
+            if first.section != second.section {
+                return first.section < second.section
+            }
+            return first.row < second.row
+        }
+        
+        var items = [AudioTrack]()
+        for indexPath in selectedIndicies {
+            items.appendContentsOf(sourceData.getTracksAtIndex(indexPath))
+        }
+        return items
+    }
+    
+    func playSelectedTracks(sender:AnyObject!) {
+        guard let tracks = getOrderedTracks() else { return }
+        
         playTracks(tracks, shouldShuffle: (sender != nil && sender is ShuffleButtonView))
-		
-		selectOrDeselectAll()
-	}
-	
-	func showAddToOptions(sender:UIBarButtonItem!) {
-		guard let items = getOrderedTracks() else { return }
-		
-		let ac = UIAlertController(title: "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items", message: nil, preferredStyle: .Alert)
-		KyoozUtils.addDefaultQueueingActions(items, alertController: ac) {
-			self.selectOrDeselectAll()
-		}
-		ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		
-		ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
-	}
-	
-	
-	func deleteSelectedItems() {
-		
-		let ac = UIAlertController(title: "Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?", message: nil, preferredStyle: .Alert)
-		ac.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { _ -> Void in
-			self.deleteInternal()
-		}))
-		
-		ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		
-		ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
-		
-	}
-	
-	private func deleteInternal() {
-		guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData, let selectedIndicies = tableView.indexPathsForSelectedRows else {
-			return
-		}
-		do {
-			try mutableSourceData.deleteEntitiesAtIndexPaths(selectedIndicies)
-			tableView.deleteRowsAtIndexPaths(selectedIndicies, withRowAnimation: .Automatic)
-			refreshButtonStates()
-		} catch let error {
-			KyoozUtils.showPopupError(withTitle: "Error occured while deleting items", withThrownError: error, presentationVC: nil)
-		}
-		
-	}
-	
-
-	
+        
+        selectOrDeselectAll()
+    }
+    
+    func showAddToOptions(sender:UIBarButtonItem!) {
+        guard let items = getOrderedTracks() else { return }
+        
+        let ac = UIAlertController(title: "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items", message: nil, preferredStyle: .Alert)
+        KyoozUtils.addDefaultQueueingActions(items, alertController: ac) {
+            self.selectOrDeselectAll()
+        }
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
+    }
+    
+    
+    func deleteSelectedItems() {
+        
+        let ac = UIAlertController(title: "Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?", message: nil, preferredStyle: .Alert)
+        ac.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { _ -> Void in
+            self.deleteInternal()
+        }))
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
+        
+    }
+    
+    private func deleteInternal() {
+        guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData, let selectedIndicies = tableView.indexPathsForSelectedRows else {
+            return
+        }
+        do {
+            try mutableSourceData.deleteEntitiesAtIndexPaths(selectedIndicies)
+            tableView.deleteRowsAtIndexPaths(selectedIndicies, withRowAnimation: .Automatic)
+            refreshButtonStates()
+        } catch let error {
+            KyoozUtils.showPopupError(withTitle: "Error occured while deleting items", withThrownError: error, presentationVC: nil)
+        }
+        
+    }
+    
+    
+    
     //MARK: - GESTURE RECOGNIZER DELEGATE
     final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer === popGestureRecognizer {
