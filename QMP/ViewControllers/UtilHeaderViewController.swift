@@ -38,8 +38,7 @@ final class UtilHeaderViewController: UIViewController, HeaderViewControllerProt
         super.viewDidLoad()
 
         view.layer.shadowOpacity = 0.8
-        view.layer.shadowOffset = CGSize(width: 0, height: 3)
-        
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
         libraryGroupingButton.hidden = subGroups == nil
     }
 
@@ -64,5 +63,6 @@ final class UtilHeaderViewController: UIViewController, HeaderViewControllerProt
     
     private func setActiveGroup(group:LibraryGrouping) {
         libraryGroupingButton.setTitle("\(group.name) ⇣", forState: .Normal)
+//		libraryGroupingButton.setTitle(" \(group.name) ", forState: .Normal)
     }
 }
