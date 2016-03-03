@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-protocol AudioEntitySourceData {
+protocol AudioEntitySourceData : class {
 	
 	var sectionNamesCanBeUsedAsIndexTitles:Bool { get }
 	var sections:[SectionDescription] { get }
