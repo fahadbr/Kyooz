@@ -10,10 +10,8 @@ import Foundation
 import UIKit
 import MediaPlayer
 
-final class MediaLibrarySearchTableViewController : ParentMediaEntityViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController<T:RowLimitedSectionDelegator> : AudioEntityViewController<T>, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
-
-    static let instance = MediaLibrarySearchTableViewController()
     
     //MARK: - Properties
     var searchController:UISearchController!
@@ -32,19 +30,9 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
     
     private let defaultRowLimit = 3
     private let rowLimitPerSection = [LibraryGrouping.Albums:4, LibraryGrouping.Songs:6]
-    
-    
-    
+	
     private (set) var searchText:String!
-    
-    private var sourceData:AudioEntitySourceData!
-    private var rowLimitedSectionDelegator:RowLimitedSectionDelegator! {
-        didSet {
-            rowLimitedSectionDelegator?.delegate = self
-            tableView.dataSource = rowLimitedSectionDelegator
-            tableView.delegate = rowLimitedSectionDelegator
-        }
-    }
+	
     
     //MARK: - View life cycle
     override func viewDidLoad() {
@@ -82,10 +70,10 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
             datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
         }
         let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
+		sectionDelegator.delegate = self
         sourceData = sectionDelegator
-        rowLimitedSectionDelegator = sectionDelegator
-        
-        
+		datasourceDelegate = sectionDelegator
+	
         popGestureRecognizer.enabled = false
     }
     
@@ -105,7 +93,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
     
     override func reloadTableViewData() {
         KyoozUtils.doInMainQueue() {
-            self.rowLimitedSectionDelegator.reloadSections()
+            self.datasourceDelegate.reloadSections()
             super.reloadTableViewData()
         }
     }
@@ -137,7 +125,7 @@ final class MediaLibrarySearchTableViewController : ParentMediaEntityViewControl
                 searchExecutor.executeSearchForStringComponents(text, stringComponents: searchStringComponents)
             }
         } else {
-            rowLimitedSectionDelegator.collapseAllSections()
+            datasourceDelegate.collapseAllSections()
         }
     }
     

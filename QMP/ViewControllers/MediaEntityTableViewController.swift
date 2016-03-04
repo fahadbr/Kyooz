@@ -19,7 +19,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
     }
     
     private (set) var isBaseLevel:Bool = true
-    var headerVC:UIViewController!
+    var headerVC:HeaderViewController!
 
     override func viewDidLoad() {
         shouldCollapseHeaderView = useCollectionDetailsHeader
@@ -38,15 +38,13 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         headerVC.view.rightAnchor.constraintEqualToAnchor(headerView.rightAnchor).active = true
         addChildViewController(headerVC)
         headerVC.didMoveToParentViewController(self)
-        
-        if let header = headerVC as? HeaderViewControllerProtocol {
-            headerHeightConstraint.constant = header.height
-            maxHeight = header.height
-            collapsedTargetOffset = maxHeight - header.minimumHeight
-            minHeight = header.minimumHeight
-            header.shuffleButton.addTarget(self, action: "shuffleAllItems:", forControlEvents: .TouchUpInside)
-            header.selectModeButton.addTarget(self, action: "toggleSelectMode:", forControlEvents: .TouchUpInside)
-        }
+		
+		headerHeightConstraint.constant = headerVC.height
+		maxHeight = headerVC.height
+		collapsedTargetOffset = maxHeight - headerVC.minimumHeight
+		minHeight = headerVC.minimumHeight
+		headerVC.tableView = tableView
+		headerVC.sourceData = sourceData
         
         if sourceData is GroupMutableAudioEntitySourceData {
             (headerVC as? UtilHeaderViewController)?.subGroups = subGroups
@@ -74,7 +72,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         }
     }
     
-    private func getHeaderViewController() -> UIViewController {
+    private func getHeaderViewController() -> HeaderViewController {
         if useCollectionDetailsHeader {
             return UIStoryboard.artworkHeaderViewController()
         }
@@ -86,7 +84,7 @@ final class MediaEntityTableViewController: ParentMediaEntityHeaderViewControlle
         if isBaseLevel {
             sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
         } else {
-			if var groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
+			if let groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
 				groupMutableSourceData.libraryGrouping = selectedGroup
 			}
         }
