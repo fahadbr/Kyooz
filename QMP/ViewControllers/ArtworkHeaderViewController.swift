@@ -64,6 +64,13 @@ final class ArtworkHeaderViewController : HeaderViewController {
         return gradiant
     }()
     
+    deinit {
+        if observingViewBounds {
+            view.removeObserver(self, forKeyPath: observationKey)
+        }
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     //MARK: - vc life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,11 +97,14 @@ final class ArtworkHeaderViewController : HeaderViewController {
         notificationCenter.addObserver(self, selector: "removeSnapshotBlur", name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     
-    deinit {
-        if observingViewBounds {
-            view.removeObserver(self, forKeyPath: observationKey)
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        super.didMoveToParentViewController(parent)
+        guard let vc = parent as? AudioEntityHeaderViewController else { return }
+        configureViewWithCollection(vc.sourceData.entities)
+        vc.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
+        KyoozUtils.doInMainQueueAsync() {
+            vc.updateConstraints()
         }
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -117,8 +127,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     //MARK: - class functions
     
-    func configureViewWithCollection(tracks:[AudioTrack]) {
-        guard let track = tracks.first else {
+    func configureViewWithCollection(entities:[AudioEntity]) {
+        guard let track = entities.first?.representativeTrack else {
             Logger.debug("couldnt get representative item for album collection")
             return
         }
@@ -137,7 +147,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         if let genre = track.genre {
             details.append(genre)
         }
-        details.append("\(tracks.count) Tracks")
+        details.append("\(entities.count) Tracks")
         
         detailsLabel3.text = details.joinWithSeparator(" • ")
         detailsLabel3.textColor = UIColor.lightGrayColor()
@@ -160,6 +170,11 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel3.layer.rasterizationScale = UIScreen.mainScreen().scale
         
         KyoozUtils.doInMainQueueAsync() { [detailsLabel2 = self.detailsLabel2] in
+            guard let tracks = entities as? [AudioTrack] else {
+                detailsLabel2.hidden = true
+                return
+            }
+            
             var duration:NSTimeInterval = 0
             for item in tracks {
                 duration += item.playbackDuration

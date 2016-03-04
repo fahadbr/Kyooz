@@ -10,8 +10,9 @@ import Foundation
 import UIKit
 import MediaPlayer
 
-final class AudioEntitySearchViewController<T:RowLimitedSectionDelegator> : AudioEntityViewController<T>, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController : AudioEntityViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
+    static let instance = AudioEntitySearchViewController()
     
     //MARK: - Properties
     var searchController:UISearchController!
@@ -93,7 +94,7 @@ final class AudioEntitySearchViewController<T:RowLimitedSectionDelegator> : Audi
     
     override func reloadTableViewData() {
         KyoozUtils.doInMainQueue() {
-            self.datasourceDelegate.reloadSections()
+            (self.datasourceDelegate as? RowLimitedSectionDelegator)?.reloadSections()
             super.reloadTableViewData()
         }
     }
@@ -125,7 +126,7 @@ final class AudioEntitySearchViewController<T:RowLimitedSectionDelegator> : Audi
                 searchExecutor.executeSearchForStringComponents(text, stringComponents: searchStringComponents)
             }
         } else {
-            datasourceDelegate.collapseAllSections()
+            (datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
         }
     }
     

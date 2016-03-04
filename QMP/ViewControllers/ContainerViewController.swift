@@ -173,26 +173,16 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
         }
         
-        let title = entity.titleForGrouping(parentGroup)
-        
-        let vc:ParentMediaEntityHeaderViewController!
+        let vc = UIStoryboard.audioEntityHeaderViewController()
+        vc.subGroups = parentGroup.subGroupsForNextLevel
+        vc.sourceData = sourceData
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
-//            vc = UIStoryboard.albumTrackTableViewController()
-			let mvc = UIStoryboard.mediaEntityTableViewController()
-//			mvc.title = title?.uppercaseString
-			mvc.subGroups = parentGroup.subGroupsForNextLevel
-			mvc.useCollectionDetailsHeader = true
-			vc = mvc
+			vc.useCollectionDetailsHeader = true
         } else {
-            let mvc = UIStoryboard.mediaEntityTableViewController()
-            mvc.title = title?.uppercaseString
-            mvc.subGroups = parentGroup.subGroupsForNextLevel
-            vc = mvc
+            vc.title = entity.titleForGrouping(parentGroup)?.uppercaseString
         }
 		
-		vc.sourceData = sourceData
-
         pushViewController(vc)
     }
     
@@ -212,7 +202,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func handleTouchGesture(recognizer:UITapGestureRecognizer) {
         if(recognizer.state == .Ended) {
             toggleSidePanel()
-            
         }
     }
     

@@ -37,12 +37,8 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
     }
     
-	static func audioEntityHeaderViewController<T:AudioEntityDSDProtocol>() -> AudioEntityHeaderViewController<T> {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("audioEntityHeaderViewController") as! AudioEntityHeaderViewController<T>
-    }
-    
-    static func albumTrackTableViewController() -> AlbumTrackTableViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("albumTrackTableViewController") as! AlbumTrackTableViewController
+	static func audioEntityHeaderViewController() -> AudioEntityHeaderViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("audioEntityHeaderViewController") as! AudioEntityHeaderViewController
     }
     
     static func warningViewController() -> WarningViewController {

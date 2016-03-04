@@ -39,6 +39,14 @@ final class UtilHeaderViewController: HeaderViewController {
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
         libraryGroupingButton.hidden = subGroups == nil
     }
+    
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        super.didMoveToParentViewController(parent)
+        guard let vc = parent as? AudioEntityHeaderViewController else { return }
+        if vc.sourceData is GroupMutableAudioEntitySourceData {
+            subGroups = vc.subGroups
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -52,7 +60,7 @@ final class UtilHeaderViewController: HeaderViewController {
         for group in groups {
             ac.addAction(UIAlertAction(title: group.name, style: .Default, handler: { _ in
                 self.setActiveGroup(group)
-                (self.parentViewController as? MediaEntityTableViewController)?.groupingTypeDidChange(group)
+                (self.parentViewController as? AudioEntityHeaderViewController)?.groupingTypeDidChange(group)
             }))
         }
         ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))

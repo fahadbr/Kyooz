@@ -8,13 +8,15 @@
 
 import UIKit
 
-private enum HeaderState : Int {
-	case Collapsed, Expanded, Transitioning
-}
-private let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
 
-final class AudioEntityHeaderViewController<T:AudioEntityDSDProtocol> : AudioEntityViewController<T>, UIScrollViewDelegate, UIGestureRecognizerDelegate {
+
+final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
 	
+    private enum HeaderState : Int {
+        case Collapsed, Expanded, Transitioning
+    }
+    private static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
+    
 	@IBOutlet var headerView:UIView!
 	
 	@IBOutlet var headerTopAnchorConstraint:NSLayoutConstraint!
@@ -36,37 +38,53 @@ final class AudioEntityHeaderViewController<T:AudioEntityDSDProtocol> : AudioEnt
 		return MediaCollectionTableViewCell.reuseIdentifier
 	}
 	
-	var shouldCollapseHeaderView = true
 	var useCollectionDetailsHeader:Bool = false
+    private var shouldCollapseHeaderView = true
 	private var headerState:HeaderState = .Expanded
 	
 	var testMode = false
 	var testDelegate:TestTableViewDataSourceDelegate!
+    
+    
+    var subGroups:[LibraryGrouping] = LibraryGrouping.values {
+        didSet {
+            isBaseLevel = false
+        }
+    }
+    
+    private (set) var isBaseLevel:Bool = true
+    var headerVC:HeaderViewController!
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
-		
+        super.viewDidLoad()
+        shouldCollapseHeaderView = useCollectionDetailsHeader
+		navigationItem.rightBarButtonItem = AudioEntityHeaderViewController.searchButton
+        
+        tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
+        tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+        tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
+        
+        headerVC = getHeaderViewController()
+        headerView.addSubview(headerVC.view)
+        headerVC.view.translatesAutoresizingMaskIntoConstraints = false
+        headerVC.view.topAnchor.constraintEqualToAnchor(headerView.topAnchor).active = true
+        headerVC.view.bottomAnchor.constraintEqualToAnchor(headerView.bottomAnchor).active = true
+        headerVC.view.leftAnchor.constraintEqualToAnchor(headerView.leftAnchor).active = true
+        headerVC.view.rightAnchor.constraintEqualToAnchor(headerView.rightAnchor).active = true
+        addChildViewController(headerVC)
+        headerVC.didMoveToParentViewController(self)
+        
+        popGestureRecognizer.enabled = !isBaseLevel
+        popGestureRecognizer.delegate = self
+        
 		if testMode {
 			configureTestDelegates()
 		} else {
 			applyDataSourceAndDelegate()
 		}
-		
-		navigationItem.rightBarButtonItem = ParentMediaEntityHeaderViewController.searchButton
-		headerView.layer.rasterizationScale = UIScreen.mainScreen().scale
-		if shouldCollapseHeaderView {
-			KyoozUtils.doInMainQueueAsync() {
-				self.tableViewTopAnchorConstraint.active = false
-				self.tableViewTopAnchorConstraint = self.tableView.topAnchor.constraintEqualToAnchor(self.view.topAnchor, constant: self.minHeight)
-				self.tableViewTopAnchorConstraint.active = true
-				self.tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.collapsedTargetOffset))
-				self.tableView.scrollIndicatorInsets.top = self.collapsedTargetOffset
-				self.view.addGestureRecognizer(self.tableView.panGestureRecognizer)
-			}
-		}
-		
+    
 		view.backgroundColor = ThemeHelper.darkAccentColor
-		popGestureRecognizer.delegate = self
+
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadAllData",
 			name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
 	}
@@ -79,20 +97,6 @@ final class AudioEntityHeaderViewController<T:AudioEntityDSDProtocol> : AudioEnt
 		tableView.sectionHeaderHeight = 40
 		tableView.rowHeight = 60
 	}
-	
-	
-	//MARK: - Class functions
-	
-	override func reloadSourceData() {
-		sourceData.reloadSourceData()
-	}
-	
-	
-	func applyDataSourceAndDelegate() {
-		fatalError(fatalErrorMessage)
-	}
-	
-	
 	
 	//MARK: - Scroll View Delegate
 	
@@ -121,6 +125,79 @@ final class AudioEntityHeaderViewController<T:AudioEntityDSDProtocol> : AudioEnt
 			headerState = .Transitioning
 		}
 	}
+    
+    //MARK: - Class functions
+    
+    func updateConstraints() {
+        if headerVC is ArtworkHeaderViewController {
+            headerTopAnchorConstraint.active = false
+            headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
+            headerTopAnchorConstraint.active = true
+            tableViewTopAnchorConstraint.active = false
+            tableViewTopAnchorConstraint = tableView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: minHeight)
+            tableViewTopAnchorConstraint.active = true
+            tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
+            tableView.scrollIndicatorInsets.top = collapsedTargetOffset
+            view.addGestureRecognizer(tableView.panGestureRecognizer)
+        }
+    }
+    
+    private func getHeaderViewController() -> HeaderViewController {
+        if useCollectionDetailsHeader {
+            return UIStoryboard.artworkHeaderViewController()
+        }
+        return UIStoryboard.utilHeaderViewController()
+    }
+    
+    
+    func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
+        if isBaseLevel {
+            sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
+        } else {
+            if let groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
+                groupMutableSourceData.libraryGrouping = selectedGroup
+            }
+        }
+        
+        applyDataSourceAndDelegate()
+        reloadAllData()
+    }
+    
+    
+    override func addCustomMenuActions(indexPath: NSIndexPath, alertController: UIAlertController) {
+        switch sourceData.libraryGrouping {
+        case LibraryGrouping.Playlists:
+            guard sourceData[indexPath] is KyoozPlaylist else { return }
+            alertController.addAction(UIAlertAction(title: "Delete", style: UIAlertActionStyle.Destructive, handler: {_ in
+                self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+            }))
+        default:
+            break
+        }
+    }
+    
+    
+    func applyDataSourceAndDelegate() {
+        switch sourceData.libraryGrouping {
+        case LibraryGrouping.Songs:
+            if sourceData is KyoozPlaylistSourceData {
+                datasourceDelegate = EditableAudioTrackDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            } else {
+                datasourceDelegate = AudioTrackDSD(sourceData: sourceData, reuseIdentifier:  reuseIdentifier, audioCellDelegate: self)
+            }
+        case LibraryGrouping.Playlists:
+            let playlistSourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Playlists.baseQuery, libraryGrouping: LibraryGrouping.Playlists, singleSectionName: "ITUNES PLAYLISTS")
+            let playlistDSD = AudioTrackCollectionDSD(sourceData:playlistSourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            let kPlaylistDSD = KyoozPlaylistManagerDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            let delegator = AudioEntityDSDSectionDelegator(datasources: [kPlaylistDSD, playlistDSD])
+            
+            sourceData = delegator
+            datasourceDelegate = delegator
+        default:
+            datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
+        }
+    }
+    
 	
 	
 	//MARK: - GESTURE RECOGNIZER DELEGATE

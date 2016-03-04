@@ -11,13 +11,14 @@ import UIKit
 class CustomPopableViewController: UIViewController {
 
     var transitionAnimator = ViewControllerFadeAnimator.instance
-    var popGestureRecognizer:UIScreenEdgePanGestureRecognizer!
+    lazy var popGestureRecognizer:UIScreenEdgePanGestureRecognizer = {
+        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
+        popGestureRecognizer.edges = UIRectEdge.Left
+        return popGestureRecognizer
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
-        popGestureRecognizer.edges = UIRectEdge.Left
         view.addGestureRecognizer(popGestureRecognizer)
     }
 
@@ -36,13 +37,14 @@ class CustomPopableViewController: UIViewController {
 class CustomPopableTableViewController: UITableViewController {
     
     var transitionAnimator = ViewControllerFadeAnimator.instance
-    var popGestureRecognizer:UIScreenEdgePanGestureRecognizer!
+    lazy var popGestureRecognizer:UIScreenEdgePanGestureRecognizer = {
+        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
+        popGestureRecognizer.edges = UIRectEdge.Left
+        return popGestureRecognizer
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
-        popGestureRecognizer.edges = UIRectEdge.Left
         view.addGestureRecognizer(popGestureRecognizer)
     }
     
