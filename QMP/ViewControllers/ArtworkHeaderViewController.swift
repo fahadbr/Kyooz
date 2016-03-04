@@ -9,13 +9,13 @@
 import UIKit
 import MediaPlayer
 
-final class ArtworkHeaderViewController : UIViewController, HeaderViewControllerProtocol {
+final class ArtworkHeaderViewController : HeaderViewController {
     
-    var height:CGFloat {
+    override var height:CGFloat {
         return 375
     }
     
-    var minimumHeight:CGFloat {
+    override var minimumHeight:CGFloat {
         return 110
     }
     
@@ -29,8 +29,6 @@ final class ArtworkHeaderViewController : UIViewController, HeaderViewController
     
     //MARK: - IBOutlets
     
-    @IBOutlet var shuffleButton: ShuffleButtonView!
-    @IBOutlet var selectModeButton: ListButtonView!
     @IBOutlet var headerTitleLabel: UILabel!
     @IBOutlet var detailsLabel1: UILabel!
     @IBOutlet var detailsLabel2: UILabel!

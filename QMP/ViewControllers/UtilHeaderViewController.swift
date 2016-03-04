@@ -10,19 +10,17 @@ import UIKit
 
 let fixedHeight:CGFloat = 40
 
-final class UtilHeaderViewController: UIViewController, HeaderViewControllerProtocol {
+final class UtilHeaderViewController: HeaderViewController {
 
-    var height:CGFloat {
+    override var height:CGFloat {
         return fixedHeight
     }
     
-    var minimumHeight:CGFloat {
+    override var minimumHeight:CGFloat {
         return fixedHeight
     }
     
-    @IBOutlet var shuffleButton: ShuffleButtonView!
     @IBOutlet var libraryGroupingButton: UIButton!
-    @IBOutlet var selectModeButton: ListButtonView!
     
     var subGroups:[LibraryGrouping]? {
         didSet {

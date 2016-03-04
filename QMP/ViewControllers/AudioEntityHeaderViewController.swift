@@ -1,25 +1,19 @@
 //
-//  AbstractMediaEntityTableViewController.swift
+//  AudioEntityViewController.swift
 //  Kyooz
 //
-//  Created by FAHAD RIAZ on 10/5/15.
-//  Copyright © 2015 FAHAD RIAZ. All rights reserved.
+//  Created by FAHAD RIAZ on 3/3/16.
+//  Copyright © 2016 FAHAD RIAZ. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import MediaPlayer
 
-private let selectAllString = "Select All"
-private let deselectAllString = "Deselect All"
+private enum HeaderState : Int {
+	case Collapsed, Expanded, Transitioning
+}
+private let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
 
-class ParentMediaEntityHeaderViewController : AudioEntityViewController<AudioEntityDSD>, UIScrollViewDelegate, UIGestureRecognizerDelegate {
-	
-	private enum HeaderState : Int {
-		case Collapsed, Expanded, Transitioning
-	}
-	
-	static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
+final class AudioEntityHeaderViewController<T:AudioEntityDSDProtocol> : AudioEntityViewController<T>, UIScrollViewDelegate, UIGestureRecognizerDelegate {
 	
 	@IBOutlet var headerView:UIView!
 	
@@ -146,6 +140,5 @@ class ParentMediaEntityHeaderViewController : AudioEntityViewController<AudioEnt
 		}
 		return false
 	}
-	
 	
 }

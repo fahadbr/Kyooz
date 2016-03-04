@@ -11,7 +11,7 @@ import UIKit
 private let selectAllString = "Select All"
 private let deselectAllString = "Deselect All"
 
-class HeaderViewController : UIViewController, HeaderViewControllerProtocol {
+class HeaderViewController : UIViewController {
     
     var height:CGFloat { return 0 }
     var minimumHeight:CGFloat { return 0 }
@@ -70,8 +70,23 @@ class HeaderViewController : UIViewController, HeaderViewControllerProtocol {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshButtonStates", name: UITableViewSelectionDidChangeNotification, object: tableView)
         return toolbarItems
     }
+	
+	@IBAction func toggleSelectMode(sender:UIButton?) {
+		let willEdit = !tableView.editing
+		
+		tableView.setEditing(willEdit, animated: true)
+		RootViewController.instance.setToolbarHidden(!willEdit)
+		
+		if willEdit && parentViewController?.toolbarItems == nil {
+			parentViewController?.toolbarItems = createToolbarItems()
+		}
+		
+		(sender as? ListButtonView)?.showBullets = !willEdit
+		
+		refreshButtonStates()
+	}
     
-    final func shuffleAllItems(sender:UIButton?) {
+    @IBAction func shuffleAllItems(sender:UIButton?) {
         playAllItems(sender, shouldShuffle: true)
     }
     

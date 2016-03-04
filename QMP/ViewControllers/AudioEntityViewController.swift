@@ -9,15 +9,21 @@
 import UIKit
 import MediaPlayer
 
-class ParentMediaEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
-    private static let greenColor = UIColor(red: 0.0/225.0, green: 184.0/225.0, blue: 24.0/225.0, alpha: 1)
-    private static let blueColor = UIColor(red: 51.0/225.0, green: 62.0/225.0, blue: 222.0/225.0, alpha: 1)
+class AudioEntityViewController<T:AudioEntityDSDProtocol> : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
     
     let fatalErrorMessage = "Unsupported operation. this is an abstract class"
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     @IBOutlet var tableView:UITableView!
-    
+	
+	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
+	
+	var datasourceDelegate:T! {
+		didSet {
+			tableView.dataSource = datasourceDelegate
+			tableView.delegate = datasourceDelegate
+		}
+	}
     
     override func viewDidLoad() {
         super.viewDidLoad()
