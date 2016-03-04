@@ -26,8 +26,6 @@ struct ApplicationDefaults {
         player.delegate = AudioQueuePlayerDelegateImpl()
         return player
     }()
-	
-	static let audioEntitySearchViewController = AudioEntitySearchViewController()
     
     static func evaluateMinimumFetchInterval() {
         if audioQueuePlayer is DRMAudioQueuePlayer && LastFmScrobbler.instance.validSessionObtained {

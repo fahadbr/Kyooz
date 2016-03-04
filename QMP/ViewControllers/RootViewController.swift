@@ -51,7 +51,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     var previousSearchText:String?
     private var searchController:UISearchController!
     private var resultsTableController:UITableViewController!
-    private let searchResultsController = ApplicationDefaults.audioEntitySearchViewController
+    private let searchResultsController = AudioEntitySearchViewController.instance
     
     private var warningViewController:WarningViewController?
     

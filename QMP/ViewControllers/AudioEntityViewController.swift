@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class AudioEntityViewController<T:AudioEntityDSDProtocol> : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
+class AudioEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
     
     let fatalErrorMessage = "Unsupported operation. this is an abstract class"
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
@@ -18,7 +18,7 @@ class AudioEntityViewController<T:AudioEntityDSDProtocol> : CustomPopableViewCon
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
 	
-	var datasourceDelegate:T! {
+	var datasourceDelegate:AudioEntityDSDProtocol! {
 		didSet {
 			tableView.dataSource = datasourceDelegate
 			tableView.delegate = datasourceDelegate
@@ -54,12 +54,12 @@ class AudioEntityViewController<T:AudioEntityDSDProtocol> : CustomPopableViewCon
     }
     
     func reloadSourceData() {
-        fatalError(fatalErrorMessage)
+        sourceData.reloadSourceData()
     }
     
     //MARK: - Overriding MediaItemTableViewController methods
     func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        fatalError(fatalErrorMessage)
+        return sourceData.getTracksAtIndex(indexPath)
     }
     
     //MARK: - MediaLibraryTableViewCellDelegate

@@ -18,8 +18,8 @@ class HeaderViewController : UIViewController {
     
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    weak var tableView:UITableView!
-    weak var sourceData:AudioEntitySourceData!
+    private weak var tableView:UITableView!
+    private weak var sourceData:AudioEntitySourceData!
     
     @IBOutlet var shuffleButton: ShuffleButtonView!
     @IBOutlet var selectModeButton: ListButtonView!
@@ -47,6 +47,18 @@ class HeaderViewController : UIViewController {
         return UIBarButtonItem(customView: shuffleButtonView)
     }()
     
+    override func didMoveToParentViewController(parent: UIViewController?) {
+        super.didMoveToParentViewController(parent)
+        guard let aehVC = parent as? AudioEntityHeaderViewController else { return }
+        
+        aehVC.minHeight = minimumHeight
+        aehVC.maxHeight = height
+        aehVC.collapsedTargetOffset = height - minimumHeight
+        aehVC.headerHeightConstraint.constant = height
+        
+        tableView = aehVC.tableView
+        sourceData = aehVC.sourceData
+    }
     
     
     private func createToolbarItems() -> [UIBarButtonItem] {
