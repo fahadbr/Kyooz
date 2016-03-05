@@ -11,16 +11,12 @@ import MediaPlayer
 
 final class ArtworkHeaderViewController : HeaderViewController {
     
-    override var height:CGFloat {
+    override var defaultHeight:CGFloat {
         return 375
     }
     
-    override var minimumHeight:CGFloat {
-        return 110
-    }
-    
     private var expandedFraction:CGFloat {
-        return (view.frame.height - minimumHeight)/(height - minimumHeight)
+        return (view.frame.height - minimumHeight)/(defaultHeight - minimumHeight)
     }
     
     private var observationKey:String {
@@ -101,10 +97,6 @@ final class ArtworkHeaderViewController : HeaderViewController {
         super.didMoveToParentViewController(parent)
         guard let vc = parent as? AudioEntityHeaderViewController else { return }
         configureViewWithCollection(vc.sourceData.entities)
-        vc.tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
-        KyoozUtils.doInMainQueueAsync() {
-            vc.updateConstraints()
-        }
     }
     
     override func viewWillAppear(animated: Bool) {

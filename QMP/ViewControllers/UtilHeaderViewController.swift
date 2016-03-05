@@ -8,17 +8,7 @@
 
 import UIKit
 
-let fixedHeight:CGFloat = 40
-
 final class UtilHeaderViewController: HeaderViewController {
-
-    override var height:CGFloat {
-        return fixedHeight
-    }
-    
-    override var minimumHeight:CGFloat {
-        return fixedHeight
-    }
     
     @IBOutlet var libraryGroupingButton: UIButton!
     
@@ -37,9 +27,20 @@ final class UtilHeaderViewController: HeaderViewController {
 
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
+		
+
+		
+		libraryGroupingButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         libraryGroupingButton.hidden = subGroups == nil
     }
-    
+	
+	override func viewDidLayoutSubviews() {
+		view.backgroundColor = UIColor.clearColor()
+		let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+		blurView.frame = view.frame
+		view.insertSubview(blurView, atIndex: 0)
+	}
+	
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
         guard let vc = parent as? AudioEntityHeaderViewController else { return }
@@ -68,7 +69,7 @@ final class UtilHeaderViewController: HeaderViewController {
     }
     
     private func setActiveGroup(group:LibraryGrouping) {
-        libraryGroupingButton.setTitle("\(group.name) ⇣", forState: .Normal)
+        libraryGroupingButton.setTitle("  \(group.name) ⇣", forState: .Normal)
 //		libraryGroupingButton.setTitle(" \(group.name) ", forState: .Normal)
     }
 }
