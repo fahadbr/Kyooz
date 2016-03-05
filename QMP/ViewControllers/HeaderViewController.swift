@@ -11,10 +11,13 @@ import UIKit
 private let selectAllString = "Select All"
 private let deselectAllString = "Deselect All"
 
+
 class HeaderViewController : UIViewController {
-    
-    var height:CGFloat { return 0 }
-    var minimumHeight:CGFloat { return 0 }
+	
+	private static let fixedHeight:CGFloat = 110
+	
+    var defaultHeight:CGFloat { return HeaderViewController.fixedHeight }
+    var minimumHeight:CGFloat { return HeaderViewController.fixedHeight }
     
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -51,11 +54,6 @@ class HeaderViewController : UIViewController {
         super.didMoveToParentViewController(parent)
         guard let aehVC = parent as? AudioEntityHeaderViewController else { return }
         
-        aehVC.minHeight = minimumHeight
-        aehVC.maxHeight = height
-        aehVC.collapsedTargetOffset = height - minimumHeight
-        aehVC.headerHeightConstraint.constant = height
-        
         tableView = aehVC.tableView
         sourceData = aehVC.sourceData
     }
@@ -84,6 +82,11 @@ class HeaderViewController : UIViewController {
     }
 	
 	@IBAction func toggleSelectMode(sender:UIButton?) {
+		guard tableView != nil && sourceData != nil else {
+			Logger.error("cannot go into select mode with a null tableView or sourceData object")
+			return
+		}
+		
 		let willEdit = !tableView.editing
 		
 		tableView.setEditing(willEdit, animated: true)

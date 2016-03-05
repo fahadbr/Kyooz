@@ -12,23 +12,15 @@ import UIKit
 
 final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
 	
-    private enum HeaderState : Int {
-        case Collapsed, Expanded, Transitioning
-    }
     private static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
-    
-	@IBOutlet var headerView:UIView!
 	
-	@IBOutlet var headerTopAnchorConstraint:NSLayoutConstraint!
-	@IBOutlet var headerHeightConstraint: NSLayoutConstraint!
-	@IBOutlet var tableViewTopAnchorConstraint: NSLayoutConstraint!
-	
+	var headerHeightConstraint: NSLayoutConstraint!
 	var maxHeight:CGFloat!
 	var minHeight:CGFloat!
 	var collapsedTargetOffset:CGFloat!
 	
 	var reuseIdentifier:String {
-		if useCollectionDetailsHeader {
+		if useCollapsableHeader {
 			return AlbumTrackTableViewCell.reuseIdentifier
 		}
 		
@@ -38,9 +30,8 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
 		return MediaCollectionTableViewCell.reuseIdentifier
 	}
 	
-	var useCollectionDetailsHeader:Bool = false
-    private var shouldCollapseHeaderView = true
-	private var headerState:HeaderState = .Expanded
+	var useCollapsableHeader:Bool = false
+	private var headerCollapsed:Bool = false
 	
 	var testMode = false
 	var testDelegate:TestTableViewDataSourceDelegate!
@@ -52,38 +43,48 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
         }
     }
     
-    private (set) var isBaseLevel:Bool = true
-    var headerVC:HeaderViewController!
+    private var isBaseLevel:Bool = true
+    private var headerVC:HeaderViewController!
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-        shouldCollapseHeaderView = useCollectionDetailsHeader
 		navigationItem.rightBarButtonItem = AudioEntityHeaderViewController.searchButton
-        
+		view.backgroundColor = ThemeHelper.darkAccentColor
+		popGestureRecognizer.enabled = !isBaseLevel
+		popGestureRecognizer.delegate = self
+		
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
         tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         
-        headerVC = getHeaderViewController()
-        headerView.addSubview(headerVC.view)
+		headerVC = useCollapsableHeader ? UIStoryboard.artworkHeaderViewController() : UIStoryboard.utilHeaderViewController()
+        view.addSubview(headerVC.view)
         headerVC.view.translatesAutoresizingMaskIntoConstraints = false
-        headerVC.view.topAnchor.constraintEqualToAnchor(headerView.topAnchor).active = true
-        headerVC.view.bottomAnchor.constraintEqualToAnchor(headerView.bottomAnchor).active = true
-        headerVC.view.leftAnchor.constraintEqualToAnchor(headerView.leftAnchor).active = true
-        headerVC.view.rightAnchor.constraintEqualToAnchor(headerView.rightAnchor).active = true
+        headerVC.view.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        headerVC.view.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        headerVC.view.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+		headerHeightConstraint = headerVC.view.heightAnchor.constraintEqualToConstant(headerVC.defaultHeight)
+		headerHeightConstraint.active = true
         addChildViewController(headerVC)
         headerVC.didMoveToParentViewController(self)
-        
-        popGestureRecognizer.enabled = !isBaseLevel
-        popGestureRecognizer.delegate = self
-        
+		
+		minHeight = headerVC.minimumHeight
+		maxHeight = headerVC.defaultHeight
+		collapsedTargetOffset = maxHeight - minHeight
+		tableView.contentInset.top = minHeight
+		
+		if useCollapsableHeader {
+			tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
+			tableView.scrollIndicatorInsets.top = collapsedTargetOffset
+			view.addGestureRecognizer(tableView.panGestureRecognizer)
+		}
+
 		if testMode {
 			configureTestDelegates()
 		} else {
 			applyDataSourceAndDelegate()
 		}
-    
-		view.backgroundColor = ThemeHelper.darkAccentColor
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadAllData",
 			name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
@@ -101,55 +102,24 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
 	//MARK: - Scroll View Delegate
 	
 	final func scrollViewDidScroll(scrollView: UIScrollView) {
-		if !shouldCollapseHeaderView { return }
-		let currentOffset = scrollView.contentOffset.y
+		if !useCollapsableHeader { return }
+		let currentOffset = scrollView.contentOffset.y + scrollView.contentInset.top
 		
 		if  currentOffset < collapsedTargetOffset {
-			applyTransformToHeaderUsingOffset(currentOffset)
-			scrollView.scrollIndicatorInsets.top = collapsedTargetOffset - currentOffset
-		} else if headerState != .Collapsed {
-			applyTransformToHeaderUsingOffset(collapsedTargetOffset)
+			headerHeightConstraint.constant = (maxHeight - currentOffset)
+			scrollView.scrollIndicatorInsets.top = collapsedTargetOffset - scrollView.contentOffset.y
+			headerCollapsed = false
+		} else if !headerCollapsed {
+			headerHeightConstraint.constant = minHeight
+//			scrollView.scrollIndicatorInsets.top = 
+			headerCollapsed = true
 		}
-	}
-	
-	
-	private func applyTransformToHeaderUsingOffset(offset:CGFloat) {
-		headerHeightConstraint.constant = (maxHeight - offset)
-		let fraction = offset/collapsedTargetOffset
 		
-		if fraction == 1 {
-			headerState = .Collapsed
-		} else if fraction == 0 {
-			headerState = .Expanded
-		} else {
-			headerState = .Transitioning
-		}
+
 	}
     
     //MARK: - Class functions
-    
-    func updateConstraints() {
-        if headerVC is ArtworkHeaderViewController {
-            headerTopAnchorConstraint.active = false
-            headerTopAnchorConstraint = headerView.topAnchor.constraintEqualToAnchor(view.topAnchor)
-            headerTopAnchorConstraint.active = true
-            tableViewTopAnchorConstraint.active = false
-            tableViewTopAnchorConstraint = tableView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: minHeight)
-            tableViewTopAnchorConstraint.active = true
-            tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
-            tableView.scrollIndicatorInsets.top = collapsedTargetOffset
-            view.addGestureRecognizer(tableView.panGestureRecognizer)
-        }
-    }
-    
-    private func getHeaderViewController() -> HeaderViewController {
-        if useCollectionDetailsHeader {
-            return UIStoryboard.artworkHeaderViewController()
-        }
-        return UIStoryboard.utilHeaderViewController()
-    }
-    
-    
+
     func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
         if isBaseLevel {
             sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
@@ -158,7 +128,7 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
                 groupMutableSourceData.libraryGrouping = selectedGroup
             }
         }
-        
+        tableView.contentOffset = CGPoint.zero
         applyDataSourceAndDelegate()
         reloadAllData()
     }

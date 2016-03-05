@@ -77,12 +77,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
 	
         popGestureRecognizer.enabled = false
     }
-    
-    //MARK: - SCROLL DELEGATE
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        searchController.searchBar.resignFirstResponder()
-    }
-    
+	
     //MARK: - AbstractMediaEntityTableViewController methods
     override func reloadSourceData() {
         //empty implementation

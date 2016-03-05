@@ -19,36 +19,28 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="40" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NuC-r9-W2u">
-                                <rect key="frame" x="0.0" y="124" width="600" height="476"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
-                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="6fs-lg-4Sw" userLabel="headerView">
-                                <rect key="frame" x="0.0" y="64" width="600" height="60"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="v2J-oa-LFD"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.089999999999999997" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="6fs-lg-4Sw" secondAttribute="trailing" id="4B4-yh-YVT"/>
+                            <constraint firstItem="NuC-r9-W2u" firstAttribute="top" secondItem="epf-2n-83O" secondAttribute="top" id="2B5-wI-Uzk"/>
                             <constraint firstAttribute="trailing" secondItem="NuC-r9-W2u" secondAttribute="trailing" id="5rN-c1-gyb"/>
+                            <constraint firstItem="NuC-r9-W2u" firstAttribute="top" secondItem="d5K-bf-cPd" secondAttribute="bottom" id="F6t-iL-bFd"/>
                             <constraint firstItem="NuC-r9-W2u" firstAttribute="leading" secondItem="epf-2n-83O" secondAttribute="leading" id="HZF-hC-btE"/>
-                            <constraint firstItem="6fs-lg-4Sw" firstAttribute="leading" secondItem="epf-2n-83O" secondAttribute="leading" id="Lek-bd-R89"/>
-                            <constraint firstItem="NuC-r9-W2u" firstAttribute="top" secondItem="6fs-lg-4Sw" secondAttribute="bottom" id="aOP-Ll-deg"/>
                             <constraint firstItem="s5s-Ke-MO5" firstAttribute="top" secondItem="NuC-r9-W2u" secondAttribute="bottom" id="eIO-l1-6ab"/>
-                            <constraint firstItem="6fs-lg-4Sw" firstAttribute="top" secondItem="d5K-bf-cPd" secondAttribute="bottom" identifier="headerTopAnchorConstraint" id="y4Q-FI-BIv"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="F6t-iL-bFd"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="4p0-bY-VFY"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
-                        <outlet property="headerHeightConstraint" destination="v2J-oa-LFD" id="YSC-VF-kXO"/>
-                        <outlet property="headerTopAnchorConstraint" destination="y4Q-FI-BIv" id="31C-L4-h74"/>
-                        <outlet property="headerView" destination="6fs-lg-4Sw" id="yhE-EM-0DH"/>
                         <outlet property="tableView" destination="NuC-r9-W2u" id="pvk-Tn-6Ni"/>
-                        <outlet property="tableViewTopAnchorConstraint" destination="aOP-Ll-deg" id="kfh-hE-3QC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cP3-x9-QAn" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -192,11 +184,11 @@
                         <viewControllerLayoutGuide type="bottom" id="piV-CY-dPN"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ugr-V6-ssK">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Cfq-Vj-A5E">
-                                <rect key="frame" x="16" y="0.0" width="343" height="40"/>
+                                <rect key="frame" x="16" y="62" width="343" height="40"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RU2-pE-ATd" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
@@ -239,13 +231,18 @@
                         <constraints>
                             <constraint firstItem="Cfq-Vj-A5E" firstAttribute="top" secondItem="669-zb-BRj" secondAttribute="bottom" id="7m1-CM-nJh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Cfq-Vj-A5E" secondAttribute="trailing" id="UAX-OT-ms1"/>
-                            <constraint firstItem="piV-CY-dPN" firstAttribute="top" secondItem="Cfq-Vj-A5E" secondAttribute="bottom" id="Xz1-4v-Cjk"/>
+                            <constraint firstItem="piV-CY-dPN" firstAttribute="top" secondItem="Cfq-Vj-A5E" secondAttribute="bottom" constant="8" id="Xz1-4v-Cjk"/>
                             <constraint firstItem="Cfq-Vj-A5E" firstAttribute="leading" secondItem="Ugr-V6-ssK" secondAttribute="leadingMargin" id="ZUR-uP-DQJ"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="7m1-CM-nJh"/>
+                            </mask>
+                        </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="375" height="40"/>
+                    <size key="freeformSize" width="375" height="110"/>
                     <connections>
                         <outlet property="libraryGroupingButton" destination="fCM-aY-0K0" id="jTe-OD-nZn"/>
                         <outlet property="selectModeButton" destination="jUC-pq-9bY" id="hQO-SE-9g9"/>
