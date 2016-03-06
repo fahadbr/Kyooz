@@ -173,12 +173,10 @@ class NowPlayingSummaryViewController: UIViewController {
         
         if(albumIdForCurrentAlbumArt == nil || albumIdForCurrentAlbumArt! != albumArtId) {
             Logger.debug("loading new album art image")
-            var albumArtImage = artwork?.imageWithSize(albumArtwork.frame.size)
-            if(albumArtImage == nil) {
-                albumArtImage = ImageContainer.defaultAlbumArtworkImage
-            }
+            let albumArtImage = artwork?.imageWithSize(albumArtwork.frame.size) ?? ImageContainer.defaultAlbumArtworkImage
             self.albumArtwork.image = albumArtImage
-            self.view.backgroundColor = UIColor(patternImage: albumArtImage!)
+            self.view.backgroundColor = UIColor(patternImage: albumArtImage)
+//            self.view.backgroundColor = UIColor.clearColor()
             self.albumIdForCurrentAlbumArt = albumArtId
         }
         
