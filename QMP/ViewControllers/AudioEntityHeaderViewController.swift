@@ -73,10 +73,10 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
 		maxHeight = headerVC.defaultHeight
 		collapsedTargetOffset = maxHeight - minHeight
 		tableView.contentInset.top = minHeight
-		
+        tableView.scrollIndicatorInsets.top = maxHeight
+        
 		if useCollapsableHeader {
 			tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
-			tableView.scrollIndicatorInsets.top = collapsedTargetOffset
 			view.addGestureRecognizer(tableView.panGestureRecognizer)
 		}
 
@@ -111,7 +111,6 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
 			headerCollapsed = false
 		} else if !headerCollapsed {
 			headerHeightConstraint.constant = minHeight
-//			scrollView.scrollIndicatorInsets.top = 
 			headerCollapsed = true
 		}
 		
@@ -128,7 +127,7 @@ final class AudioEntityHeaderViewController : AudioEntityViewController, UIScrol
                 groupMutableSourceData.libraryGrouping = selectedGroup
             }
         }
-        tableView.contentOffset = CGPoint.zero
+        tableView.contentOffset.y = -tableView.contentInset.top
         applyDataSourceAndDelegate()
         reloadAllData()
     }
