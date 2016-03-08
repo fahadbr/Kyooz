@@ -638,9 +638,14 @@
                             </label>
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LL1-x0-BD9">
                                 <rect key="frame" x="10" y="35" width="355" height="355"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="LL1-x0-BD9" secondAttribute="height" multiplier="1:1" priority="950" id="1aV-0u-dvX"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="SdO-Xp-ajQ" appends="YES" id="ohz-qA-ujx"/>
+                                    <outletCollection property="gestureRecognizers" destination="eLN-0M-9Be" appends="YES" id="2BZ-a3-dY1"/>
+                                </connections>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7CN-wi-b5a" userLabel="CurrentPlaybackTimeLabel">
                                 <rect key="frame" x="18" y="405" width="29" height="12"/>
@@ -710,6 +715,7 @@
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="0l1-lv-Omv"/>
                                     <constraint firstAttribute="trailing" secondItem="n4K-jw-XaA" secondAttribute="trailing" id="6Fq-dc-pRA"/>
@@ -730,6 +736,10 @@
                                         <exclude reference="CXk-sL-aa0"/>
                                     </mask>
                                 </variation>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Dz1-Dy-rkB" appends="YES" id="eSx-Sc-smn"/>
+                                    <outletCollection property="gestureRecognizers" destination="ssd-13-beT" appends="YES" id="35i-vL-7R2"/>
+                                </connections>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="a9l-ER-3zv">
                                 <rect key="frame" x="12" y="420" width="351" height="22"/>
@@ -903,6 +913,26 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNa-UC-m6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="left" id="SdO-Xp-ajQ" userLabel="imageSkipForward">
+                    <connections>
+                        <action selector="skipForward:" destination="igl-8i-tSd" id="X33-kk-6tA"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="eLN-0M-9Be" userLabel="imageSkipBackward">
+                    <connections>
+                        <action selector="skipBackward:" destination="igl-8i-tSd" id="zPX-lZ-m1i"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="Dz1-Dy-rkB" userLabel="barSkipFoward">
+                    <connections>
+                        <action selector="skipForward:" destination="igl-8i-tSd" id="LHx-7D-JbO"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="ssd-13-beT" userLabel="barSkipBackward">
+                    <connections>
+                        <action selector="skipBackward:" destination="igl-8i-tSd" id="s5R-Qi-XSs"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3525.5" y="-342.5"/>
         </scene>
