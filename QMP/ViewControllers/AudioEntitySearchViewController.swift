@@ -1,12 +1,11 @@
 //
-//  MediaLibrarySearchResultsUpdater.swift
+//  AudioEntitySearchViewController.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 11/8/15.
 //  Copyright © 2015 FAHAD RIAZ. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import MediaPlayer
 
@@ -74,7 +73,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
 		sectionDelegator.delegate = self
         sourceData = sectionDelegator
 		datasourceDelegate = sectionDelegator
-	
+
         popGestureRecognizer.enabled = false
     }
 	
