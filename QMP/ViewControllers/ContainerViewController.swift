@@ -22,7 +22,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     var tapGestureRecognizer:UITapGestureRecognizer!
     var panGestureRecognizer:UIPanGestureRecognizer!
-    var screenEdgePanGestureRecognizer:UIScreenEdgePanGestureRecognizer!
+//    var rightPanelExpandingGestureRecognizer:UIScreenEdgePanGestureRecognizer!
+    var rightPanelExpandingGestureRecognizer:UIPanGestureRecognizer!
     
     var rootViewController:RootViewController! {
         didSet {
@@ -85,10 +86,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         collapsedConstraint.active = true
         expandedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.leftAnchor, constant: centerPanelExpandedOffset)
         
-        screenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
-        screenEdgePanGestureRecognizer.edges = UIRectEdge.Right
-        screenEdgePanGestureRecognizer.delegate = self
-        rootViewController.view.addGestureRecognizer(screenEdgePanGestureRecognizer)
+        rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
+//        rightPanelExpandingGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
+//        rightPanelExpandingGestureRecognizer.edges = UIRectEdge.Right
+        rightPanelExpandingGestureRecognizer.delegate = self
+        rootViewController.view.addGestureRecognizer(rightPanelExpandingGestureRecognizer)
 
         //keep a reference of this gesture recogizer to enable/disable it
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTouchGesture:")
@@ -371,23 +373,33 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === longPressGestureRecognizer {
             return (!rootViewController.pullableViewExpanded && !sidePanelExpanded)
+        } else if gestureRecognizer === rightPanelExpandingGestureRecognizer {
+            let translation = rightPanelExpandingGestureRecognizer.translationInView(rightPanelExpandingGestureRecognizer.view)
+            return abs(translation.x) > abs(translation.y)
         }
         return true
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return gestureRecognizer === rightPanelExpandingGestureRecognizer && !(otherGestureRecognizer is UIScreenEdgePanGestureRecognizer || otherGestureRecognizer is UISwipeGestureRecognizer)
         return false
     }
     
+    
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return false
+//        Logger.debug("asking if \(gestureRecognizer.dynamicType) shouldRequireFailureOf \(otherGestureRecognizer.dynamicType)")
+        if otherGestureRecognizer === rightPanelExpandingGestureRecognizer {
+            return gestureRecognizer is UIPanGestureRecognizer
+        }
+        return otherGestureRecognizer is UIScreenEdgePanGestureRecognizer || otherGestureRecognizer is UISwipeGestureRecognizer
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer === screenEdgePanGestureRecognizer {
-            return true
+//        Logger.debug("asking if \(gestureRecognizer.dynamicType) shouldBeRequiredToFailBy \(otherGestureRecognizer.dynamicType)")
+        if gestureRecognizer === rightPanelExpandingGestureRecognizer {
+            return otherGestureRecognizer is UIPanGestureRecognizer
         }
-        return false
+        return gestureRecognizer is UIScreenEdgePanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer
     }
    
 }
