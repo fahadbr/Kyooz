@@ -37,7 +37,10 @@ class NowPlayingSummaryViewController: UIViewController {
     
     private var playbackProgressTimer:NSTimer?
     private var albumIdForCurrentAlbumArt:UInt64?
-    
+	
+	private var forwardSwipeGestureRecognizer:UISwipeGestureRecognizer!
+	private var backwardSwipeGestureRecognizer:UISwipeGestureRecognizer!
+	
     typealias KVOContext = UInt8
     private var observationContext = KVOContext()
     
@@ -46,6 +49,7 @@ class NowPlayingSummaryViewController: UIViewController {
             albumArtwork?.hidden = !expanded
         }
     }
+	
     
     //MARK: - FUNCTIONS
     deinit {
@@ -140,6 +144,15 @@ class NowPlayingSummaryViewController: UIViewController {
         updateAlphaLevels()
         self.view.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
         self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
+		
+		forwardSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "skipForward:")
+		forwardSwipeGestureRecognizer.direction = .Left
+		backwardSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "skipBackward:")
+		backwardSwipeGestureRecognizer.direction = .Right
+		albumArtwork.addGestureRecognizer(forwardSwipeGestureRecognizer)
+		albumArtwork.addGestureRecognizer(backwardSwipeGestureRecognizer)
+		nowPlayingCollapsedBar.addGestureRecognizer(forwardSwipeGestureRecognizer)
+		nowPlayingCollapsedBar.addGestureRecognizer(backwardSwipeGestureRecognizer)
     }
 
     override func didReceiveMemoryWarning() {

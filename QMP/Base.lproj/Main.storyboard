@@ -188,7 +188,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Cfq-Vj-A5E">
-                                <rect key="frame" x="16" y="62" width="343" height="40"/>
+                                <rect key="frame" x="16" y="70" width="343" height="40"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RU2-pE-ATd" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
@@ -231,7 +231,7 @@
                         <constraints>
                             <constraint firstItem="Cfq-Vj-A5E" firstAttribute="top" secondItem="669-zb-BRj" secondAttribute="bottom" id="7m1-CM-nJh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Cfq-Vj-A5E" secondAttribute="trailing" id="UAX-OT-ms1"/>
-                            <constraint firstItem="piV-CY-dPN" firstAttribute="top" secondItem="Cfq-Vj-A5E" secondAttribute="bottom" constant="8" id="Xz1-4v-Cjk"/>
+                            <constraint firstItem="piV-CY-dPN" firstAttribute="top" secondItem="Cfq-Vj-A5E" secondAttribute="bottom" id="Xz1-4v-Cjk"/>
                             <constraint firstItem="Cfq-Vj-A5E" firstAttribute="leading" secondItem="Ugr-V6-ssK" secondAttribute="leadingMargin" id="ZUR-uP-DQJ"/>
                         </constraints>
                         <variation key="default">
@@ -283,7 +283,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2YK-d3-ldy" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="16" y="327" width="40" height="40"/>
+                                <rect key="frame" x="16" y="335" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="J0q-pF-F1k"/>
                                     <constraint firstAttribute="width" secondItem="2YK-d3-ldy" secondAttribute="height" multiplier="1:1" id="SaT-K8-wDU"/>
@@ -308,7 +308,7 @@
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IfZ-g4-jGC" userLabel="selectModeButton" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="319" y="327" width="40" height="40"/>
+                                <rect key="frame" x="319" y="335" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="IfZ-g4-jGC" secondAttribute="height" multiplier="1:1" id="1a4-o2-JyT"/>
                                     <constraint firstAttribute="height" constant="40" id="Bre-E8-ZMO"/>
@@ -381,8 +381,8 @@
                             <constraint firstItem="hfl-26-ghB" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="top" id="OGs-PQ-A88"/>
                             <constraint firstAttribute="bottom" secondItem="hfl-26-ghB" secondAttribute="bottom" id="W7t-Gh-qMd"/>
                             <constraint firstItem="ZdG-Cu-6A0" firstAttribute="leading" secondItem="2YK-d3-ldy" secondAttribute="trailing" id="Zx0-UE-w4u"/>
-                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="IfZ-g4-jGC" secondAttribute="bottom" constant="8" id="aPo-VW-blu"/>
-                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="2YK-d3-ldy" secondAttribute="bottom" constant="8" id="dbG-Aq-u4Q"/>
+                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="IfZ-g4-jGC" secondAttribute="bottom" id="aPo-VW-blu"/>
+                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="2YK-d3-ldy" secondAttribute="bottom" id="dbG-Aq-u4Q"/>
                             <constraint firstItem="aCS-5h-tk7" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="topMargin" constant="25" id="ek1-dw-oHc"/>
                             <constraint firstItem="hfl-26-ghB" firstAttribute="leading" secondItem="qZv-9b-Tgx" secondAttribute="leading" id="hUt-2F-Ejc"/>
                             <constraint firstAttribute="trailing" secondItem="aCS-5h-tk7" secondAttribute="trailing" constant="50" id="mxh-ec-Nmg"/>
