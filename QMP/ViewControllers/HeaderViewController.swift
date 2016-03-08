@@ -14,7 +14,7 @@ private let deselectAllString = "Deselect All"
 
 class HeaderViewController : UIViewController {
 	
-	private static let fixedHeight:CGFloat = 110
+	private static let fixedHeight:CGFloat = 100
 	
     var defaultHeight:CGFloat { return HeaderViewController.fixedHeight }
     var minimumHeight:CGFloat { return HeaderViewController.fixedHeight }
