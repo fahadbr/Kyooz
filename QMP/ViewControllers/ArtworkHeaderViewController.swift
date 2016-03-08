@@ -55,7 +55,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     private var removedFromViewHierarchy = true
     private var blurAnimationRemoved = true
     
-    private let gradiant:CAGradientLayer = {
+    private let gradiantLayer:CAGradientLayer = {
         let gradiant = CAGradientLayer()
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
@@ -129,8 +129,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
             return
         }
         
-        gradiant.frame = view.bounds
-        view.layer.insertSublayer(gradiant, above: imageViewContainer.layer)
+        gradiantLayer.frame = view.bounds
+        view.layer.insertSublayer(gradiantLayer, above: imageViewContainer.layer)
         
         headerTitleLabel.text = track.albumTitle?.uppercaseString
         
@@ -195,16 +195,16 @@ final class ArtworkHeaderViewController : HeaderViewController {
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
             imageView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
-            gradiant.frame = view.bounds
+            gradiantLayer.frame = view.bounds
             
             if expandedFraction < 0.25 {
                 let scaledFraction = Float(expandedFraction) * 4
                 view.layer.shadowOpacity =  1 - scaledFraction
-                gradiant.opacity = scaledFraction
+                gradiantLayer.opacity = scaledFraction
                 
             } else {
                 view.layer.shadowOpacity = 0
-                gradiant.opacity = 1
+                gradiantLayer.opacity = 1
             }
             CATransaction.commit()
             

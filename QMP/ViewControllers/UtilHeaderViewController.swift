@@ -20,7 +20,13 @@ final class UtilHeaderViewController: HeaderViewController {
             }
         }
     }
-    
+    private let gradiantLayer:CAGradientLayer = {
+        let gradiant = CAGradientLayer()
+        gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
+        gradiant.endPoint = CGPoint(x: 0.5, y: 0)
+        gradiant.colors = [ThemeHelper.darkAccentColor.CGColor, ThemeHelper.defaultTableCellColor.CGColor]
+        return gradiant
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +34,16 @@ final class UtilHeaderViewController: HeaderViewController {
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
 		
-		view.backgroundColor = ThemeHelper.darkAccentColor
+//		view.backgroundColor = ThemeHelper.darkAccentColor
+        view.layer.insertSublayer(gradiantLayer, atIndex: 0)
 		
 		libraryGroupingButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         libraryGroupingButton.hidden = subGroups == nil
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradiantLayer.frame = view.bounds
     }
 	
     override func didMoveToParentViewController(parent: UIViewController?) {
