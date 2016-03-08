@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class NowPlayingSummaryViewController: UIViewController {
+class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDelegate {
     //MARK: - PROPERTIES
     @IBOutlet var albumArtwork: UIImageView!
     @IBOutlet var albumArtistAndAlbumTitleLabel: UILabel!
@@ -147,10 +147,13 @@ class NowPlayingSummaryViewController: UIViewController {
 		
 		forwardSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "skipForward:")
 		forwardSwipeGestureRecognizer.direction = .Left
+        forwardSwipeGestureRecognizer.delegate = self
 		backwardSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "skipBackward:")
 		backwardSwipeGestureRecognizer.direction = .Right
-		albumArtwork.addGestureRecognizer(forwardSwipeGestureRecognizer)
-		albumArtwork.addGestureRecognizer(backwardSwipeGestureRecognizer)
+        backwardSwipeGestureRecognizer.delegate = self
+//        albumArtwork.userInteractionEnabled = true
+//		albumArtwork.addGestureRecognizer(forwardSwipeGestureRecognizer)
+//		albumArtwork.addGestureRecognizer(backwardSwipeGestureRecognizer)
 		nowPlayingCollapsedBar.addGestureRecognizer(forwardSwipeGestureRecognizer)
 		nowPlayingCollapsedBar.addGestureRecognizer(backwardSwipeGestureRecognizer)
     }
@@ -311,6 +314,18 @@ class NowPlayingSummaryViewController: UIViewController {
     
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return gestureRecognizer === backwardSwipeGestureRecognizer || gestureRecognizer === forwardSwipeGestureRecognizer
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return otherGestureRecognizer === backwardSwipeGestureRecognizer || otherGestureRecognizer === forwardSwipeGestureRecognizer
     }
 }
 
