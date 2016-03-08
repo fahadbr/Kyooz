@@ -28,7 +28,7 @@ final class UtilHeaderViewController: HeaderViewController {
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
 		
-        view.backgroundColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 0.60)
+        view.backgroundColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 0.85)
 		
 		libraryGroupingButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         libraryGroupingButton.hidden = subGroups == nil
