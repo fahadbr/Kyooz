@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class RootViewController: UIViewController, DragSource, UINavigationControllerDelegate {
+final class RootViewController: UIViewController, DragSource, UINavigationControllerDelegate, UIGestureRecognizerDelegate {
     
     static let instance:RootViewController = RootViewController()
     
@@ -42,7 +42,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     var nowPlayingTapGestureRecognizer:UITapGestureRecognizer!
     var nowPlayingPanGestureRecognizer:UIPanGestureRecognizer!
-    var gestureDelegate:UIGestureRecognizerDelegate?
     private var collapsedConstraint:NSLayoutConstraint!
     private var expandedConstraint:NSLayoutConstraint!
     
@@ -107,11 +106,11 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         nowPlayingView.heightAnchor.constraintEqualToAnchor(view.heightAnchor).active = true
 
         nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
-        nowPlayingPanGestureRecognizer.delegate = gestureDelegate
+        nowPlayingPanGestureRecognizer.delegate = self
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingPanGestureRecognizer)
         
         nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
-        nowPlayingTapGestureRecognizer.delegate = gestureDelegate
+        nowPlayingTapGestureRecognizer.delegate = self
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
         
         searchController = UISearchController(searchResultsController: searchResultsController)
@@ -311,6 +310,18 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     func applicationDidEnterBackground(notification:NSNotification) {
         previousSearchText = nil
     }
+	
+	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return  gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer === nowPlayingPanGestureRecognizer
+	}
+	
+	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return false
+	}
+	
+	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return gestureRecognizer === nowPlayingPanGestureRecognizer && otherGestureRecognizer is UISwipeGestureRecognizer
+	}
 
 
 }

@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDelegate {
+class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
     @IBOutlet var albumArtwork: UIImageView!
     @IBOutlet var albumArtistAndAlbumTitleLabel: UILabel!
@@ -37,9 +37,6 @@ class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDele
     
     private var playbackProgressTimer:NSTimer?
     private var albumIdForCurrentAlbumArt:UInt64?
-	
-	private var forwardSwipeGestureRecognizer:UISwipeGestureRecognizer!
-	private var backwardSwipeGestureRecognizer:UISwipeGestureRecognizer!
 	
     typealias KVOContext = UInt8
     private var observationContext = KVOContext()
@@ -144,18 +141,6 @@ class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDele
         updateAlphaLevels()
         self.view.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
         self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
-		
-		forwardSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "skipForward:")
-		forwardSwipeGestureRecognizer.direction = .Left
-        forwardSwipeGestureRecognizer.delegate = self
-		backwardSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "skipBackward:")
-		backwardSwipeGestureRecognizer.direction = .Right
-        backwardSwipeGestureRecognizer.delegate = self
-//        albumArtwork.userInteractionEnabled = true
-//		albumArtwork.addGestureRecognizer(forwardSwipeGestureRecognizer)
-//		albumArtwork.addGestureRecognizer(backwardSwipeGestureRecognizer)
-		nowPlayingCollapsedBar.addGestureRecognizer(forwardSwipeGestureRecognizer)
-		nowPlayingCollapsedBar.addGestureRecognizer(backwardSwipeGestureRecognizer)
     }
 
     override func didReceiveMemoryWarning() {
@@ -171,13 +156,14 @@ class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDele
         if(UIApplication.sharedApplication().applicationState != UIApplicationState.Active) { return }
         
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
-        self.songTitleLabel.text = nowPlayingItem?.trackTitle ?? "Nothing"
-        self.songTitleCollapsedLabel.text = self.songTitleLabel.text
-        
-        let albumArtist = nowPlayingItem?.albumArtist ?? "To"
-        let albumTitle = nowPlayingItem?.albumTitle ?? "Play"
-        self.albumArtistAndAlbumTitleLabel.text = (albumArtist + " - " + albumTitle)
-        self.albumArtistAndAlbumTitleCollapsedLabel.text = self.albumArtistAndAlbumTitleLabel.text
+		
+		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
+		updateLabel(false, label: songTitleLabel, withText: titleText, delay: 0)
+		updateLabel(true, label: songTitleCollapsedLabel, withText: titleText, delay: 0)
+		
+		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
+		updateLabel(false, label: albumArtistAndAlbumTitleLabel, withText: detailsText, delay: 0.2)
+		updateLabel(true, label: albumArtistAndAlbumTitleCollapsedLabel, withText: detailsText, delay: 0.2)
 
         let artwork = nowPlayingItem?.artwork
         let albumArtId:UInt64
@@ -190,9 +176,11 @@ class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDele
         if(albumIdForCurrentAlbumArt == nil || albumIdForCurrentAlbumArt! != albumArtId) {
             Logger.debug("loading new album art image")
             let albumArtImage = artwork?.imageWithSize(albumArtwork.frame.size) ?? ImageContainer.defaultAlbumArtworkImage
-            self.albumArtwork.image = albumArtImage
-            self.view.backgroundColor = UIColor(patternImage: albumArtImage)
-//            self.view.backgroundColor = UIColor.clearColor()
+			executeBlockInTransitionAnimation(false, view: albumArtwork, delay: 0) {
+				self.albumArtwork.image = albumArtImage
+			}
+
+			self.view.layer.contents = albumArtImage.CGImage
             self.albumIdForCurrentAlbumArt = albumArtId
         }
         
@@ -292,6 +280,25 @@ class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDele
         self.albumArtwork.alpha = alphaLevel
         self.nowPlayingCollapsedBar.alpha = (1.0 - alphaLevel)
     }
+	
+	private func updateLabel(forCollapsedBar:Bool, label:UILabel, withText newText:String, delay:Double) {
+		if label.text == nil || label.text! != newText {
+			executeBlockInTransitionAnimation(forCollapsedBar, view: label, delay: delay) {
+				label.text = newText
+			}
+		}
+	}
+	
+	private func executeBlockInTransitionAnimation(forCollapsedBar:Bool, view:UIView, delay:Double, block:()->()) {
+		if (forCollapsedBar && !expanded) || (!forCollapsedBar && expanded) {
+			let transition:UIViewAnimationOptions = view === albumArtwork ? .TransitionCrossDissolve : .TransitionFlipFromBottom
+			dispatch_after(KyoozUtils.getDispatchTimeForSeconds(delay), dispatch_get_main_queue()) {
+				UIView.transitionWithView(view, duration: 0.5, options: transition, animations: block, completion: nil)
+			}
+		} else {
+			block()
+		}
+	}
 
 
     private func registerForNotifications() {
@@ -315,17 +322,6 @@ class NowPlayingSummaryViewController: UIViewController, UIGestureRecognizerDele
     private func unregisterForNotifications() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return gestureRecognizer === backwardSwipeGestureRecognizer || gestureRecognizer === forwardSwipeGestureRecognizer
-    }
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return false
-    }
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return otherGestureRecognizer === backwardSwipeGestureRecognizer || otherGestureRecognizer === forwardSwipeGestureRecognizer
-    }
+
 }
 
