@@ -15,6 +15,10 @@ final class ArtworkHeaderViewController : HeaderViewController {
         return 375
     }
     
+    override var minimumHeight:CGFloat {
+        return 110
+    }
+    
     private var expandedFraction:CGFloat {
         return (view.frame.height - minimumHeight)/(defaultHeight - minimumHeight)
     }
