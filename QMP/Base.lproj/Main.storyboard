@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Audio Entity Header View Controller-->
+        <!--Audio Entity Library View Controller-->
         <scene sceneID="nJB-ER-uiL">
             <objects>
-                <viewController storyboardIdentifier="audioEntityHeaderViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wLc-JZ-LmB" customClass="AudioEntityHeaderViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="audioEntityLibraryViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wLc-JZ-LmB" customClass="AudioEntityLibraryViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="d5K-bf-cPd"/>
                         <viewControllerLayoutGuide type="bottom" id="s5s-Ke-MO5"/>

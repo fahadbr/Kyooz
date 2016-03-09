@@ -175,7 +175,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
         }
         
-        let vc = UIStoryboard.audioEntityHeaderViewController()
+        let vc = UIStoryboard.audioEntityLibraryViewController()
         vc.subGroups = parentGroup.subGroupsForNextLevel
         vc.sourceData = sourceData
         
@@ -381,13 +381,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        return gestureRecognizer === rightPanelExpandingGestureRecognizer && !(otherGestureRecognizer is UIScreenEdgePanGestureRecognizer || otherGestureRecognizer is UISwipeGestureRecognizer)
         return false
     }
     
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        Logger.debug("asking if \(gestureRecognizer.dynamicType) shouldRequireFailureOf \(otherGestureRecognizer.dynamicType)")
         if otherGestureRecognizer === rightPanelExpandingGestureRecognizer {
             return gestureRecognizer is UIPanGestureRecognizer
         }
@@ -395,7 +393,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        Logger.debug("asking if \(gestureRecognizer.dynamicType) shouldBeRequiredToFailBy \(otherGestureRecognizer.dynamicType)")
         if gestureRecognizer === rightPanelExpandingGestureRecognizer {
             return otherGestureRecognizer is UIPanGestureRecognizer
         }

@@ -65,10 +65,11 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryNavigationController = UIStoryboard.libraryNavigationController()
         libraryNavigationController.viewControllers.first?.title = "BROWSE"
         
+
+        
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
-//        collapsedBarLayoutGuide.topAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -55).active = true
-        collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(55).active = true
+        collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(self.dynamicType.nowPlayingViewCollapsedOffset).active = true
         collapsedBarLayoutGuide.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
         collapsedBarLayoutGuide.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         collapsedBarLayoutGuide.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
@@ -126,6 +127,17 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryNavigationController.definesPresentationContext = true
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
+        
+//        let tabBar = UITabBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 30))
+//        view.addSubview(tabBar)
+//        tabBar.center = view.center
+//        tabBar.barStyle = .Black
+//        tabBar.translucent = true
+//        tabBar.tintColor = ThemeHelper.defaultVividColor
+//        let list = ListButtonView()
+//        list.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
+//        list.scale = 0.6
+//        tabBar.items = [UITabBarItem(title: "Queue", image: (ImageHelper.customSnapshotFromView(list) as? UIImageView)?.image, tag: 0)]
 
     }
     
@@ -133,11 +145,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     override func viewDidAppear(animated: Bool) {
         //explicitly setting this here
         pullableViewExpanded = false
-    }
-    
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-        Logger.debug("calling update constraints")
     }
     
     //MARK: - Navigation controller delegate
