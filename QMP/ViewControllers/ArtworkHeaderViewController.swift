@@ -41,7 +41,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
 	private var blurViewController:BlurViewController!
     private var observingViewBounds = false
     private var kvoContext:UInt8 = 123
-    
+	
+	private let clearGradiantDefaultLocations:(start:CGFloat, end:CGFloat) = (0.25, 0.75)
     private let gradiantLayer:CAGradientLayer = {
         let gradiant = CAGradientLayer()
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
