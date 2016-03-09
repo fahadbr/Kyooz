@@ -48,6 +48,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
         gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
+		
         gradiant.locations = [0.0, 0.25, 0.75, 1.0]
         return gradiant
     }()
