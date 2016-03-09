@@ -186,7 +186,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         if(currentPlaybackTime > 2.0) {
             musicPlayer.skipToBeginning()
         } else if lowestIndexPersisted > 0 {
-            playNowInternal(nowPlayingQueue as! [MPMediaItem], index: indexOfNowPlayingItem - 1)
+            playNowInternal(nowPlayingQueue as! [MPMediaItem], index: indexOfNowPlayingItem - 1, shouldPlay: musicIsPlaying)
         } else {
             musicPlayer.skipToPreviousItem()
         }
@@ -327,17 +327,13 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             return
         }
         
-        let musicWasPlaying = musicIsPlaying
-        
         nowPlayingQueueContext.indexOfNowPlayingItem = 0
         lowestIndexPersisted = 0
         queueStateInconsistent = false
         musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
         musicPlayer.nowPlayingItem = nowPlayingQueue[indexOfNowPlayingItem] as? MPMediaItem
         playbackStateManager.correctPlaybackState()
-        if musicWasPlaying  {
-            musicPlayer.play()
-        }
+
     }
     
     private func refreshIndexOfNowPlayingItem() {

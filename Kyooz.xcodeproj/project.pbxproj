@@ -645,6 +645,7 @@
 			isa = PBXGroup;
 			children = (
 				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
+				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
 				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
 				0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */,
@@ -652,7 +653,6 @@
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
 				10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */,
-				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 			);
 			name = "Util VCs";
 			sourceTree = "<group>";

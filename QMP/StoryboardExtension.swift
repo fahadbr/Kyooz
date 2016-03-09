@@ -37,8 +37,8 @@ extension UIStoryboard {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
     }
     
-	static func audioEntityHeaderViewController() -> AudioEntityHeaderViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("audioEntityHeaderViewController") as! AudioEntityHeaderViewController
+	static func audioEntityLibraryViewController() -> AudioEntityLibraryViewController {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("audioEntityLibraryViewController") as! AudioEntityLibraryViewController
     }
     
     static func warningViewController() -> WarningViewController {
