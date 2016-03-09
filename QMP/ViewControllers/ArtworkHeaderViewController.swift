@@ -37,23 +37,10 @@ final class ArtworkHeaderViewController : HeaderViewController {
     @IBOutlet var imageViewContainer: UIView!
     
     //MARK: - properties
-    
-    private var blurView:UIVisualEffectView!
-    private var finalBlurEffect:UIVisualEffect = UIBlurEffect(style: .Dark)
-    private var blurSnapshotView:UIView? {
-        willSet {
-            if let snapshot = newValue {
-                imageViewContainer?.addSubview(snapshot)
-            } else {
-                blurSnapshotView?.removeFromSuperview()
-            }
-        }
-    }
-    
+	
+	private var blurViewController:BlurViewController!
     private var observingViewBounds = false
     private var kvoContext:UInt8 = 123
-    private var removedFromViewHierarchy = true
-    private var blurAnimationRemoved = true
     
     private let gradiantLayer:CAGradientLayer = {
         let gradiant = CAGradientLayer()
@@ -75,26 +62,25 @@ final class ArtworkHeaderViewController : HeaderViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        blurView = UIVisualEffectView()
+        blurViewController = BlurViewController()
+		addChildViewController(blurViewController)
+		blurViewController.didMoveToParentViewController(self)
+		
+		let blurView = blurViewController.view
         imageViewContainer.insertSubview(blurView, aboveSubview: imageView)
         blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.topAnchor.constraintEqualToAnchor(imageView.topAnchor).active = true
         blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
         blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
         blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
-        blurView.layer.speed = 0 //setting the layer speed to 0 because we want to control the animation so that we can control the blur
-        
+		blurViewController.blurRadius = 0
+		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
         observingViewBounds = true //this is to ensure we dont remove the observer before adding one
 
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
-        
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "createSnapshotBlur", name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: "removeBlurAnimation", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: "resetBlurAnimation", name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: "removeSnapshotBlur", name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+
     }
     
     override func didMoveToParentViewController(parent: UIViewController?) {
@@ -102,25 +88,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         guard let vc = parent as? AudioEntityHeaderViewController else { return }
         configureViewWithCollection(vc.sourceData.entities)
     }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if removedFromViewHierarchy {
-            removedFromViewHierarchy = false
-            resetBlurAnimation()
-            removeSnapshotBlur()
-        }
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        createSnapshotBlur()
-        removeBlurAnimation()
-        removedFromViewHierarchy = true
-    }
-    
+	
     //MARK: - class functions
     
     func configureViewWithCollection(entities:[AudioEntity]) {
@@ -190,7 +158,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
             
             detailsLabel1.alpha = expandedFraction
             
-            blurView.layer.timeOffset = timeOffsetForBlur(expandedFraction)
+            blurViewController.blurRadius = timeOffsetForBlur(expandedFraction)
             
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
@@ -213,38 +181,6 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     private func timeOffsetForBlur(expandedFraction:CGFloat) -> Double {
         return expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
-    }
-    
-    func createSnapshotBlur() {
-        removeSnapshotBlur()
-        blurSnapshotView = imageViewContainer.snapshotViewAfterScreenUpdates(false)
-    }
-    
-    func removeBlurAnimation() {
-        blurView.layer.removeAllAnimations()
-        blurView.layer.timeOffset = 0
-        blurAnimationRemoved = true
-    }
-    
-    //the blur animation must be reset once it has been brought back on screen after being off screen
-    func resetBlurAnimation() {
-        //only reset if the view has not been removed from the view hierarchy and we know that the blur animation has already been removed
-        guard !removedFromViewHierarchy && blurAnimationRemoved else { return }
-        
-        blurView.effect = nil
-        UIView.animateWithDuration(1) { [blurView = self.blurView, finalBlurEffect = self.finalBlurEffect] in
-            blurView.effect = finalBlurEffect
-        }
-        blurAnimationRemoved = false
-        
-        KyoozUtils.doInMainQueueAsync() { [blurView = self.blurView, timeOffset = timeOffsetForBlur(expandedFraction)] in
-            blurView.layer.timeOffset = timeOffset
-        }
-        
-    }
-    
-    func removeSnapshotBlur() {
-        blurSnapshotView = nil
     }
     
 }
