@@ -135,6 +135,8 @@
 		10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */; };
 		10FD32571C8F948100004CAB /* AudioEntityLibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32561C8F948100004CAB /* AudioEntityLibraryViewController.swift */; };
 		10FD32591C8F986800004CAB /* BlurViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32581C8F986800004CAB /* BlurViewController.swift */; };
+		10FD325B1C90E43900004CAB /* KyoozMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */; };
+		10FD325D1C90E7B200004CAB /* ViewUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD325C1C90E7B200004CAB /* ViewUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -281,6 +283,8 @@
 		10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityHeaderViewController.swift; sourceTree = "<group>"; };
 		10FD32561C8F948100004CAB /* AudioEntityLibraryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityLibraryViewController.swift; sourceTree = "<group>"; };
 		10FD32581C8F986800004CAB /* BlurViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurViewController.swift; sourceTree = "<group>"; };
+		10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozMenuViewController.swift; sourceTree = "<group>"; };
+		10FD325C1C90E7B200004CAB /* ViewUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -538,6 +542,7 @@
 				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
 				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
 				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
+				10FD325C1C90E7B200004CAB /* ViewUtils.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -648,6 +653,7 @@
 				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
 				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
+				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
 				0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */,
 				104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */,
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
@@ -802,6 +808,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */,
+				10FD325B1C90E43900004CAB /* KyoozMenuViewController.swift in Sources */,
 				100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
@@ -846,6 +853,7 @@
 				0B5F134E1C714F56009A1FDD /* MediaQuerySourceData.swift in Sources */,
 				0B9016081C4B197D00B1ACD1 /* BackgroundFetchController.swift in Sources */,
 				0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */,
+				10FD325D1C90E7B200004CAB /* ViewUtils.swift in Sources */,
 				0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */,
 				104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
