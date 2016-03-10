@@ -83,11 +83,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	}
 	
 	
-	override func addCustomMenuActions(indexPath: NSIndexPath, alertController: UIAlertController) {
+	override func addCustomMenuActions(indexPath: NSIndexPath, menuController:KyoozMenuViewController) {
 		switch sourceData.libraryGrouping {
 		case LibraryGrouping.Playlists:
 			guard sourceData[indexPath] is KyoozPlaylist else { return }
-			alertController.addAction(UIAlertAction(title: "Delete", style: UIAlertActionStyle.Destructive, handler: {_ in
+            menuController.addAction(KyoozMenuAction(title: "Delete", image: nil, action: {_ in
 				self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
 			}))
 		default:

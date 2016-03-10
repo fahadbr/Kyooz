@@ -10,18 +10,21 @@ import UIKit
 
 struct ViewUtils {
 	
-	enum Anchor:Int { case Top, Bottom, Left, Right }
+	enum Anchor:Int { case Top, Bottom, Left, Right, CenterX, CenterY }
 	
 	static func applyStandardConstraintsToView(subView subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
-		
-		parentView.addSubview(subView)
-		subView.translatesAutoresizingMaskIntoConstraints = false
-		var constraintDict = [Anchor:NSLayoutConstraint]()
-		for anchor:Anchor in [.Top, .Bottom, .Left, .Right] {
-			constraintDict[anchor] = shouldActivate ? activeConstraintForAnchor(anchor, subView: subView, parentView: parentView) : constraintForAnchor(anchor, subView: subView, parentView: parentView)
-		}
-		return constraintDict
+		return applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
 	}
+    
+    static func applyConstraintsToView(withAnchors anchors:[Anchor], subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
+        parentView.addSubview(subView)
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        var constraintDict = [Anchor:NSLayoutConstraint]()
+        for anchor:Anchor in anchors{
+            constraintDict[anchor] = shouldActivate ? activeConstraintForAnchor(anchor, subView: subView, parentView: parentView) : constraintForAnchor(anchor, subView: subView, parentView: parentView)
+        }
+        return constraintDict
+    }
 	
 	static func activeConstraintForAnchor(anchor:Anchor, subView:UIView, parentView:UIView) -> NSLayoutConstraint {
 		let constraint = constraintForAnchor(anchor, subView: subView, parentView: parentView)
@@ -39,6 +42,10 @@ struct ViewUtils {
 			return subView.leftAnchor.constraintEqualToAnchor(parentView.leftAnchor)
 		case .Right:
 			return subView.rightAnchor.constraintEqualToAnchor(parentView.rightAnchor)
+        case .CenterX:
+            return subView.centerXAnchor.constraintEqualToAnchor(parentView.centerXAnchor)
+        case .CenterY:
+            return subView.centerYAnchor.constraintEqualToAnchor(parentView.centerYAnchor)
 		}
 		
 	}

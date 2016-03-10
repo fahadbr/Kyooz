@@ -63,25 +63,29 @@ class AudioEntityViewController : CustomPopableViewController, MediaItemTableVie
     }
     
     //MARK: - MediaLibraryTableViewCellDelegate
+    
     func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?) {
         let tracks = getMediaItemsForIndexPath(indexPath)
-        let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
+        let kmvc = KyoozMenuViewController()
+        kmvc.menuTitle = "\(title ?? "")\n\(details ?? "")"
         
         if tracks.count == 1 {
-            ac.addAction(UIAlertAction(title: "Play Only This", style: .Default) { (action) -> Void in
+            kmvc.addAction(KyoozMenuAction(title: "Play Only This", image: nil) {
                 self.audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: 0, shouldShuffleIfOff: false)
             })
         }
-        KyoozUtils.addDefaultQueueingActions(tracks, alertController: ac)
+        KyoozUtils.addDefaultQueueingActions(tracks, menuController: kmvc)
         
         
-        addCustomMenuActions(indexPath, alertController: ac)
+        addCustomMenuActions(indexPath, menuController:kmvc)
         
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(ac, animated: true, completion: nil)
+        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+        KyoozUtils.showMenuViewController(kmvc)
+
     }
+
     
-    func addCustomMenuActions(indexPath:NSIndexPath, alertController:UIAlertController) {
+    func addCustomMenuActions(indexPath:NSIndexPath, menuController:KyoozMenuViewController) {
         //empty implementation
     }
     

@@ -25,6 +25,7 @@ class AbstractTableViewCell : UITableViewCell {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        setSelectedBackgroundView()
     }
     
     override func awakeFromNib() {
