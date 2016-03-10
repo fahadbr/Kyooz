@@ -172,14 +172,14 @@ class HeaderViewController : UIViewController {
     
     func showAddToOptions(sender:UIBarButtonItem!) {
         guard let items = getOrderedTracks() else { return }
-        
-        let ac = UIAlertController(title: "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items", message: nil, preferredStyle: .Alert)
-        KyoozUtils.addDefaultQueueingActions(items, alertController: ac) {
+        let kmvc = KyoozMenuViewController()
+        kmvc.menuTitle = "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items"
+        KyoozUtils.addDefaultQueueingActions(items, menuController: kmvc) {
             self.selectOrDeselectAll()
         }
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
         
-        ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
+        KyoozUtils.showMenuViewController(kmvc)
     }
     
     

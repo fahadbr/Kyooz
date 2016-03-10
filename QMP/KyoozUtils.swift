@@ -14,6 +14,15 @@ struct KyoozUtils {
 	
 	static let libraryDirectory:NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomainMask.UserDomainMask, true).first!
     
+    static let fadeInAnimation:CABasicAnimation = {
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.duration = 0.2
+        animation.fromValue = 0.0
+        animation.toValue = 1.0
+        animation.fillMode = kCAFillModeBackwards
+        return animation
+    }()
+    
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
     }
@@ -70,27 +79,41 @@ struct KyoozUtils {
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
     
-    static func addDefaultQueueingActions(tracks:[AudioTrack], alertController:UIAlertController, completionAction:(()->Void)? = nil) {
+    static func showMenuViewController(kmvc:KyoozMenuViewController) {
+        kmvc.modalTransitionStyle = .CrossDissolve
+        
+        let presentingVC = ContainerViewController.instance
+        kmvc.view.frame = presentingVC.view.frame
+        
+        presentingVC.addChildViewController(kmvc)
+        kmvc.didMoveToParentViewController(presentingVC)
+        presentingVC.view.addSubview(kmvc.view)
+        kmvc.view.layer.addAnimation(fadeInAnimation, forKey: nil)
+        presentingVC.longPressGestureRecognizer?.enabled = false
+
+    }
+    
+    static func addDefaultQueueingActions(tracks:[AudioTrack], menuController:KyoozMenuViewController, completionAction:(()->Void)? = nil) {
         let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-        let queueLastAction = UIAlertAction(title: "Queue Last", style: .Default) { (action) -> Void in
+        let queueLastAction = KyoozMenuAction(title: "Queue Last", image: nil) {
             audioQueuePlayer.enqueue(items: tracks, atPosition: .Last)
             completionAction?()
         }
-        let queueNextAction = UIAlertAction(title: "Queue Next", style: .Default) { (action) -> Void in
+        let queueNextAction = KyoozMenuAction(title: "Queue Next", image: nil) {
             audioQueuePlayer.enqueue(items: tracks, atPosition: .Next)
             completionAction?()
         }
-        let queueRandomlyAction = UIAlertAction(title: "Queue Randomly", style: .Default) { (action) -> Void in
+        let queueRandomlyAction = KyoozMenuAction(title: "Queue Randomly", image: nil) {
             audioQueuePlayer.enqueue(items: tracks, atPosition: .Random)
             completionAction?()
         }
         
-        alertController.addAction(queueNextAction)
-        alertController.addAction(queueLastAction)
-        alertController.addAction(queueRandomlyAction)
-        alertController.addAction(UIAlertAction(title: "Add to Playlist..", style: .Default, handler:{ _ -> Void in
+        menuController.addAction(queueNextAction)
+        menuController.addAction(queueLastAction)
+        menuController.addAction(queueRandomlyAction)
+        menuController.addAction(KyoozMenuAction(title: "Add to Playlist..", image: nil) {
             KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
-        }))
+        })
     }
     
     static func showAvailablePlaylistsForAddingTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
