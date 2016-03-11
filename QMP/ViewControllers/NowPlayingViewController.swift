@@ -131,10 +131,11 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     }
     
 	private func showConfirmDeleteAlertController(title:String, details:String? = nil, deleteBlock:()->Void) {
-        let ac = UIAlertController(title: title, message: details, preferredStyle: .Alert)
-        ac.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: {_ in deleteBlock() }))
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(ac, animated: true, completion: nil)
+        let kmvc = KyoozMenuViewController()
+		kmvc.menuTitle = "\(title)\n\(details ?? "")"
+        kmvc.addAction(KyoozMenuAction(title: "Yes", image: nil, action: {_ in deleteBlock() }))
+        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action:  nil))
+        presentViewController(kmvc, animated: true, completion: nil)
 
     }
     
@@ -219,32 +220,33 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         let index = indexPath.row
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
 
-        let controller = UIAlertController(title: title, message: details, preferredStyle: UIAlertControllerStyle.Alert)
+        let menuVC = KyoozMenuViewController()
+		menuVC.menuTitle = "\(title)\n\(details ?? "")"
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
-        controller.addAction(cancelAction)
+		let cancelAction = KyoozMenuAction(title: "Cancel", image: nil, action: nil)
+        menuVC.addAction(cancelAction)
         
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
         
         
         if mediaItem.albumId != 0 {
-            let goToAlbumAction = UIAlertAction(title: "Jump To Album", style: .Default) { action in
+			let goToAlbumAction = KyoozMenuAction(title: "Jump To Album", image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!,
                     parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
-            controller.addAction(goToAlbumAction)
+            menuVC.addAction(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = UIAlertAction(title: "Jump To Artist", style: .Default) { action in
+            let goToArtistAction = KyoozMenuAction(title: "Jump To Artist", image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
-            controller.addAction(goToArtistAction)
+            menuVC.addAction(goToArtistAction)
         }
         
         if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
-            let clearPrecedingItemsAction = UIAlertAction(title: "Remove Above", style: .Destructive) { action in
+            let clearPrecedingItemsAction = KyoozMenuAction(title: "Remove Above", image: nil) {
                 var indiciesToDelete = [NSIndexPath]()
                 indiciesToDelete.reserveCapacity(index)
                 for i in 0..<index {
@@ -255,17 +257,17 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
                     self.deleteIndexPaths(indiciesToDelete)
                 }
             }
-            controller.addAction(clearPrecedingItemsAction)
+            menuVC.addAction(clearPrecedingItemsAction)
         }
         
-        let deleteAction = UIAlertAction(title: "Remove", style: .Destructive) { action in
+		let deleteAction = KyoozMenuAction(title: "Remove", image: nil) {
             self.datasourceDelegate.tableView?(self.tableView, commitEditingStyle: .Delete,
                 forRowAtIndexPath: indexPath)
         }
-        controller.addAction(deleteAction)
+        menuVC.addAction(deleteAction)
         
         if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
-            let clearUpcomingItemsAction = UIAlertAction(title: "Remove Below", style: .Destructive) { action in
+			let clearUpcomingItemsAction = KyoozMenuAction(title: "Remove Below", image:nil) { 
                 var indiciesToDelete = [NSIndexPath]()
                 for i in (index + 1)...lastIndex {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
@@ -275,10 +277,10 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
                     self.deleteIndexPaths(indiciesToDelete)
                 }
             }
-            controller.addAction(clearUpcomingItemsAction)
+            menuVC.addAction(clearUpcomingItemsAction)
         }
         
-        presentViewController(controller, animated: true, completion: nil)
+        presentViewController(menuVC, animated: true, completion: nil)
     }
 
 }

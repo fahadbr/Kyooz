@@ -37,7 +37,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     //MARK: - View life cycle
     override func viewDidLoad() {
         tableView = UITableView()
-		ViewUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
+		ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
         
         super.viewDidLoad()
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)

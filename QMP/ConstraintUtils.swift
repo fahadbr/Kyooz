@@ -1,5 +1,5 @@
 //
-//  ViewUtils.swift
+//  ConstraintUtils.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 3/9/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct ViewUtils {
+struct ConstraintUtils {
 	
 	enum Anchor:Int { case Top, Bottom, Left, Right, CenterX, CenterY }
 	
