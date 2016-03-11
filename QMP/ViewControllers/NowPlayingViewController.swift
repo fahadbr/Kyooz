@@ -132,10 +132,11 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     
 	private func showConfirmDeleteAlertController(title:String, details:String? = nil, deleteBlock:()->Void) {
         let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = "\(title)\n\(details ?? "")"
+		kmvc.menuTitle = title
+        kmvc.menuDetails = details
         kmvc.addAction(KyoozMenuAction(title: "Yes", image: nil, action: {_ in deleteBlock() }))
         kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action:  nil))
-        presentViewController(kmvc, animated: true, completion: nil)
+        KyoozUtils.showMenuViewController(kmvc)
 
     }
     

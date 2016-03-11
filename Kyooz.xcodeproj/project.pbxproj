@@ -40,6 +40,7 @@
 		0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */; };
 		0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */; };
 		0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937561C87E96200374A3C /* HeaderViewController.swift */; };
+		0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937581C92690B00374A3C /* FadeOutViewController.swift */; };
 		0B31FE091BF04B7100B33F0A /* AudioEntitySearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */; };
 		0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
 		0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C711B21FA5400626810 /* AudioTrack.swift */; };
@@ -185,6 +186,7 @@
 		0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItemUtils.swift; sourceTree = "<group>"; };
 		0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LastFmScrobbler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B2937561C87E96200374A3C /* HeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
+		0B2937581C92690B00374A3C /* FadeOutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeOutViewController.swift; sourceTree = "<group>"; };
 		0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySearchViewController.swift; sourceTree = "<group>"; };
 		0B476C6E1B1BFE5700626810 /* CancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelView.swift; sourceTree = "<group>"; };
 		0B476C711B21FA5400626810 /* AudioTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioTrack.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -652,6 +654,7 @@
 				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
 				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
+				0B2937581C92690B00374A3C /* FadeOutViewController.swift */,
 				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
 				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
 				0B5123A11AFE969E00D941DC /* MediaItemTableViewControllerProtocol.swift */,
@@ -910,6 +913,7 @@
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
 				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
+				0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */,
 				0B7FAC1F1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift in Sources */,
 				0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioEntity.swift in Sources */,
