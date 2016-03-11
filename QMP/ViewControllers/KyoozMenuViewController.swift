@@ -8,26 +8,25 @@
 
 import UIKit
 
-final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
     private static let cellHeight:CGFloat = 44
 	
-	private let maxWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.80
+	private let maxWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.70
 	private let minWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.55
 	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.9
     
 	private let tableView = UITableView()
     private var menuActions:[KyoozMenuAction] = [KyoozMenuAction]()
     
-
-	
+    
 	private var estimatedLabelContainerSize:CGSize {
-		let titleSize = titleLabel?.bounds.size ?? CGSize.zero
-		let detailsSize = detailsLabel?.bounds.size ?? CGSize.zero
+		let titleSize = titleLabel?.frame.size ?? CGSize.zero
+		let detailsSize = detailsLabel?.frame.size ?? CGSize.zero
 		
 		let assumedLabelHeight = titleSize.height + detailsSize.height
 		let assumedLabelWidth = max(titleSize.width, detailsSize.width)
-		return CGSize(width: assumedLabelWidth, height: assumedLabelHeight)
+		return CGSize(width: max(min(maxWidth, assumedLabelWidth), minWidth), height: assumedLabelHeight)
 	}
 	
 	private var labelContainerView:UIView!
@@ -48,13 +47,15 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fadeOutAnimation.duration = 0.2
         initializeLabelContainerView()
 		
-		let labelContainerSize = labelContainerView?.bounds.size ?? CGSize.zero
+		let labelContainerSize = labelContainerView?.frame.size ?? CGSize.zero
 		let height = self.dynamicType.cellHeight * CGFloat(menuActions.count) + labelContainerSize.height
-		let width = max(min(maxWidth, labelContainerSize.width), minWidth)
+		let width = labelContainerSize.width
 		let estimatedSize = CGSize(width: width, height: height)
-		
+
+        
 		if estimatedSize.height < maxHeight {
             tableView.scrollEnabled = false
         }
@@ -70,6 +71,7 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 		tableView.layer.cornerRadius = 15
 		tableView.registerClass(KyoozMenuCell.self, forCellReuseIdentifier: KyoozMenuCell.reuseIdentifier)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 11)
+        tableView.tableHeaderView = labelContainerView
         
         tableContainerView.layer.shadowOpacity = 0.8
         tableContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -100,14 +102,16 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 		let stackView = UIStackView(arrangedSubviews: [titleLabel, detailsLabel])
 		stackView.axis = UILayoutConstraintAxis.Vertical
 		let labelSize = estimatedLabelContainerSize
-		
+        stackView.frame.size = labelSize
+
 		let offset:CGFloat = 16
 		let containerSize = CGSize(width: labelSize.width + offset, height: labelSize.height + offset)
-		labelContainerView = UIView(frame: CGRect(origin: CGPoint.zero, size: containerSize))
-		let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .CenterY, .Height, .Width], subView: stackView, parentView: labelContainerView)
-		constraints[.Height]?.constant = -offset
-		constraints[.Width]?.constant = -offset
-		tableView.tableHeaderView = labelContainerView
+		labelContainerView = UIView()
+        labelContainerView.frame.size = containerSize
+
+        stackView.center = labelContainerView.center
+        labelContainerView.addSubview(stackView)
+
 	}
 	
 	private func configureLabelSizes() {
@@ -115,7 +119,7 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 			guard label != nil else { return }
 			
 			let rect = label.textRectForBounds(CGRect(x: 0, y: 0, width: maxWidth, height: UIScreen.mainScreen().bounds.height), limitedToNumberOfLines: 0)
-			label.bounds.size = CGSize(width: max(min(rect.size.width + 16, maxWidth), minWidth), height: rect.size.height)
+			label.frame.size = CGSize(width: max(min(rect.size.width, maxWidth), minWidth), height: rect.size.height)
 		}
 		configureBoundsForLabel(titleLabel)
 		configureBoundsForLabel(detailsLabel)
@@ -143,13 +147,9 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 	
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         menuActions[indexPath.row].action?()
-        guard let superView = view.superview else { return }
-        UIView.transitionWithView(superView, duration: 0.3, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
-                self.view.removeFromSuperview()
-                self.removeFromParentViewController()
-            }, completion: {_ in
-                ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
-        })
+        transitionOut()
+
+        ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
 
     }
     
