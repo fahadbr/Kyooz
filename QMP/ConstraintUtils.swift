@@ -10,7 +10,7 @@ import UIKit
 
 struct ConstraintUtils {
 	
-	enum Anchor:Int { case Top, Bottom, Left, Right, CenterX, CenterY }
+	enum Anchor:Int { case Top, Bottom, Left, Right, CenterX, CenterY, Width, Height }
 	
 	static func applyStandardConstraintsToView(subView subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
 		return applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
@@ -46,6 +46,10 @@ struct ConstraintUtils {
             return subView.centerXAnchor.constraintEqualToAnchor(parentView.centerXAnchor)
         case .CenterY:
             return subView.centerYAnchor.constraintEqualToAnchor(parentView.centerYAnchor)
+		case .Height:
+			return subView.heightAnchor.constraintEqualToAnchor(parentView.heightAnchor)
+		case .Width:
+			return subView.widthAnchor.constraintEqualToAnchor(parentView.widthAnchor)
 		}
 		
 	}

@@ -67,7 +67,8 @@ class AudioEntityViewController : CustomPopableViewController, MediaItemTableVie
     func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?) {
         let tracks = getMediaItemsForIndexPath(indexPath)
         let kmvc = KyoozMenuViewController()
-        kmvc.menuTitle = "\(title ?? "")\n\(details ?? "")"
+        kmvc.menuTitle = title
+		kmvc.menuDetails = details
         
         if tracks.count == 1 {
             kmvc.addAction(KyoozMenuAction(title: "Play Only This", image: nil) {

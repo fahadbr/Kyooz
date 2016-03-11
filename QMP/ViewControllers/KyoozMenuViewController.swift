@@ -12,30 +12,25 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 
     private static let cellHeight:CGFloat = 44
 	
-	private var maxWidth:CGFloat {
-		return UIScreen.mainScreen().bounds.width * 0.80
-	}
-	
-	private var minWidth:CGFloat {
-		return UIScreen.mainScreen().bounds.width * 0.55
-	}
+	private let maxWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.80
+	private let minWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.55
+	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.9
     
 	private let tableView = UITableView()
     private var menuActions:[KyoozMenuAction] = [KyoozMenuAction]()
     
-	private var estimatedSize:CGSize {
+
+	
+	private var estimatedLabelContainerSize:CGSize {
 		let titleSize = titleLabel?.bounds.size ?? CGSize.zero
 		let detailsSize = detailsLabel?.bounds.size ?? CGSize.zero
 		
-		let assumedLabelContainerHeight = titleSize.height + detailsSize.height
-		let height = self.dynamicType.cellHeight * CGFloat(menuActions.count) + assumedLabelContainerHeight
-		
+		let assumedLabelHeight = titleSize.height + detailsSize.height
 		let assumedLabelWidth = max(titleSize.width, detailsSize.width)
-		let width = max(min(maxWidth, assumedLabelWidth), minWidth)
-		return CGSize(width: width, height: height)
+		return CGSize(width: assumedLabelWidth, height: assumedLabelHeight)
 	}
 	
-	private var labelContainerView:UIStackView!
+	private var labelContainerView:UIView!
 	private var titleLabel:UILabel!
 	private var detailsLabel:UILabel!
 	
@@ -55,9 +50,12 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
         super.viewDidLoad()
         initializeLabelContainerView()
 		
-		let estimatedSize = self.estimatedSize
+		let labelContainerSize = labelContainerView?.bounds.size ?? CGSize.zero
+		let height = self.dynamicType.cellHeight * CGFloat(menuActions.count) + labelContainerSize.height
+		let width = max(min(maxWidth, labelContainerSize.width), minWidth)
+		let estimatedSize = CGSize(width: width, height: height)
 		
-		if estimatedSize.height < UIScreen.mainScreen().bounds.height * 0.9 {
+		if estimatedSize.height < maxHeight {
             tableView.scrollEnabled = false
         }
 		
@@ -95,13 +93,20 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:ThemeHelper.defaultFont)
 		
 		detailsLabel = UILabel()
-		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:UIFont(name: ThemeHelper.defaultFontName, size: 10))
+		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:UIFont(name: ThemeHelper.defaultFontName, size: 12))
 		
 		configureLabelSizes()
 		
-		labelContainerView = UIStackView(arrangedSubviews: [titleLabel, detailsLabel])
-		labelContainerView.axis = UILayoutConstraintAxis.Vertical
-		labelContainerView.bounds.size = CGSize(width: , height: <#T##Double#>)
+		let stackView = UIStackView(arrangedSubviews: [titleLabel, detailsLabel])
+		stackView.axis = UILayoutConstraintAxis.Vertical
+		let labelSize = estimatedLabelContainerSize
+		
+		let offset:CGFloat = 16
+		let containerSize = CGSize(width: labelSize.width + offset, height: labelSize.height + offset)
+		labelContainerView = UIView(frame: CGRect(origin: CGPoint.zero, size: containerSize))
+		let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .CenterY, .Height, .Width], subView: stackView, parentView: labelContainerView)
+		constraints[.Height]?.constant = -offset
+		constraints[.Width]?.constant = -offset
 		tableView.tableHeaderView = labelContainerView
 	}
 	
@@ -109,8 +114,8 @@ final class KyoozMenuViewController: UIViewController, UITableViewDataSource, UI
 		func configureBoundsForLabel(label:UILabel!) {
 			guard label != nil else { return }
 			
-			label.bounds = label.textRectForBounds(CGRect(x: 0, y: 0, width: maxWidth, height: UIScreen.mainScreen().bounds.height), limitedToNumberOfLines: 0)
-			label.bounds.size.height *= 1.10
+			let rect = label.textRectForBounds(CGRect(x: 0, y: 0, width: maxWidth, height: UIScreen.mainScreen().bounds.height), limitedToNumberOfLines: 0)
+			label.bounds.size = CGSize(width: max(min(rect.size.width + 16, maxWidth), minWidth), height: rect.size.height)
 		}
 		configureBoundsForLabel(titleLabel)
 		configureBoundsForLabel(detailsLabel)

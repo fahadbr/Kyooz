@@ -221,10 +221,10 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
 
         let menuVC = KyoozMenuViewController()
-		menuVC.menuTitle = "\(title)\n\(details ?? "")"
+		menuVC.menuTitle = title
+		menuVC.menuDetails = details
         
-		let cancelAction = KyoozMenuAction(title: "Cancel", image: nil, action: nil)
-        menuVC.addAction(cancelAction)
+
         
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
@@ -279,8 +279,11 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
             }
             menuVC.addAction(clearUpcomingItemsAction)
         }
-        
-        presentViewController(menuVC, animated: true, completion: nil)
+		
+		let cancelAction = KyoozMenuAction(title: "Cancel", image: nil, action: nil)
+		menuVC.addAction(cancelAction)
+		
+		KyoozUtils.showMenuViewController(menuVC)
     }
 
 }
