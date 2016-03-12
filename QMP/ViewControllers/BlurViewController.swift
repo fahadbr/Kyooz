@@ -14,7 +14,7 @@ final class BlurViewController : UIViewController {
 		didSet {
 			let cappedRadius = min(max(blurRadius, 0), 1)
 			blurRadius = cappedRadius
-			visualEffectView.layer.timeOffset = cappedRadius
+			visualEffectView?.layer.timeOffset = cappedRadius
 		}
 	}
 	var blurEffect:UIBlurEffectStyle = .Dark {
@@ -33,19 +33,12 @@ final class BlurViewController : UIViewController {
 		}
 	}
 	
-	private let visualEffectView = UIVisualEffectView()
+	private var visualEffectView:UIVisualEffectView!
 	private var removedFromViewHierarchy = true
 	private var blurAnimationRemoved = true
 	
 	override func viewDidLoad() {
 		view.backgroundColor = UIColor.clearColor()
-		view.addSubview(visualEffectView)
-		visualEffectView.translatesAutoresizingMaskIntoConstraints = false
-		visualEffectView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-		visualEffectView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-		visualEffectView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-		visualEffectView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-		visualEffectView.layer.speed = 0 //setting the layer speed to 0 because we want to control the animation so that we can control the blur
 		
 		let notificationCenter = NSNotificationCenter.defaultCenter()
 		notificationCenter.addObserver(self, selector: "createSnapshotBlur", name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
@@ -78,17 +71,21 @@ final class BlurViewController : UIViewController {
 	}
 	
 	func removeBlurAnimation() {
-		visualEffectView.layer.removeAllAnimations()
-		visualEffectView.layer.timeOffset = 0
+		visualEffectView.removeFromSuperview()
+		visualEffectView = nil
 		blurAnimationRemoved = true
 	}
+	
 	
 	//the blur animation must be reset once it has been brought back on screen after being off screen
 	func resetBlurAnimation() {
 		//only reset if the view has not been removed from the view hierarchy and we know that the blur animation has already been removed
 		guard !removedFromViewHierarchy && blurAnimationRemoved else { return }
 		
-		visualEffectView.effect = nil
+		visualEffectView = UIVisualEffectView()
+		ConstraintUtils.applyStandardConstraintsToView(subView: visualEffectView, parentView: view)
+		visualEffectView.layer.speed = 0 //setting the layer speed to 0 because we want to control the animation so that we can control the blur
+
 		UIView.animateWithDuration(1) { [blurView = self.visualEffectView, finalBlurEffect = self.blurEffect] in
 			blurView.effect = UIBlurEffect(style: finalBlurEffect)
 		}
@@ -97,7 +94,6 @@ final class BlurViewController : UIViewController {
 		KyoozUtils.doInMainQueueAsync() { [blurView = self.visualEffectView, timeOffset = blurRadius] in
 			blurView.layer.timeOffset = timeOffset
 		}
-		
 	}
 	
 	func removeSnapshotBlur() {

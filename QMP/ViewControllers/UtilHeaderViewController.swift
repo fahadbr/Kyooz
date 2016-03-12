@@ -62,19 +62,19 @@ final class UtilHeaderViewController: HeaderViewController {
     @IBAction func showSubGroupings(sender: AnyObject) {
         guard let groups = subGroups else { return }
         
-        let ac = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+		let kmvc = KyoozMenuViewController()
+		kmvc.menuTitle = "Change Grouping Type"
         for group in groups {
-            ac.addAction(UIAlertAction(title: group.name, style: .Default, handler: { _ in
+			kmvc.addAction(KyoozMenuAction(title: group.name, image: nil, action: {
                 self.setActiveGroup(group)
                 (self.parentViewController as? AudioEntityLibraryViewController)?.groupingTypeDidChange(group)
             }))
         }
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(ac, animated: true, completion: nil)
+		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+		KyoozUtils.showMenuViewController(kmvc)
     }
     
     private func setActiveGroup(group:LibraryGrouping) {
         libraryGroupingButton.setTitle("  \(group.name) ⇣", forState: .Normal)
-//		libraryGroupingButton.setTitle(" \(group.name) ", forState: .Normal)
     }
 }
