@@ -62,6 +62,7 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 			headerCollapsed = false
 		} else if !headerCollapsed {
 			headerHeightConstraint.constant = minHeight
+			scrollView.scrollIndicatorInsets.top = minHeight
 			headerCollapsed = true
 		}
 	}
