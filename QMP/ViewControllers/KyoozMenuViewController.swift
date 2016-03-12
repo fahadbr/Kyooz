@@ -64,6 +64,8 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .CenterY], subView: tableContainerView, parentView: view)
         tableContainerView.heightAnchor.constraintEqualToConstant(estimatedSize.height).active = true
         tableContainerView.widthAnchor.constraintEqualToConstant(estimatedSize.width).active = true
+
+        
         ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: tableContainerView)
 		tableView.rowHeight = self.dynamicType.cellHeight
         tableView.delegate = self
@@ -178,6 +180,7 @@ private final class KyoozMenuCell : AbstractTableViewCell {
 	}
 	
 	func initialize() {
+        backgroundColor = UIColor.clearColor()
 		textLabel?.font = ThemeHelper.defaultFont
         textLabel?.textColor = ThemeHelper.defaultFontColor
         textLabel?.textAlignment = NSTextAlignment.Center
