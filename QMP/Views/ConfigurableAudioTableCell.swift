@@ -21,5 +21,5 @@ protocol ConfigurableAudioTableCell : class {
 }
 
 protocol ConfigurableAudioTableCellDelegate : class {
-    func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?)
+	func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?, originatingCenter:CGPoint)
 }

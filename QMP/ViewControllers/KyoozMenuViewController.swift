@@ -33,6 +33,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 	private var titleLabel:UILabel!
 	private var detailsLabel:UILabel!
 	
+	var originatingCenter:CGPoint?
 	var menuTitle:String? {
         didSet {
 			configureLabelSizes()
@@ -81,6 +82,19 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         tableContainerView.layer.shadowColor = ThemeHelper.defaultVividColor.CGColor
         
         view.backgroundColor = UIColor(white: 0, alpha: 0.40)
+		if let center = originatingCenter {
+			let transformAnimation = CABasicAnimation(keyPath: "transform")
+			transformAnimation.duration = 0.15
+			transformAnimation.fillMode = kCAFillModeBackwards
+			let t = CATransform3DMakeScale(0.1, 0.1, 0)
+
+//			let t2 = CATransform3DMakeTranslation(center.x - tableContainerView.bounds.origin.x, center.y - view.bounds.origin.y, 0)
+//			let c = NSValue(CATransform3D: CATransform3DConcat(t, t2))
+			let c = NSValue(CATransform3D: t)
+			transformAnimation.fromValue = c
+			transformAnimation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
+			tableContainerView.layer.addAnimation(transformAnimation, forKey: nil)
+		}
     }
 	
 	private func initializeLabelContainerView() {
