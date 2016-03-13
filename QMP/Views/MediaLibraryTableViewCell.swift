@@ -20,7 +20,6 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     
     weak var delegate:ConfigurableAudioTableCellDelegate?
     
-    var indexPath:NSIndexPath!
     var shouldHideAccessoryStack:Bool = true
     
     var isNowPlaying:Bool = false {
@@ -41,10 +40,9 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     }
     
     @IBAction func menuButtonPressed(sender:UIButton!) {
-		Logger.debug("viewCenter = \(self.bounds.origin)")
-		let newCenter = convertPoint(center, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
-		Logger.debug("converted center = \(newCenter)")
-        delegate?.presentActionsForIndexPath(indexPath, title: titleLabel.text, details: detailsLabel.text, originatingCenter: newCenter)
+        let point = CGPoint(x: bounds.maxX, y: bounds.midY)
+		let convertedPoint = convertPoint(point, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
+        delegate?.presentActionsForCell(self, title: titleLabel.text, details: detailsLabel.text, originatingCenter: convertedPoint)
     }
     
     final func configureDRMAndCloudLabels(item:AudioTrack) {

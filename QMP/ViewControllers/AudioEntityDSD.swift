@@ -62,7 +62,6 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
         
         if let audioCell = cell as? ConfigurableAudioTableCell {
             audioCell.configureCellForItems(entity, libraryGrouping: libraryGrouping)
-            audioCell.indexPath = indexPath
             audioCell.delegate = audioCellDelegate
             audioCell.isNowPlaying = entityIsNowPlaying(entity, libraryGrouping: libraryGrouping, indexPath: indexPath)
         } else {

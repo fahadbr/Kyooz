@@ -62,15 +62,15 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             
             var animations = { vcToAnimate.view.alpha = 0.0 }
             if interactive {
-                let transform = CGAffineTransformMakeTranslation(vcToAnimate.view.frame.width * 0.75, 0)
+                let transform = CGAffineTransformMakeTranslation(vcToAnimate.view.frame.width, 0)
                 animations = {
                     vcToAnimate.view.transform = transform
                     vcToAnimate.view.alpha = 0.0
                 }
             }
-            UIView.animateWithDuration(animationDuration, animations: animations) {_ in
-                    self.handleAnimationCompletion()
-            }
+            UIView.animateWithDuration(animationDuration, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: animations, completion: {_ in
+                self.handleAnimationCompletion()
+            })
         }
 
     }
@@ -93,13 +93,15 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             return
         }
         let translation = recognizer.translationInView(superView)
-        let progress:CGFloat = min(max(abs(translation.x/300), 0.01), 0.99)
+        let screenSize = superView.bounds.size
+        let widthToTravel = min(screenSize.width, screenSize.height)
+        let progress:CGFloat = min(max(abs(translation.x/widthToTravel), 0.01), 0.99)
         
         switch recognizer.state {
         case .Changed:
             updateInteractiveTransition(progress)
         case .Cancelled, .Ended:
-            if progress < 0.5 {
+            if progress < 0.25 {
                 cancelInteractiveTransition()
             } else {
                 finishInteractiveTransition()
