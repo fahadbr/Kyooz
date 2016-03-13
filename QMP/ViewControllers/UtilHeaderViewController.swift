@@ -71,7 +71,8 @@ final class UtilHeaderViewController: HeaderViewController {
             }))
         }
 		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
-		kmvc.originatingCenter = libraryGroupingButton.center
+        let center = libraryGroupingButton.convertPoint(CGPoint(x:libraryGroupingButton.bounds.midX, y: libraryGroupingButton.bounds.midY), toCoordinateSpace: UIScreen.mainScreen().fixedCoordinateSpace)
+		kmvc.originatingCenter = center
 		KyoozUtils.showMenuViewController(kmvc)
     }
     

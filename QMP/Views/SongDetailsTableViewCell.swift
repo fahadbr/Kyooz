@@ -27,7 +27,6 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
     
     weak var delegate:ConfigurableAudioTableCellDelegate?
     
-    var indexPath:NSIndexPath!
     var isNowPlaying:Bool = false {
         didSet {
             if isNowPlaying != oldValue {
@@ -44,8 +43,10 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
     }
     
     @IBAction func menuButtonPressed(sender:UIButton!) {
-		let newCenter = convertPoint(self.bounds.origin, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
-        delegate?.presentActionsForIndexPath(indexPath, title: songTitleLabel.text, details: albumArtistAndAlbumLabel.text, originatingCenter: newCenter)
+        let point = CGPoint(x: bounds.maxX, y: bounds.midY)
+//        let convertedPoint = convertPoint(point, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
+        let convertedPoint = convertPoint(point, toView: ContainerViewController.instance.view)
+        delegate?.presentActionsForCell(self, title: songTitleLabel.text, details: albumArtistAndAlbumLabel.text, originatingCenter: convertedPoint)
     }
     
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {

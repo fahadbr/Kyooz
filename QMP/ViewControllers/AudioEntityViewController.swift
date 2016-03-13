@@ -64,7 +64,12 @@ class AudioEntityViewController : CustomPopableViewController, MediaItemTableVie
     
     //MARK: - MediaLibraryTableViewCellDelegate
     
-	func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?, originatingCenter:CGPoint) {
+    func presentActionsForCell(cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint) {
+        guard let indexPath = tableView.indexPathForCell(cell) else {
+            Logger.error("no index path found for cell with tile \(title)")
+            return
+        }
+        
         let tracks = getMediaItemsForIndexPath(indexPath)
         let kmvc = KyoozMenuViewController()
         kmvc.menuTitle = title

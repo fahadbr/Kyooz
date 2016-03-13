@@ -13,7 +13,6 @@ protocol ConfigurableAudioTableCell : class {
     
     weak var delegate:ConfigurableAudioTableCellDelegate? { get set }
     
-    var indexPath:NSIndexPath! { get set }
     var isNowPlaying:Bool { get set }
     
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping)
@@ -21,5 +20,5 @@ protocol ConfigurableAudioTableCell : class {
 }
 
 protocol ConfigurableAudioTableCellDelegate : class {
-	func presentActionsForIndexPath(indexPath:NSIndexPath, title:String?, details:String?, originatingCenter:CGPoint)
+	func presentActionsForCell(cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint)
 }

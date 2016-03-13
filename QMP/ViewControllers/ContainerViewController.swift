@@ -139,14 +139,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
             nowPlayingNavigationController!.toolbarHidden = false
             let npView = nowPlayingNavigationController!.view
-            npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
+//            npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
             view.insertSubview(npView, atIndex: 0)
             addChildViewController(nowPlayingNavigationController!)
             nowPlayingNavigationController!.didMoveToParentViewController(self)
             npView.translatesAutoresizingMaskIntoConstraints = false
             npView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
             npView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-            npView.centerXAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
+            npView.leftAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
             npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -centerPanelExpandedOffset).active = true
 
             nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
@@ -282,7 +282,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             animations: {
                 self.view.layoutIfNeeded()
                 let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
-                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
+//                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
                 self.nowPlayingNavigationController?.view.alpha = fraction
             },
             completion: completion)
@@ -304,8 +304,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         //the fraction is the percentage the center view controller has moved with respect to its final position (centerPanelExpandedXPosition)
         let fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
-        let transform = transformForFraction(fraction)
-        nowPlayingNavigationController?.view.layer.transform = transform
+//        let transform = transformForFraction(fraction)
+//        nowPlayingNavigationController?.view.layer.transform = transform
         nowPlayingNavigationController?.view.alpha = fraction
         
         if 0 <= fraction && fraction <= 1 {
