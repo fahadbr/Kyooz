@@ -217,7 +217,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         return viewExpanded
     }
     
-    func presentActionsForIndexPath(indexPath: NSIndexPath, title: String?, details: String?) {
+	func presentActionsForIndexPath(indexPath: NSIndexPath, title: String?, details: String?, originatingCenter:CGPoint) {
         let index = indexPath.row
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
 
@@ -283,6 +283,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
 		
 		let cancelAction = KyoozMenuAction(title: "Cancel", image: nil, action: nil)
 		menuVC.addAction(cancelAction)
+		menuVC.originatingCenter = originatingCenter
 		
 		KyoozUtils.showMenuViewController(menuVC)
     }

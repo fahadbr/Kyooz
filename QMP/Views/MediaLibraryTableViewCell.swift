@@ -41,7 +41,10 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     }
     
     @IBAction func menuButtonPressed(sender:UIButton!) {
-        delegate?.presentActionsForIndexPath(indexPath, title: titleLabel.text, details: detailsLabel.text)
+		Logger.debug("viewCenter = \(self.bounds.origin)")
+		let newCenter = convertPoint(center, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
+		Logger.debug("converted center = \(newCenter)")
+        delegate?.presentActionsForIndexPath(indexPath, title: titleLabel.text, details: detailsLabel.text, originatingCenter: newCenter)
     }
     
     final func configureDRMAndCloudLabels(item:AudioTrack) {

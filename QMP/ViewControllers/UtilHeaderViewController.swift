@@ -71,6 +71,7 @@ final class UtilHeaderViewController: HeaderViewController {
             }))
         }
 		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+		kmvc.originatingCenter = libraryGroupingButton.center
 		KyoozUtils.showMenuViewController(kmvc)
     }
     

@@ -44,7 +44,8 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
     }
     
     @IBAction func menuButtonPressed(sender:UIButton!) {
-        delegate?.presentActionsForIndexPath(indexPath, title: songTitleLabel.text, details: albumArtistAndAlbumLabel.text)
+		let newCenter = convertPoint(self.bounds.origin, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
+        delegate?.presentActionsForIndexPath(indexPath, title: songTitleLabel.text, details: albumArtistAndAlbumLabel.text, originatingCenter: newCenter)
     }
     
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
