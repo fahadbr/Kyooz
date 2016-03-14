@@ -23,16 +23,14 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		automaticallyAdjustsScrollViewInsets = false
 		view.backgroundColor = ThemeHelper.darkAccentColor
 		
 		headerVC = useCollapsableHeader ? UIStoryboard.artworkHeaderViewController() : UIStoryboard.utilHeaderViewController()
-        view.addSubview(headerVC.view)
-        headerVC.view.translatesAutoresizingMaskIntoConstraints = false
-        headerVC.view.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        headerVC.view.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        headerVC.view.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerVC.view, parentView: view)
 		headerHeightConstraint = headerVC.view.heightAnchor.constraintEqualToConstant(headerVC.defaultHeight)
 		headerHeightConstraint.active = true
+		
         addChildViewController(headerVC)
         headerVC.didMoveToParentViewController(self)
 		

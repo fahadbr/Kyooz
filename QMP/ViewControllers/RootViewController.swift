@@ -62,10 +62,10 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        libraryNavigationController = UIStoryboard.libraryNavigationController()
-        libraryNavigationController.viewControllers.first?.title = "BROWSE"
-        
-
+		let baseLibraryVC = AudioEntityLibraryViewController()
+		
+		libraryNavigationController = UINavigationController(rootViewController: baseLibraryVC)
+		libraryNavigationController.viewControllers.first?.title = "BROWSE"
         
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
@@ -127,18 +127,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryNavigationController.definesPresentationContext = true
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-        
-//        let tabBar = UITabBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 30))
-//        view.addSubview(tabBar)
-//        tabBar.center = view.center
-//        tabBar.barStyle = .Black
-//        tabBar.translucent = true
-//        tabBar.tintColor = ThemeHelper.defaultVividColor
-//        let list = ListButtonView()
-//        list.frame = CGRect(x: 0, y: 0, width: 35, height: 25)
-//        list.scale = 0.6
-//        tabBar.items = [UITabBarItem(title: "Queue", image: (ImageHelper.customSnapshotFromView(list) as? UIImageView)?.image, tag: 0)]
-
     }
     
     
