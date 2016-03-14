@@ -33,16 +33,10 @@ final class ShortNotificationManager {
         }
         
         
-		let vc = UIStoryboard.shortNotificationViewController()
+		let vc = ShortNotificationViewController()
 		
 		vc.message = message
-        let frameSize:CGSize
-        switch size {
-        case .Small:
-            frameSize = CGSize(width: presentationController.view.frame.width * 0.60, height: 30)
-        case .Large:
-            frameSize = CGSize(width: presentationController.view.frame.width * 0.85, height: 60)
-        }
+        let frameSize:CGSize = vc.estimatedSize
         
 		let origin = CGPoint(x: (presentationController.view.frame.width - frameSize.width)/2, y: presentationController.view.frame.height * 0.80)
 		vc.view.frame = CGRect(origin: origin, size: frameSize)
