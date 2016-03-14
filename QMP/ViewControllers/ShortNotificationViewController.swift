@@ -10,20 +10,46 @@ import UIKit
 
 final class ShortNotificationViewController : FadeOutViewController {
     
-    @IBOutlet var messageLabel:UILabel!
+    private let maxWidth = UIScreen.mainScreen().bounds.width * 0.85
+    private let maxHeight = UIScreen.mainScreen().bounds.height * 0.50
+    
+    private let messageLabel:UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .Center
+        label.lineBreakMode = .ByWordWrapping
+        label.font = UIFont(name: ThemeHelper.defaultFontNameMedium, size: 12)
+        label.textColor = ThemeHelper.defaultFontColor
+        return label
+    }()
     
 	var message:String! {
 		didSet {
-			messageLabel?.text = message
+			messageLabel.text = message
+            messageLabel.bounds = messageLabel.textRectForBounds(CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight), limitedToNumberOfLines: 0)
 		}
 	}
     
+    var estimatedSize:CGSize {
+        let messageLabelSize = messageLabel.bounds.size
+        let margin:CGFloat = 16
+        return CGSize(width: messageLabelSize.width + margin, height: messageLabelSize.height + margin)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.alpha = 0.9
-        view.layer.cornerRadius = 10
-		messageLabel.textColor = UIColor.blackColor()
-		messageLabel.text = message
+        
+        let containerView = UIView()
+        ConstraintUtils.applyStandardConstraintsToView(subView: containerView, parentView: view)
+        ConstraintUtils.applyStandardConstraintsToView(subView: messageLabel, parentView: containerView)
+        containerView.backgroundColor = ThemeHelper.defaultTableCellColor
+        containerView.alpha = 0.9
+        containerView.layer.cornerRadius = 10
+        
+        view.backgroundColor = UIColor.clearColor()
+        view.layer.shadowOpacity = 0.8
+        view.layer.shadowOffset = CGSize.zero
+        view.layer.shadowColor = UIColor.whiteColor().CGColor
 
 		//fade away after 4 seconds
 		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(4), dispatch_get_main_queue()) { [weak self] in

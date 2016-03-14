@@ -44,10 +44,6 @@ extension UIStoryboard {
     static func warningViewController() -> WarningViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("warningViewController") as! WarningViewController
     }
-	
-	static func shortNotificationViewController() -> ShortNotificationViewController {
-		return mainStoryboard().instantiateViewControllerWithIdentifier("shortNotificationViewController") as! ShortNotificationViewController
-	}
     
     static func systemQueueResyncWorkflowController() -> SystemQueueResyncWorkflowController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("systemQueueResyncWorkflowController") as! SystemQueueResyncWorkflowController

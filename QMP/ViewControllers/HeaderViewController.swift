@@ -21,8 +21,8 @@ class HeaderViewController : UIViewController {
     
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    private weak var tableView:UITableView!
-    private weak var sourceData:AudioEntitySourceData!
+    private var tableView:UITableView!
+    private var sourceData:AudioEntitySourceData!
     
     @IBOutlet var shuffleButton: ShuffleButtonView!
     @IBOutlet var selectModeButton: ListButtonView!

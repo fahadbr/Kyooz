@@ -413,52 +413,6 @@
             </objects>
             <point key="canvasLocation" x="3578.5" y="-1253.5"/>
         </scene>
-        <!--Short Notification View Controller-->
-        <scene sceneID="bt4-dt-Ozf">
-            <objects>
-                <viewController storyboardIdentifier="shortNotificationViewController" automaticallyAdjustsScrollViewInsets="NO" modalTransitionStyle="crossDissolve" useStoryboardIdentifierAsRestorationIdentifier="YES" id="EeR-IJ-pZn" customClass="ShortNotificationViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="sar-gL-F1N"/>
-                        <viewControllerLayoutGuide type="bottom" id="Fh4-Gb-L0v"/>
-                    </layoutGuides>
-                    <view key="view" userInteractionEnabled="NO" contentMode="scaleToFill" id="93h-np-6Hd">
-                        <rect key="frame" x="0.0" y="0.0" width="300" height="60"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0cc-IR-9XO">
-                                <rect key="frame" x="8" y="0.0" width="284" height="60"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="Now Playing: New Track">
-                                        <attributes>
-                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <font key="NSFont" size="12" name="Avenir-Medium"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="0cc-IR-9XO" secondAttribute="trailing" constant="8" id="DbL-TQ-v3O"/>
-                            <constraint firstItem="Fh4-Gb-L0v" firstAttribute="top" secondItem="0cc-IR-9XO" secondAttribute="bottom" id="GAO-1d-efS"/>
-                            <constraint firstItem="0cc-IR-9XO" firstAttribute="leading" secondItem="93h-np-6Hd" secondAttribute="leading" constant="8" id="I6x-wS-l90"/>
-                            <constraint firstItem="0cc-IR-9XO" firstAttribute="top" secondItem="sar-gL-F1N" secondAttribute="bottom" id="iLD-mv-FeG"/>
-                        </constraints>
-                    </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <nil key="simulatedStatusBarMetrics"/>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="300" height="60"/>
-                    <connections>
-                        <outlet property="messageLabel" destination="0cc-IR-9XO" id="aw5-r8-54O"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="HCY-rh-vhJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1824" y="-308"/>
-        </scene>
         <!--System Queue Resync Workflow Controller-->
         <scene sceneID="Rae-zX-nF8">
             <objects>
