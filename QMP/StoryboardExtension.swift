@@ -25,20 +25,12 @@ extension UIStoryboard {
         return Static.instance
     }
     
-    static func libraryNavigationController() -> UINavigationController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("libraryNavigationController") as! UINavigationController
-    }
-    
     static func nowPlayingViewController() -> NowPlayingViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingViewController") as! NowPlayingViewController
     }
     
     static func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
-    }
-    
-	static func audioEntityLibraryViewController() -> AudioEntityLibraryViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("audioEntityLibraryViewController") as! AudioEntityLibraryViewController
     }
     
     static func warningViewController() -> WarningViewController {

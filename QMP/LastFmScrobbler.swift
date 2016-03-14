@@ -172,7 +172,7 @@ final class LastFmScrobbler {
         }
     }
     
-    func submitCachedScrobbles() {
+	func submitCachedScrobbles(completionHandler:(()->())? = nil)  {
         if(scrobbleCache.isEmpty) { return }
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [scrobbleCache = self.scrobbleCache]() -> Void in
             Logger.debug("submitting the scrobble cache")

@@ -6,69 +6,6 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Audio Entity Library View Controller-->
-        <scene sceneID="nJB-ER-uiL">
-            <objects>
-                <viewController storyboardIdentifier="audioEntityLibraryViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wLc-JZ-LmB" customClass="AudioEntityLibraryViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="d5K-bf-cPd"/>
-                        <viewControllerLayoutGuide type="bottom" id="s5s-Ke-MO5"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="epf-2n-83O">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="40" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NuC-r9-W2u">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" white="0.089999999999999997" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="NuC-r9-W2u" firstAttribute="top" secondItem="epf-2n-83O" secondAttribute="top" id="2B5-wI-Uzk"/>
-                            <constraint firstAttribute="trailing" secondItem="NuC-r9-W2u" secondAttribute="trailing" id="5rN-c1-gyb"/>
-                            <constraint firstItem="NuC-r9-W2u" firstAttribute="top" secondItem="d5K-bf-cPd" secondAttribute="bottom" id="F6t-iL-bFd"/>
-                            <constraint firstItem="NuC-r9-W2u" firstAttribute="leading" secondItem="epf-2n-83O" secondAttribute="leading" id="HZF-hC-btE"/>
-                            <constraint firstItem="s5s-Ke-MO5" firstAttribute="top" secondItem="NuC-r9-W2u" secondAttribute="bottom" id="eIO-l1-6ab"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="F6t-iL-bFd"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <navigationItem key="navigationItem" id="4p0-bY-VFY"/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-                    <connections>
-                        <outlet property="tableView" destination="NuC-r9-W2u" id="pvk-Tn-6Ni"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cP3-x9-QAn" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2465" y="-1151"/>
-        </scene>
-        <!--BROWSE-->
-        <scene sceneID="PG5-55-KkY">
-            <objects>
-                <navigationController storyboardIdentifier="libraryNavigationController" title="BROWSE" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="AlC-4z-9IE" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Kfj-cB-Vol">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="nNx-Y9-sp0">
-                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </toolbar>
-                    <connections>
-                        <segue destination="wLc-JZ-LmB" kind="relationship" relationship="rootViewController" id="GpL-Bd-g0S"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9IG-fU-Ugh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1707" y="-1150.5"/>
-        </scene>
         <!--NowPlayingQueue-->
         <scene sceneID="6XA-XL-1q0">
             <objects>

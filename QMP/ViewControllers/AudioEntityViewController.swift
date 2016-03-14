@@ -10,11 +10,10 @@ import UIKit
 import MediaPlayer
 
 class AudioEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
-    
-    let fatalErrorMessage = "Unsupported operation. this is an abstract class"
+	
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    @IBOutlet var tableView:UITableView!
+    let tableView:UITableView = UITableView()
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
 	
@@ -27,6 +26,9 @@ class AudioEntityViewController : CustomPopableViewController, MediaItemTableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: tableView, parentView: view)
+		tableView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
+		
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         
         tableView.rowHeight = 60

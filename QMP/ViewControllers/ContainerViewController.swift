@@ -175,7 +175,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
         }
         
-        let vc = UIStoryboard.audioEntityLibraryViewController()
+		let vc = AudioEntityLibraryViewController()
         vc.subGroups = parentGroup.subGroupsForNextLevel
         vc.sourceData = sourceData
         

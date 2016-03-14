@@ -11,7 +11,7 @@ import MediaPlayer
 
 protocol MediaItemTableViewControllerProtocol {
     
-    var tableView:UITableView! { get }
+    var tableView:UITableView { get }
     
     func getMediaItemsForIndexPath(indexPath:NSIndexPath) -> [AudioTrack]
     
