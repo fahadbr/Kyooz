@@ -185,14 +185,13 @@ class HeaderViewController : UIViewController {
     
     func deleteSelectedItems() {
         
-        let ac = UIAlertController(title: "Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?", message: nil, preferredStyle: .Alert)
-        ac.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { _ -> Void in
+        let kmvc = KyoozMenuViewController()
+        kmvc.menuTitle = "Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?"
+        kmvc.addAction(KyoozMenuAction(title:"Yes", image: nil) {
             self.deleteInternal()
-        }))
-        
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        
-        ContainerViewController.instance.presentViewController(ac, animated: true, completion:  nil)
+        })
+        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+        KyoozUtils.showMenuViewController(kmvc)
         
     }
     
