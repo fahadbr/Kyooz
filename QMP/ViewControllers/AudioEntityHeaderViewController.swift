@@ -39,6 +39,7 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 		collapsedTargetOffset = maxHeight - minHeight
 		tableView.contentInset.top = minHeight
         tableView.scrollIndicatorInsets.top = maxHeight
+        tableView.contentOffset.y = -tableView.contentInset.top
         
 		if useCollapsableHeader {
 			tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
