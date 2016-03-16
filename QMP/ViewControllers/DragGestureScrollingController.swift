@@ -10,83 +10,97 @@ import Foundation
 import UIKit
 
 final class DragGestureScrollingController :NSObject {
+
+    private static let offset:CGFloat = 50
+    private static let maxScrollIncrement:CGFloat = 50
+    private static let minScrollIncrement:CGFloat = 0.005
     
     private let scrollView:UIScrollView
-    private let offset:CGFloat = 50
-    private let yTopOffset:CGFloat
-    private let yBottomOffset:CGFloat
+
+    private let scrollOffsetTop:CGFloat
+    private let scrollOffsetBottom:CGFloat
+    private let minContentOffset:CGFloat
+    private var maxContentOffset:CGFloat {
+        //calculating the maxContentOffset each time because the contentSize is subject to change
+        //TODO: possible add observer for contentSize
+        return (scrollView.contentSize.height - scrollView.bounds.height) + scrollView.contentInset.bottom
+    }
     
     private let delegate:LongPressToDragGestureHandler
-    private let timeDelayInSeconds:Double = 0.005 //relates to smoothness
-    private let maxScrollIncrement:CGFloat = 7
-    private let minScrollIncrement:CGFloat = 0.005
-    private var scrollIncrement:CGFloat
+
+
+    private var scrollIncrement:CGFloat = DragGestureScrollingController.minScrollIncrement
     
     private var visiblePosition:CGFloat!
-    private var timer:NSTimer?
+    private var displayLink:CADisplayLink?
     private var gestureRecognizer:UILongPressGestureRecognizer!
+    private var isScrollingUp:Bool = false
 
     init(scrollView:UIScrollView, delegate:LongPressToDragGestureHandler) {
         self.scrollView = scrollView
         self.delegate = delegate
-        self.yTopOffset = scrollView.contentInset.top + offset
-        self.yBottomOffset = scrollView.frame.height - offset - scrollView.contentInset.bottom
-        scrollIncrement = minScrollIncrement
+        
+        scrollOffsetTop = scrollView.contentInset.top + self.dynamicType.offset
+        scrollOffsetBottom = scrollView.frame.height - self.dynamicType.offset - scrollView.contentInset.bottom
+        minContentOffset = -scrollView.contentInset.top
     }
     
     deinit {
-        timer?.invalidate()
+        displayLink?.invalidate()
     }
     
     func startScrollingWithLocation(location: CGPoint, gestureRecognizer:UILongPressGestureRecognizer) {
-        self.visiblePosition = location.y - scrollView.contentOffset.y
+        visiblePosition = location.y - scrollView.contentOffset.y
         self.gestureRecognizer = gestureRecognizer
         
-        var positionOffset:CGFloat!
+        var positionOffset:CGFloat
 
-        if(visiblePosition <= yTopOffset) {
-            positionOffset = yTopOffset - visiblePosition
-        } else if (visiblePosition >= yBottomOffset) {
-            positionOffset = visiblePosition - yBottomOffset
-        }
-        if(positionOffset != nil) {
-            positionOffset = positionOffset <= 0.0 ? 0.0 : positionOffset
-            let speed = CGFloat((positionOffset/yTopOffset) * CGFloat(maxScrollIncrement))
-            self.scrollIncrement = speed < 0.0 ? minScrollIncrement : speed
-            
-            if(timer == nil) {
-                timer = NSTimer.scheduledTimerWithTimeInterval(timeDelayInSeconds,
-                    target: self,
-                    selector: "adjustScrollOffset",
-                    userInfo: nil,
-                    repeats: true)
-            }
+        if(visiblePosition <= scrollOffsetTop) {
+            positionOffset = scrollOffsetTop - visiblePosition
+            isScrollingUp = true
+        } else if (visiblePosition >= scrollOffsetBottom) {
+            positionOffset = visiblePosition - scrollOffsetBottom
+            isScrollingUp = false
         } else {
-            invalidateTimer()
-            scrollIncrement = minScrollIncrement
+            invalidateDisplayLink()
+            scrollIncrement = self.dynamicType.minScrollIncrement
+            return
         }
+        
+        let scrollIncrementForFraction:CGFloat = (max(positionOffset, 0.0)/scrollOffsetTop) * self.dynamicType.maxScrollIncrement
+        scrollIncrement = max(self.dynamicType.minScrollIncrement, scrollIncrementForFraction)
+        
+        if(displayLink == nil) {
+            let displayLink = CADisplayLink(target: self, selector: "adjustScrollOffset")
+            displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            self.displayLink = displayLink
+        }
+
     }
     
-    func invalidateTimer() {
-        timer?.invalidate()
-        timer = nil
+    func invalidateDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
     }
     
     func adjustScrollOffset() {
+        let currentOffset = scrollView.contentOffset.y
+        let newOffset:CGFloat
         
-        let originalYPosition = scrollView.contentOffset.y
-        var newYPosition:CGFloat!
-        if(visiblePosition <= yTopOffset && originalYPosition > (0 - scrollView.contentInset.top)) {
-            newYPosition = originalYPosition - scrollIncrement
-        } else if (visiblePosition >= yBottomOffset && originalYPosition < (scrollView.contentSize.height - scrollView.frame.height) + scrollView.contentInset.bottom){
-            newYPosition = originalYPosition + scrollIncrement
+        let maxContentOffset = self.maxContentOffset
+        if isScrollingUp {
+            newOffset = max(currentOffset - scrollIncrement, minContentOffset)
+        } else {
+            newOffset = min(currentOffset + scrollIncrement, maxContentOffset)
         }
         
-        if(newYPosition != nil) {
-            scrollView.contentOffset.y = newYPosition
-            delegate.handlePositionChange(gestureRecognizer)
-        } else {
-            invalidateTimer()
+        //THIS ORDER MATTERS FOR DRAG AND DROP
+        //(When scrolling fast the tableview datasource may sometimes return the placeholder cell because of the updated indexPathOfMovingItem)
+        delegate.handlePositionChange(gestureRecognizer)
+        scrollView.contentOffset.y = newOffset
+        
+        if newOffset >= maxContentOffset || newOffset <= minContentOffset {
+            invalidateDisplayLink()
         }
     }
     

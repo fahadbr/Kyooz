@@ -29,7 +29,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
             return searchResultsController.tableView
         }
         
-        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewControllerProtocol {
+        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? AudioEntityViewControllerProtocol {
             return mediaItemViewController.tableView
         }
         return nil
@@ -259,13 +259,13 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         
     }
     
-    func getItemsToDrag(indexPath:NSIndexPath) -> [AudioTrack]? {
+    func getSourceData() -> AudioEntitySourceData? {
         if searchController.active {
-            return searchResultsController.getMediaItemsForIndexPath(indexPath)
+            return searchResultsController.getSourceData()
         }
         
-        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? MediaItemTableViewControllerProtocol {
-            return mediaItemViewController.getMediaItemsForIndexPath(indexPath)
+        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? AudioEntityViewControllerProtocol {
+            return mediaItemViewController.getSourceData()
         }
         Logger.debug("Couldnt get a view controller with media items, returning nil")
         return nil

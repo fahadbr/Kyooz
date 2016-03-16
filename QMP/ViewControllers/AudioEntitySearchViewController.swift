@@ -85,9 +85,9 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         }
     }
     
-    override func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
+    override func getSourceData() -> AudioEntitySourceData {
         searchController.searchBar.resignFirstResponder()
-        return sourceData.getTracksAtIndex(indexPath)
+        return sourceData
     }
 
     
