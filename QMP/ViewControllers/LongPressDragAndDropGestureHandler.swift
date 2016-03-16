@@ -36,28 +36,47 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         
         cancelView = CancelView(frame: frame)
         
-        super.init(tableView: dropDestination.destinationTableView)
+        super.init(sourceTableView: dragSource.sourceTableView, destinationTableView: dropDestination.destinationTableView)
 
         shouldHideSourceView = false
-        snapshotScale = 0.9
+        snapshotScale = 1.0
         updateSnapshotXPosition = true
         cornerRadiusForSnapshot = 10
     }
     
-
-    
-    override func getCellForSnapshot(sender: UIGestureRecognizer, tableView: UITableView) -> (cell: UITableViewCell, indexPath: NSIndexPath)? {
-        if let tableView = dragSource.sourceTableView, let result = super.getCellForSnapshot(sender, tableView: tableView) {
-            if let items = dragSource.getItemsToDrag(result.indexPath) {
-                itemsToDrag = items
-            }
-            return result
+    override func getViewForSnapshot(sender: UIGestureRecognizer) -> UIView? {
+        guard let indexPath = originalIndexPathOfMovingItem, let sourceData = dragSource.getSourceData() else {
+            return nil
         }
-        return nil
-    }
-    
-    override func getScrollingController() -> DragGestureScrollingController {
-        return DragGestureScrollingController(scrollView: dropDestination.destinationTableView, delegate: self)
+        itemsToDrag = sourceData.getTracksAtIndex(indexPath)
+        let v = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width * 0.6, height: 100))
+        v.backgroundColor = ThemeHelper.defaultTableCellColor
+        
+        func configureLabel(label:UILabel, text:String?, font:UIFont?) {
+            label.textAlignment = .Center
+            label.font = font ?? ThemeHelper.defaultFont
+            label.text = text
+            label.textColor = ThemeHelper.defaultFontColor
+            label.numberOfLines = 0
+            label.lineBreakMode = .ByWordWrapping
+            label.frame = label.textRectForBounds(v.bounds, limitedToNumberOfLines: 0)
+        }
+        
+        let label1 = UILabel()
+        configureLabel(label1, text: itemsToDrag?.first?.titleForGrouping(sourceData.libraryGrouping), font: UIFont(name: ThemeHelper.defaultFontNameMedium, size: 15))
+        let label2 = UILabel()
+        configureLabel(label2, text: "\(itemsToDrag?.count ?? 0) Tracks", font: UIFont(name: ThemeHelper.defaultFontName, size: 12))
+        
+        let stackView = UIStackView(arrangedSubviews: [label1, label2])
+        stackView.frame = CGRect(x: 0, y: 0, width: v.frame.width, height: v.frame.height/2)
+        stackView.axis = .Vertical
+        stackView.alignment = .Center
+        v.addSubview(stackView)
+        
+        v.layer.borderColor = ThemeHelper.defaultVividColor.CGColor
+        v.layer.borderWidth = 1.5
+        return v
+        
     }
     
     
@@ -69,12 +88,10 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         super.gestureDidBegin(sender)
         let tableView = dropDestination.destinationTableView
         let location = sender.locationInView(tableView)
-        var destinationIndexPath = tableView.indexPathForRowAtPoint(CGPoint(x: 0, y: location.y))
-        if(destinationIndexPath == nil) {
-            destinationIndexPath = NSIndexPath(forRow: tableView.dataSource!.tableView(tableView, numberOfRowsInSection: 0) - 1, inSection: 0)
-        }
+        let destinationIndexPath = tableView.indexPathForRowAtPoint(CGPoint(x: 0, y: location.y)) ?? NSIndexPath(forRow: tableView.dataSource!.tableView(tableView, numberOfRowsInSection: 0) - 1, inSection: 0)
         indexPathOfMovingItem = destinationIndexPath
-        tableView.insertRowsAtIndexPaths([destinationIndexPath!], withRowAnimation: UITableViewRowAnimation.Automatic)
+
+        tableView.insertRowsAtIndexPaths([destinationIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
     }
     
     override func gestureDidChange(sender: UIGestureRecognizer, newLocationInsideTableView: CGPoint?) {
@@ -136,7 +153,7 @@ protocol DragSource {
 
     var sourceTableView:UITableView? { get }
     
-    func getItemsToDrag(indexPath:NSIndexPath) -> [AudioTrack]?
+    func getSourceData() -> AudioEntitySourceData?
     
 }
 

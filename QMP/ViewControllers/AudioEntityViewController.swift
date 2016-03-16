@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class AudioEntityViewController : CustomPopableViewController, MediaItemTableViewControllerProtocol, ConfigurableAudioTableCellDelegate {
+class AudioEntityViewController : CustomPopableViewController, AudioEntityViewControllerProtocol, ConfigurableAudioTableCellDelegate {
 	
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -60,8 +60,9 @@ class AudioEntityViewController : CustomPopableViewController, MediaItemTableVie
     }
     
     //MARK: - Overriding MediaItemTableViewController methods
-    func getMediaItemsForIndexPath(indexPath: NSIndexPath) -> [AudioTrack] {
-        return sourceData.getTracksAtIndex(indexPath)
+    
+    func getSourceData() -> AudioEntitySourceData {
+        return sourceData
     }
     
     //MARK: - MediaLibraryTableViewCellDelegate
@@ -72,7 +73,7 @@ class AudioEntityViewController : CustomPopableViewController, MediaItemTableVie
             return
         }
         
-        let tracks = getMediaItemsForIndexPath(indexPath)
+        let tracks = sourceData.getTracksAtIndex(indexPath)
         let kmvc = KyoozMenuViewController()
         kmvc.menuTitle = title
 		kmvc.menuDetails = details

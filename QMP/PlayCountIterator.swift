@@ -52,14 +52,16 @@ final class PlayCountIterator : NSObject {
         performOperationWithTime(currentTime)
     }
     
-    private func performOperationWithTime(currentTime:CFAbsoluteTime) {
+    private func performOperationWithTime(currentTime:CFAbsoluteTime, operationCompletionBlock:(()->Void)? = nil) {
         lastOperationTime = currentTime
         guard let oldPlayCounts = getPersistedPlayCounts() else {
             Logger.debug("no play counts to compare to")
+            operationCompletionBlock?()
             return
         }
         
         let op = PlayCountIteratorOperation(oldPlayCounts: oldPlayCounts, playCountCompletionBlock: self.playcountOpDidComplete)
+        op.completionBlock = operationCompletionBlock
         playCountIteratorOperation = op
         PlayCountIterator.backgroundQueue.addOperation(op)
 
@@ -100,12 +102,11 @@ final class PlayCountIterator : NSObject {
     private func playcountOpDidComplete(newPlayCounts:NSDictionary) {
         persistPlayCounts(newPlayCounts)
         playCountIteratorOperation = nil
-        if performingBackgroundFetch {
-            TempDataDAO.instance.persistLastFmScrobbleCache()
-        } else if backgroundTaskIdentifier != UIBackgroundTaskInvalid  {
-            TempDataDAO.instance.persistLastFmScrobbleCache()
-            endBackgroundTask()
-        } else {
+        if backgroundTaskIdentifier != UIBackgroundTaskInvalid  {
+            LastFmScrobbler.instance.submitCachedScrobbles() {
+                self.endBackgroundTask()
+            }
+        } else if !performingBackgroundFetch {
             LastFmScrobbler.instance.submitCachedScrobbles()
         }
     }
@@ -125,16 +126,12 @@ final class PlayCountIterator : NSObject {
         }
         
         performingBackgroundFetch = true
-        performOperationWithTime(CFAbsoluteTimeGetCurrent())
-        if let op = playCountIteratorOperation {
-            op.completionBlock = {
+        performOperationWithTime(CFAbsoluteTimeGetCurrent()) {
+            LastFmScrobbler.instance.submitCachedScrobbles() {
                 Logger.debug("done with background iteration")
                 self.performingBackgroundFetch = false
                 completionHandler(ApplicationDefaults.audioQueuePlayer.musicIsPlaying ? .NewData : .NoData)
             }
-        } else {
-            performingBackgroundFetch = false
-            completionHandler(.NoData)
         }
     }
     

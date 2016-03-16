@@ -24,6 +24,26 @@ class KyoozTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let BATCH_SIZE = 25
+        let scrobbleCache = Array<Int>(0...130)
+
+        let maxValue = scrobbleCache.count
+        for var i=0 ; i < maxValue ;  {
+            let nextIndexToUse = min(i + BATCH_SIZE, maxValue)
+            let slice = scrobbleCache[i..<(nextIndexToUse)]
+            print("\(slice)")
+            XCTAssert(slice.count <= BATCH_SIZE)
+            i = nextIndexToUse
+        }
+        
+        var i = 0
+        while i < maxValue {
+            let nextIndexToUse = min(i + BATCH_SIZE, maxValue)
+            let slice = scrobbleCache[i..<(nextIndexToUse)]
+            print("\(slice)")
+            XCTAssert(slice.count <= BATCH_SIZE)
+            i = nextIndexToUse
+        }
     }
     
     func testPerformanceExample() {

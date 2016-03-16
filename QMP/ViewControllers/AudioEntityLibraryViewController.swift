@@ -60,7 +60,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	
 	private func configureTestDelegates() {
 		testDelegate = TestTableViewDataSourceDelegate()
-		//        testDelegate.mediaEntityTVC = self
 		tableView.dataSource = testDelegate
 		tableView.delegate = testDelegate
 		tableView.sectionHeaderHeight = 40
@@ -84,15 +83,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	
 	
 	override func addCustomMenuActions(indexPath: NSIndexPath, menuController:KyoozMenuViewController) {
-		switch sourceData.libraryGrouping {
-		case LibraryGrouping.Playlists:
-			guard sourceData[indexPath] is KyoozPlaylist else { return }
+        if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
             menuController.addAction(KyoozMenuAction(title: "Delete", image: nil, action: {_ in
-				self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
-			}))
-		default:
-			break
-		}
+                self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+            }))
+        }
 	}
 	
 	

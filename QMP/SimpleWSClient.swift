@@ -26,14 +26,13 @@ final class SimpleWSClient {
         let urlRequest = NSMutableURLRequest(URL: url!, cachePolicy: .ReloadIgnoringLocalAndRemoteCacheData, timeoutInterval: timeoutInSeconds)
         urlRequest.HTTPMethod = httpPOSTMethod
         
-        let postParamString = (params as NSArray).componentsJoinedByString("&")
-            
+        let postParamString = params.joinWithSeparator("&")
+        
         let body = postParamString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         urlRequest.HTTPBody = body
 //        Logger.debug("URL: \(urlRequest.URL?.absoluteString)")
         let queue = NSOperationQueue()
         queue.qualityOfService = NSQualityOfService.Background
-        
         urlSession.dataTaskWithRequest(urlRequest) { (returnData:NSData?, response:NSURLResponse?, error:NSError?) -> Void in
             if let data = returnData where data.length > 0 && error == nil {
                 //                let html = NSString(data: data, encoding: NSUTF8StringEncoding)
@@ -54,7 +53,6 @@ final class SimpleWSClient {
             }
             
         }.resume()
-        
     }
    
 }

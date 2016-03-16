@@ -173,45 +173,71 @@ final class LastFmScrobbler {
     }
     
 	func submitCachedScrobbles(completionHandler:(()->())? = nil)  {
-        if(scrobbleCache.isEmpty) { return }
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [scrobbleCache = self.scrobbleCache]() -> Void in
-            Logger.debug("submitting the scrobble cache")
-            let maxValue = scrobbleCache.count
-            for var i=0 ; i < maxValue ;  {
-                let nextIncrement = i + self.BATCH_SIZE
-                let nextIndexToUse = nextIncrement >= maxValue ? maxValue : nextIncrement
-                self.submitBatchOfScrobbles(scrobbleCache[i..<(nextIndexToUse)])
-                i = nextIndexToUse
-            }
-        })
-    }
-    
-    private func submitBatchOfScrobbles(scrobbleBatch:ArraySlice<([String:String])>) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [unowned self]() -> Void in
-            Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
+        guard !scrobbleCache.isEmpty && validSessionObtained else {
+            completionHandler?()
+            return
+        }
+        
+        func submitBatchOfScrobbles(scrobbleBatch:ArraySlice<([String:String])>, completionHandler:((shouldRemove:Bool)->())? = nil) {
             var params = [String:String]()
             for scrobbleDict in scrobbleBatch {
                 for(key, value) in scrobbleDict {
                     params[key] = value
                 }
             }
-            params[self.method] = self.method_scrobble
-            params[self.api_key] = self.api_key_value
-            params[self.sk] = self.session
+            params[method] = method_scrobble
+            params[api_key] = api_key_value
+            params[sk] = session
             
-            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String : String]) -> Void in
-                Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
-                self.scrobbleCache.removeAll(keepCapacity: true)
+            buildApiSigAndCallWS(params, successHandler: { (info:[String : String]) -> Void in
+                    Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
+                    completionHandler?(shouldRemove:true)
                 }, failureHandler: { [unowned self](info:[String : String]) -> () in
                     Logger.debug("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
-                    if(info[self.error_key] != nil && info[self.error_key]! != self.httpFailure) {
-                        self.scrobbleCache.removeAll()
-                    }
+                    let removeSlice = (info[self.error_key] != nil && info[self.error_key]! != self.httpFailure)
+                    completionHandler?(shouldRemove:removeSlice)
                 })
-            })
+            Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
+        }
+        
+        
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [scrobbleCache = self.scrobbleCache]() -> Void in
+            Logger.debug("submitting the scrobble cache")
+            let dispatchGroup = dispatch_group_create() // use the dispatch group to know when the asynch tasks are finished
+            let maxValue = scrobbleCache.count
+            
+            var startIndex = 0
+            var splitCache = [Int:ArraySlice<[String:String]>]() //using a separate structure to be able to remove portions of the scrobble cache when each sub batch finishes
+            while startIndex < maxValue {
+                let endIndex = min(startIndex + self.BATCH_SIZE, maxValue)
+                let slice = scrobbleCache[startIndex ..< endIndex]
+                splitCache[startIndex] = slice
+                
+                dispatch_group_enter(dispatchGroup)
+                let key = startIndex
+                submitBatchOfScrobbles(slice) { (shouldRemove:Bool) -> Void in
+                    if shouldRemove {
+                        splitCache.removeValueForKey(key)
+                    }
+                    dispatch_group_leave(dispatchGroup)
+                }
+                startIndex = endIndex
+            }
+            
+            dispatch_group_notify(dispatchGroup, dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
+                Logger.debug("completed all async tasks for submitting scrobbles")
+                self.scrobbleCache = splitCache.flatMap() { return $1 } //assign back to the main scrobbleCache if any batches failed and did not remove their portion of the caches
+                completionHandler?()
+                TempDataDAO.instance.persistLastFmScrobbleCache()
+            }
+        })
     }
     
+
+    
     func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
+        guard validSessionObtained else { return }
+        
         Logger.debug("caching the scrobble for track: \(mediaItemToScrobble.trackTitle) - \(mediaItemToScrobble.artist)")
         let i = scrobbleCache.count
         var scrobbleDict = [String:String]()
