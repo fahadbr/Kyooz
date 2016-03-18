@@ -180,6 +180,7 @@ final class LastFmScrobbler {
         }
         
         func submitBatchOfScrobbles(scrobbleBatch:ArraySlice<([String:String])>, completionHandler:((shouldRemove:Bool)->())? = nil) {
+            Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
             var params = [String:String]()
             for scrobbleDict in scrobbleBatch {
                 for(key, value) in scrobbleDict {
@@ -198,7 +199,6 @@ final class LastFmScrobbler {
                     let removeSlice = (info[self.error_key] != nil && info[self.error_key]! != self.httpFailure)
                     completionHandler?(shouldRemove:removeSlice)
                 })
-            Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
         }
         
         

@@ -104,7 +104,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
     //MARK: AudioQueuePlayer - Properties
-    var type = AudioQueuePlayerType.Default
+    let type = AudioQueuePlayerType.Default
     
     var playbackStateSnapshot:PlaybackStateSnapshot {
 		get {

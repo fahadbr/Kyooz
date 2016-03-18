@@ -91,7 +91,8 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         
         transformAnimation.fromValue = NSValue(CATransform3D: CATransform3DConcat(scaleTransform, translationTransform))
         transformAnimation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
-        transformAnimation.duration = 0.15
+        transformAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        transformAnimation.duration = 0.2
         transformAnimation.fillMode = kCAFillModeBackwards
         
         tableContainerView.layer.addAnimation(transformAnimation, forKey: nil)
