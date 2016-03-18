@@ -138,6 +138,8 @@
 		10FD32591C8F986800004CAB /* BlurViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32581C8F986800004CAB /* BlurViewController.swift */; };
 		10FD325B1C90E43900004CAB /* KyoozMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */; };
 		10FD325D1C90E7B200004CAB /* ConstraintUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD325C1C90E7B200004CAB /* ConstraintUtils.swift */; };
+		10FD32711C9B68C600004CAB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10FD32701C9B68C600004CAB /* SystemConfiguration.framework */; };
+		10FD32741C9B6B4300004CAB /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32731C9B6B4300004CAB /* Reachability.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -295,6 +297,9 @@
 		10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozMenuViewController.swift; sourceTree = "<group>"; };
 		10FD325C1C90E7B200004CAB /* ConstraintUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintUtils.swift; sourceTree = "<group>"; };
 		10FD32641C94808900004CAB /* KyoozUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		10FD32701C9B68C600004CAB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		10FD32721C9B6B4300004CAB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		10FD32731C9B6B4300004CAB /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -302,6 +307,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10FD32711C9B68C600004CAB /* SystemConfiguration.framework in Frameworks */,
 				0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */,
 				0B13DA271AE6FB0400CC5C01 /* MediaPlayer.framework in Frameworks */,
 			);
@@ -550,6 +556,8 @@
 		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				10FD32721C9B6B4300004CAB /* Reachability.h */,
+				10FD32731C9B6B4300004CAB /* Reachability.m */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
 				0BBE16001AF6AC80007C6189 /* Logger */,
 				10171E041C373342002FD905 /* Test */,
@@ -623,6 +631,7 @@
 		0BD43F6A1AF855E200D5B2D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				10FD32701C9B68C600004CAB /* SystemConfiguration.framework */,
 				0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */,
 				0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */,
 			);
@@ -866,6 +875,7 @@
 				0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */,
 				0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
+				10FD32741C9B6B4300004CAB /* Reachability.m in Sources */,
 				0BBA91F51C081F8C00C79BA2 /* IndexBuildingOperation.swift in Sources */,
 				0BCE21A31B1403C70074DA47 /* AudioEngineController.swift in Sources */,
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
