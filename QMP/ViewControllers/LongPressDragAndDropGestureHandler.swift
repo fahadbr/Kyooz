@@ -39,7 +39,7 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         super.init(sourceTableView: dragSource.sourceTableView, destinationTableView: dropDestination.destinationTableView)
 
         shouldHideSourceView = false
-        snapshotScale = 1.0
+        snapshotScale = 0.85
         updateSnapshotXPosition = true
         cornerRadiusForSnapshot = 10
     }
@@ -49,33 +49,34 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
             return nil
         }
         itemsToDrag = sourceData.getTracksAtIndex(indexPath)
-        let v = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width * 0.6, height: 100))
-        v.backgroundColor = ThemeHelper.defaultTableCellColor
-        
-        func configureLabel(label:UILabel, text:String?, font:UIFont?) {
-            label.textAlignment = .Center
-            label.font = font ?? ThemeHelper.defaultFont
-            label.text = text
-            label.textColor = ThemeHelper.defaultFontColor
-            label.numberOfLines = 0
-            label.lineBreakMode = .ByWordWrapping
-            label.frame = label.textRectForBounds(v.bounds, limitedToNumberOfLines: 0)
-        }
-        
-        let label1 = UILabel()
-        configureLabel(label1, text: itemsToDrag?.first?.titleForGrouping(sourceData.libraryGrouping), font: UIFont(name: ThemeHelper.defaultFontNameMedium, size: 15))
-        let label2 = UILabel()
-        configureLabel(label2, text: "\(itemsToDrag?.count ?? 0) Tracks", font: UIFont(name: ThemeHelper.defaultFontName, size: 12))
-        
-        let stackView = UIStackView(arrangedSubviews: [label1, label2])
-        stackView.frame = CGRect(x: 0, y: 0, width: v.frame.width, height: v.frame.height/2)
-        stackView.axis = .Vertical
-        stackView.alignment = .Center
-        v.addSubview(stackView)
-        
-        v.layer.borderColor = ThemeHelper.defaultVividColor.CGColor
-        v.layer.borderWidth = 1.5
-        return v
+        return super.getViewForSnapshot(sender)
+//        let v = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width * 0.6, height: 100))
+//        v.backgroundColor = ThemeHelper.defaultTableCellColor
+//        
+//        func configureLabel(label:UILabel, text:String?, font:UIFont?) {
+//            label.textAlignment = .Center
+//            label.font = font ?? ThemeHelper.defaultFont
+//            label.text = text
+//            label.textColor = ThemeHelper.defaultFontColor
+//            label.numberOfLines = 0
+//            label.lineBreakMode = .ByWordWrapping
+//            label.frame = label.textRectForBounds(v.bounds, limitedToNumberOfLines: 0)
+//        }
+//        
+//        let label1 = UILabel()
+//        configureLabel(label1, text: itemsToDrag?.first?.titleForGrouping(sourceData.libraryGrouping), font: UIFont(name: ThemeHelper.defaultFontNameMedium, size: 15))
+//        let label2 = UILabel()
+//        configureLabel(label2, text: "\(itemsToDrag?.count ?? 0) Tracks", font: UIFont(name: ThemeHelper.defaultFontName, size: 12))
+//        
+//        let stackView = UIStackView(arrangedSubviews: [label1, label2])
+//        stackView.frame = CGRect(x: 0, y: 0, width: v.frame.width, height: v.frame.height/2)
+//        stackView.axis = .Vertical
+//        stackView.alignment = .Center
+//        v.addSubview(stackView)
+//        
+//        v.layer.borderColor = ThemeHelper.defaultVividColor.CGColor
+//        v.layer.borderWidth = 1.5
+//        return v
         
     }
     

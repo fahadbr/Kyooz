@@ -72,7 +72,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
     
     //MARK: AudioQueuePlayer - Properties
-    var type = AudioQueuePlayerType.AppleDRM
+    let type = AudioQueuePlayerType.AppleDRM
     
 	var playbackStateSnapshot:PlaybackStateSnapshot {
 		get {
@@ -313,11 +313,9 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             }
         }
         
-//        KyoozUtils.doInMainQueueAsync() { [musicPlayer = self.musicPlayer] in
-            musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
-            let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
-            musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
-//        }
+        musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
+        let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
+        musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
 		
         presentNotificationsIfNecessary()
     }

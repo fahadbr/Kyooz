@@ -150,13 +150,6 @@
 			remoteGlobalIDString = 0B13D9BA1AE6F80E00CC5C01;
 			remoteInfo = Kyooz;
 		};
-		10FD32691C94808900004CAB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0B13D9B31AE6F80E00CC5C01 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0B13D9BA1AE6F80E00CC5C01;
-			remoteInfo = Kyooz;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -296,7 +289,6 @@
 		10FD32581C8F986800004CAB /* BlurViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurViewController.swift; sourceTree = "<group>"; };
 		10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozMenuViewController.swift; sourceTree = "<group>"; };
 		10FD325C1C90E7B200004CAB /* ConstraintUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintUtils.swift; sourceTree = "<group>"; };
-		10FD32641C94808900004CAB /* KyoozUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		10FD32701C9B68C600004CAB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		10FD32721C9B6B4300004CAB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		10FD32731C9B6B4300004CAB /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
@@ -314,13 +306,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		100A8BBF1C54423B009FAB17 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		10FD32611C94808900004CAB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -355,7 +340,6 @@
 			children = (
 				0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */,
 				100A8BC21C54423B009FAB17 /* KyoozTests.xctest */,
-				10FD32641C94808900004CAB /* KyoozUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -750,24 +734,6 @@
 			productReference = 100A8BC21C54423B009FAB17 /* KyoozTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		10FD32631C94808900004CAB /* KyoozUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 10FD326B1C94808900004CAB /* Build configuration list for PBXNativeTarget "KyoozUITests" */;
-			buildPhases = (
-				10FD32601C94808900004CAB /* Sources */,
-				10FD32611C94808900004CAB /* Frameworks */,
-				10FD32621C94808900004CAB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				10FD326A1C94808900004CAB /* PBXTargetDependency */,
-			);
-			name = KyoozUITests;
-			productName = KyoozUITests;
-			productReference = 10FD32641C94808900004CAB /* KyoozUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -792,10 +758,6 @@
 						CreatedOnToolsVersion = 7.2;
 						TestTargetID = 0B13D9BA1AE6F80E00CC5C01;
 					};
-					10FD32631C94808900004CAB = {
-						CreatedOnToolsVersion = 7.2.1;
-						TestTargetID = 0B13D9BA1AE6F80E00CC5C01;
-					};
 				};
 			};
 			buildConfigurationList = 0B13D9B61AE6F80E00CC5C01 /* Build configuration list for PBXProject "Kyooz" */;
@@ -814,7 +776,6 @@
 			targets = (
 				0B13D9BA1AE6F80E00CC5C01 /* Kyooz */,
 				100A8BC11C54423B009FAB17 /* KyoozTests */,
-				10FD32631C94808900004CAB /* KyoozUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -845,13 +806,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		100A8BC01C54423B009FAB17 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		10FD32621C94808900004CAB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -988,13 +942,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		10FD32601C94808900004CAB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1002,11 +949,6 @@
 			isa = PBXTargetDependency;
 			target = 0B13D9BA1AE6F80E00CC5C01 /* Kyooz */;
 			targetProxy = 100A8BC71C54423B009FAB17 /* PBXContainerItemProxy */;
-		};
-		10FD326A1C94808900004CAB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0B13D9BA1AE6F80E00CC5C01 /* Kyooz */;
-			targetProxy = 10FD32691C94808900004CAB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1200,33 +1142,6 @@
 			};
 			name = Release;
 		};
-		10FD326C1C94808900004CAB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = KyoozUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.riaz.Fahad..KyoozUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = Kyooz;
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		10FD326D1C94808900004CAB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = KyoozUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.riaz.Fahad..KyoozUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = Kyooz;
-				USES_XCTRUNNER = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1253,15 +1168,6 @@
 			buildConfigurations = (
 				100A8BCA1C54423B009FAB17 /* Debug */,
 				100A8BCB1C54423B009FAB17 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		10FD326B1C94808900004CAB /* Build configuration list for PBXNativeTarget "KyoozUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				10FD326C1C94808900004CAB /* Debug */,
-				10FD326D1C94808900004CAB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
