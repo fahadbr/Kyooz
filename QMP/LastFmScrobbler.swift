@@ -8,6 +8,7 @@
 
 import Foundation
 import MediaPlayer
+import SystemConfiguration
 
 final class LastFmScrobbler {
     
@@ -188,7 +189,7 @@ final class LastFmScrobbler {
             params[method] = method_scrobble
             params[api_key] = api_key_value
             params[sk] = session
-            
+			
             buildApiSigAndCallWS(params, successHandler: { (info:[String : String]) -> Void in
                     Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
                     completionHandler?(shouldRemove:true)
@@ -250,7 +251,11 @@ final class LastFmScrobbler {
     }
     
     private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:String]) -> Void, failureHandler lastFmFailureHandler: ([String:String]) -> ()) {
-
+		guard KyoozUtils.internetConnectionAvailable else {
+			Logger.debug("no internet connection available")
+			lastFmFailureHandler([error_key:httpFailure])
+			return
+		}
         
         let orderedParamKeys = getOrderedParamKeys(params)
         let apiSig = buildApiSig(params, orderedParamKeys: orderedParamKeys)

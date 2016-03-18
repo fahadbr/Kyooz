@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SystemConfiguration
 
 struct KyoozUtils {
 	
@@ -22,6 +23,10 @@ struct KyoozUtils {
         animation.fillMode = kCAFillModeBackwards
         return animation
     }()
+	
+	static var internetConnectionAvailable:Bool {
+		return Reachability.reachabilityForInternetConnection().currentReachabilityStatus() != NetworkStatus.NotReachable
+	}
     
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
