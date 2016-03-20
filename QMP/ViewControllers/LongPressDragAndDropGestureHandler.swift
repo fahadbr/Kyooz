@@ -13,16 +13,30 @@ import MediaPlayer
 
 final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     
-    var dragSource:DragSource
-    var dropDestination:DropDestination
+    private var dragSource:DragSource
+    private var dropDestination:DropDestination
     
-    var itemsToDrag:[AudioTrack]!
-    var cancelView:CancelView
-    var cancelViewVisible:Bool = false
+    private var cancelViewVisible:Bool = false
+    
+    private lazy var cancelView:CancelView = CancelView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 100, height: 100)))
+    
+    private lazy var redLayer:CALayer = {
+        let layer = CALayer()
+        layer.frame = CGRect(origin: CGPoint.zero, size: self.snapshot.bounds.size ?? CGSize.zero)
+        layer.cornerRadius = self.cornerRadiusForSnapshot
+        layer.backgroundColor = UIColor.redColor().CGColor
+        layer.opacity = 0.3
+        return layer
+    }()
     
     override var locationInDestinationTableView:Bool {
         didSet {
             (wrapperDSD as? DragToInsertDSDWrapper)?.locationInDestinationTableView = locationInDestinationTableView
+            if locationInDestinationTableView {
+                removeCancelView()
+            } else {
+                showCancelView()
+            }
         }
     }
 
@@ -30,12 +44,6 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
     init(dragSource:DragSource, dropDestination:DropDestination) {
         self.dragSource = dragSource
         self.dropDestination = dropDestination
-
-        let originalTableBounds = dropDestination.destinationTableView.bounds
-        let frame = CGRect(origin: CGPoint(x: 0, y: -dropDestination.destinationTableView.contentInset.top),
-            size: originalTableBounds.size)
-        
-        cancelView = CancelView(frame: frame)
         
         super.init(sourceTableView: dragSource.sourceTableView, destinationTableView: dropDestination.destinationTableView)
 
@@ -45,8 +53,22 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         cornerRadiusForSnapshot = 10
     }
     
-    override func removeSnapshotFromView(viewToFadeIn: UIView?, viewToFadeOut: UIView, completionHandler: (Bool) -> ()) {
-        super.removeSnapshotFromView(nil, viewToFadeOut: viewToFadeOut, completionHandler: completionHandler)
+    override func removeSnapshotFromView(viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
+        guard locationInDestinationTableView else {
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
+                viewToFadeOut.alpha = 0.0
+            }, completion: completionHandler)
+            return
+        }
+        
+        UIView.animateWithDuration(0.15, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            if(viewToFadeIn != nil) {
+                viewToFadeOut.center = viewToFadeIn!.convertPoint(CGPoint(x: viewToFadeIn!.bounds.midX, y: viewToFadeIn!.bounds.midY), toView: viewToFadeOut.superview)
+            }
+            viewToFadeOut.layer.shadowOpacity = 0
+            viewToFadeOut.alpha = 0.5
+            }, completion: completionHandler)
+        
     }
     
     override func gestureDidBegin(sender: UIGestureRecognizer) {
@@ -65,6 +87,56 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
             return nil
         }
         return DragToInsertDSDWrapper(tableView: tableView, datasourceDelegate: sourceDSD, originalIndexPath: originalIndexPath, entitiesToInsert: entities)
+    }
+    
+    private func showCancelView() {
+        guard !cancelViewVisible else { return }
+        cancelView.center = CGPoint(x: snapshot.center.x, y: snapshot.center.y - 90)
+        snapshotContainer.addSubview(cancelView)
+        snapshot.layer.addSublayer(redLayer)
+        
+        cancelView.layer.addAnimation(getScaleAnimation(forShrinking: false, scale: 0.01), forKey: nil)
+        snapshot.layer.addAnimation(getScaleAnimation(forShrinking: true, scale: 0.5), forKey: nil)
+        
+        cancelViewVisible = true
+    }
+    
+    private func removeCancelView() {
+        guard cancelViewVisible else { return }
+        redLayer.removeFromSuperlayer()
+        
+        let shrinkAnimation = getScaleAnimation(forShrinking: true, scale: 0.01)
+        shrinkAnimation.delegate = self
+        
+        cancelView.layer.addAnimation(shrinkAnimation, forKey: nil)
+        snapshot.layer.addAnimation(getScaleAnimation(forShrinking: false, scale: 0.5), forKey: nil)
+        cancelViewVisible = false
+    }
+    
+    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+        cancelView.removeFromSuperview()
+        cancelView.layer.removeAllAnimations()
+        snapshot.layer.removeAllAnimations()
+    }
+    
+    private func getScaleAnimation(forShrinking animationIsToShrink:Bool, scale:CGFloat) -> CAAnimation {
+        let animation = CABasicAnimation(keyPath: "transform")
+        animation.duration = 0.20
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        let smallValue = NSValue(CATransform3D: CATransform3DMakeScale(scale, scale, scale))
+        let fullValue = NSValue(CATransform3D: CATransform3DIdentity)
+        
+        if animationIsToShrink {
+            animation.fromValue = fullValue
+            animation.toValue = smallValue
+        } else {
+            animation.fromValue = smallValue
+            animation.toValue = fullValue
+        }
+
+        animation.fillMode = kCAFillModeBoth
+        animation.removedOnCompletion = false
+        return animation
     }
 }
 

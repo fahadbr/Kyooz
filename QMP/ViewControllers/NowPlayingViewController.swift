@@ -148,7 +148,6 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     }
     
     private func resetDSD() {
-        Logger.debug("resetting to NowPlayingQueueDSD")
         datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
     }
 

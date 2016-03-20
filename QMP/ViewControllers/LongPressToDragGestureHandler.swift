@@ -14,8 +14,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     private let sourceTableView:UITableView?
     private let destinationTableView:UITableView
     
-    private var snapshot:UIView!
-    private var snapshotLayer:CALayer!
+    private (set) var snapshotContainer:UIView!
+    private (set) var snapshot:UIView!
     private lazy var dragGestureScrollingController:DragGestureScrollingController = DragGestureScrollingController(scrollView: self.destinationTableView, delegate: self)
 
     private var beginningAnimationEnded = false
@@ -102,8 +102,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
             }
             
             let cell = destinationTableView.cellForRowAtIndexPath(indexPathOfMovingItem)
-            removeSnapshotFromView(cell, viewToFadeOut: snapshot, completionHandler: { (finished:Bool) -> Void in
-                self.snapshot.removeFromSuperview()
+            removeSnapshotFromView(cell, viewToFadeOut: snapshotContainer, completionHandler: { (finished:Bool) -> Void in
+                self.snapshotContainer.removeFromSuperview()
                 self.gestureDidEnd(sender)
             })
         }
@@ -160,22 +160,25 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     func createSnapshotFromView(viewForSnapshot:UIView, sender:UIGestureRecognizer) {
         viewForSnapshot.layer.masksToBounds = true
         viewForSnapshot.layer.cornerRadius = cornerRadiusForSnapshot
+        
         snapshot = ImageHelper.customSnapshotFromView(viewForSnapshot)
+        snapshotContainer = UIView(frame: snapshot.frame)
+        snapshotContainer.addSubview(snapshot)
+        
         viewForSnapshot.layer.masksToBounds = false
         
         //add the snapshot as a subview, centered at cell's center
         let locationInView = sender.locationInView(sender.view)
         updateSnapshotPosition(shouldHideSourceView ? viewForSnapshot.center : locationInView)
-        sender.view?.addSubview(snapshot)
+        sender.view?.addSubview(snapshotContainer)
         beginningAnimationEnded = false
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             
             //Offest for gesture location
             self.updateSnapshotPosition(locationInView)
-            self.snapshot.transform = CGAffineTransformMakeScale(self.snapshotScale, self.snapshotScale)
+            self.snapshotContainer.transform = CGAffineTransformMakeScale(self.snapshotScale, self.snapshotScale)
             self.snapshot.alpha = 0.80
             self.snapshot.layer.shadowColor = UIColor.whiteColor().CGColor
-    
             }, completion: {_ in
                 if(self.shouldHideSourceView) {
                     viewForSnapshot.hidden = true
@@ -199,9 +202,9 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     
     final func updateSnapshotPosition(location:CGPoint) {
         if updateSnapshotXPosition {
-            snapshot.center = location
+            snapshotContainer.center = location
         } else {
-            snapshot.center.y = location.y
+            snapshotContainer.center.y = location.y
         }
     }
     

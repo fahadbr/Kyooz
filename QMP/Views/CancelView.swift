@@ -9,27 +9,34 @@
 import Foundation
 import UIKit
 
-class CancelView : UIView {
+final class CancelView : UIView {
     
-    let blurView:UIVisualEffectView
+    let xLabel:UILabel
     let cancelLabel:UILabel
     
     override init(frame: CGRect) {
-        blurView = UIVisualEffectView()
-        blurView.frame = frame
+        let boundsRect = CGRect(origin: CGPoint.zero, size: frame.size)
 
-        cancelLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: 50))
-        cancelLabel.text = "Cancel Insert"
-        cancelLabel.font = UIFont(name: ThemeHelper.defaultFontName, size: 22)
-        cancelLabel.textColor = UIColor.lightGrayColor()
+        cancelLabel = UILabel()
+        cancelLabel.text = "CANCEL"
+        cancelLabel.font = UIFont(name: ThemeHelper.defaultFontNameBold, size: 20)
+        cancelLabel.textColor = UIColor.whiteColor()
         cancelLabel.textAlignment = NSTextAlignment.Center
+        cancelLabel.frame.size = cancelLabel.textRectForBounds(boundsRect, limitedToNumberOfLines: 1).size
+        
+        xLabel = UILabel()
+        xLabel.text = "❌"
+        xLabel.font = UIFont.boldSystemFontOfSize(60)
+        xLabel.textAlignment = .Center
+        xLabel.frame.size = xLabel.textRectForBounds(boundsRect, limitedToNumberOfLines: 1).size
+        
+        let stackView = UIStackView(arrangedSubviews: [xLabel, cancelLabel])
+        stackView.axis = .Vertical
         
         super.init(frame: frame)
         
-        addSubview(blurView)
-        addSubview(cancelLabel)
-        blurView.center = center
-        cancelLabel.center = center
+        ConstraintUtils.applyStandardConstraintsToView(subView: stackView, parentView: self)
+        
     }
 
     required init?(coder aDecoder: NSCoder) {
