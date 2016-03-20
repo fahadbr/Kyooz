@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate, UIScrollViewDelegate {
+final class NowPlayingViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate, GestureHandlerDelegate {
 
     @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
     
@@ -28,8 +28,8 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
             } else {
                 editing = false
                 insertMode = false
-                if !(datasourceDelegate is NowPlayingQueueDSD) {
-                    datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
+                if !(tableView.dataSource is NowPlayingQueueDSD) || !(tableView.delegate is NowPlayingQueueDSD){
+                    resetDSD()
                 }
             }
         }
@@ -44,21 +44,8 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     
     //MARK: GESTURE PROPERTIES
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
-    
-    var indexPathOfMovingItem:NSIndexPath! {
-        didSet {
-            (datasourceDelegate as? DragAndDropDSDWrapper)?.indexPathOfMovingItem = indexPathOfMovingItem
-        }
-    }
     var insertMode:Bool = false {
         didSet {
-            if(insertMode) {
-                datasourceDelegate = DragAndDropDSDWrapper(datasourceDelegate: datasourceDelegate)
-            } else {
-                if let dragAndDropDSDWrapper = datasourceDelegate as? DragAndDropDSDWrapper {
-                    dragAndDropDSDWrapper.endingInsert = true
-                }
-            }
             longPressGestureRecognizer.enabled = !insertMode
             toolbarItems?.forEach() { $0.enabled = !insertMode }
         }
@@ -90,18 +77,16 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
+        dragToRearrangeGestureHandler.delegate = self
         longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragToRearrangeGestureHandler, action: "handleGesture:")
+
         tableView.addGestureRecognizer(longPressGestureRecognizer)
         
-        datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
+        resetDSD()
         registerForNotifications()
 
     }
 	
-    
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-        
-    }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -161,10 +146,19 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
             deleteIndexPaths(indexPaths)
         }
     }
+    
+    private func resetDSD() {
+        Logger.debug("resetting to NowPlayingQueueDSD")
+        datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
+    }
 
     //MARK: INSERT MODE FUNCITONS
     func setDropItems(dropItems: [AudioTrack], atIndex:NSIndexPath) -> Int {
         return audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
+    }
+    
+    func gestureDidEnd(sender: UIGestureRecognizer) {
+        resetDSD()
     }
 
     //MARK: CLASS Functions

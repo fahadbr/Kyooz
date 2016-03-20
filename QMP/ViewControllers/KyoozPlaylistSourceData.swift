@@ -52,4 +52,19 @@ final class KyoozPlaylistSourceData : MutableAudioEntitySourceData {
         tracks.insert(temp, atIndex: destinationIndexPath.row)
         try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: tracks)
     }
+    
+    func insertEntities(entities: [AudioEntity], atIndexPath indexPathToInsert: NSIndexPath) throws -> Int {
+        guard indexPathToInsert.row <= playlist.count else {
+            throw KyoozError(errorDescription: "IndexPath to insert is not within the Playlist count")
+        }
+        
+        guard let audioTracks = (entities as? [AudioTrack]) ?? (entities as? [AudioTrackCollection])?.flatMap({ return $0.tracks })  else {
+            throw KyoozError(errorDescription: "entities passed in to insert are not instances of AudioTrack or AudioTrackCollection")
+        }
+        
+        var tracks = playlist.tracks
+        tracks.insertContentsOf(audioTracks, at: indexPathToInsert.row)
+        try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: tracks)
+        return entities.count
+    }
 }

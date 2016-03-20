@@ -108,6 +108,10 @@ extension KyoozPlaylistManager : MutableAudioEntitySourceData {
         }
     }
     
+    func insertEntities(entities: [AudioEntity], atIndexPath indexPathToInsert: NSIndexPath) throws -> Int {
+        throw KyoozError(errorDescription: "unsupported implementation")
+    }
+    
     func moveEntity(fromIndexPath originalIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) throws {
         //reordering is not supported
     }

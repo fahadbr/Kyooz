@@ -42,6 +42,8 @@
 		0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937561C87E96200374A3C /* HeaderViewController.swift */; };
 		0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937581C92690B00374A3C /* FadeOutViewController.swift */; };
 		0B29375B1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */; };
+		0B29375D1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375C1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift */; };
+		0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375E1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift */; };
 		0B31FE091BF04B7100B33F0A /* AudioEntitySearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */; };
 		0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
 		0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C711B21FA5400626810 /* AudioTrack.swift */; };
@@ -56,7 +58,7 @@
 		0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */; };
 		0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */; };
 		0B533AC01BC1878900EA71B7 /* LibraryGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */; };
-		0B58794B1C729ABF009E713F /* DragAndDropDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794A1C729ABF009E713F /* DragAndDropDSDWrapper.swift */; };
+		0B58794B1C729ABF009E713F /* DragToInsertDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794A1C729ABF009E713F /* DragToInsertDSDWrapper.swift */; };
 		0B58794D1C74140C009E713F /* UtilHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */; };
 		0B5879511C756097009E713F /* ArtworkHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */; };
 		0B5F134E1C714F56009A1FDD /* MediaQuerySourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */; };
@@ -190,6 +192,8 @@
 		0B2937561C87E96200374A3C /* HeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
 		0B2937581C92690B00374A3C /* FadeOutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeOutViewController.swift; sourceTree = "<group>"; };
 		0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityViewControllerProtocol.swift; sourceTree = "<group>"; };
+		0B29375C1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragToRearrangeDSDWrapper.swift; sourceTree = "<group>"; };
+		0B29375E1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDWrapper.swift; sourceTree = "<group>"; };
 		0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySearchViewController.swift; sourceTree = "<group>"; };
 		0B476C6E1B1BFE5700626810 /* CancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelView.swift; sourceTree = "<group>"; };
 		0B476C711B21FA5400626810 /* AudioTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioTrack.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -204,7 +208,7 @@
 		0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingQueueContext.swift; sourceTree = "<group>"; };
 		0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackStateSnapshot.swift; sourceTree = "<group>"; };
 		0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGrouping.swift; sourceTree = "<group>"; };
-		0B58794A1C729ABF009E713F /* DragAndDropDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragAndDropDSDWrapper.swift; sourceTree = "<group>"; };
+		0B58794A1C729ABF009E713F /* DragToInsertDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragToInsertDSDWrapper.swift; sourceTree = "<group>"; };
 		0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilHeaderViewController.swift; sourceTree = "<group>"; };
 		0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtworkHeaderViewController.swift; sourceTree = "<group>"; };
 		0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQuerySourceData.swift; sourceTree = "<group>"; };
@@ -572,10 +576,12 @@
 				0BC3179C1C5D7BB2002BF431 /* AudioEntityDSD.swift */,
 				100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */,
 				100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */,
+				0B29375E1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift */,
 				0BC317A01C5D8F66002BF431 /* AudioTrackDSD.swift */,
 				100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */,
 				0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */,
-				0B58794A1C729ABF009E713F /* DragAndDropDSDWrapper.swift */,
+				0B58794A1C729ABF009E713F /* DragToInsertDSDWrapper.swift */,
+				0B29375C1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift */,
 				10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */,
 			);
 			name = TableView;
@@ -852,6 +858,7 @@
 				10FD32571C8F948100004CAB /* AudioEntityLibraryViewController.swift in Sources */,
 				0B5879511C756097009E713F /* ArtworkHeaderViewController.swift in Sources */,
 				10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */,
+				0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */,
 				0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
@@ -894,6 +901,7 @@
 				0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */,
 				0B5F13561C71682F009A1FDD /* AudioQueuePlayerSourceData.swift in Sources */,
 				100A8BD31C56F8DE009FAB17 /* KyoozPlaylistManager.swift in Sources */,
+				0B29375D1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift in Sources */,
 				10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
 				10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */,
@@ -927,7 +935,7 @@
 				0B7FAC1F1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift in Sources */,
 				0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioEntity.swift in Sources */,
-				0B58794B1C729ABF009E713F /* DragAndDropDSDWrapper.swift in Sources */,
+				0B58794B1C729ABF009E713F /* DragToInsertDSDWrapper.swift in Sources */,
 				0BC3179F1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift in Sources */,
 				100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */,
 				0B13DA1B1AE6FA9A00CC5C01 /* ImageTableViewCell.swift in Sources */,

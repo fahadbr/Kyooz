@@ -11,6 +11,8 @@ import MediaPlayer
 
 final class ArtworkHeaderViewController : HeaderViewController {
     
+    private static let clearGradiantDefaultLocations:(start:CGFloat, end:CGFloat) = (0.25, 0.75)
+    
     override var defaultHeight:CGFloat {
         return 375
     }
@@ -42,14 +44,17 @@ final class ArtworkHeaderViewController : HeaderViewController {
     private var observingViewBounds = false
     private var kvoContext:UInt8 = 123
 	
-	private let clearGradiantDefaultLocations:(start:CGFloat, end:CGFloat) = (0.25, 0.75)
+
     private let gradiantLayer:CAGradientLayer = {
         let gradiant = CAGradientLayer()
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
         gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
 		
-        gradiant.locations = [0.0, 0.25, 0.75, 1.0]
+        gradiant.locations = [0.0,
+            ArtworkHeaderViewController.clearGradiantDefaultLocations.start,
+            ArtworkHeaderViewController.clearGradiantDefaultLocations.end,
+            1.0]
         return gradiant
     }()
     
@@ -157,21 +162,25 @@ final class ArtworkHeaderViewController : HeaderViewController {
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath != nil && keyPath! == observationKey {
             let expandedFraction = self.expandedFraction
+            let invertedFraction = 1 - expandedFraction
             
             detailsLabel1.alpha = expandedFraction
             
-            blurViewController.blurRadius = timeOffsetForBlur(expandedFraction)
+            blurViewController.blurRadius = expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
             
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-            imageView.layer.transform = CATransform3DMakeTranslation(0, (1 - expandedFraction) * 0.2 * imageView.frame.height * -1, 0)
+            imageView.layer.transform = CATransform3DMakeTranslation(0, invertedFraction * 0.2 * imageView.frame.height * -1, 0)
             gradiantLayer.frame = view.bounds
+            let clearGradiantStart = min(self.dynamicType.clearGradiantDefaultLocations.start * expandedFraction, self.dynamicType.clearGradiantDefaultLocations.start) //ranges from 25 -> 0 as view collapses
+            let clearGradiantEnd = max((0.25 * invertedFraction) + self.dynamicType.clearGradiantDefaultLocations.end, self.dynamicType.clearGradiantDefaultLocations.end) //ranges from 75 -> 100 as view collapses
+            gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
             
             if expandedFraction < 0.25 {
                 let scaledFraction = Float(expandedFraction) * 4
                 view.layer.shadowOpacity =  1 - scaledFraction
                 gradiantLayer.opacity = scaledFraction
-                
+
             } else {
                 view.layer.shadowOpacity = 0
                 gradiantLayer.opacity = 1
@@ -179,10 +188,6 @@ final class ArtworkHeaderViewController : HeaderViewController {
             CATransaction.commit()
             
         }
-    }
-    
-    private func timeOffsetForBlur(expandedFraction:CGFloat) -> Double {
-        return expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
     }
     
 }
