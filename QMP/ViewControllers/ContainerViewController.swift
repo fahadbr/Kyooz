@@ -50,7 +50,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
     }
     
-    private var _undoManager:NSUndoManager = {
+    private let _undoManager:NSUndoManager = {
             let u = NSUndoManager()
             u.levelsOfUndo = 2
             return u
@@ -348,7 +348,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
         case .Ended, .Cancelled:
             nowPlayingViewController!.insertMode = false
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [unowned self]() in
+            dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.6), dispatch_get_main_queue()) { [unowned self]() in
                 self.animateSidePanel(shouldExpand: false)
                 self.dragAndDropHandler = nil
             }

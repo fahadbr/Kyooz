@@ -22,7 +22,7 @@ final class DragGestureScrollingController :NSObject {
     private let minContentOffset:CGFloat
     private var maxContentOffset:CGFloat {
         //calculating the maxContentOffset each time because the contentSize is subject to change
-        //TODO: possible add observer for contentSize
+        //TODO: possibly add observer for contentSize
         return (scrollView.contentSize.height - scrollView.bounds.height) + scrollView.contentInset.bottom
     }
     
@@ -94,14 +94,16 @@ final class DragGestureScrollingController :NSObject {
             newOffset = min(currentOffset + scrollIncrement, maxContentOffset)
         }
         
+        guard newOffset < maxContentOffset && newOffset > minContentOffset else {
+            invalidateDisplayLink()
+            return
+        }
+        
         //THIS ORDER MATTERS FOR DRAG AND DROP
         //(When scrolling fast the tableview datasource may sometimes return the placeholder cell because of the updated indexPathOfMovingItem)
         delegate.handlePositionChange(gestureRecognizer)
         scrollView.contentOffset.y = newOffset
         
-        if newOffset >= maxContentOffset || newOffset <= minContentOffset {
-            invalidateDisplayLink()
-        }
     }
     
 }
