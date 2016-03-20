@@ -346,6 +346,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: rootViewController, dropDestination: nowPlayingViewController!)
                 dragAndDropHandler.delegate = self
             }
+        case .Ended, .Cancelled:
+            nowPlayingViewController!.insertMode = false
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [unowned self]() in
+                self.animateSidePanel(shouldExpand: false)
+                self.dragAndDropHandler = nil
+            }
         default:
             break
         }
@@ -359,14 +365,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         if(sender == longPressGestureRecognizer) {
             animateSidePanel(shouldExpand: true)
             nowPlayingViewController!.insertMode = true
-        }
-    }
-    
-    func gestureDidEnd(sender: UIGestureRecognizer) {
-        nowPlayingViewController!.insertMode = false
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeDelayInNanoSeconds), dispatch_get_main_queue()) { [unowned self]() in
-            self.animateSidePanel(shouldExpand: false)
-            self.dragAndDropHandler = nil
         }
     }
     

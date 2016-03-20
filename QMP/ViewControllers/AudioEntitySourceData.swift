@@ -34,6 +34,8 @@ protocol MutableAudioEntitySourceData : AudioEntitySourceData {
     func deleteEntitiesAtIndexPaths(indexPaths:[NSIndexPath]) throws
     
     func moveEntity(fromIndexPath originalIndexPath:NSIndexPath, toIndexPath destinationIndexPath:NSIndexPath) throws
+    
+    func insertEntities(entities:[AudioEntity], atIndexPath indexPathToInsert:NSIndexPath) throws -> Int
 }
 
 extension AudioEntitySourceData {
