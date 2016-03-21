@@ -74,16 +74,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         rootViewController = RootViewController.instance
         
         let rootView = rootViewController.view
-        view.addSubview(rootView)
         addChildViewController(rootViewController)
         rootViewController.didMoveToParentViewController(self)
-        
-        rootView.translatesAutoresizingMaskIntoConstraints = false
-        rootView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        rootView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-        rootView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
-        collapsedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
-        collapsedConstraint.active = true
+		
+		collapsedConstraint = ConstraintUtils.applyConstraintsToView(
+			withAnchors: [.Top, .Bottom, .Width, .Right],
+			subView: rootView,
+			parentView: view)[.Right]
         expandedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.leftAnchor, constant: centerPanelExpandedOffset)
         
         rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
