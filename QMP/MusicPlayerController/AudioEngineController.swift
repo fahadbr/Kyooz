@@ -113,7 +113,7 @@ final class AudioEngineController : AudioController {
             if(self.validationCode == UInt8.max) {
                 self.validationCode = 0
             } else {
-                self.validationCode++
+                self.validationCode += 1
             }
         }
         let newValidationCode = self.validationCode

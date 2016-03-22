@@ -97,7 +97,7 @@ final class PlaybackStateManager: NSObject {
     }
     
     private func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handlePlaybackStateChanged:",
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaybackStateManager.handlePlaybackStateChanged(_:)),
             name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
             object: musicPlayer)
         musicPlayer.beginGeneratingPlaybackNotifications()

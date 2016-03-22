@@ -167,9 +167,9 @@ final class PlayCountIterator : NSObject {
     private func registerForAppNotifications() {
         let app = UIApplication.sharedApplication()
         let n = NSNotificationCenter.defaultCenter()
-        n.addObserver(self, selector: "handleApplicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: app)
-        n.addObserver(self, selector: "handleApplicationWillTerminateNotification:", name: UIApplicationWillTerminateNotification, object: app)
-        n.addObserver(self, selector: "handleApplicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: app)
+        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: app)
+        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationWillTerminateNotification(_:)), name: UIApplicationWillTerminateNotification, object: app)
+        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: app)
     }
     
     private func unregisterForAppNotifications() {

@@ -30,9 +30,9 @@ class RemoteCommandHandler : NSObject {
         rcc.previousTrackCommand.enabled = shouldEnable
         rcc.nextTrackCommand.enabled = shouldEnable
         rcc.playCommand.enabled = shouldEnable
-        rcc.nextTrackCommand.addTarget(self, action: "nextTrack")
-        rcc.previousTrackCommand.addTarget(self, action: "previousTrack")
-        rcc.playCommand.addTarget(self, action: "play")
+        rcc.nextTrackCommand.addTarget(self, action: #selector(RemoteCommandHandler.nextTrack))
+        rcc.previousTrackCommand.addTarget(self, action: #selector(RemoteCommandHandler.previousTrack))
+        rcc.playCommand.addTarget(self, action: #selector(RemoteCommandHandler.play))
         
         
 //        rcc.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in

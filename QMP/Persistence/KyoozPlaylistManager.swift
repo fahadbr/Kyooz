@@ -98,9 +98,10 @@ extension KyoozPlaylistManager : MutableAudioEntitySourceData {
         return KyoozPlaylistSourceData(playlist: playlist)
     }
     
-    func deleteEntitiesAtIndexPaths(var indexPaths: [NSIndexPath]) throws {
-        indexPaths.sortInPlace() { $0.row > $1.row }
-        for indexPath in indexPaths {
+    func deleteEntitiesAtIndexPaths(indexPaths: [NSIndexPath]) throws {
+		
+        let sortedIndexPaths = indexPaths.sort() { $0.row > $1.row }
+        for indexPath in sortedIndexPaths {
             guard let playlist = playlistsSet.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
                 return
             }

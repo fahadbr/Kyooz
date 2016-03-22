@@ -40,10 +40,10 @@ final class BlurViewController : UIViewController {
 		view.backgroundColor = UIColor.clearColor()
 		
 		let notificationCenter = NSNotificationCenter.defaultCenter()
-		notificationCenter.addObserver(self, selector: "createSnapshotBlur", name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
-		notificationCenter.addObserver(self, selector: "removeBlurAnimation", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-		notificationCenter.addObserver(self, selector: "resetBlurAnimation", name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
-		notificationCenter.addObserver(self, selector: "removeSnapshotBlur", name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+		notificationCenter.addObserver(self, selector: #selector(BlurViewController.createSnapshotBlur), name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
+		notificationCenter.addObserver(self, selector: #selector(BlurViewController.removeBlurAnimation), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
+		notificationCenter.addObserver(self, selector: #selector(BlurViewController.resetBlurAnimation), name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
+		notificationCenter.addObserver(self, selector: #selector(BlurViewController.removeSnapshotBlur), name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
 	}
 	
 	override func viewWillAppear(animated: Bool) {

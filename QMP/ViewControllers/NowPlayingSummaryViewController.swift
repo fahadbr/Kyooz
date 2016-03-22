@@ -199,7 +199,7 @@ class NowPlayingSummaryViewController: UIViewController {
             Logger.debug("initiating playbackProgressTimer")
             playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
                 target: self,
-                selector: "updatePlaybackProgressBar:",
+                selector: #selector(NowPlayingSummaryViewController.updatePlaybackProgressBar(_:)),
                 userInfo: nil,
                 repeats: true)
         } else if(!audioQueuePlayer.musicIsPlaying && playbackProgressTimer != nil){
@@ -304,18 +304,18 @@ class NowPlayingSummaryViewController: UIViewController {
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
-        notificationCenter.addObserver(self, selector: "reloadData:",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadData:",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadData:",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
         
-        notificationCenter.addObserver(self, selector: "invalidateTimer:",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.invalidateTimer(_:)),
             name: UIApplicationDidEnterBackgroundNotification, object: application)
-        notificationCenter.addObserver(self, selector: "invalidateTimer:",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.invalidateTimer(_:)),
             name: UIApplicationWillResignActiveNotification, object: application)
-        notificationCenter.addObserver(self, selector: "reloadData:",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: UIApplicationDidBecomeActiveNotification, object: application)
     }
     

@@ -46,7 +46,7 @@ final class AudioSessionManager : NSObject {
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
 
-        notificationCenter.addObserver(self, selector: "handleAudioSessionChange:",
+        notificationCenter.addObserver(self, selector: #selector(AudioSessionManager.handleAudioSessionChange(_:)),
             name: AVAudioSessionInterruptionNotification, object: audioSession)
     }
     

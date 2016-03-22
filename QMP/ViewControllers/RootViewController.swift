@@ -106,11 +106,11 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         nowPlayingView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
         nowPlayingView.heightAnchor.constraintEqualToAnchor(view.heightAnchor).active = true
 
-        nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
+        nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(RootViewController.handlePanGesture(_:)))
         nowPlayingPanGestureRecognizer.delegate = self
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingPanGestureRecognizer)
         
-        nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
+        nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RootViewController.handleTapGesture(_:)))
         nowPlayingTapGestureRecognizer.delegate = self
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
         
@@ -126,7 +126,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         searchResultsController.searchController = searchController
         libraryNavigationController.definesPresentationContext = true
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
     }
     
     

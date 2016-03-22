@@ -28,9 +28,9 @@ class HeaderViewController : UIViewController {
     @IBOutlet var selectModeButton: ListButtonView!
     
     
-    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "showAddToOptions:")
-    private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: selectAllString, style: .Plain, target: self, action: "selectOrDeselectAll")
-    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteSelectedItems")
+    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(HeaderViewController.showAddToOptions(_:)))
+    private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: selectAllString, style: .Plain, target: self, action: #selector(HeaderViewController.selectOrDeselectAll))
+    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(HeaderViewController.deleteSelectedItems))
     
     private lazy var playButton:UIBarButtonItem = {
         let playButtonView = PlayPauseButtonView()
@@ -38,7 +38,7 @@ class HeaderViewController : UIViewController {
         playButtonView.isPlayButton = true
         playButtonView.hasOuterFrame = false
         playButtonView.color = ThemeHelper.defaultTintColor
-        playButtonView.addTarget(self, action: "playSelectedTracks:", forControlEvents: .TouchUpInside)
+        playButtonView.addTarget(self, action: #selector(HeaderViewController.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
         return UIBarButtonItem(customView: playButtonView)
     }()
     
@@ -46,7 +46,7 @@ class HeaderViewController : UIViewController {
         let shuffleButtonView = ShuffleButtonView()
         shuffleButtonView.color = ThemeHelper.defaultTintColor
         shuffleButtonView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-        shuffleButtonView.addTarget(self, action: "playSelectedTracks:", forControlEvents: .TouchUpInside)
+        shuffleButtonView.addTarget(self, action: #selector(HeaderViewController.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
         return UIBarButtonItem(customView: shuffleButtonView)
     }()
     
@@ -77,7 +77,7 @@ class HeaderViewController : UIViewController {
         toolbarItems.forEach() {
             $0.tintColor = tintColor
         }
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshButtonStates", name: UITableViewSelectionDidChangeNotification, object: tableView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HeaderViewController.refreshButtonStates), name: UITableViewSelectionDidChangeNotification, object: tableView)
         return toolbarItems
     }
 	

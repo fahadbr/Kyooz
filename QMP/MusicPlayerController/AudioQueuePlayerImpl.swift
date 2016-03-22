@@ -288,10 +288,10 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         var filteredTracks = [AudioTrack]()
         filteredTracks.reserveCapacity(tracks.count)
         
-        var i = 1
-        for track in tracks {
+		
+        for (i, track) in tracks.enumerate() {
             if track.assetURL == nil {
-                unPlayableTrackNames.append("\(i++): \(track.trackTitle) - \(track.artist)")
+                unPlayableTrackNames.append("\(i + 1): \(track.trackTitle) - \(track.artist)")
             } else {
                 filteredTracks.append(track)
             }

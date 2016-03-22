@@ -71,7 +71,7 @@ final class DragGestureScrollingController :NSObject {
         scrollIncrement = max(self.dynamicType.minScrollIncrement, scrollIncrementForFraction)
         
         if(displayLink == nil) {
-            let displayLink = CADisplayLink(target: self, selector: "adjustScrollOffset")
+            let displayLink = CADisplayLink(target: self, selector: #selector(DragGestureScrollingController.adjustScrollOffset))
             displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
             self.displayLink = displayLink
         }

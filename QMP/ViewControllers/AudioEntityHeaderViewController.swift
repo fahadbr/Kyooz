@@ -46,7 +46,7 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 			view.addGestureRecognizer(tableView.panGestureRecognizer)
 		}
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadAllData",
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityHeaderViewController.reloadAllData),
 			name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
 	}
 	

@@ -78,7 +78,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         dragToRearrangeGestureHandler.delegate = self
-        longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragToRearrangeGestureHandler, action: "handleGesture:")
+		longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragToRearrangeGestureHandler, action: #selector(LongPressToDragGestureHandler.handleGesture(_:)))
 
         tableView.addGestureRecognizer(longPressGestureRecognizer)
         
@@ -176,15 +176,15 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "reloadTableData",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
             name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadIfCollapsed",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadIfCollapsed),
             name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: "reloadTableData",
+        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
             name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     

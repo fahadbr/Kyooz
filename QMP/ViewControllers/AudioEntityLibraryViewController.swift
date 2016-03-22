@@ -10,7 +10,7 @@ import UIKit
 
 final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, UIGestureRecognizerDelegate {
 	
-	private static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: "activateSearch")
+	private static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: #selector(RootViewController.activateSearch))
 	
 	var reuseIdentifier:String {
 		if useCollapsableHeader {
@@ -54,7 +54,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 			applyDataSourceAndDelegate()
 		}
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadAllData",
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
 			name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
 	}
 	
