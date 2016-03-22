@@ -60,7 +60,7 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: SongDetailsTableViewCell.reuseIdentifier)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleNowPlayingItemChanged:", name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SystemQueueResyncWorkflowController.handleNowPlayingItemChanged(_:)), name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

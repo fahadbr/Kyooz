@@ -29,10 +29,10 @@ final class KyoozPlaylistSourceData : MutableAudioEntitySourceData {
         
     }
     
-    func deleteEntitiesAtIndexPaths(var indexPaths: [NSIndexPath]) throws {
+    func deleteEntitiesAtIndexPaths(indexPaths: [NSIndexPath]) throws {
         var tracks = playlist.tracks
-        indexPaths.sortInPlace() { $0.row > $1.row }
-        for indexPath in indexPaths {
+        let sortedIndexPaths = indexPaths.sort() { $0.row > $1.row }
+        for indexPath in sortedIndexPaths {
             guard indexPath.row < tracks.count else {
                 throw KyoozError(errorDescription:"Cannot delete track \(indexPath.row + 1) because there are only \(tracks.count) tracks in the playlist")
             }

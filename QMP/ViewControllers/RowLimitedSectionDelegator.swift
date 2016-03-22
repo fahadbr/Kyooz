@@ -43,7 +43,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 		}
         let datasourceDelegate = dsdSections[section]
 		if dsdSections.count > 1 || expandedSection != nil {
-			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "didTapHeaderView:")
+			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RowLimitedSectionDelegator.didTapHeaderView(_:)))
 			headerView.addGestureRecognizer(tapGestureRecognizer)
 			headerView.disclosureContainerView.hidden = false
 			tapGestureRecognizerHashToDSD[tapGestureRecognizer.hashValue] = datasourceDelegate

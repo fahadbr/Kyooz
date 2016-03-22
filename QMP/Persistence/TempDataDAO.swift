@@ -142,9 +142,9 @@ final class TempDataDAO : NSObject {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
         
-        notificationCenter.addObserver(self, selector: "persistData:",
+        notificationCenter.addObserver(self, selector: #selector(TempDataDAO.persistData(_:)),
             name: UIApplicationWillResignActiveNotification, object: application)
-        notificationCenter.addObserver(self, selector: "persistData:",
+        notificationCenter.addObserver(self, selector: #selector(TempDataDAO.persistData(_:)),
             name: UIApplicationWillTerminateNotification, object: application)
     }
     

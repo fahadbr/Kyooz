@@ -416,24 +416,24 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private func registerForMediaPlayerNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "handleNowPlayingItemChanged:",
+        notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleNowPlayingItemChanged(_:)),
             name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification,
             object: musicPlayer)
-        notificationCenter.addObserver(self, selector: "handlePlaybackStateChanged:",
+        notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handlePlaybackStateChanged(_:)),
             name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
             object: musicPlayer)
-        notificationCenter.addObserver(self, selector: "handlePlaybackStateChanged:",
+        notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handlePlaybackStateChanged(_:)),
             name:PlaybackStateManager.PlaybackStateCorrectedNotification,
             object: playbackStateManager)
         
         musicPlayer.beginGeneratingPlaybackNotifications()
         
         let application = UIApplication.sharedApplication()
-        notificationCenter.addObserver(self, selector: "handleApplicationDidResignActive:",
+        notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleApplicationDidResignActive(_:)),
             name: UIApplicationWillResignActiveNotification, object: application)
-        notificationCenter.addObserver(self, selector: "handleApplicationDidBecomeActive:",
+        notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleApplicationDidBecomeActive(_:)),
             name: UIApplicationDidBecomeActiveNotification, object: application)
-        notificationCenter.addObserver(self, selector: "handleApplicationWillTerminate:",
+        notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleApplicationWillTerminate(_:)),
             name: UIApplicationWillTerminateNotification, object: application)
         
     }

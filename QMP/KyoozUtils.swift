@@ -80,7 +80,7 @@ struct KyoozUtils {
 	}
     
     static func showPopupError(withTitle title:String, withThrownError error:ErrorType, presentationVC:UIViewController?) {
-        let message = "Error Description: \((error as? KyoozErrorProtocol)?.errorDescription ?? _stdlib_getDemangledTypeName(error))"
+        let message = "Error Description: \((error as? KyoozErrorProtocol)?.errorDescription ?? "\(error.dynamicType)")"
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
     

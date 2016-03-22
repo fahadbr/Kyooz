@@ -41,7 +41,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
         let message = "Now Playing:\n\(nowPlayingItem.trackTitle) by \(nowPlayingItem.artist).  Shake to Undo/Redo!"
 		if !snapshot.nowPlayingQueueContext.currentQueue.isEmpty {
             if let undoManager = ContainerViewController.instance.undoManager {
-                undoManager.registerUndoWithTarget(self, selector: "restorePlaybackState:", object: snapshot.persistableSnapshot)
+                undoManager.registerUndoWithTarget(self, selector: #selector(AudioQueuePlayerDelegateImpl.restorePlaybackState(_:)), object: snapshot.persistableSnapshot)
                 undoManager.setActionName("Queue Change")
             }
 		}

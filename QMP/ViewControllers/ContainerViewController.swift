@@ -83,23 +83,23 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 			parentView: view)[.Right]
         expandedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.leftAnchor, constant: centerPanelExpandedOffset)
         
-        rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
+        rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handleScreenEdgePanGesture(_:)))
 //        rightPanelExpandingGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
 //        rightPanelExpandingGestureRecognizer.edges = UIRectEdge.Right
         rightPanelExpandingGestureRecognizer.delegate = self
         rootViewController.view.addGestureRecognizer(rightPanelExpandingGestureRecognizer)
 
         //keep a reference of this gesture recogizer to enable/disable it
-        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTouchGesture:")
+        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ContainerViewController.handleTouchGesture(_:)))
         tapGestureRecognizer.enabled = sidePanelExpanded
         rootViewController.view.addGestureRecognizer(tapGestureRecognizer)
         
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePanGesture:")
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handlePanGesture(_:)))
         panGestureRecognizer.enabled = sidePanelExpanded
         rootViewController.view.addGestureRecognizer(panGestureRecognizer)
         
 
-        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "handleLongPressGesture:")
+        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ContainerViewController.handleLongPressGesture(_:)))
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
         
@@ -242,22 +242,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
         }
     }
-    
-    private func transformForFraction(var fraction:CGFloat) -> CATransform3D{
-        //make sure that the fraction does not go past the 1 or 0 bounds
-        if fraction < 0 {
-            fraction = 0
-        } else if fraction > 1 {
-            fraction = 1
-        }
-        
-        var identity = CATransform3DIdentity
-        identity.m34 = -1.0/1000
-        let angle = Double(1.0 - fraction) * M_PI_2
-        
-        let rotateTransform = CATransform3DRotate(identity, CGFloat(angle), 0.0, 1.0, 0.0)
-        return rotateTransform
-    }
+	
     
     private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
         if shouldExpand { //need to make sure one is deactivated before activating the other

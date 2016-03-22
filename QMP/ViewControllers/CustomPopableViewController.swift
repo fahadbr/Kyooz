@@ -12,7 +12,7 @@ class CustomPopableViewController: UIViewController {
 
     var transitionAnimator = ViewControllerFadeAnimator.instance
     lazy var popGestureRecognizer:UIScreenEdgePanGestureRecognizer = {
-        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
+        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(CustomPopableViewController.handlePan(_:)))
         popGestureRecognizer.edges = UIRectEdge.Left
         return popGestureRecognizer
     }()
@@ -38,7 +38,7 @@ class CustomPopableTableViewController: UITableViewController {
     
     var transitionAnimator = ViewControllerFadeAnimator.instance
     lazy var popGestureRecognizer:UIScreenEdgePanGestureRecognizer = {
-        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePan:")
+        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(CustomPopableViewController.handlePan(_:)))
         popGestureRecognizer.edges = UIRectEdge.Left
         return popGestureRecognizer
     }()

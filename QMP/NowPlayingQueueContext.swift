@@ -96,7 +96,7 @@ struct NowPlayingQueueContext {
         for index in indicies {
             currentQueue.removeAtIndex(index)
             if(index < indexOfNowPlayingItem) {
-                indexOfNowPlayingItem--
+                indexOfNowPlayingItem -= 1
             } else if (index == indexOfNowPlayingItem) {
                 nowPlayingItemRemoved = true
             }
@@ -116,9 +116,9 @@ struct NowPlayingQueueContext {
         if fromIndexPath == indexOfNowPlayingItem {
             indexOfNowPlayingItem = toIndexPath
         } else if fromIndexPath < indexOfNowPlayingItem && indexOfNowPlayingItem <= toIndexPath {
-            indexOfNowPlayingItem--
+            indexOfNowPlayingItem -= 1
         } else if toIndexPath <= indexOfNowPlayingItem && indexOfNowPlayingItem < fromIndexPath {
-            indexOfNowPlayingItem++
+            indexOfNowPlayingItem += 1
         }
         
         self.currentQueue = currentQueue

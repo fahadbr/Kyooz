@@ -11,7 +11,7 @@ import UIKit
 
 protocol GestureHandler : NSObjectProtocol {
     
-    typealias GestureRecognizerType:UIGestureRecognizer
+    associatedtype GestureRecognizerType:UIGestureRecognizer
     
     func handleGesture(sender:GestureRecognizerType)
     

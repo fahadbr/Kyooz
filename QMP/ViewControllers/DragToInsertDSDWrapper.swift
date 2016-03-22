@@ -49,17 +49,18 @@ final class DragToInsertDSDWrapper: DragToRearrangeDSDWrapper {
         return placeholderCell == nil ? count : count + 1
     }
     
-    override func tableView(tableView: UITableView, var cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		var indexPathToUse = indexPath
         if let placeholderCell = self.placeholderCell {
             if indexPath == indexPathOfMovingItem {
                 return placeholderCell
             }
             
             if indexPathOfMovingItem.row < indexPath.row {
-                indexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
+                indexPathToUse = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
             }
         }
-        return datasourceDelegate.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        return datasourceDelegate.tableView(tableView, cellForRowAtIndexPath: indexPathToUse)
     }
     
     override func persistChanges() throws {
