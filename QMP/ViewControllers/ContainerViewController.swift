@@ -13,24 +13,18 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     static let instance:ContainerViewController = ContainerViewController()
     
-    private let centerPanelExpandedOffset:CGFloat = 60
-    private let timeDelayInNanoSeconds = Int64(0.50 * Double(NSEC_PER_SEC))
-    private var centerPanelExpandedXPosition:CGFloat!
+    private let sideVCOffset:CGFloat = 60
+	private var invertedSideVCOffset:CGFloat { return view.bounds.width - sideVCOffset }
+	private var kvoContext:UInt8 = 123
     
     var longPressGestureRecognizer:UILongPressGestureRecognizer!
     var dragAndDropHandler:LongPressDragAndDropGestureHandler!
     
     var tapGestureRecognizer:UITapGestureRecognizer!
     var panGestureRecognizer:UIPanGestureRecognizer!
-//    var rightPanelExpandingGestureRecognizer:UIScreenEdgePanGestureRecognizer!
     var rightPanelExpandingGestureRecognizer:UIPanGestureRecognizer!
     
-    var rootViewController:RootViewController! {
-        didSet {
-            if rootViewController == nil { return }
-            centerPanelExpandedXPosition = -CGRectGetWidth(rootViewController.view.frame) + centerPanelExpandedOffset
-        }
-    }
+    var rootViewController:RootViewController!
     
     var nowPlayingNavigationController:UINavigationController?
     var nowPlayingViewController:NowPlayingViewController?
@@ -60,12 +54,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         return _undoManager
     }
     
-    private var collapsedConstraint:NSLayoutConstraint!
-    private var expandedConstraint:NSLayoutConstraint!
+    private var queueViewLeftConstraint:NSLayoutConstraint!
     
     deinit {
         unregisterForNotifications()
     }
+	
+	private var blurVC = BlurViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,15 +72,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         addChildViewController(rootViewController)
         rootViewController.didMoveToParentViewController(self)
 		
-		collapsedConstraint = ConstraintUtils.applyConstraintsToView(
-			withAnchors: [.Top, .Bottom, .Width, .Right],
+		ConstraintUtils.applyConstraintsToView(
+			withAnchors: [.Top, .Bottom, .Left, .Right],
 			subView: rootView,
-			parentView: view)[.Right]
-        expandedConstraint = rootView.rightAnchor.constraintEqualToAnchor(view.leftAnchor, constant: centerPanelExpandedOffset)
-        
+			parentView: view)
+		
         rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handleScreenEdgePanGesture(_:)))
-//        rightPanelExpandingGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handleScreenEdgePanGesture:")
-//        rightPanelExpandingGestureRecognizer.edges = UIRectEdge.Right
         rightPanelExpandingGestureRecognizer.delegate = self
         rootViewController.view.addGestureRecognizer(rightPanelExpandingGestureRecognizer)
 
@@ -102,14 +94,42 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ContainerViewController.handleLongPressGesture(_:)))
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
+		
+		//BLUR VC
+		ConstraintUtils.applyStandardConstraintsToView(subView: blurVC.view, parentView: view)
+		blurVC.view.userInteractionEnabled = false
+		blurVC.blurRadius = 0
+		
+		
+		//NOW PLAYING VC
         
-        addSidePanelViewController()
+		nowPlayingViewController = UIStoryboard.nowPlayingViewController()
+		nowPlayingViewController?.tableView?.scrollsToTop = false
+		
+		nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
+		
+		nowPlayingNavigationController!.toolbarHidden = false
+		let npView = nowPlayingNavigationController!.view
+		addChildViewController(nowPlayingNavigationController!)
+		nowPlayingNavigationController!.didMoveToParentViewController(self)
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom], subView: npView, parentView: view)
+		view.bringSubviewToFront(npView)
+		npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -sideVCOffset).active = true
+		
+		queueViewLeftConstraint = npView.leftAnchor.constraintEqualToAnchor(view.rightAnchor)
+		queueViewLeftConstraint.active = true
+		
+		nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
+		npView.layer.shadowOffset = CGSize(width: -4, height: 0)
+		
+		npView.addObserver(self, forKeyPath: "center", options: .New, context: &kvoContext)
+
     }
-    
+	
     override func canBecomeFirstResponder() -> Bool {
         return true
     }
-    
+	
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         becomeFirstResponder()
@@ -121,33 +141,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func toggleSidePanel() {
-        if(!sidePanelExpanded) {
-            addSidePanelViewController()
-        }
         animateSidePanel(shouldExpand: !sidePanelExpanded)
-    }
-    
-    func addSidePanelViewController() {
-        if(nowPlayingViewController == nil) {
-            nowPlayingViewController = UIStoryboard.nowPlayingViewController()
-            nowPlayingViewController?.tableView?.scrollsToTop = false
-            
-            nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
-
-            nowPlayingNavigationController!.toolbarHidden = false
-            let npView = nowPlayingNavigationController!.view
-//            npView.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
-            view.insertSubview(npView, atIndex: 0)
-            addChildViewController(nowPlayingNavigationController!)
-            nowPlayingNavigationController!.didMoveToParentViewController(self)
-            npView.translatesAutoresizingMaskIntoConstraints = false
-            npView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-            npView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-            npView.leftAnchor.constraintEqualToAnchor(rootViewController.view.rightAnchor).active = true
-            npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -centerPanelExpandedOffset).active = true
-
-            nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
-        }
     }
     
     
@@ -209,16 +203,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         switch(recognizer.state) {
         case .Began:
             let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
-            if(!sidePanelExpanded && !gestureIsDraggingFromLeftToRight) {
-                addSidePanelViewController()
-            }
             nowPlayingViewController?.view.layer.shouldRasterize = true
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
             if(nowPlayingViewController != nil) {
-                let hasMovedEnoughLeftOfCenter = recognizer.view!.center.x < (view.center.x * 0.90)
-                animateSidePanel(shouldExpand: hasMovedEnoughLeftOfCenter)
+//                let hasMovedEnoughLeftOfCenter = recognizer.view!.center.x < (view.center.x * 0.90)
+                animateSidePanel(shouldExpand: true)
             }
         default:
             break
@@ -230,7 +221,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         if shouldExpand {
             self.sidePanelExpanded = true
             animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                centerPanelExpandedOffset, shouldExpand: shouldExpand) { finished in
+                sideVCOffset, shouldExpand: shouldExpand) { finished in
 
                     self.nowPlayingViewController?.view?.layer.shouldRasterize = false
             }
@@ -245,16 +236,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	
     
     private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
-        if shouldExpand { //need to make sure one is deactivated before activating the other
-            collapsedConstraint.active = false
-            expandedConstraint.active = true
-        } else {
-            expandedConstraint.active = false
-            collapsedConstraint.active = true
-        }
-        
-        expandedConstraint.constant = centerPanelExpandedOffset
-        collapsedConstraint.constant = 0
+		queueViewLeftConstraint.constant = shouldExpand ? -invertedSideVCOffset : 0
         
         UIView.animateWithDuration(0.4,
             delay: 0,
@@ -263,9 +245,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             options: .CurveEaseInOut,
             animations: {
                 self.view.layoutIfNeeded()
-                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
+//                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
 //                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
-                self.nowPlayingNavigationController?.view.alpha = fraction
+//                self.nowPlayingNavigationController?.view.alpha = fraction
             },
             completion: completion)
         
@@ -274,26 +256,20 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
     
     private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
-        var newOriginX = recognizer.view!.frame.origin.x + recognizer.translationInView(view).x
-        
-        if newOriginX < centerPanelExpandedXPosition {
-            newOriginX = centerPanelExpandedXPosition
-        } else if newOriginX > 0 {
-            newOriginX = 0
-        }
-        
-        let activeConstraint = expandedConstraint.active ? expandedConstraint : collapsedConstraint
-        
-        //the fraction is the percentage the center view controller has moved with respect to its final position (centerPanelExpandedXPosition)
-        let fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
-//        let transform = transformForFraction(fraction)
-//        nowPlayingNavigationController?.view.layer.transform = transform
-        nowPlayingNavigationController?.view.alpha = fraction
-        
-        if 0 <= fraction && fraction <= 1 {
-            activeConstraint.constant += recognizer.translationInView(view).x
-        }
-        
+	
+		
+		
+		let newConstant = queueViewLeftConstraint.constant + recognizer.translationInView(view).x
+		queueViewLeftConstraint.constant = KyoozUtils.cap(newConstant, min: -invertedSideVCOffset, max: 0)
+		Logger.debug("activeConstraint.constant = \(self.queueViewLeftConstraint.constant)")
+        //the fraction is the percentage the center view controller has moved with respect to its final position
+//        let fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
+//        nowPlayingNavigationController?.view.alpha = fraction
+		
+//        if 0 <= fraction && fraction <= 1 {
+//            activeConstraint.constant -= recognizer.translationInView(view).x
+//        }
+		
         recognizer.setTranslation(CGPointZero, inView: view)
     }
     
@@ -319,7 +295,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         switch(recognizer.state) {
         case .Began:
             //initialize the drag and drop handler and all the resources necessary for the drag and drop handler
-            addSidePanelViewController()
             if(!nowPlayingViewController!.laidOutSubviews) {
                 dispatch_async(dispatch_get_main_queue()) { self.handleLongPressGesture(recognizer) }
                 return
@@ -339,6 +314,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
         dragAndDropHandler?.handleGesture(recognizer)
     }
+	
+	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+		if keyPath != nil && keyPath! == "center" {
+			let fraction = queueViewLeftConstraint.constant/(-invertedSideVCOffset)
+			blurVC.blurRadius = Double(fraction/2)
+			nowPlayingNavigationController?.view.layer.shadowOpacity = Float(fraction)
+		}
+	}
 
     
     //MARK: INSERT MODE DELEGATION METHODS

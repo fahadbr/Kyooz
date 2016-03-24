@@ -166,4 +166,13 @@ struct KyoozUtils {
 
     }
 	
+	static func cap<T:Comparable>(value:T, min:T, max:T) -> T {
+		if value < min {
+			return min
+		} else if value > max {
+			return max
+		}
+		return value
+	}
+	
 }
