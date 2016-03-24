@@ -25,9 +25,9 @@ final class SearchResultsSourceData : AudioEntitySourceData {
         return searchExecutionController.libraryGroup
     }
     
-    let searchExecutionController:SearchExecutionController<AudioEntity>
+    let searchExecutionController:SearchExecutionController
     
-    init(searchExecutionController:SearchExecutionController<AudioEntity>) {
+    init(searchExecutionController:SearchExecutionController) {
         self.searchExecutionController = searchExecutionController
     }
     

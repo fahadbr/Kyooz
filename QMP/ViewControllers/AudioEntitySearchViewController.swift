@@ -16,7 +16,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     //MARK: - Properties
     var searchController:UISearchController!
     
-    private let searchExecutionControllers:[SearchExecutionController<AudioEntity>] = {
+    private let searchExecutionControllers:[SearchExecutionController] = {
         let artistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Artists,
             searchKeys: [MPMediaItemPropertyAlbumArtist])
         let albumSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Albums,

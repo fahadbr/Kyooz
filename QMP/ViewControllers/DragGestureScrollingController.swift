@@ -94,11 +94,11 @@ final class DragGestureScrollingController :NSObject {
             newOffset = min(currentOffset + scrollIncrement, maxContentOffset)
         }
         
-        guard newOffset < maxContentOffset && newOffset > minContentOffset else {
+        guard newOffset <= maxContentOffset && newOffset >= minContentOffset else {
             invalidateDisplayLink()
             return
         }
-        
+        Logger.debug("adjust scroll offset")
         //THIS ORDER MATTERS FOR DRAG AND DROP
         //(When scrolling fast the tableview datasource may sometimes return the placeholder cell because of the updated indexPathOfMovingItem)
         delegate.handlePositionChange(gestureRecognizer)
