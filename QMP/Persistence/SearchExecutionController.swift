@@ -15,12 +15,12 @@ protocol SearchExecutionControllerDelegate: class {
     func searchResultsDidGetUpdated()
 }
 
-class SearchExecutionController<T:SearchIndexValue> : NSObject {
+class SearchExecutionController : NSObject {
     
     let libraryGroup:LibraryGrouping
     
-    private (set) var searchResults:[T] = [T]()
-    private var searchIndex:SearchIndex<T>?
+    private (set) var searchResults:[AudioEntity] = [AudioEntity]()
+    private var searchIndex:SearchIndex<AudioEntity>?
     private let searchKeys:[String]
     private let defaultSearchQueue:NSOperationQueue
     
@@ -59,7 +59,7 @@ class SearchExecutionController<T:SearchIndexValue> : NSObject {
             return NSCompoundPredicate(orPredicateWithSubpredicates: searchPredicates)
         })
         
-        let searchOperation:AbstractResultOperation<[T]> = createSearchOperation(finalPredicate, searchString: searchString)
+        let searchOperation:AbstractResultOperation<[AudioEntity]> = self.createSearchOperation(finalPredicate, searchString: searchString)
         
         searchOperation.inThreadCompletionBlock = { [weak self](results) -> Void in
             KyoozUtils.doInMainQueue() {
@@ -79,7 +79,7 @@ class SearchExecutionController<T:SearchIndexValue> : NSObject {
     }
     
     func clearSearchResults() {
-        searchResults = [T]()
+        searchResults = [AudioEntity]()
     }
     
     func performAfterSearch(block:()->()) {
@@ -90,13 +90,13 @@ class SearchExecutionController<T:SearchIndexValue> : NSObject {
         fatalError(fatalErrorAbstractClassMessage)
     }
     
-    private func createSearchOperation(searchPredicate:NSPredicate, searchString:String) -> AbstractResultOperation<[T]> {
+    private func createSearchOperation(searchPredicate:NSPredicate, searchString:String) -> AbstractResultOperation<[AudioEntity]> {
         fatalError(fatalErrorAbstractClassMessage)
     }
     
 }
 
-final class IPodLibrarySearchExecutionController : SearchExecutionController<AudioEntity> {
+final class IPodLibrarySearchExecutionController : SearchExecutionController {
     
     override init(libraryGroup: LibraryGrouping, searchKeys: [String]) {
         super.init(libraryGroup: libraryGroup, searchKeys: searchKeys)

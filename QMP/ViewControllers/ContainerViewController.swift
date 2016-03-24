@@ -60,7 +60,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         unregisterForNotifications()
     }
 	
-	private var blurVC = BlurViewController()
+    private var dimLayer:CALayer  = {
+        var l = CALayer()
+        l.backgroundColor = UIColor.blackColor().CGColor
+        return l
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,10 +99,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
 		
-		//BLUR VC
-		ConstraintUtils.applyStandardConstraintsToView(subView: blurVC.view, parentView: view)
-		blurVC.view.userInteractionEnabled = false
-		blurVC.blurRadius = 0
+		//dim layer
+        dimLayer.frame = view.bounds
+        dimLayer.opacity = 0
+        view.layer.addSublayer(dimLayer)
 		
 		
 		//NOW PLAYING VC
@@ -120,9 +124,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		queueViewLeftConstraint.active = true
 		
 		nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
-		npView.layer.shadowOffset = CGSize(width: -4, height: 0)
+		npView.layer.shadowOffset = CGSize.zero
 		
-		npView.addObserver(self, forKeyPath: "center", options: .New, context: &kvoContext)
+		npView.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &kvoContext)
 
     }
 	
@@ -202,14 +206,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
         switch(recognizer.state) {
         case .Began:
-            let gestureIsDraggingFromLeftToRight = (recognizer.velocityInView(view).x > 0)
             nowPlayingViewController?.view.layer.shouldRasterize = true
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
             if(nowPlayingViewController != nil) {
-//                let hasMovedEnoughLeftOfCenter = recognizer.view!.center.x < (view.center.x * 0.90)
-                animateSidePanel(shouldExpand: true)
+                let hasMovedEnoughLeftOfCenter = (queueViewLeftConstraint.constant/(-invertedSideVCOffset)) > 0.15
+                animateSidePanel(shouldExpand: hasMovedEnoughLeftOfCenter)
             }
         default:
             break
@@ -237,6 +240,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
 		queueViewLeftConstraint.constant = shouldExpand ? -invertedSideVCOffset : 0
+
         
         UIView.animateWithDuration(0.4,
             delay: 0,
@@ -245,9 +249,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             options: .CurveEaseInOut,
             animations: {
                 self.view.layoutIfNeeded()
-//                let fraction:CGFloat = (targetPosition - self.view.frame.origin.x)/self.centerPanelExpandedXPosition
-//                self.nowPlayingNavigationController?.view.layer.transform = self.transformForFraction(fraction)
-//                self.nowPlayingNavigationController?.view.alpha = fraction
+                self.dimLayer.opacity = shouldExpand ? 0.5 : 0
             },
             completion: completion)
         
@@ -258,17 +260,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
 	
 		
-		
 		let newConstant = queueViewLeftConstraint.constant + recognizer.translationInView(view).x
 		queueViewLeftConstraint.constant = KyoozUtils.cap(newConstant, min: -invertedSideVCOffset, max: 0)
-		Logger.debug("activeConstraint.constant = \(self.queueViewLeftConstraint.constant)")
-        //the fraction is the percentage the center view controller has moved with respect to its final position
-//        let fraction = (recognizer.view!.center.x - view.center.x)/(centerPanelExpandedXPosition)
-//        nowPlayingNavigationController?.view.alpha = fraction
-		
-//        if 0 <= fraction && fraction <= 1 {
-//            activeConstraint.constant -= recognizer.translationInView(view).x
-//        }
 		
         recognizer.setTranslation(CGPointZero, inView: view)
     }
@@ -318,8 +311,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 		if keyPath != nil && keyPath! == "center" {
 			let fraction = queueViewLeftConstraint.constant/(-invertedSideVCOffset)
-			blurVC.blurRadius = Double(fraction/2)
-			nowPlayingNavigationController?.view.layer.shadowOpacity = Float(fraction)
+			dimLayer.opacity = Float(fraction/2)
+			nowPlayingNavigationController?.view.layer.shadowOpacity = Float(fraction) * 0.7
 		}
 	}
 
