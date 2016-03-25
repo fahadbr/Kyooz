@@ -164,7 +164,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         snapshot = ImageHelper.customSnapshotFromView(viewForSnapshot)
         snapshotContainer = UIView(frame: snapshot.frame)
         snapshotContainer.addSubview(snapshot)
-        
+        //TODO: set the original position for the snapshot container?
+		
         viewForSnapshot.layer.masksToBounds = false
         
         //add the snapshot as a subview, centered at cell's center
