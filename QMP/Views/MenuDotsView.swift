@@ -17,6 +17,9 @@ final class MenuDotsView: UIButton {
             setNeedsDisplay()
         }
     }
+	
+	@IBInspectable
+	var position:CGFloat = 0
     
     override var highlighted:Bool {
         didSet {

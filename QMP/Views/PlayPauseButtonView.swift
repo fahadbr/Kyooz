@@ -20,6 +20,9 @@ final class PlayPauseButtonView: UIButton {
     
     @IBInspectable
     var hasOuterFrame:Bool = true
+	
+	@IBInspectable
+	var scale:CGFloat = 1
     
     var color:UIColor = ThemeHelper.defaultFontColor {
         didSet {
@@ -74,7 +77,7 @@ final class PlayPauseButtonView: UIButton {
         //the scale factor used to determine the triangles size relative to the encapsuling views frame
 
         
-        let scaleFactor:CGFloat = 0.5
+        let scaleFactor:CGFloat = 0.5 * scale
         let inverseScaleFactor:CGFloat = 1 - scaleFactor
         
         //tX and tY is the amount to translate the path
@@ -91,8 +94,8 @@ final class PlayPauseButtonView: UIButton {
     
     
     private func drawPauseButton(rect:CGRect) -> UIBezierPath {
-        let pauseButtonRectWidth:CGFloat = rect.width * 0.20
-        let pauseButtonRectHeight:CGFloat = rect.height * 0.50
+        let pauseButtonRectWidth:CGFloat = rect.width * 0.20 * scale
+        let pauseButtonRectHeight:CGFloat = rect.height * 0.50 * scale
         let pauseButtonRectSize = CGSize(width: pauseButtonRectWidth, height: pauseButtonRectHeight)
         let gap:CGFloat = pauseButtonRectWidth * 0.4
         
