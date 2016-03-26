@@ -19,7 +19,7 @@ final class MenuDotsView: UIButton {
     }
 	
 	@IBInspectable
-	var position:CGFloat = 0
+	var position:CGFloat = 0.75
     
     override var highlighted:Bool {
         didSet {
@@ -40,9 +40,9 @@ final class MenuDotsView: UIButton {
         }
         color.setFill()
         
-        let rectToUse = CGRectInset(rect, 0.25 * rect.width, 0.38 * rect.height)
+        let rectToUse = CGRectInset(rect, 0, 0.38 * rect.height)
         
-        let minX = rectToUse.maxX
+        let minX = rect.origin.x
 
         let size = rectToUse.height * 0.35
         let circlePath = UIBezierPath()
@@ -53,7 +53,7 @@ final class MenuDotsView: UIButton {
         circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: rectToUse.maxY, width: size, height: size)))
         
         let translationAmount = -size/2
-        circlePath.applyTransform(CGAffineTransformMakeTranslation(translationAmount, translationAmount))
+        circlePath.applyTransform(CGAffineTransformMakeTranslation(translationAmount + rect.width * position, translationAmount))
         circlePath.fill()
     }
 
