@@ -12,12 +12,14 @@ import MediaPlayer
 class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
     @IBOutlet var albumArtwork: UIImageView!
-    @IBOutlet var albumArtistAndAlbumTitleLabel: UILabel!
-    @IBOutlet var songTitleLabel: UILabel!
+//    @IBOutlet var albumArtistAndAlbumTitleLabel: UILabel!
+//    @IBOutlet var songTitleLabel: UILabel!
 
+	@IBOutlet var labelStackView: UIStackView!
 
     @IBOutlet var songTitleCollapsedLabel: UILabel!
     @IBOutlet var albumArtistAndAlbumTitleCollapsedLabel: UILabel!
+	@IBOutlet var menuButtonView: MenuDotsView!
     
     @IBOutlet var playbackProgressBar: UISlider!
     @IBOutlet var totalPlaybackTimeLabel: UILabel!
@@ -158,11 +160,11 @@ class NowPlayingSummaryViewController: UIViewController {
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
 		
 		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
-		updateLabel(false, label: songTitleLabel, withText: titleText, delay: 0)
+//		updateLabel(false, label: songTitleLabel, withText: titleText, delay: 0)
 		updateLabel(true, label: songTitleCollapsedLabel, withText: titleText, delay: 0)
 		
 		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
-		updateLabel(false, label: albumArtistAndAlbumTitleLabel, withText: detailsText, delay: 0.2)
+//		updateLabel(false, label: albumArtistAndAlbumTitleLabel, withText: detailsText, delay: 0.2)
 		updateLabel(true, label: albumArtistAndAlbumTitleCollapsedLabel, withText: detailsText, delay: 0.2)
 
         let artwork = nowPlayingItem?.artwork
@@ -277,8 +279,15 @@ class NowPlayingSummaryViewController: UIViewController {
             albumArtwork.hidden = false
         }
         
-        self.albumArtwork.alpha = alphaLevel
-        self.nowPlayingCollapsedBar.alpha = (1.0 - alphaLevel)
+        albumArtwork.alpha = alphaLevel
+		nowPlayingCollapsedBar.alpha = 1.0
+        playPauseCollapsedButton.alpha = (1.0 - alphaLevel)
+		menuButtonView.alpha = (1.0 - alphaLevel)
+		
+		let tX = (labelStackView.center.x - nowPlayingCollapsedBar.bounds.midX) * -alphaLevel
+		let tY = 25 * alphaLevel
+		let transform = CATransform3DMakeTranslation(tX, tY, 0)
+		labelStackView.layer.transform = transform
     }
 	
 	private func updateLabel(forCollapsedBar:Bool, label:UILabel, withText newText:String, delay:Double) {
