@@ -119,6 +119,27 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBAction func goToAlbum(sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
+	
+	@IBAction func menuButtonPressed(sender: AnyObject) {
+		guard audioQueuePlayer.nowPlayingItem != nil else {
+			return
+		}
+		
+		let kmvc = KyoozMenuViewController()
+		kmvc.menuTitle = songTitleCollapsedLabel.text
+		kmvc.menuDetails = albumArtistAndAlbumTitleCollapsedLabel.text
+		let center = menuButtonView.superview?.convertPoint(menuButtonView.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace)
+		kmvc.originatingCenter = center
+		
+		kmvc.addAction(KyoozMenuAction(title: "Jump To Album", image: nil) {
+			self.goToVCWithGrouping(LibraryGrouping.Albums)
+		})
+		kmvc.addAction(KyoozMenuAction(title: "Jump To Artist", image: nil) {
+			self.goToVCWithGrouping(LibraryGrouping.Artists)
+		})
+		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+		KyoozUtils.showMenuViewController(kmvc)
+	}
     
     private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
         if let nowPlayingItem = audioQueuePlayer.nowPlayingItem, let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {

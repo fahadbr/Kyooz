@@ -85,8 +85,6 @@ struct KyoozUtils {
     }
     
     static func showMenuViewController(kmvc:KyoozMenuViewController) {
-        kmvc.modalTransitionStyle = .CrossDissolve
-        
         let presentingVC = ContainerViewController.instance
         kmvc.view.frame = presentingVC.view.frame
         
