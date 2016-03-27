@@ -12,9 +12,6 @@ import MediaPlayer
 class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
     @IBOutlet var albumArtwork: UIImageView!
-//    @IBOutlet var albumArtistAndAlbumTitleLabel: UILabel!
-//    @IBOutlet var songTitleLabel: UILabel!
-
 	@IBOutlet var labelStackView: UIStackView!
 
     @IBOutlet var songTitleCollapsedLabel: UILabel!
@@ -162,7 +159,6 @@ class NowPlayingSummaryViewController: UIViewController {
         albumArtwork.layer.shadowOffset = CGSize(width: 0, height: 3)
         albumArtwork.layer.shadowRadius = 10
         updateAlphaLevels()
-        self.view.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
         self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
     }
 
@@ -180,12 +176,12 @@ class NowPlayingSummaryViewController: UIViewController {
         
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
 		
-		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
-//		updateLabel(false, label: songTitleLabel, withText: titleText, delay: 0)
+//		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
+		let titleText = "this is going to be some really long text to fill up the label"
 		updateLabel(true, label: songTitleCollapsedLabel, withText: titleText, delay: 0)
 		
-		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
-//		updateLabel(false, label: albumArtistAndAlbumTitleLabel, withText: detailsText, delay: 0.2)
+//		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
+		let detailsText = "more really long text to fill up the width of the screen"
 		updateLabel(true, label: albumArtistAndAlbumTitleCollapsedLabel, withText: detailsText, delay: 0.2)
 
         let artwork = nowPlayingItem?.artwork
@@ -276,11 +272,10 @@ class NowPlayingSummaryViewController: UIViewController {
     
     //MARK: - FUNCTIONS: - KVOFunction
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        switch(keyPath!) {
-        case "frame","center":
+		if keyPath != nil && keyPath == "center" {
             updateAlphaLevels()
-        default:
-            Logger.debug("non observed property has changed")
+		} else {
+            Logger.error("non observed property has changed")
         }
     }
     
@@ -290,25 +285,30 @@ class NowPlayingSummaryViewController: UIViewController {
         let frame = self.view.frame
         let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
         let currentY = maxY - (frame.origin.y - RootViewController.nowPlayingViewCollapsedOffset)
-        var alphaLevel = (currentY/maxY)
+        var expandedFraction = (currentY/maxY)
         
-        if(alphaLevel > 1.0 || alphaLevel < 0.1) {
-            alphaLevel = floor(alphaLevel)
+        if(expandedFraction > 1.0 || expandedFraction < 0.1) {
+            expandedFraction = floor(expandedFraction)
         }
-        
-        if alphaLevel > 0 && albumArtwork.hidden {
+        let collapsedFraction = 1 - expandedFraction
+        if expandedFraction > 0 && albumArtwork.hidden {
             albumArtwork.hidden = false
         }
         
-        albumArtwork.alpha = alphaLevel
+        albumArtwork.alpha = expandedFraction
 		nowPlayingCollapsedBar.alpha = 1.0
-        playPauseCollapsedButton.alpha = (1.0 - alphaLevel)
-		menuButtonView.alpha = (1.0 - alphaLevel)
+        playPauseCollapsedButton.alpha = collapsedFraction
+		menuButtonView.alpha = collapsedFraction
 		
-		let tX = (labelStackView.center.x - nowPlayingCollapsedBar.bounds.midX) * -alphaLevel
-		let tY = 25 * alphaLevel
-		let transform = CATransform3DMakeTranslation(tX, tY, 0)
-		labelStackView.layer.transform = transform
+		
+		let tX = (labelStackView.center.x - nowPlayingCollapsedBar.bounds.midX) * -expandedFraction
+		let tY = 30 * expandedFraction
+		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
+		
+		let scale = 0.7 + (expandedFraction * 0.3)
+		let scaleTransform = CATransform3DMakeScale(scale, scale, scale)
+		
+		labelStackView.layer.transform = CATransform3DConcat(translationTransform, scaleTransform)
     }
 	
 	private func updateLabel(forCollapsedBar:Bool, label:UILabel, withText newText:String, delay:Double) {

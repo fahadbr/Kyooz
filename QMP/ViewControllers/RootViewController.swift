@@ -13,7 +13,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     static let instance:RootViewController = RootViewController()
     
-    static let nowPlayingViewCollapsedOffset:CGFloat = 55
+    static let nowPlayingViewCollapsedOffset:CGFloat = 40
 
     var pullableViewExpanded:Bool  {
         get {
