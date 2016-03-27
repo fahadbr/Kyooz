@@ -31,7 +31,9 @@ struct KyoozUtils {
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
     }
-    
+	
+	//MARK: - dispatch to main queue functions
+	
     static func doInMainQueueAsync(block:()->()) {
         dispatch_async(dispatch_get_main_queue(), block)
     }
@@ -55,7 +57,8 @@ struct KyoozUtils {
             doInMainQueueAsync(block)
         }
     }
-    
+	
+	//MARK: - random number functions
     static func randomNumber(belowValue value:Int) -> Int {
         return Int(arc4random_uniform(UInt32(value)))
     }
@@ -65,6 +68,8 @@ struct KyoozUtils {
         let endIndex = range.endIndex
         return randomNumber(belowValue: endIndex - startIndex) + startIndex
     }
+	
+	//MARK: - util functions
     
     static func performWithMetrics(blockDescription description:String, block:()->()) {
         let startTime = CFAbsoluteTimeGetCurrent()
