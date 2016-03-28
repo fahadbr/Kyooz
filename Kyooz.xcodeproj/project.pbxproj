@@ -77,6 +77,7 @@
 		0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B081B9388BD00004A1B /* CGUtils.swift */; };
 		0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */; };
 		0B778B0D1B938E2500004A1B /* SkipTrackButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */; };
+		0B7D4AEB1CA8A7A600622AB9 /* HorizontalScrollingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7D4AEA1CA8A7A600622AB9 /* HorizontalScrollingTextView.swift */; };
 		0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */; };
 		0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */; };
 		0B7FAC1F1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */; };
@@ -227,6 +228,7 @@
 		0B778B081B9388BD00004A1B /* CGUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGUtils.swift; sourceTree = "<group>"; };
 		0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkipTrackButtonView.swift; sourceTree = "<group>"; };
 		0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkipTrackButtonView.xib; sourceTree = "<group>"; };
+		0B7D4AEA1CA8A7A600622AB9 /* HorizontalScrollingTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HorizontalScrollingTextView.swift; sourceTree = "<group>"; };
 		0B7F7DC81C4DBD4000B932CA /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0B7F7DCA1C4DC02200B932CA /* UserDefaultKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
 		0B7FAC1E1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityTableViewDelegate.swift; sourceTree = "<group>"; };
@@ -427,11 +429,10 @@
 			isa = PBXGroup;
 			children = (
 				0B4E60021C27731D00BB9D77 /* Custom Drawn Views */,
-				0B4E60001C27729B00BB9D77 /* Header Views */,
+				0B4E60001C27729B00BB9D77 /* Custom Programatic Views */,
 				0B4E60011C2772CE00BB9D77 /* Table View Cells */,
 				0BE21C541BAF8915000509FD /* ApplicationIconView.swift */,
 				0BE21C561BAF8925000509FD /* ApplicationIconView.xib */,
-				0B476C6E1B1BFE5700626810 /* CancelView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -482,13 +483,15 @@
 			name = Spotify;
 			sourceTree = "<group>";
 		};
-		0B4E60001C27729B00BB9D77 /* Header Views */ = {
+		0B4E60001C27729B00BB9D77 /* Custom Programatic Views */ = {
 			isa = PBXGroup;
 			children = (
+				0B476C6E1B1BFE5700626810 /* CancelView.swift */,
+				0B7D4AEA1CA8A7A600622AB9 /* HorizontalScrollingTextView.swift */,
 				0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */,
 				0B77768A1C001EC200B9A088 /* SearchResultsHeaderView.xib */,
 			);
-			name = "Header Views";
+			name = "Custom Programatic Views";
 			sourceTree = "<group>";
 		};
 		0B4E60011C2772CE00BB9D77 /* Table View Cells */ = {
@@ -935,6 +938,7 @@
 				0B7FAC1F1C6AE8F100B1236D /* AudioEntityTableViewDelegate.swift in Sources */,
 				0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioEntity.swift in Sources */,
+				0B7D4AEB1CA8A7A600622AB9 /* HorizontalScrollingTextView.swift in Sources */,
 				0B58794B1C729ABF009E713F /* DragToInsertDSDWrapper.swift in Sources */,
 				0BC3179F1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift in Sources */,
 				100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */,

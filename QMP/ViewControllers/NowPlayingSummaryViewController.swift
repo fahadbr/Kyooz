@@ -14,8 +14,7 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBOutlet var albumArtwork: UIImageView!
 	@IBOutlet var labelStackView: UIStackView!
 
-    @IBOutlet var songTitleCollapsedLabel: UILabel!
-    @IBOutlet var albumArtistAndAlbumTitleCollapsedLabel: UILabel!
+
 	@IBOutlet var menuButtonView: MenuDotsView!
     
     @IBOutlet var playbackProgressBar: UISlider!
@@ -36,6 +35,9 @@ class NowPlayingSummaryViewController: UIViewController {
     
     private var playbackProgressTimer:NSTimer?
     private var albumIdForCurrentAlbumArt:UInt64?
+    
+    private var trackTitleTextView: HorizontalScrollingTextView!
+    private var trackDetailsTextView: HorizontalScrollingTextView!
 	
     typealias KVOContext = UInt8
     private var observationContext = KVOContext()
@@ -123,8 +125,8 @@ class NowPlayingSummaryViewController: UIViewController {
 		}
 		
 		let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = songTitleCollapsedLabel.text
-		kmvc.menuDetails = albumArtistAndAlbumTitleCollapsedLabel.text
+		kmvc.menuTitle = trackTitleTextView.text
+		kmvc.menuDetails = trackDetailsTextView.text
 		let center = menuButtonView.superview?.convertPoint(menuButtonView.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace)
 		kmvc.originatingCenter = center
 		
@@ -152,13 +154,42 @@ class NowPlayingSummaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.reloadData(nil)
+        
         registerForNotifications()
         
         albumArtwork.layer.shadowOpacity = 0.7
         albumArtwork.layer.shadowOffset = CGSize(width: 0, height: 3)
         albumArtwork.layer.shadowRadius = 10
-        updateAlphaLevels()
+        
+        func configureLabel(label:UILabel, font:UIFont?) {
+            label.textColor = ThemeHelper.defaultFontColor
+            label.textAlignment = .Center
+            label.font = font
+        }
+        
+        trackTitleTextView = HorizontalScrollingTextView(labelConfigurationBlock: { (label) in
+            configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: 16))
+        })
+        trackDetailsTextView = HorizontalScrollingTextView(labelConfigurationBlock: { (label) in
+            configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: 14))
+        })
+        
+        labelStackView = UIStackView(arrangedSubviews: [trackTitleTextView, trackDetailsTextView])
+        labelStackView.axis = .Vertical
+        labelStackView.distribution = .FillProportionally
+        
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Left], subView: labelStackView, parentView: view).forEach() {
+            $1.constant = $0 == .Right ? -8 : 8
+        }
+        labelStackView.centerYAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.centerYAnchor).active = true
+        labelStackView.heightAnchor.constraintEqualToConstant(trackTitleTextView.estimatedHeight + trackDetailsTextView.estimatedHeight).active = true
+        labelStackView.userInteractionEnabled = false
+        
+        
+        KyoozUtils.doInMainQueueAsync() {
+            self.reloadData(nil)
+            self.updateAlphaLevels()
+        }
         self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
     }
 
@@ -176,13 +207,11 @@ class NowPlayingSummaryViewController: UIViewController {
         
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
 		
-//		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
-		let titleText = "this is going to be some really long text to fill up the label"
-		updateLabel(true, label: songTitleCollapsedLabel, withText: titleText, delay: 0)
+		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
+		updateLabel(trackTitleTextView, withText: titleText, delay: 0)
 		
-//		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
-		let detailsText = "more really long text to fill up the width of the screen"
-		updateLabel(true, label: albumArtistAndAlbumTitleCollapsedLabel, withText: detailsText, delay: 0.2)
+		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
+		updateLabel(trackDetailsTextView, withText: detailsText, delay: 0.2)
 
         let artwork = nowPlayingItem?.artwork
         let albumArtId:UInt64
@@ -195,7 +224,7 @@ class NowPlayingSummaryViewController: UIViewController {
         if(albumIdForCurrentAlbumArt == nil || albumIdForCurrentAlbumArt! != albumArtId) {
             Logger.debug("loading new album art image")
             let albumArtImage = artwork?.imageWithSize(albumArtwork.frame.size) ?? ImageContainer.defaultAlbumArtworkImage
-			executeBlockInTransitionAnimation(false, view: albumArtwork, delay: 0) {
+			executeBlockInTransitionAnimation(albumArtwork, delay: 0) {
 				self.albumArtwork.image = albumArtImage
 			}
 
@@ -232,7 +261,6 @@ class NowPlayingSummaryViewController: UIViewController {
             uwTimer.invalidate()
             self.playbackProgressTimer = nil
         }
-
     }
     
     func updatePlaybackProgressBar(sender:NSTimer?) {
@@ -299,28 +327,29 @@ class NowPlayingSummaryViewController: UIViewController {
 		nowPlayingCollapsedBar.alpha = 1.0
         playPauseCollapsedButton.alpha = collapsedFraction
 		menuButtonView.alpha = collapsedFraction
+        playbackProgressCollapsedBar.alpha = collapsedFraction
 		
 		
 		let tX = (labelStackView.center.x - nowPlayingCollapsedBar.bounds.midX) * -expandedFraction
 		let tY = 30 * expandedFraction
 		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
 		
-		let scale = 0.7 + (expandedFraction * 0.3)
+		let scale = 0.8 + (expandedFraction * 0.2)
 		let scaleTransform = CATransform3DMakeScale(scale, scale, scale)
 		
 		labelStackView.layer.transform = CATransform3DConcat(translationTransform, scaleTransform)
     }
 	
-	private func updateLabel(forCollapsedBar:Bool, label:UILabel, withText newText:String, delay:Double) {
+	private func updateLabel(label:HorizontalScrollingTextView, withText newText:String, delay:Double) {
 		if label.text == nil || label.text! != newText {
-			executeBlockInTransitionAnimation(forCollapsedBar, view: label, delay: delay) {
+			executeBlockInTransitionAnimation(label, delay: delay) {
 				label.text = newText
 			}
 		}
 	}
 	
-	private func executeBlockInTransitionAnimation(forCollapsedBar:Bool, view:UIView, delay:Double, block:()->()) {
-		if (forCollapsedBar && !expanded) || (!forCollapsedBar && expanded) {
+	private func executeBlockInTransitionAnimation(view:UIView, delay:Double, block:()->()) {
+		if expanded || view !== albumArtwork {
 			let transition:UIViewAnimationOptions = view === albumArtwork ? .TransitionCrossDissolve : .TransitionFlipFromBottom
 			dispatch_after(KyoozUtils.getDispatchTimeForSeconds(delay), dispatch_get_main_queue()) {
 				UIView.transitionWithView(view, duration: 0.5, options: transition, animations: block, completion: nil)

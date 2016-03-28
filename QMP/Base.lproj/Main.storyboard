@@ -551,7 +551,7 @@
                                 </connections>
                             </slider>
                             <view opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qD5-cn-9cR">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
                                 <subviews>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-jw-XaA">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
@@ -569,25 +569,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="400" height="3"/>
                                         </variation>
                                     </progressView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="n8h-S5-LTC">
-                                        <rect key="frame" x="8" y="1" width="359" height="39"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ksq-Lm-cab">
-                                                <rect key="frame" x="0.0" y="0.0" width="359" height="21"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Album Artist - Album Title" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="K4x-rb-a4f">
-                                                <rect key="frame" x="0.0" y="21" width="359" height="18"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xr0-cf-bxB" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="-3" width="45" height="46"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="45" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="xr0-cf-bxB" secondAttribute="height" multiplier="1:1" id="8jr-KT-csB"/>
                                             <constraint firstAttribute="width" constant="45" id="G92-Dk-IeG"/>
@@ -613,8 +596,8 @@
                                             <action selector="playPauseAction:" destination="igl-8i-tSd" eventType="touchUpInside" id="dPd-mr-q1u"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b61-uQ-ZFE" userLabel="menuButton" customClass="MenuDotsView" customModule="Kyooz" customModuleProvider="target">
-                                        <rect key="frame" x="330" y="-3" width="45" height="46"/>
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b61-uQ-ZFE" userLabel="menuButton" customClass="MenuDotsView" customModule="Kyooz" customModuleProvider="target">
+                                        <rect key="frame" x="330" y="0.0" width="45" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="45" id="LC1-Eh-9NY"/>
                                             <constraint firstAttribute="width" secondItem="b61-uQ-ZFE" secondAttribute="height" multiplier="1:1" id="eFY-po-gMo"/>
@@ -635,28 +618,19 @@
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="0l1-lv-Omv"/>
-                                    <constraint firstAttribute="trailing" secondItem="n8h-S5-LTC" secondAttribute="trailing" id="1o5-CT-PQw"/>
+                                    <constraint firstAttribute="height" constant="45" id="0l1-lv-Omv"/>
                                     <constraint firstAttribute="trailing" secondItem="n4K-jw-XaA" secondAttribute="trailing" id="6Fq-dc-pRA"/>
                                     <constraint firstItem="xr0-cf-bxB" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leading" id="7Lo-Pw-WQd"/>
-                                    <constraint firstAttribute="trailing" secondItem="n8h-S5-LTC" secondAttribute="trailing" constant="8" id="9rB-Yp-wse"/>
                                     <constraint firstAttribute="centerY" secondItem="xr0-cf-bxB" secondAttribute="centerY" id="A5O-ZM-4cF"/>
                                     <constraint firstAttribute="bottom" secondItem="n4K-jw-XaA" secondAttribute="bottom" constant="52" id="CXk-sL-aa0"/>
-                                    <constraint firstItem="b61-uQ-ZFE" firstAttribute="leading" secondItem="n8h-S5-LTC" secondAttribute="trailing" constant="-5" id="Ehe-iw-64R"/>
                                     <constraint firstItem="n4K-jw-XaA" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leading" id="Gur-he-96O"/>
                                     <constraint firstAttribute="trailing" secondItem="b61-uQ-ZFE" secondAttribute="trailing" id="X1v-zU-azu"/>
                                     <constraint firstItem="b61-uQ-ZFE" firstAttribute="centerY" secondItem="qD5-cn-9cR" secondAttribute="centerY" id="XgF-8s-7GW"/>
                                     <constraint firstItem="n4K-jw-XaA" firstAttribute="top" secondItem="qD5-cn-9cR" secondAttribute="top" id="Za3-4P-i46"/>
-                                    <constraint firstItem="n8h-S5-LTC" firstAttribute="centerY" secondItem="qD5-cn-9cR" secondAttribute="centerY" id="gXo-ob-3gm"/>
-                                    <constraint firstItem="n8h-S5-LTC" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leading" constant="8" id="l3q-Bk-5Nk"/>
-                                    <constraint firstItem="n8h-S5-LTC" firstAttribute="leading" secondItem="xr0-cf-bxB" secondAttribute="trailing" constant="-5" id="yCb-Bs-x6z"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="CXk-sL-aa0"/>
-                                        <exclude reference="1o5-CT-PQw"/>
-                                        <exclude reference="yCb-Bs-x6z"/>
-                                        <exclude reference="Ehe-iw-64R"/>
                                     </mask>
                                 </variation>
                                 <connections>
@@ -805,10 +779,8 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="albumArtistAndAlbumTitleCollapsedLabel" destination="K4x-rb-a4f" id="sOn-jX-qxZ"/>
                         <outlet property="albumArtwork" destination="LL1-x0-BD9" id="TXg-kq-LIT"/>
                         <outlet property="currentPlaybackTimeLabel" destination="7CN-wi-b5a" id="FI5-E4-9pB"/>
-                        <outlet property="labelStackView" destination="n8h-S5-LTC" id="Ctu-xQ-j1i"/>
                         <outlet property="menuButtonView" destination="b61-uQ-ZFE" id="rvQ-bG-ziB"/>
                         <outlet property="nowPlayingCollapsedBar" destination="qD5-cn-9cR" id="gvS-7R-Vt0"/>
                         <outlet property="playPauseButton" destination="ljA-ne-tuv" id="c7R-1N-lCV"/>
@@ -817,7 +789,6 @@
                         <outlet property="playbackProgressCollapsedBar" destination="n4K-jw-XaA" id="h3l-aY-I67"/>
                         <outlet property="repeatButton" destination="0G8-6W-24D" id="uwL-6C-byr"/>
                         <outlet property="shuffleButton" destination="C3t-5J-Dbo" id="yU9-zB-MEX"/>
-                        <outlet property="songTitleCollapsedLabel" destination="ksq-Lm-cab" id="OAU-3u-U3f"/>
                         <outlet property="totalPlaybackTimeLabel" destination="8bf-Dc-sUH" id="Yuu-NL-Ewo"/>
                     </connections>
                 </viewController>
