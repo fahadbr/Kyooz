@@ -57,6 +57,10 @@ struct KyoozUtils {
             doInMainQueueAsync(block)
         }
     }
+    
+    static func doInMainQueueAfterDelay(delayInSeconds:Double, block:()->()) {
+        dispatch_after(getDispatchTimeForSeconds(delayInSeconds), dispatch_get_main_queue(), block)
+    }
 	
 	//MARK: - random number functions
     static func randomNumber(belowValue value:Int) -> Int {
