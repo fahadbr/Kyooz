@@ -107,6 +107,7 @@ public final class HorizontalScrollingTextView : UIScrollView {
                 return
         }
         
+        //want to move 1 pixel per frame at 60FPS
         let duration:Double = Double(maxContentOffsetX - contentOffset.x)/60.0
         
         let repeatAnimation = CAAnimationGroup()
