@@ -174,15 +174,19 @@ class NowPlayingSummaryViewController: UIViewController {
             configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: 14))
         })
         
-        labelStackView = UIStackView(arrangedSubviews: [trackTitleTextView, trackDetailsTextView])
+        let height = trackTitleTextView.estimatedHeight + trackDetailsTextView.estimatedHeight
+        Logger.debug("stack height = \(height)")
+        
+        labelStackView = UIStackView(arrangedSubviews: [trackTitleTextView.viewWithAlphaGradients, trackDetailsTextView.viewWithAlphaGradients])
         labelStackView.axis = .Vertical
         labelStackView.distribution = .FillProportionally
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Left], subView: labelStackView, parentView: view).forEach() {
-            $1.constant = $0 == .Right ? -8 : 8
-        }
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Left], subView: labelStackView, parentView: view)
+//            .forEach() {
+//            $1.constant = $0 == .Right ? -8 : 8
+//        }
         labelStackView.centerYAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.centerYAnchor).active = true
-        labelStackView.heightAnchor.constraintEqualToConstant(trackTitleTextView.estimatedHeight + trackDetailsTextView.estimatedHeight).active = true
+        labelStackView.heightAnchor.constraintEqualToConstant(height).active = true
         labelStackView.userInteractionEnabled = false
         
         
@@ -342,9 +346,10 @@ class NowPlayingSummaryViewController: UIViewController {
 	
 	private func updateLabel(label:HorizontalScrollingTextView, withText newText:String, delay:Double) {
 		if label.text == nil || label.text! != newText {
-			executeBlockInTransitionAnimation(label, delay: delay) {
-				label.text = newText
-			}
+            label.text = newText
+//			executeBlockInTransitionAnimation(label, delay: delay) {
+//				label.text = newText
+//			}
 		}
 	}
 	
