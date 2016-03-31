@@ -9,7 +9,8 @@
 import UIKit
 
 final class ShortNotificationManager {
-    
+	
+	//TODO: get rid of this enum
     enum Size : Int { case Small, Large }
 	
 	static let instance = ShortNotificationManager()
