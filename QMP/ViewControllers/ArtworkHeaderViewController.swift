@@ -160,34 +160,35 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if keyPath != nil && keyPath! == observationKey {
-            let expandedFraction = self.expandedFraction
-            let invertedFraction = 1 - expandedFraction
-            
-            detailsLabel1.alpha = expandedFraction
-            
-            blurViewController.blurRadius = expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
-            
-            CATransaction.begin()
-            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-            imageView.layer.transform = CATransform3DMakeTranslation(0, invertedFraction * 0.2 * imageView.frame.height * -1, 0)
-            gradiantLayer.frame = view.bounds
-            let clearGradiantStart = min(self.dynamicType.clearGradiantDefaultLocations.start * expandedFraction, self.dynamicType.clearGradiantDefaultLocations.start) //ranges from 25 -> 0 as view collapses
-            let clearGradiantEnd = max((0.25 * invertedFraction) + self.dynamicType.clearGradiantDefaultLocations.end, self.dynamicType.clearGradiantDefaultLocations.end) //ranges from 75 -> 100 as view collapses
-            gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
-            
-            if expandedFraction < 0.25 {
-                let scaledFraction = Float(expandedFraction) * 4
-                view.layer.shadowOpacity =  1 - scaledFraction
-                gradiantLayer.opacity = scaledFraction
+        guard keyPath != nil && keyPath! == observationKey else { return }
+    
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        let expandedFraction = self.expandedFraction
+        let invertedFraction = 1 - expandedFraction
+        
+        detailsLabel1.alpha = expandedFraction
+        
+        blurViewController.blurRadius = expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
+        
 
-            } else {
-                view.layer.shadowOpacity = 0
-                gradiantLayer.opacity = 1
-            }
-            CATransaction.commit()
-            
+        imageView.layer.transform = CATransform3DMakeTranslation(0, invertedFraction * 0.2 * imageView.frame.height * -1, 0)
+        gradiantLayer.frame = view.bounds
+        let clearGradiantStart = min(self.dynamicType.clearGradiantDefaultLocations.start * expandedFraction, self.dynamicType.clearGradiantDefaultLocations.start) //ranges from 25 -> 0 as view collapses
+        let clearGradiantEnd = max((0.25 * invertedFraction) + self.dynamicType.clearGradiantDefaultLocations.end, self.dynamicType.clearGradiantDefaultLocations.end) //ranges from 75 -> 100 as view collapses
+        gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
+        
+        if expandedFraction < 0.25 {
+            let scaledFraction = Float(expandedFraction) * 4
+            view.layer.shadowOpacity =  1 - scaledFraction
+            gradiantLayer.opacity = scaledFraction
+
+        } else {
+            view.layer.shadowOpacity = 0
+            gradiantLayer.opacity = 1
         }
+        CATransaction.commit()
+    
     }
     
 }
