@@ -59,12 +59,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     deinit {
         unregisterForNotifications()
     }
-	
-    private var dimLayer:CALayer  = {
-        var l = CALayer()
-        l.backgroundColor = UIColor.blackColor().CGColor
-        return l
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,11 +69,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         let rootView = rootViewController.view
         addChildViewController(rootViewController)
         rootViewController.didMoveToParentViewController(self)
+        rootView.layer.shadowOffset = CGSize(width: 3, height: 0)
+        rootView.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &kvoContext)
 		
-		ConstraintUtils.applyConstraintsToView(
-			withAnchors: [.Top, .Bottom, .Left, .Right],
+		queueViewLeftConstraint = ConstraintUtils.applyConstraintsToView(
+			withAnchors: [.Top, .Bottom, .Width, .Right],
 			subView: rootView,
-			parentView: view)
+			parentView: view)[.Right]!
 		
         rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handleScreenEdgePanGesture(_:)))
         rightPanelExpandingGestureRecognizer.delegate = self
@@ -99,12 +95,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
 		
-		//dim layer
-        dimLayer.frame = view.bounds
-        dimLayer.opacity = 0
-        view.layer.addSublayer(dimLayer)
-		
-		
 		//NOW PLAYING VC
         
 		nowPlayingViewController = UIStoryboard.nowPlayingViewController()
@@ -116,17 +106,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		let npView = nowPlayingNavigationController!.view
 		addChildViewController(nowPlayingNavigationController!)
 		nowPlayingNavigationController!.didMoveToParentViewController(self)
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom], subView: npView, parentView: view)
-		view.bringSubviewToFront(npView)
-		npView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -sideVCOffset).active = true
-		
-		queueViewLeftConstraint = npView.leftAnchor.constraintEqualToAnchor(view.rightAnchor)
-		queueViewLeftConstraint.active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Right, .Width], subView: npView, parentView: view)[.Width]!.constant = -sideVCOffset
+		view.sendSubviewToBack(npView)
 		
 		nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
-		npView.layer.shadowOffset = CGSize.zero
 		
-		npView.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &kvoContext)
+        
 
     }
 	
@@ -240,7 +225,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
 		queueViewLeftConstraint.constant = shouldExpand ? -invertedSideVCOffset : 0
-
         
         UIView.animateWithDuration(0.4,
             delay: 0,
@@ -249,11 +233,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             options: .CurveEaseInOut,
             animations: {
                 self.view.layoutIfNeeded()
-                self.dimLayer.opacity = shouldExpand ? 0.5 : 0
             },
             completion: completion)
-        
-        
     }
 
     
@@ -310,9 +291,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	
 	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 		if keyPath != nil && keyPath! == "center" {
-			let fraction = queueViewLeftConstraint.constant/(-invertedSideVCOffset)
-			dimLayer.opacity = Float(fraction/2)
-			nowPlayingNavigationController?.view.layer.shadowOpacity = Float(fraction) * 0.7
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+			let fraction = Float(queueViewLeftConstraint.constant/(-invertedSideVCOffset))
+			rootViewController?.view.layer.shadowOpacity = fraction * 0.8
+            CATransaction.commit()
 		}
 	}
 

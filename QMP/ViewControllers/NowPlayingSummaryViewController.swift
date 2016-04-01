@@ -36,8 +36,8 @@ class NowPlayingSummaryViewController: UIViewController {
     private var playbackProgressTimer:NSTimer?
     private var albumIdForCurrentAlbumArt:UInt64?
     
-    private var trackTitleTextView: HorizontalScrollingTextView!
-    private var trackDetailsTextView: HorizontalScrollingTextView!
+    private var trackTitleTextView: MarqueeLabel!
+    private var trackDetailsTextView: MarqueeLabel!
 	
     typealias KVOContext = UInt8
     private var observationContext = KVOContext()
@@ -167,24 +167,21 @@ class NowPlayingSummaryViewController: UIViewController {
             label.font = font
         }
         
-        trackTitleTextView = HorizontalScrollingTextView(labelConfigurationBlock: { (label) in
+        trackTitleTextView = MarqueeLabel(labelConfigurationBlock: { (label) in
             configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: 16))
         })
-        trackDetailsTextView = HorizontalScrollingTextView(labelConfigurationBlock: { (label) in
+        trackDetailsTextView = MarqueeLabel(labelConfigurationBlock: { (label) in
             configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: 14))
         })
         
-        let height = trackTitleTextView.estimatedHeight + trackDetailsTextView.estimatedHeight
-        Logger.debug("stack height = \(height)")
+        let height = trackTitleTextView.intrinsicContentSize().height + trackDetailsTextView.intrinsicContentSize().height
         
-        labelStackView = UIStackView(arrangedSubviews: [trackTitleTextView.viewWithAlphaGradients, trackDetailsTextView.viewWithAlphaGradients])
+        labelStackView = UIStackView(arrangedSubviews: [trackTitleTextView, trackDetailsTextView])
         labelStackView.axis = .Vertical
         labelStackView.distribution = .FillProportionally
         
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Left], subView: labelStackView, parentView: view)
-//            .forEach() {
-//            $1.constant = $0 == .Right ? -8 : 8
-//        }
+
         labelStackView.centerYAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.centerYAnchor).active = true
         labelStackView.heightAnchor.constraintEqualToConstant(height).active = true
         labelStackView.userInteractionEnabled = false
@@ -214,7 +211,7 @@ class NowPlayingSummaryViewController: UIViewController {
 		let titleText = nowPlayingItem?.trackTitle ?? "Nothing"
 		updateLabel(trackTitleTextView, withText: titleText, delay: 0)
 		
-		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To") - \(nowPlayingItem?.albumTitle ?? "Play")"
+		let detailsText = "\(nowPlayingItem?.albumArtist ?? "To")  —  \(nowPlayingItem?.albumTitle ?? "Play")"
 		updateLabel(trackDetailsTextView, withText: detailsText, delay: 0.2)
 
         let artwork = nowPlayingItem?.artwork
@@ -344,12 +341,12 @@ class NowPlayingSummaryViewController: UIViewController {
 		labelStackView.layer.transform = CATransform3DConcat(translationTransform, scaleTransform)
     }
 	
-	private func updateLabel(label:HorizontalScrollingTextView, withText newText:String, delay:Double) {
+	private func updateLabel(label:MarqueeLabel, withText newText:String, delay:Double) {
 		if label.text == nil || label.text! != newText {
-            label.text = newText
-//			executeBlockInTransitionAnimation(label, delay: delay) {
-//				label.text = newText
-//			}
+//            label.text = newText
+			executeBlockInTransitionAnimation(label, delay: delay) {
+				label.text = newText
+			}
 		}
 	}
 	

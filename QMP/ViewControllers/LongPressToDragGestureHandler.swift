@@ -70,11 +70,10 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
             guard let viewForSnapshot = getViewForSnapshot(sender) else {
                 return
             }
-
-            gestureDidBegin(sender)
             
             //take a snapshot of the selected row using a helper method
             createSnapshotFromView(viewForSnapshot, sender: sender)
+            gestureDidBegin(sender)
             gestureActivated = wrapperDSD != nil
         case .Changed:
             if(!gestureActivated) { return }
@@ -170,7 +169,9 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         
         //add the snapshot as a subview, centered at cell's center
         let locationInView = sender.locationInView(sender.view)
-        updateSnapshotPosition(shouldHideSourceView ? viewForSnapshot.center : locationInView)
+//        updateSnapshotPosition(shouldHideSourceView ? viewForSnapshot.center : locationInView)
+        let p = viewForSnapshot.convertPoint(CGPoint(x: viewForSnapshot.bounds.midX, y: viewForSnapshot.bounds.midY), toView: sender.view)
+        updateSnapshotPosition(p)
         sender.view?.addSubview(snapshotContainer)
         beginningAnimationEnded = false
         UIView.animateWithDuration(0.25, animations: { () -> Void in
