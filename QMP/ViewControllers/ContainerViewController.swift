@@ -326,14 +326,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer === rightPanelExpandingGestureRecognizer {
-            return gestureRecognizer is UIPanGestureRecognizer
+            return gestureRecognizer.view is UITableView 
         }
         return otherGestureRecognizer is UIScreenEdgePanGestureRecognizer || otherGestureRecognizer is UISwipeGestureRecognizer
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === rightPanelExpandingGestureRecognizer {
-            return otherGestureRecognizer is UIPanGestureRecognizer
+            return otherGestureRecognizer.view is UITableView
         }
         return gestureRecognizer is UIScreenEdgePanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer
     }

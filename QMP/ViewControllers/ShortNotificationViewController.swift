@@ -38,7 +38,7 @@ final class ShortNotificationViewController : FadeOutViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.userInteractionEnabled = false
         let containerView = UIView()
         ConstraintUtils.applyStandardConstraintsToView(subView: containerView, parentView: view)
         ConstraintUtils.applyStandardConstraintsToView(subView: messageLabel, parentView: containerView)

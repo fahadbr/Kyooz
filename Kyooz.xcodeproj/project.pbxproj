@@ -40,6 +40,7 @@
 		0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */; };
 		0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */; };
 		0B1DA0671CADDF2F00699D88 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1DA0661CADDF2F00699D88 /* MarqueeLabel.swift */; };
+		0B1DA0691CB0849F00699D88 /* WrapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1DA0681CB0849F00699D88 /* WrapperViewController.swift */; };
 		0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937561C87E96200374A3C /* HeaderViewController.swift */; };
 		0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937581C92690B00374A3C /* FadeOutViewController.swift */; };
 		0B29375B1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */; };
@@ -191,6 +192,7 @@
 		0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItemUtils.swift; sourceTree = "<group>"; };
 		0B1BFDA71AF313AC009838A5 /* LastFmScrobbler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LastFmScrobbler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B1DA0661CADDF2F00699D88 /* MarqueeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
+		0B1DA0681CB0849F00699D88 /* WrapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WrapperViewController.swift; sourceTree = "<group>"; };
 		0B2937561C87E96200374A3C /* HeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
 		0B2937581C92690B00374A3C /* FadeOutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeOutViewController.swift; sourceTree = "<group>"; };
 		0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityViewControllerProtocol.swift; sourceTree = "<group>"; };
@@ -680,6 +682,7 @@
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
 				10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */,
+				0B1DA0681CB0849F00699D88 /* WrapperViewController.swift */,
 			);
 			name = "Util VCs";
 			sourceTree = "<group>";
@@ -910,6 +913,7 @@
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
 				10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */,
 				0B31FE091BF04B7100B33F0A /* AudioEntitySearchViewController.swift in Sources */,
+				0B1DA0691CB0849F00699D88 /* WrapperViewController.swift in Sources */,
 				100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */,
 				0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */,
 				0BC317A11C5D8F66002BF431 /* AudioTrackDSD.swift in Sources */,

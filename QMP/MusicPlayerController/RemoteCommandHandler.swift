@@ -71,7 +71,7 @@ class RemoteCommandHandler : NSObject {
     }
     
     func previousTrack() {
-        audioQueuePlayer.skipBackwards()
+        audioQueuePlayer.skipBackwards(false)
     }
     
     

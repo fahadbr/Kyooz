@@ -305,6 +305,14 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     func applicationDidEnterBackground(notification:NSNotification) {
         previousSearchText = nil
     }
+    
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer === nowPlayingPanGestureRecognizer {
+            let translation = nowPlayingPanGestureRecognizer.translationInView(nowPlayingPanGestureRecognizer.view)
+            return abs(translation.y) > abs(translation.x)
+        }
+        return true
+    }
 	
 	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 		return  gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer === nowPlayingPanGestureRecognizer

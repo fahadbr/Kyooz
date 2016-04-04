@@ -61,19 +61,24 @@ public class MarqueeLabel : UIView {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    public override func willMoveToSuperview(newSuperview: UIView?) {
-        if newSuperview == nil {
+    public override func didMoveToWindow() {
+        if window == nil {
             stopScrolling()
+        } else {
+            startScrolling()
         }
-        super.willMoveToSuperview(newSuperview)
+        super.didMoveToWindow()
     }
     
-    public override func willMoveToWindow(newWindow: UIWindow?) {
-        if newWindow == nil {
+    public override func didMoveToSuperview() {
+        if superview == nil {
             stopScrolling()
+        } else {
+            startScrolling()
         }
-        super.willMoveToWindow(newWindow)
+        super.didMoveToSuperview()
     }
+    
 	
 	public override func layoutSubviews() {
 		super.layoutSubviews()
