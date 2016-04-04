@@ -28,7 +28,7 @@ protocol AudioQueuePlayer:class {
     
     func pause()
     
-    func skipBackwards()
+    func skipBackwards(forcePreviousTrack:Bool)
     
     func skipForwards()
     

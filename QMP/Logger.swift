@@ -19,13 +19,14 @@ final class Logger {
         return NSOperationQueue.currentQueue()?.name ?? "null"
     }
     
-    static func debug(@autoclosure(escaping) messageBlock: ()->String) {
+    static func debug(@autoclosure messageBlock: ()->String) {
         if !debugEnabled { return }
         
         let date = NSDate()
         let threadId = threadName
+        let message = messageBlock()
         dispatch_async(loggerQueue) {
-            print("\(date.description) [DEBUG] [\(threadId)]:  \(messageBlock())")
+            print("\(date.description) [DEBUG] [\(threadId)]:  \(message)")
         }
     }
     

@@ -208,9 +208,8 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 //        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         updateNowPlayingStateToIndex(nextIndex)
     }
-    
-    func skipBackwards() {
-        if(currentPlaybackTime < 2.0) {
+    func skipBackwards(forcePreviousTrack: Bool) {
+        if(currentPlaybackTime < 2.0 || forcePreviousTrack) {
             updateNowPlayingStateToIndex(previousIndex)
         } else {
             currentPlaybackTime = 0.0
@@ -377,7 +376,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             return MPRemoteCommandHandlerStatus.Success
         }
         remoteCommandCenter.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-            self.skipBackwards()
+            self.skipBackwards(false)
             return MPRemoteCommandHandlerStatus.Success
         }
         remoteCommandCenter.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in

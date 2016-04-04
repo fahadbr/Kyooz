@@ -182,8 +182,8 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         playbackStateManager.correctPlaybackState()
     }
     
-    func skipBackwards() {
-        if(currentPlaybackTime > 2.0) {
+    func skipBackwards(forcePreviousTrack: Bool) {
+        if(currentPlaybackTime > 2.0 && !forcePreviousTrack) {
             musicPlayer.skipToBeginning()
         } else if lowestIndexPersisted > 0  && !queueStateInconsistent {
             playNowInternal(nowPlayingQueue as! [MPMediaItem], index: indexOfNowPlayingItem - 1, shouldPlay: musicIsPlaying)
