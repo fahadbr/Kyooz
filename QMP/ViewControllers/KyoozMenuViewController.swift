@@ -79,7 +79,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         tableContainerView.layer.shadowOpacity = 0.8
         tableContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
         tableContainerView.layer.shadowRadius = 6.0
-        tableContainerView.layer.shadowColor = ThemeHelper.defaultVividColor.CGColor
+        tableContainerView.layer.shadowColor = UIColor.whiteColor().CGColor
         
         view.backgroundColor = UIColor(white: 0, alpha: 0.40)
 		
