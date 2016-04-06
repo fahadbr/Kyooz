@@ -491,24 +491,6 @@
                                 </view>
                                 <blurEffect style="dark"/>
                             </visualEffectView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7CN-wi-b5a" userLabel="CurrentPlaybackTimeLabel">
-                                <rect key="frame" x="23" y="446" width="29" height="12"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="QGr-jm-hSe">
-                                <rect key="frame" x="13" y="416" width="350" height="31"/>
-                                <color key="minimumTrackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="maximumTrackTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpInside" id="4Ts-nL-rVY"/>
-                                    <action selector="commitUpdateOfPlaybackTime:" destination="igl-8i-tSd" eventType="touchUpOutside" id="MQE-ja-bOT"/>
-                                    <action selector="updatePlaybackProgressTimer" destination="igl-8i-tSd" eventType="touchCancel" id="SJN-U1-EM2"/>
-                                    <action selector="updatePlaybackTime:forEvent:" destination="igl-8i-tSd" eventType="valueChanged" id="Ecq-Bz-uZG"/>
-                                </connections>
-                            </slider>
                             <view opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qD5-cn-9cR">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
                                 <subviews>
@@ -593,12 +575,6 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8bf-Dc-sUH" userLabel="TotalPlaybackTimeLabel">
-                                <rect key="frame" x="324" y="446" width="29" height="12"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-vG-UDM" userLabel="forwardButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
                                 <rect key="frame" x="253" y="516" width="40" height="40"/>
                                 <constraints>
@@ -690,32 +666,24 @@
                         <constraints>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="baseline" secondItem="1mo-6h-cpk" secondAttribute="baseline" id="3Tx-Qt-xTz"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="6iF-oc-FoV"/>
-                            <constraint firstItem="C3t-5J-Dbo" firstAttribute="top" secondItem="7CN-wi-b5a" secondAttribute="bottom" constant="61" id="863-6Q-Q0n"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="R1l-bh-GSp" secondAttribute="bottom" id="BmD-ye-22M"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="firstBaseline" secondItem="cEN-vG-UDM" secondAttribute="firstBaseline" id="Cl8-Uh-NQ4"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="ljA-ne-tuv" secondAttribute="bottom" constant="101" id="Ef8-ZN-9XA"/>
                             <constraint firstAttribute="trailing" secondItem="R1l-bh-GSp" secondAttribute="trailing" id="H2m-LZ-eCi"/>
-                            <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-4" id="HkR-T6-EkT"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="leading" secondItem="ljA-ne-tuv" secondAttribute="trailing" constant="35" id="Hkh-HE-SAS"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="firstBaseline" secondItem="C3t-5J-Dbo" secondAttribute="firstBaseline" id="Ix4-AX-gwy"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="leading" secondItem="C3t-5J-Dbo" secondAttribute="trailing" constant="20" id="JRe-jh-dTv"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="HNg-HJ-gQM" secondAttribute="bottom" id="Mxd-Ke-vjt"/>
                             <constraint firstAttribute="trailing" secondItem="qD5-cn-9cR" secondAttribute="trailing" id="OT0-dI-Pq9"/>
-                            <constraint firstItem="7CN-wi-b5a" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="7" id="Ocx-RI-nV0"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="8bf-Dc-sUH" secondAttribute="trailing" constant="6" id="Qk8-gU-iiM"/>
                             <constraint firstAttribute="centerX" secondItem="ljA-ne-tuv" secondAttribute="centerX" id="Scg-US-eWu"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="firstBaseline" secondItem="1mo-6h-cpk" secondAttribute="firstBaseline" id="Sze-Ti-ydX"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="UXx-RF-4fx"/>
-                            <constraint firstItem="QGr-jm-hSe" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-1" id="YXe-3O-546"/>
                             <constraint firstItem="qD5-cn-9cR" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="Ytu-f0-KS4"/>
-                            <constraint firstItem="cEN-vG-UDM" firstAttribute="top" secondItem="QGr-jm-hSe" secondAttribute="bottom" constant="70" id="ZvZ-RQ-QnE"/>
                             <constraint firstItem="HNg-HJ-gQM" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-8" id="abK-01-Njg"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
                             <constraint firstItem="C3t-5J-Dbo" firstAttribute="firstBaseline" secondItem="cEN-vG-UDM" secondAttribute="firstBaseline" id="btI-UZ-Ctu"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="35" id="eUA-OX-4N8"/>
-                            <constraint firstItem="7CN-wi-b5a" firstAttribute="baseline" secondItem="8bf-Dc-sUH" secondAttribute="baseline" id="fEN-s5-ivJ"/>
                             <constraint firstItem="ljA-ne-tuv" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="fYD-bp-79n"/>
-                            <constraint firstItem="QGr-jm-hSe" firstAttribute="centerX" secondItem="ljA-ne-tuv" secondAttribute="centerX" id="hPO-JI-Z4x"/>
                             <constraint firstItem="C3t-5J-Dbo" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="jd0-1R-3d8"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="leading" secondItem="cEN-vG-UDM" secondAttribute="trailing" constant="20" id="oJx-h6-Whe"/>
                             <constraint firstAttribute="trailingMargin" secondItem="HNg-HJ-gQM" secondAttribute="trailing" constant="-8" id="pcm-Bs-VuT"/>
@@ -725,11 +693,6 @@
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="x40-0l-Dq7"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="firstBaseline" secondItem="0G8-6W-24D" secondAttribute="firstBaseline" id="zZH-ug-BkO"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="HkR-T6-EkT"/>
-                            </mask>
-                        </variation>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="Xee-zB-nFN"/>
@@ -737,16 +700,13 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="currentPlaybackTimeLabel" destination="7CN-wi-b5a" id="FI5-E4-9pB"/>
                         <outlet property="menuButtonView" destination="b61-uQ-ZFE" id="rvQ-bG-ziB"/>
                         <outlet property="nowPlayingCollapsedBar" destination="qD5-cn-9cR" id="gvS-7R-Vt0"/>
                         <outlet property="playPauseButton" destination="ljA-ne-tuv" id="c7R-1N-lCV"/>
                         <outlet property="playPauseCollapsedButton" destination="xr0-cf-bxB" id="vjT-rD-8HD"/>
-                        <outlet property="playbackProgressBar" destination="QGr-jm-hSe" id="geR-tP-Tmd"/>
                         <outlet property="playbackProgressCollapsedBar" destination="n4K-jw-XaA" id="h3l-aY-I67"/>
                         <outlet property="repeatButton" destination="0G8-6W-24D" id="uwL-6C-byr"/>
                         <outlet property="shuffleButton" destination="C3t-5J-Dbo" id="yU9-zB-MEX"/>
-                        <outlet property="totalPlaybackTimeLabel" destination="8bf-Dc-sUH" id="Yuu-NL-Ewo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNa-UC-m6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
