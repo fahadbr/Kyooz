@@ -135,7 +135,7 @@
 		10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */; };
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
 		10C7B9DB1C45C16E00ADAAB6 /* WarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */; };
-		10DB53CD1CB31DA40041B179 /* PlaybackProgressBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB53CC1CB31DA40041B179 /* PlaybackProgressBarViewController.swift */; };
+		10DB53CD1CB31DA40041B179 /* PlaybackProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB53CC1CB31DA40041B179 /* PlaybackProgressViewController.swift */; };
 		10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */; };
 		10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */; };
 		10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */; };
@@ -291,7 +291,7 @@
 		10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListButtonView.swift; sourceTree = "<group>"; };
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
 		10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningViewController.swift; sourceTree = "<group>"; };
-		10DB53CC1CB31DA40041B179 /* PlaybackProgressBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackProgressBarViewController.swift; sourceTree = "<group>"; };
+		10DB53CC1CB31DA40041B179 /* PlaybackProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackProgressViewController.swift; sourceTree = "<group>"; };
 		10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationManager.swift; sourceTree = "<group>"; };
 		10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowLimitedSectionDelegator.swift; sourceTree = "<group>"; };
 		10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityHeaderViewController.swift; sourceTree = "<group>"; };
@@ -714,7 +714,7 @@
 		10DB53CB1CB31D480041B179 /* NowPlaying */ = {
 			isa = PBXGroup;
 			children = (
-				10DB53CC1CB31DA40041B179 /* PlaybackProgressBarViewController.swift */,
+				10DB53CC1CB31DA40041B179 /* PlaybackProgressViewController.swift */,
 			);
 			name = NowPlaying;
 			sourceTree = "<group>";
@@ -913,7 +913,7 @@
 				0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */,
 				0B1DA0671CADDF2F00699D88 /* MarqueeLabel.swift in Sources */,
 				10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */,
-				10DB53CD1CB31DA40041B179 /* PlaybackProgressBarViewController.swift in Sources */,
+				10DB53CD1CB31DA40041B179 /* PlaybackProgressViewController.swift in Sources */,
 				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
 				0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,

@@ -9,15 +9,10 @@
 import UIKit
 import MediaPlayer
 
-class NowPlayingSummaryViewController: UIViewController {
+final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressObserver {
     //MARK: - PROPERTIES
-    var albumArtPageVC: UIPageViewController!
 
 	@IBOutlet var menuButtonView: MenuDotsView!
-    
-    @IBOutlet var playbackProgressBar: UISlider!
-    @IBOutlet var totalPlaybackTimeLabel: UILabel!
-    @IBOutlet var currentPlaybackTimeLabel: UILabel!
     
     @IBOutlet var playPauseButton: PlayPauseButtonView!
     @IBOutlet var playPauseCollapsedButton: PlayPauseButtonView!
@@ -29,17 +24,12 @@ class NowPlayingSummaryViewController: UIViewController {
     @IBOutlet var shuffleButton: ShuffleButtonView!
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    private let timeDelayInNanoSeconds = Int64(0.5 * Double(NSEC_PER_SEC))
-    
-    private var playbackProgressTimer:NSTimer?
-    private var albumIdForCurrentAlbumArt:UInt64?
     
     private var labelPageVC:UIPageViewController!
-	
-    typealias KVOContext = UInt8
-    private var observationContext = KVOContext()
-    
-    private var pageVcTransitioning = [UIPageViewController:Bool]()
+    private var albumArtPageVC: UIPageViewController!
+
+    private var observationContext:UInt8 = 123
+    private let playbackProgressVC = PlaybackProgressViewController()
     
     var expanded:Bool = false {
         didSet{
@@ -51,30 +41,11 @@ class NowPlayingSummaryViewController: UIViewController {
     //MARK: - FUNCTIONS
     deinit {
         Logger.debug("deinitializing NowPlayingSummaryViewController")
-        self.invalidateTimer()
         self.unregisterForNotifications()
-    }
-    
-    
-    @IBAction func commitUpdateOfPlaybackTime(sender: UISlider) {
-        audioQueuePlayer.currentPlaybackTime = sender.value
-        playbackProgressBar.value = sender.value
-        playbackProgressCollapsedBar.progress = sender.value
-        //leave the timer invalidated because changing the value will trigger a notification from the music player
-        //causing the view to reload and the timer to be reinitialized
-        //this is preferred because we dont want the timer to start until after the seeking to the time has completed
-    }
-
-    @IBAction func updatePlaybackTime(sender: UISlider, forEvent event: UIEvent) {
-        invalidateTimer()
-        let sliderValue = sender.value
-        let remainingPlaybackTime = Float(audioQueuePlayer.nowPlayingItem?.playbackDuration ?? 0.0) - sliderValue
-        updatePlaybackProgressBarTimeLabels(currentPlaybackTime: sliderValue, remainingPlaybackTime: remainingPlaybackTime)
     }
 
     @IBAction func skipBackward(sender: AnyObject) {
         audioQueuePlayer.skipBackwards(false)
-        updatePlaybackProgressBar(nil)
     }
     
     @IBAction func skipForward(sender: AnyObject) {
@@ -147,40 +118,55 @@ class NowPlayingSummaryViewController: UIViewController {
     //MARK: - FUNCTIONS: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        currentPlaybackTimeLabel.font = ThemeHelper.defaultFont?.fontWithSize(10)
-        totalPlaybackTimeLabel.font = ThemeHelper.defaultFont?.fontWithSize(10)
-        
+        view.contentMode = .ScaleAspectFill
+        view.clipsToBounds = true
         registerForNotifications()
+        
+        labelPageVC = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        labelPageVC.dataSource = self
+        labelPageVC.delegate = self
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: labelPageVC.view, parentView: view)
+        labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.centerYAnchor).active = true
+        labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.heightAnchor).active = true
+
+        
+        
         albumArtPageVC = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
         albumArtPageVC.dataSource = self
         albumArtPageVC.delegate = self
         
         let albumArtView = albumArtPageVC.view
-        albumArtView.layer.shadowOpacity = 0.7
+        albumArtView.layer.shadowOpacity = 0.8
         albumArtView.layer.shadowOffset = CGSize(width: 0, height: 3)
         albumArtView.layer.shadowRadius = 10
         albumArtView.clipsToBounds = false
-        view.insertSubview(albumArtView, belowSubview: playbackProgressBar)
-        albumArtView.translatesAutoresizingMaskIntoConstraints = false
-        albumArtView.bottomAnchor.constraintEqualToAnchor(playbackProgressBar.centerYAnchor).active = true
-        albumArtView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
-        albumArtView.heightAnchor.constraintEqualToAnchor(playbackProgressBar.widthAnchor).active = true
-        albumArtView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: albumArtView, parentView: view)
+        albumArtView.topAnchor.constraintEqualToAnchor(labelPageVC.view.bottomAnchor, constant: 35).active = true
+        albumArtView.heightAnchor.constraintEqualToAnchor(albumArtView.widthAnchor, multiplier: 0.9).active = true
         
-        labelPageVC = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX], subView: playbackProgressVC.view, parentView: view)
+        playbackProgressVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.95).active = true
+        playbackProgressVC.view.topAnchor.constraintEqualToAnchor(albumArtView.bottomAnchor, constant: 35).active = true
+        playbackProgressVC.view.heightAnchor.constraintEqualToConstant(25).active = true
+        addChildViewController(playbackProgressVC)
+        playbackProgressVC.didMoveToParentViewController(self)
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: labelPageVC.view, parentView: view)
-        labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.centerYAnchor).active = true
-        labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.heightAnchor).active = true
-        labelPageVC.dataSource = self
-        labelPageVC.delegate = self
-        
+
         KyoozUtils.doInMainQueueAsync() {
             self.reloadData(nil)
             self.updateAlphaLevels()
         }
-        self.view.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &self.observationContext)
+        view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        playbackProgressVC.addProgressObserver(self)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        playbackProgressVC.removeProgressObserver(self)
     }
     
     private func getViewForLabels(track:AudioTrack?) -> UIView {
@@ -219,30 +205,6 @@ class NowPlayingSummaryViewController: UIViewController {
         
         func transitionPageVC(pageVC:UIPageViewController, withVC vc:WrapperViewController) {
             pageVC.setViewControllers([vc], direction: .Forward, animated: false, completion: nil)
-//            guard let previousVC = pageVC.viewControllers?.first as? WrapperViewController else {
-//                pageVC.setViewControllers([vc], direction: .Forward, animated: false, completion: nil)
-//                return
-//            }
-//            let previousIndex = previousVC.index
-//            
-//            guard vc.id != previousVC.id else { return }
-//            
-//            let isTransitioning = pageVcTransitioning[pageVC] ?? false
-//            let direction:UIPageViewControllerNavigationDirection = previousIndex > vc.index ? .Reverse : .Forward
-//            
-//            pageVC.setViewControllers([vc], direction: direction, animated: !isTransitioning, completion: {_ in
-//                KyoozUtils.doInMainQueueAsync() {
-//                    if !isTransitioning {
-//                        pageVC.setViewControllers([vc], direction: direction, animated: false, completion: nil)
-//                    }
-//                    self.pageVcTransitioning[pageVC] = false
-//                }
-//            })
-//            //if an animation has started (which is only when isTransitioning is false) then we want to make sure that no other animations start
-//            //while it is occurring
-//            if !isTransitioning {
-//                pageVcTransitioning[pageVC] = true
-//            }
         }
         
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
@@ -250,24 +212,21 @@ class NowPlayingSummaryViewController: UIViewController {
         let labelView = getViewForLabels(nowPlayingItem)
         let labelWrapper = WrapperViewController(wrappedView: labelView, frameInset: 0, resizeView: false, index: audioQueuePlayer.indexOfNowPlayingItem, id:persistentId)
         transitionPageVC(labelPageVC, withVC: labelWrapper)
-
-        let albumArtId:UInt64 = nowPlayingItem?.artwork == nil ? 0 : nowPlayingItem!.albumId
     
         let imageView = getAlbumArtForTrack(nowPlayingItem)
         let imageWrapper = WrapperViewController(wrappedView: imageView, frameInset: 0, resizeView: true, index: audioQueuePlayer.indexOfNowPlayingItem, id: persistentId)
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
 
         self.view.layer.contents = imageView.image?.CGImage
-        self.albumIdForCurrentAlbumArt = albumArtId
-        
-        self.playbackProgressBar.maximumValue = Float(nowPlayingItem?.playbackDuration ?? 1.0)
         
         repeatButton.repeatState = audioQueuePlayer.repeatMode
         shuffleButton.isActive = audioQueuePlayer.shuffleActive
-        
-        updatePlaybackProgressBar(nil)
-        updatePlaybackProgressTimer()
+
         updatePlaybackStatus(nil)
+    }
+    
+    func updateProgress(percentComplete: Float) {
+        playbackProgressCollapsedBar.setProgress(percentComplete, animated: true)
     }
     
     private func getAlbumArtForTrack(track:AudioTrack?) -> UIImageView {
@@ -277,49 +236,7 @@ class NowPlayingSummaryViewController: UIViewController {
         imageView.contentMode = .ScaleAspectFit
         return imageView
     }
-    
-    @IBAction func updatePlaybackProgressTimer() {
-        if(audioQueuePlayer.musicIsPlaying && playbackProgressTimer == nil) {
-            Logger.debug("initiating playbackProgressTimer")
-            KyoozUtils.doInMainQueue() {
-                self.playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
-                    target: self,
-                    selector: #selector(NowPlayingSummaryViewController.updatePlaybackProgressBar(_:)),
-                    userInfo: nil,
-                    repeats: true)
-            }
-        } else if(!audioQueuePlayer.musicIsPlaying && playbackProgressTimer != nil){
-            invalidateTimer()
-        }
-    }
-    
-    func invalidateTimer() {
-        playbackProgressTimer?.invalidate()
-        playbackProgressTimer = nil
-    }
-    
-    func updatePlaybackProgressBar(sender:NSTimer?) {
-        if(audioQueuePlayer.nowPlayingItem == nil) {
-            totalPlaybackTimeLabel.text = MediaItemUtils.zeroTime
-            currentPlaybackTimeLabel.text = MediaItemUtils.zeroTime
-            playbackProgressBar.setValue(0.0, animated: false)
-            playbackProgressCollapsedBar.progress = 0.0
-            return
-        }
-        let currentPlaybackTime = audioQueuePlayer.currentPlaybackTime
-        let totalPlaybackTime = Float(audioQueuePlayer.nowPlayingItem!.playbackDuration)
-        let remainingPlaybackTime = totalPlaybackTime - currentPlaybackTime
-        
-        updatePlaybackProgressBarTimeLabels(currentPlaybackTime:currentPlaybackTime, remainingPlaybackTime:remainingPlaybackTime)
-        let progress = currentPlaybackTime
-        playbackProgressBar.setValue(progress, animated: true)
-        playbackProgressCollapsedBar.setProgress(Float(progress/totalPlaybackTime), animated: true)
-    }
-    
-    func updatePlaybackProgressBarTimeLabels(currentPlaybackTime currentPlaybackTime:Float, remainingPlaybackTime:Float) {
-        totalPlaybackTimeLabel.text = "-" + MediaItemUtils.getTimeRepresentation(remainingPlaybackTime)
-        currentPlaybackTimeLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
-    }
+
     
     func updatePlaybackStatus(sender:AnyObject?) {
         let musicIsNotPlaying = !audioQueuePlayer.musicIsPlaying
@@ -329,9 +246,10 @@ class NowPlayingSummaryViewController: UIViewController {
     
     //MARK: - FUNCTIONS: - KVOFunction
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-		if keyPath != nil && keyPath == "center" {
+        guard keyPath != nil else { return }
+		if keyPath == "center"{
             updateAlphaLevels()
-		} else {
+        } else {
             Logger.error("non observed property has changed")
         }
     }
@@ -388,10 +306,6 @@ class NowPlayingSummaryViewController: UIViewController {
         notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
         
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.invalidateTimer),
-            name: UIApplicationDidEnterBackgroundNotification, object: application)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.invalidateTimer),
-            name: UIApplicationWillResignActiveNotification, object: application)
         notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: UIApplicationDidBecomeActiveNotification, object: application)
     }
@@ -432,16 +346,11 @@ extension NowPlayingSummaryViewController : UIPageViewControllerDataSource, UIPa
         return wrapperVC
     }
     
-    func pageViewController(pageViewController: UIPageViewController, willTransitionToViewControllers pendingViewControllers: [UIViewController]) {
-        pageVcTransitioning[pageViewController] = true
-    }
-    
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if completed {
             (pageViewController.viewControllers?.first as? WrapperViewController)?.completionBlock?()
         }
-        pageVcTransitioning[pageViewController] = false
     }
 }
 

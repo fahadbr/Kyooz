@@ -108,8 +108,12 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         get {
             return Float(musicPlayer.currentPlaybackTime)
         } set {
-            if(nowPlayingItem != nil) {
-                musicPlayer.currentPlaybackTime = NSTimeInterval(newValue)
+            if nowPlayingItem != nil {
+                if newValue == 0.0 {
+                    musicPlayer.skipToBeginning()
+                } else {
+                    musicPlayer.currentPlaybackTime = NSTimeInterval(newValue)
+                }
                 publishNotification(updateType: .PlaybackStateUpdate, sender: self)
             }
         }
@@ -184,7 +188,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func skipBackwards(forcePreviousTrack: Bool) {
         if(currentPlaybackTime > 2.0 && !forcePreviousTrack) {
-            musicPlayer.skipToBeginning()
+            currentPlaybackTime = 0.0
         } else if lowestIndexPersisted > 0  && !queueStateInconsistent {
             playNowInternal(nowPlayingQueue as! [MPMediaItem], index: indexOfNowPlayingItem - 1, shouldPlay: musicIsPlaying)
         } else {

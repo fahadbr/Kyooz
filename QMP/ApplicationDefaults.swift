@@ -17,12 +17,11 @@ struct ApplicationDefaults {
         let player:AudioQueuePlayer
         switch value {
         case .AppleDRM:
-            Logger.debug("Loading DRMAudioQueuePlayer")
             player = DRMAudioQueuePlayer.instance
         case .Default:
-            Logger.debug("Loading AudioQueuePlayerImpl")
             player = AudioQueuePlayerImpl.instance
         }
+        Logger.debug("Loading \(player.dynamicType) as the application audio player")
         player.delegate = AudioQueuePlayerDelegateImpl()
         return player
     }()
