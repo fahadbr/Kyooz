@@ -491,90 +491,6 @@
                                 </view>
                                 <blurEffect style="dark"/>
                             </visualEffectView>
-                            <view opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qD5-cn-9cR">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
-                                <subviews>
-                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-jw-XaA">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="3" id="IB0-fm-sXt"/>
-                                        </constraints>
-                                        <color key="progressTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <color key="trackTintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="IB0-fm-sXt"/>
-                                            </mask>
-                                        </variation>
-                                        <variation key="widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="0.0" width="400" height="3"/>
-                                        </variation>
-                                    </progressView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xr0-cf-bxB" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="45" height="45"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="xr0-cf-bxB" secondAttribute="height" multiplier="1:1" id="8jr-KT-csB"/>
-                                            <constraint firstAttribute="width" constant="45" id="G92-Dk-IeG"/>
-                                            <constraint firstAttribute="height" constant="35" id="vjb-Av-VYw"/>
-                                            <constraint firstAttribute="width" secondItem="xr0-cf-bxB" secondAttribute="height" multiplier="1:1" id="wJb-Lr-nkV"/>
-                                        </constraints>
-                                        <state key="normal">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="hasOuterFrame" value="NO"/>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="scale">
-                                                <real key="value" value="0.69999999999999996"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="vjb-Av-VYw"/>
-                                                <exclude reference="wJb-Lr-nkV"/>
-                                            </mask>
-                                        </variation>
-                                        <connections>
-                                            <action selector="playPauseAction:" destination="igl-8i-tSd" eventType="touchUpInside" id="dPd-mr-q1u"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b61-uQ-ZFE" userLabel="menuButton" customClass="MenuDotsView" customModule="Kyooz" customModuleProvider="target">
-                                        <rect key="frame" x="330" y="0.0" width="45" height="45"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="45" id="LC1-Eh-9NY"/>
-                                            <constraint firstAttribute="width" secondItem="b61-uQ-ZFE" secondAttribute="height" multiplier="1:1" id="eFY-po-gMo"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="color">
-                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="position">
-                                                <real key="value" value="0.59999999999999998"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="menuButtonPressed:" destination="igl-8i-tSd" eventType="touchUpInside" id="NNX-1B-XBF"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <gestureRecognizers/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="45" id="0l1-lv-Omv"/>
-                                    <constraint firstAttribute="trailing" secondItem="n4K-jw-XaA" secondAttribute="trailing" id="6Fq-dc-pRA"/>
-                                    <constraint firstItem="xr0-cf-bxB" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leading" id="7Lo-Pw-WQd"/>
-                                    <constraint firstAttribute="centerY" secondItem="xr0-cf-bxB" secondAttribute="centerY" id="A5O-ZM-4cF"/>
-                                    <constraint firstAttribute="bottom" secondItem="n4K-jw-XaA" secondAttribute="bottom" constant="52" id="CXk-sL-aa0"/>
-                                    <constraint firstItem="n4K-jw-XaA" firstAttribute="leading" secondItem="qD5-cn-9cR" secondAttribute="leading" id="Gur-he-96O"/>
-                                    <constraint firstAttribute="trailing" secondItem="b61-uQ-ZFE" secondAttribute="trailing" id="X1v-zU-azu"/>
-                                    <constraint firstItem="b61-uQ-ZFE" firstAttribute="centerY" secondItem="qD5-cn-9cR" secondAttribute="centerY" id="XgF-8s-7GW"/>
-                                    <constraint firstItem="n4K-jw-XaA" firstAttribute="top" secondItem="qD5-cn-9cR" secondAttribute="top" id="Za3-4P-i46"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="CXk-sL-aa0"/>
-                                    </mask>
-                                </variation>
-                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-vG-UDM" userLabel="forwardButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
                                 <rect key="frame" x="253" y="516" width="40" height="40"/>
                                 <constraints>
@@ -674,11 +590,9 @@
                             <constraint firstItem="0G8-6W-24D" firstAttribute="firstBaseline" secondItem="C3t-5J-Dbo" secondAttribute="firstBaseline" id="Ix4-AX-gwy"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="leading" secondItem="C3t-5J-Dbo" secondAttribute="trailing" constant="20" id="JRe-jh-dTv"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="HNg-HJ-gQM" secondAttribute="bottom" id="Mxd-Ke-vjt"/>
-                            <constraint firstAttribute="trailing" secondItem="qD5-cn-9cR" secondAttribute="trailing" id="OT0-dI-Pq9"/>
                             <constraint firstAttribute="centerX" secondItem="ljA-ne-tuv" secondAttribute="centerX" id="Scg-US-eWu"/>
                             <constraint firstItem="cEN-vG-UDM" firstAttribute="firstBaseline" secondItem="1mo-6h-cpk" secondAttribute="firstBaseline" id="Sze-Ti-ydX"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="UXx-RF-4fx"/>
-                            <constraint firstItem="qD5-cn-9cR" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="Ytu-f0-KS4"/>
                             <constraint firstItem="HNg-HJ-gQM" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-8" id="abK-01-Njg"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
                             <constraint firstItem="C3t-5J-Dbo" firstAttribute="firstBaseline" secondItem="cEN-vG-UDM" secondAttribute="firstBaseline" id="btI-UZ-Ctu"/>
@@ -687,7 +601,6 @@
                             <constraint firstItem="C3t-5J-Dbo" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="jd0-1R-3d8"/>
                             <constraint firstItem="0G8-6W-24D" firstAttribute="leading" secondItem="cEN-vG-UDM" secondAttribute="trailing" constant="20" id="oJx-h6-Whe"/>
                             <constraint firstAttribute="trailingMargin" secondItem="HNg-HJ-gQM" secondAttribute="trailing" constant="-8" id="pcm-Bs-VuT"/>
-                            <constraint firstItem="qD5-cn-9cR" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="t0h-ZW-ReY"/>
                             <constraint firstItem="C3t-5J-Dbo" firstAttribute="firstBaseline" secondItem="1mo-6h-cpk" secondAttribute="firstBaseline" id="vKz-AK-9hv"/>
                             <constraint firstItem="C3t-5J-Dbo" firstAttribute="baseline" secondItem="0G8-6W-24D" secondAttribute="baseline" id="vS3-Wp-9Nz"/>
                             <constraint firstItem="1mo-6h-cpk" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="x40-0l-Dq7"/>
@@ -700,11 +613,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="menuButtonView" destination="b61-uQ-ZFE" id="rvQ-bG-ziB"/>
-                        <outlet property="nowPlayingCollapsedBar" destination="qD5-cn-9cR" id="gvS-7R-Vt0"/>
                         <outlet property="playPauseButton" destination="ljA-ne-tuv" id="c7R-1N-lCV"/>
-                        <outlet property="playPauseCollapsedButton" destination="xr0-cf-bxB" id="vjT-rD-8HD"/>
-                        <outlet property="playbackProgressCollapsedBar" destination="n4K-jw-XaA" id="h3l-aY-I67"/>
                         <outlet property="repeatButton" destination="0G8-6W-24D" id="uwL-6C-byr"/>
                         <outlet property="shuffleButton" destination="C3t-5J-Dbo" id="yU9-zB-MEX"/>
                     </connections>

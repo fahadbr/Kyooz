@@ -9,17 +9,12 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressObserver {
+final class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
-
-	@IBOutlet var menuButtonView: MenuDotsView!
+	
+	static let CollapsedHeight:CGFloat = 45
     
     @IBOutlet var playPauseButton: PlayPauseButtonView!
-    @IBOutlet var playPauseCollapsedButton: PlayPauseButtonView!
-    
-    @IBOutlet var nowPlayingCollapsedBar: UIView!
-    @IBOutlet var playbackProgressCollapsedBar: UIProgressView!
-    
     @IBOutlet var repeatButton: RepeatButtonView!
     @IBOutlet var shuffleButton: ShuffleButtonView!
     
@@ -29,7 +24,8 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
     private var albumArtPageVC: UIPageViewController!
 
     private var observationContext:UInt8 = 123
-    private let playbackProgressVC = PlaybackProgressViewController()
+    private let playbackProgressVC = PlaybackProgressViewController.instance
+	private let nowPlayingBarVC = NowPlayingBarViewController()
     
     var expanded:Bool = false {
         didSet{
@@ -84,26 +80,7 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
 	
-	@IBAction func menuButtonPressed(sender: AnyObject) {
-		guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else {
-			return
-		}
-		
-		let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = nowPlayingItem.trackTitle
-		kmvc.menuDetails = "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")"
-		let center = menuButtonView.superview?.convertPoint(menuButtonView.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace)
-		kmvc.originatingCenter = center
-		
-		kmvc.addAction(KyoozMenuAction(title: "Jump To Album", image: nil) {
-			self.goToVCWithGrouping(LibraryGrouping.Albums)
-		})
-		kmvc.addAction(KyoozMenuAction(title: "Jump To Artist", image: nil) {
-			self.goToVCWithGrouping(LibraryGrouping.Artists)
-		})
-		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
-		KyoozUtils.showMenuViewController(kmvc)
-	}
+
 
     private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
         if let nowPlayingItem = audioQueuePlayer.nowPlayingItem, let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {
@@ -121,13 +98,17 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
         view.contentMode = .ScaleAspectFill
         view.clipsToBounds = true
         registerForNotifications()
+		
+		let nowPlayingBar = nowPlayingBarVC.view
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: nowPlayingBar, parentView: view)
+		nowPlayingBar.heightAnchor.constraintEqualToConstant(self.dynamicType.CollapsedHeight).active = true
         
         labelPageVC = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
         labelPageVC.dataSource = self
         labelPageVC.delegate = self
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: labelPageVC.view, parentView: view)
-        labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.centerYAnchor).active = true
-        labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingCollapsedBar.heightAnchor).active = true
+        labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingBar.centerYAnchor).active = true
+        labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
 
         
         
@@ -157,16 +138,6 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
             self.updateAlphaLevels()
         }
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        playbackProgressVC.addProgressObserver(self)
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        playbackProgressVC.removeProgressObserver(self)
     }
     
     private func getViewForLabels(track:AudioTrack?) -> UIView {
@@ -225,10 +196,6 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
         updatePlaybackStatus(nil)
     }
     
-    func updateProgress(percentComplete: Float) {
-        playbackProgressCollapsedBar.setProgress(percentComplete, animated: true)
-    }
-    
     private func getAlbumArtForTrack(track:AudioTrack?) -> UIImageView {
         let albumArtImage = track?.artwork?.imageWithSize(albumArtPageVC.view.frame.size) ?? ImageContainer.defaultAlbumArtworkImage
         
@@ -241,7 +208,6 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
     func updatePlaybackStatus(sender:AnyObject?) {
         let musicIsNotPlaying = !audioQueuePlayer.musicIsPlaying
         playPauseButton.isPlayButton = musicIsNotPlaying
-        playPauseCollapsedButton.isPlayButton = musicIsNotPlaying
     }
     
     //MARK: - FUNCTIONS: - KVOFunction
@@ -271,9 +237,9 @@ final class NowPlayingSummaryViewController: UIViewController, PlaybackProgressO
         }
         
         albumArtPageVC.view.alpha = expandedFraction
-		nowPlayingCollapsedBar.alpha = collapsedFraction
+		nowPlayingBarVC.view.alpha = collapsedFraction
 				
-		let tX = (labelPageVC.view.center.x - nowPlayingCollapsedBar.bounds.midX) * -expandedFraction
+		let tX = (labelPageVC.view.center.x - nowPlayingBarVC.view.bounds.midX) * -expandedFraction
 		let tY = 30 * expandedFraction
 		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
 		

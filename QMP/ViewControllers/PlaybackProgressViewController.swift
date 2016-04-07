@@ -14,6 +14,8 @@ protocol PlaybackProgressObserver : class {
 
 final class PlaybackProgressViewController: UIViewController {
 	
+	static let instance = PlaybackProgressViewController()
+	
 	private let progressSlider = UISlider()
 	private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
 	
