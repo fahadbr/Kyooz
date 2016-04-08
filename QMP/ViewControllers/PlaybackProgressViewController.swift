@@ -54,9 +54,8 @@ final class PlaybackProgressViewController: UIViewController {
         progressSlider.leftAnchor.constraintEqualToAnchor(timeProgressedLabel.rightAnchor, constant: margin).active = true
         progressSlider.rightAnchor.constraintEqualToAnchor(timeRemainingLabel.leftAnchor, constant: -margin).active = true
         progressSlider.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
-        let trackAlpha:CGFloat = 0.4
-        progressSlider.minimumTrackTintColor = UIColor(white: 1, alpha: trackAlpha)
-        progressSlider.maximumTrackTintColor = UIColor(white: 0, alpha: trackAlpha)
+        progressSlider.minimumTrackTintColor = UIColor(white: 1, alpha: 0.3)
+        progressSlider.maximumTrackTintColor = UIColor(white: 0, alpha: 0.3)
 
         let thumbView = UIView(frame: CGRect(x: 0, y: 0, width: 7, height: 20))
         thumbView.backgroundColor = UIColor.lightGrayColor()
