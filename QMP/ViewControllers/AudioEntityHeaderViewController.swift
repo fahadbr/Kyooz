@@ -44,6 +44,14 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 		if useCollapsableHeader {
 			tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
 			view.addGestureRecognizer(tableView.panGestureRecognizer)
+			
+			let marqueeLabel = MarqueeLabel(labelConfigurationBlock: { (label) in
+				label.font = UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize)
+				label.textColor = ThemeHelper.defaultFontColor
+				label.textAlignment = .Center
+			})
+			marqueeLabel.text = title
+			navigationItem.titleView = marqueeLabel
 		}
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityHeaderViewController.reloadAllData),
