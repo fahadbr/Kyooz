@@ -161,9 +161,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
 			vc.useCollapsableHeader = true
-        } else {
-            vc.title = entity.titleForGrouping(parentGroup)?.uppercaseString
         }
+		
+		vc.title = entity.titleForGrouping(parentGroup)?.uppercaseString
 		
         pushViewController(vc)
     }

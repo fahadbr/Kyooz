@@ -12,13 +12,15 @@ struct ConstraintUtils {
 	
 	enum Anchor:Int { case Top, Bottom, Left, Right, CenterX, CenterY, Width, Height }
 	
-	static func applyStandardConstraintsToView(subView subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
+	static func applyStandardConstraintsToView(subView subView:UIView, parentView:UIView, shouldActivate:Bool = true, addAsSubview:Bool = true) -> [Anchor:NSLayoutConstraint] {
 		return applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
 	}
     
-    static func applyConstraintsToView(withAnchors anchors:[Anchor], subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
-        parentView.addSubview(subView)
-        subView.translatesAutoresizingMaskIntoConstraints = false
+	static func applyConstraintsToView(withAnchors anchors:[Anchor], subView:UIView, parentView:UIView, shouldActivate:Bool = true, addAsSubview:Bool = true) -> [Anchor:NSLayoutConstraint] {
+		if addAsSubview {
+			parentView.addSubview(subView)
+			subView.translatesAutoresizingMaskIntoConstraints = false
+		}
         var constraintDict = [Anchor:NSLayoutConstraint]()
         for anchor:Anchor in anchors{
             constraintDict[anchor] = shouldActivate ? activeConstraintForAnchor(anchor, subView: subView, parentView: parentView) : constraintForAnchor(anchor, subView: subView, parentView: parentView)
