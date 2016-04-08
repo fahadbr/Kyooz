@@ -78,6 +78,7 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Top, .Bottom], subView: menuButton, parentView: view)
 		menuButton.widthAnchor.constraintEqualToAnchor(menuButton.heightAnchor).active = true
 		menuButton.position = 0.6
+        menuButton.color = UIColor.whiteColor()
 		menuButton.addTarget(self, action: #selector(self.menuButtonPressed(_:)), forControlEvents: .TouchUpInside)
 		
     }
