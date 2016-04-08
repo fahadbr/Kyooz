@@ -32,6 +32,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     //MARK: - IBOutlets
     
     @IBOutlet var headerTitleLabel: UILabel!
+	@IBOutlet var labelStackView: UIStackView!
     @IBOutlet var detailsLabel1: UILabel!
     @IBOutlet var detailsLabel2: UILabel!
     @IBOutlet var detailsLabel3: UILabel!
@@ -85,7 +86,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
         observingViewBounds = true //this is to ensure we dont remove the observer before adding one
-
+		
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
 
     }
@@ -161,22 +162,44 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         guard keyPath != nil && keyPath! == observationKey else { return }
-    
+		
+		func adjustGradientLocation(expandedFraction expandedFraction:CGFloat, invertedFraction:CGFloat) {
+			let clearGradiantStart = min(self.dynamicType.clearGradiantDefaultLocations.start * expandedFraction, self.dynamicType.clearGradiantDefaultLocations.start) //ranges from 25 -> 0 as view collapses
+			let clearGradiantEnd = max((0.25 * invertedFraction) + self.dynamicType.clearGradiantDefaultLocations.end, self.dynamicType.clearGradiantDefaultLocations.end) //ranges from 75 -> 100 as view collapses
+			gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
+		}
+		
         CATransaction.begin()
         CATransaction.setDisableActions(true)
+		defer {
+			CATransaction.commit()
+		}
+		
         let expandedFraction = self.expandedFraction
         let invertedFraction = 1 - expandedFraction
+		
+		gradiantLayer.frame = view.bounds
+		
+		if expandedFraction >= 1 {
+			let overexpandedFraction = (expandedFraction - 1) * 5.0/2.0
+			let invertedOverexpandedFraction = 1 - overexpandedFraction
+			labelStackView.alpha = invertedOverexpandedFraction
+			shuffleButton.alpha = invertedOverexpandedFraction
+			selectModeButton.alpha = invertedOverexpandedFraction
+			headerTitleLabel.alpha = invertedOverexpandedFraction
+			adjustGradientLocation(expandedFraction: invertedOverexpandedFraction, invertedFraction: overexpandedFraction)
+			imageView.layer.transform = CATransform3DMakeTranslation(0, overexpandedFraction * 0.2 * imageView.frame.height, 0)
+			return
+		}
         
         detailsLabel1.alpha = expandedFraction
         
         blurViewController.blurRadius = expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
         
-
+		labelStackView.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
         imageView.layer.transform = CATransform3DMakeTranslation(0, invertedFraction * 0.2 * imageView.frame.height * -1, 0)
-        gradiantLayer.frame = view.bounds
-        let clearGradiantStart = min(self.dynamicType.clearGradiantDefaultLocations.start * expandedFraction, self.dynamicType.clearGradiantDefaultLocations.start) //ranges from 25 -> 0 as view collapses
-        let clearGradiantEnd = max((0.25 * invertedFraction) + self.dynamicType.clearGradiantDefaultLocations.end, self.dynamicType.clearGradiantDefaultLocations.end) //ranges from 75 -> 100 as view collapses
-        gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
+
+		adjustGradientLocation(expandedFraction: expandedFraction, invertedFraction: invertedFraction)
         
         if expandedFraction < 0.25 {
             let scaledFraction = Float(expandedFraction) * 4
@@ -187,8 +210,6 @@ final class ArtworkHeaderViewController : HeaderViewController {
             view.layer.shadowOpacity = 0
             gradiantLayer.opacity = 1
         }
-        CATransaction.commit()
-    
     }
     
 }
