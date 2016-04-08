@@ -76,7 +76,10 @@ final class ArtworkHeaderViewController : HeaderViewController {
 		let blurView = blurViewController.view
         imageViewContainer.insertSubview(blurView, aboveSubview: imageView)
         blurView.translatesAutoresizingMaskIntoConstraints = false
-		ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: imageView, shouldActivate: true, addAsSubview: false)
+        blurView.topAnchor.constraintEqualToAnchor(imageView.topAnchor).active = true
+        blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
+        blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
+        blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
 		blurViewController.blurRadius = 0
 		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
@@ -104,9 +107,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
         gradiantLayer.frame = view.bounds
         view.layer.insertSublayer(gradiantLayer, above: imageViewContainer.layer)
         
-//        headerTitleLabel.text = track.albumTitle?.uppercaseString
-		headerTitleLabel.text = nil
-		
+        headerTitleLabel.text = track.albumTitle?.uppercaseString
+        
         detailsLabel1.text = track.albumArtist ?? track.artist
         
         var details = [String]()
