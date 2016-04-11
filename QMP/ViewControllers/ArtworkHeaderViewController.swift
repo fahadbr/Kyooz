@@ -90,6 +90,11 @@ final class ArtworkHeaderViewController : HeaderViewController {
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
 
     }
+	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		labelStackView.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
+	}
     
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
@@ -140,7 +145,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel2.layer.rasterizationScale = UIScreen.mainScreen().scale
         detailsLabel3.layer.shouldRasterize = true
         detailsLabel3.layer.rasterizationScale = UIScreen.mainScreen().scale
-        
+		
         KyoozUtils.doInMainQueueAsync() { [detailsLabel2 = self.detailsLabel2] in
             guard let tracks = entities as? [AudioTrack] else {
                 detailsLabel2.hidden = true
@@ -187,6 +192,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
 			shuffleButton.alpha = invertedOverexpandedFraction
 			selectModeButton.alpha = invertedOverexpandedFraction
 			headerTitleLabel.alpha = invertedOverexpandedFraction
+			gradiantLayer.opacity = Float(invertedOverexpandedFraction)
 			adjustGradientLocation(expandedFraction: invertedOverexpandedFraction, invertedFraction: overexpandedFraction)
 			imageView.layer.transform = CATransform3DMakeTranslation(0, overexpandedFraction * 0.2 * imageView.frame.height, 0)
 			return

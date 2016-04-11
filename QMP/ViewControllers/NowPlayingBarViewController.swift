@@ -2,66 +2,19 @@
 //  NowPlayingBarViewController.swift
 //  Kyooz
 //
-//  Created by FAHAD RIAZ on 4/6/16.
+//  Created by FAHAD RIAZ on 4/8/16.
 //  Copyright © 2016 FAHAD RIAZ. All rights reserved.
 //
 
 import UIKit
 
-class AbstractPlaybackViewController : UIViewController {
-	
-	private let playPauseButton = PlayPauseButtonView()
-	private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-	
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		playPauseButton.addTarget(self, action: #selector(self.togglePlayPause), forControlEvents: .TouchUpInside)
-	}
-	
-	override func viewDidAppear(animated: Bool) {
-		super.viewDidAppear(animated)
-		registerForNotifications()
-	}
-	
-	override func viewDidDisappear(animated: Bool) {
-		super.viewDidDisappear(animated)
-		unregisterForNotifications()
-	}
-	
-	func updateButtonStates() {
-		playPauseButton.isPlayButton = !audioQueuePlayer.musicIsPlaying
-	}
-	
-	func togglePlayPause() {
-		if audioQueuePlayer.musicIsPlaying {
-			audioQueuePlayer.pause()
-		} else {
-			audioQueuePlayer.play()
-		}
-	}
-	
-	private func registerForNotifications() {
-		let notificationCenter = NSNotificationCenter.defaultCenter()
-		let application = UIApplication.sharedApplication()
-		notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-		                               name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-		
-		notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-		                               name: UIApplicationDidBecomeActiveNotification, object: application)
-	}
-	
-	private func unregisterForNotifications() {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
-	}
-}
-
 final class NowPlayingBarViewController: AbstractPlaybackViewController, PlaybackProgressObserver {
 	
 	private let menuButton = MenuDotsView()
 	private let progressView = UIProgressView()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		//progressBarConfig
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: progressView, parentView: view)
 		progressView.progressTintColor = UIColor.whiteColor()
@@ -78,10 +31,10 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Top, .Bottom], subView: menuButton, parentView: view)
 		menuButton.widthAnchor.constraintEqualToAnchor(menuButton.heightAnchor).active = true
 		menuButton.position = 0.6
-        menuButton.color = UIColor.whiteColor()
+		menuButton.color = UIColor.whiteColor()
 		menuButton.addTarget(self, action: #selector(self.menuButtonPressed(_:)), forControlEvents: .TouchUpInside)
 		
-    }
+	}
 	
 	override func viewDidAppear(animated: Bool) {
 		super.viewDidAppear(animated)
@@ -123,6 +76,4 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: libraryGrouping, entity: nowPlayingItem)
 		}
 	}
-
-
 }

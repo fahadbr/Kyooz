@@ -107,7 +107,6 @@ final class AudioEngineController : AudioController {
     
     private func scheduleBuffers(numberOfBuffersToSchedule:Int, shouldInterrupt:Bool = false, validationCode:UInt8) {
         if(self.validationCode != validationCode) {
-            Logger.debug("canceling buffer")
             return
         } else if(shouldInterrupt) {
             if(self.validationCode == UInt8.max) {
