@@ -28,6 +28,19 @@ public class MarqueeLabel : UIView {
         }
     }
 	
+	public func setText(text:String?, animated:Bool) {
+		guard animated else {
+			self.text = text
+			return
+		}
+		subLabel.layer.shouldRasterize = false
+		UIView.transitionWithView(self, duration: 0.5, options: .TransitionFlipFromBottom, animations: {
+				self.text = text
+			}, completion: {_ in
+				self.subLabel.layer.shouldRasterize = true
+		})
+	}
+	
 	public init(labelConfigurationBlock:(UILabel)->()) {
 		
 		labelConfigurationBlock(subLabel)

@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -458,12 +457,12 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="HNg-HJ-gQM">
+                                        <stackView opaque="NO" alpha="0.59999999999999998" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="HNg-HJ-gQM">
                                             <rect key="frame" x="8" y="637" width="359" height="30"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i2B-J3-Tc8">
-                                                    <rect key="frame" x="0.0" y="0.0" width="43" height="30"/>
-                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="51" height="30"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
                                                     <state key="normal" title="ALBUM">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -471,9 +470,9 @@
                                                         <action selector="goToAlbum:" destination="igl-8i-tSd" eventType="touchUpInside" id="Pk8-OQ-WfW"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckW-JV-yKz">
-                                                    <rect key="frame" x="318" y="0.0" width="41" height="30"/>
-                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="12"/>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckW-JV-yKz">
+                                                    <rect key="frame" x="310" y="0.0" width="49" height="30"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
                                                     <state key="normal" title="ARTIST">
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -492,120 +491,17 @@
                                 </view>
                                 <blurEffect style="dark"/>
                             </visualEffectView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEN-vG-UDM" userLabel="forwardButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="253" y="516" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="MjA-9E-WAK"/>
-                                    <constraint firstAttribute="width" constant="40" id="dB2-VA-rIr"/>
-                                </constraints>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isForwardButton" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="scale">
-                                        <real key="value" value="0.90000000000000002"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="skipForward:" destination="igl-8i-tSd" eventType="touchUpInside" id="0zl-e5-V9r"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mo-6h-cpk" userLabel="skipBackButton" customClass="SkipTrackButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="83" y="516" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="rdO-mC-1Eh"/>
-                                    <constraint firstAttribute="width" constant="40" id="uy8-Fl-XrB"/>
-                                </constraints>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isForwardButton" value="NO"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="scale">
-                                        <real key="value" value="0.90000000000000002"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="skipBackward:" destination="igl-8i-tSd" eventType="touchUpInside" id="sZy-g3-OxI"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C3t-5J-Dbo" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="28" y="519" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="C3t-5J-Dbo" secondAttribute="height" multiplier="1:1" id="h67-vG-zuh"/>
-                                    <constraint firstAttribute="width" constant="35" id="phQ-m7-Da2"/>
-                                    <constraint firstAttribute="height" constant="20" id="x8j-AZ-hyg"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="x8j-AZ-hyg"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <action selector="toggleShuffle:" destination="igl-8i-tSd" eventType="touchUpInside" id="GKQ-8J-s5D"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0G8-6W-24D" userLabel="repeatButton" customClass="RepeatButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="313" y="519" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="0G8-6W-24D" secondAttribute="height" multiplier="1:1" id="5d7-sd-A4W"/>
-                                    <constraint firstAttribute="width" constant="35" id="6Me-ce-vSh"/>
-                                    <constraint firstAttribute="height" constant="20" id="wV8-1h-mFe"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="wV8-1h-mFe"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <action selector="switchRepeatMode:" destination="igl-8i-tSd" eventType="touchUpInside" id="PZ3-tO-HEN"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ljA-ne-tuv" userLabel="playPauseButton" customClass="PlayPauseButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="158" y="506" width="60" height="60"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="1nV-tZ-gZs"/>
-                                    <constraint firstAttribute="height" constant="60" id="uBI-Eq-gle"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isPlayButton" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="hasOuterFrame" value="YES"/>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="playPauseAction:" destination="igl-8i-tSd" eventType="touchUpInside" id="FIg-gc-J4T"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="cEN-vG-UDM" firstAttribute="baseline" secondItem="1mo-6h-cpk" secondAttribute="baseline" id="3Tx-Qt-xTz"/>
-                            <constraint firstItem="0G8-6W-24D" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="6iF-oc-FoV"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="R1l-bh-GSp" secondAttribute="bottom" id="BmD-ye-22M"/>
-                            <constraint firstItem="0G8-6W-24D" firstAttribute="firstBaseline" secondItem="cEN-vG-UDM" secondAttribute="firstBaseline" id="Cl8-Uh-NQ4"/>
-                            <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="ljA-ne-tuv" secondAttribute="bottom" constant="101" id="Ef8-ZN-9XA"/>
                             <constraint firstAttribute="trailing" secondItem="R1l-bh-GSp" secondAttribute="trailing" id="H2m-LZ-eCi"/>
-                            <constraint firstItem="cEN-vG-UDM" firstAttribute="leading" secondItem="ljA-ne-tuv" secondAttribute="trailing" constant="35" id="Hkh-HE-SAS"/>
-                            <constraint firstItem="0G8-6W-24D" firstAttribute="firstBaseline" secondItem="C3t-5J-Dbo" secondAttribute="firstBaseline" id="Ix4-AX-gwy"/>
-                            <constraint firstItem="1mo-6h-cpk" firstAttribute="leading" secondItem="C3t-5J-Dbo" secondAttribute="trailing" constant="20" id="JRe-jh-dTv"/>
                             <constraint firstItem="4hG-pS-V2Q" firstAttribute="top" secondItem="HNg-HJ-gQM" secondAttribute="bottom" id="Mxd-Ke-vjt"/>
-                            <constraint firstAttribute="centerX" secondItem="ljA-ne-tuv" secondAttribute="centerX" id="Scg-US-eWu"/>
-                            <constraint firstItem="cEN-vG-UDM" firstAttribute="firstBaseline" secondItem="1mo-6h-cpk" secondAttribute="firstBaseline" id="Sze-Ti-ydX"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leading" id="UXx-RF-4fx"/>
                             <constraint firstItem="HNg-HJ-gQM" firstAttribute="leading" secondItem="Cdl-oj-ugN" secondAttribute="leadingMargin" constant="-8" id="abK-01-Njg"/>
                             <constraint firstItem="R1l-bh-GSp" firstAttribute="top" secondItem="PC2-mG-M0S" secondAttribute="bottom" constant="-20" id="bkU-Fm-3q9"/>
-                            <constraint firstItem="C3t-5J-Dbo" firstAttribute="firstBaseline" secondItem="cEN-vG-UDM" secondAttribute="firstBaseline" id="btI-UZ-Ctu"/>
-                            <constraint firstItem="ljA-ne-tuv" firstAttribute="leading" secondItem="1mo-6h-cpk" secondAttribute="trailing" constant="35" id="eUA-OX-4N8"/>
-                            <constraint firstItem="ljA-ne-tuv" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="fYD-bp-79n"/>
-                            <constraint firstItem="C3t-5J-Dbo" firstAttribute="centerY" secondItem="ljA-ne-tuv" secondAttribute="centerY" id="jd0-1R-3d8"/>
-                            <constraint firstItem="0G8-6W-24D" firstAttribute="leading" secondItem="cEN-vG-UDM" secondAttribute="trailing" constant="20" id="oJx-h6-Whe"/>
                             <constraint firstAttribute="trailingMargin" secondItem="HNg-HJ-gQM" secondAttribute="trailing" constant="-8" id="pcm-Bs-VuT"/>
-                            <constraint firstItem="C3t-5J-Dbo" firstAttribute="firstBaseline" secondItem="1mo-6h-cpk" secondAttribute="firstBaseline" id="vKz-AK-9hv"/>
-                            <constraint firstItem="C3t-5J-Dbo" firstAttribute="baseline" secondItem="0G8-6W-24D" secondAttribute="baseline" id="vS3-Wp-9Nz"/>
-                            <constraint firstItem="1mo-6h-cpk" firstAttribute="centerY" secondItem="cEN-vG-UDM" secondAttribute="centerY" id="x40-0l-Dq7"/>
-                            <constraint firstItem="1mo-6h-cpk" firstAttribute="firstBaseline" secondItem="0G8-6W-24D" secondAttribute="firstBaseline" id="zZH-ug-BkO"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -613,11 +509,6 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                    <connections>
-                        <outlet property="playPauseButton" destination="ljA-ne-tuv" id="c7R-1N-lCV"/>
-                        <outlet property="repeatButton" destination="0G8-6W-24D" id="uwL-6C-byr"/>
-                        <outlet property="shuffleButton" destination="C3t-5J-Dbo" id="yU9-zB-MEX"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNa-UC-m6V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

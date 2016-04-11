@@ -14,18 +14,15 @@ final class NowPlayingSummaryViewController: UIViewController {
 	
 	static let CollapsedHeight:CGFloat = 45
     
-    @IBOutlet var playPauseButton: PlayPauseButtonView!
-    @IBOutlet var repeatButton: RepeatButtonView!
-    @IBOutlet var shuffleButton: ShuffleButtonView!
-    
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    private var labelPageVC:UIPageViewController!
-    private var albumArtPageVC: UIPageViewController!
+    private var labelPageVC:NowPlayingPageViewController!
+    private var albumArtPageVC: NowPlayingPageViewController!
 
     private var observationContext:UInt8 = 123
     private let playbackProgressVC = PlaybackProgressViewController.instance
 	private let nowPlayingBarVC = NowPlayingBarViewController()
+	private let playbackControlsVC = PlaybackControlsViewController()
     
     var expanded:Bool = false {
         didSet{
@@ -33,40 +30,12 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
     }
 	
-    
     //MARK: - FUNCTIONS
     deinit {
         Logger.debug("deinitializing NowPlayingSummaryViewController")
         self.unregisterForNotifications()
     }
 
-    @IBAction func skipBackward(sender: AnyObject) {
-        audioQueuePlayer.skipBackwards(false)
-    }
-    
-    @IBAction func skipForward(sender: AnyObject) {
-        audioQueuePlayer.skipForwards()
-    }
-    
-    @IBAction func playPauseAction(sender: AnyObject) {
-        if(audioQueuePlayer.musicIsPlaying) {
-            self.audioQueuePlayer.pause()
-        } else {
-            self.audioQueuePlayer.play()
-        }
-    }
-    
-    @IBAction func toggleShuffle(sender: AnyObject) {
-        let newState = !audioQueuePlayer.shuffleActive
-        audioQueuePlayer.shuffleActive = newState
-        shuffleButton.isActive = audioQueuePlayer.shuffleActive
-    }
-    
-    @IBAction func switchRepeatMode(sender: AnyObject) {
-        let newState = audioQueuePlayer.repeatMode.nextState
-        audioQueuePlayer.repeatMode = newState
-        repeatButton.repeatState = audioQueuePlayer.repeatMode
-    }
     
     @IBAction func showQueue(sender: AnyObject) {
         ContainerViewController.instance.toggleSidePanel()
@@ -80,8 +49,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
 	
-
-
     private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
         if let nowPlayingItem = audioQueuePlayer.nowPlayingItem, let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {
             ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: libraryGrouping, entity: nowPlayingItem)
@@ -103,18 +70,12 @@ final class NowPlayingSummaryViewController: UIViewController {
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: nowPlayingBar, parentView: view)
 		nowPlayingBar.heightAnchor.constraintEqualToConstant(self.dynamicType.CollapsedHeight).active = true
         
-        labelPageVC = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        labelPageVC.dataSource = self
-        labelPageVC.delegate = self
+        labelPageVC = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: labelPageVC.view, parentView: view)
         labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingBar.centerYAnchor).active = true
         labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
 
-        
-        
-        albumArtPageVC = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        albumArtPageVC.dataSource = self
-        albumArtPageVC.delegate = self
+        albumArtPageVC = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
         
         let albumArtView = albumArtPageVC.view
         albumArtView.layer.shadowOpacity = 0.8
@@ -122,7 +83,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         albumArtView.layer.shadowRadius = 10
         albumArtView.clipsToBounds = false
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: albumArtView, parentView: view)
-        albumArtView.topAnchor.constraintEqualToAnchor(labelPageVC.view.bottomAnchor, constant: 35).active = true
+        albumArtView.topAnchor.constraintEqualToAnchor(labelPageVC.view.bottomAnchor, constant: 55).active = true
         albumArtView.heightAnchor.constraintEqualToAnchor(albumArtView.widthAnchor, multiplier: 0.9).active = true
         
         ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX], subView: playbackProgressVC.view, parentView: view)
@@ -131,7 +92,14 @@ final class NowPlayingSummaryViewController: UIViewController {
         playbackProgressVC.view.heightAnchor.constraintEqualToConstant(25).active = true
         addChildViewController(playbackProgressVC)
         playbackProgressVC.didMoveToParentViewController(self)
-        
+		
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX], subView: playbackControlsVC.view, parentView: view)
+
+		playbackControlsVC.view.heightAnchor.constraintEqualToConstant(65).active = true
+		playbackControlsVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
+		playbackControlsVC.view.topAnchor.constraintEqualToAnchor(playbackProgressVC.view.bottomAnchor, constant: 30).active = true
+		addChildViewController(playbackControlsVC)
+		playbackControlsVC.didMoveToParentViewController(self)
 
         KyoozUtils.doInMainQueueAsync() {
             self.reloadData(nil)
@@ -139,76 +107,32 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
     }
-    
-    private func getViewForLabels(track:AudioTrack?) -> UIView {
-        func configureLabel(label:UILabel, font:UIFont?) {
-            label.textColor = ThemeHelper.defaultFontColor
-            label.textAlignment = .Center
-            label.font = font
-        }
-        
-        let trackTitleTextView = MarqueeLabel(labelConfigurationBlock: { (label) in
-            configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: 16))
-        })
-        let trackDetailsTextView = MarqueeLabel(labelConfigurationBlock: { (label) in
-            configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: 14))
-        })
-        
-        let titleText = track?.trackTitle ?? "Nothing"
-        let detailsText = "\(track?.albumArtist ?? "To")  —  \(track?.albumTitle ?? "Play")"
-        
-        trackTitleTextView.text = titleText
-        trackDetailsTextView.text = detailsText
-        
-        let height = trackTitleTextView.intrinsicContentSize().height + trackDetailsTextView.intrinsicContentSize().height
-        
-        let labelStackView = UIStackView(arrangedSubviews: [trackTitleTextView, trackDetailsTextView])
-        labelStackView.axis = .Vertical
-        labelStackView.distribution = .FillProportionally
-        
-        labelStackView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: height)
-        
-        return labelStackView
-    }
+	
 
     func reloadData(notification:NSNotification?) {
         guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else { return }
         
-        func transitionPageVC(pageVC:UIPageViewController, withVC vc:WrapperViewController) {
-            pageVC.setViewControllers([vc], direction: .Forward, animated: false, completion: nil)
+        func transitionPageVC(pageVC:NowPlayingPageViewController, withVC vc:()->WrapperViewController) {
+			if !((pageVC.viewControllers?.first as? WrapperViewController)?.isPresentedVC ?? false)
+				 || pageVC.refreshNeeded {
+				pageVC.refreshNeeded = false
+				pageVC.setViewControllers([vc()], direction: .Forward, animated: false, completion: nil)
+			}
         }
         
-        let nowPlayingItem = audioQueuePlayer.nowPlayingItem;
-		let persistentId = nowPlayingItem?.id ?? 0
-        let labelView = getViewForLabels(nowPlayingItem)
-        let labelWrapper = WrapperViewController(wrappedView: labelView, frameInset: 0, resizeView: false, index: audioQueuePlayer.indexOfNowPlayingItem, id:persistentId)
+        let nowPlayingItem = audioQueuePlayer.nowPlayingItem
+		let index = audioQueuePlayer.indexOfNowPlayingItem
+		let labelWrapper = { return LabelStackWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index) }
         transitionPageVC(labelPageVC, withVC: labelWrapper)
-    
-        let imageView = getAlbumArtForTrack(nowPlayingItem)
-        let imageWrapper = WrapperViewController(wrappedView: imageView, frameInset: 0, resizeView: true, index: audioQueuePlayer.indexOfNowPlayingItem, id: persistentId)
+		
+		let imageWrapper = { return ImageWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index, size: self.albumArtPageVC.view.frame.size) }
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
 
-        self.view.layer.contents = imageView.image?.CGImage
-        
-        repeatButton.repeatState = audioQueuePlayer.repeatMode
-        shuffleButton.isActive = audioQueuePlayer.shuffleActive
-
-        updatePlaybackStatus(nil)
+        self.view.layer.contents = nowPlayingItem?.artwork?.imageWithSize(albumArtPageVC.view.frame.size)?.CGImage
     }
     
-    private func getAlbumArtForTrack(track:AudioTrack?) -> UIImageView {
-        let albumArtImage = track?.artwork?.imageWithSize(albumArtPageVC.view.frame.size) ?? ImageContainer.defaultAlbumArtworkImage
-        
-        let imageView = UIImageView(image: albumArtImage)
-        imageView.contentMode = .ScaleAspectFit
-        return imageView
-    }
 
-    
-    func updatePlaybackStatus(sender:AnyObject?) {
-        let musicIsNotPlaying = !audioQueuePlayer.musicIsPlaying
-        playPauseButton.isPlayButton = musicIsNotPlaying
-    }
+
     
     //MARK: - FUNCTIONS: - KVOFunction
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -240,7 +164,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 		nowPlayingBarVC.view.alpha = collapsedFraction
 				
 		let tX = (labelPageVC.view.center.x - nowPlayingBarVC.view.bounds.midX) * -expandedFraction
-		let tY = 30 * expandedFraction
+		let tY = 35 * expandedFraction
 		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
 		
 		let scale = 0.8 + (expandedFraction * 0.2)
@@ -267,8 +191,7 @@ final class NowPlayingSummaryViewController: UIViewController {
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
-            name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
+		//this is for refreshing the page views
         notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
             name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
         
@@ -281,42 +204,3 @@ final class NowPlayingSummaryViewController: UIViewController {
     }
 
 }
-
-extension NowPlayingSummaryViewController : UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-    
-    private func wrapperVCForIndex(pageVC:UIPageViewController, index:Int) -> WrapperViewController? {
-        let queue = audioQueuePlayer.nowPlayingQueue
-        guard index >= 0 && !queue.isEmpty && index < queue.count else {
-            return nil
-        }
-        let track = queue[index]
-        let isLabelVc = pageVC === labelPageVC
-        let view = isLabelVc ? getViewForLabels(track) : getAlbumArtForTrack(track)
-        let wrapperVC = WrapperViewController(wrappedView: view, frameInset: 0 , resizeView: !isLabelVc, index: index, id: track.id)
-        return wrapperVC
-    }
-    
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        let wrapperVC = wrapperVCForIndex(pageViewController, index:audioQueuePlayer.indexOfNowPlayingItem + 1)
-        wrapperVC?.completionBlock = { [audioQueuePlayer = self.audioQueuePlayer] in
-            audioQueuePlayer.skipForwards()
-        }
-        return wrapperVC
-    }
-    
-    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        let wrapperVC = wrapperVCForIndex(pageViewController, index:audioQueuePlayer.indexOfNowPlayingItem - 1)
-        wrapperVC?.completionBlock = { [audioQueuePlayer = self.audioQueuePlayer] in
-            audioQueuePlayer.skipBackwards(true)
-        }
-        return wrapperVC
-    }
-    
-    
-    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if completed {
-            (pageViewController.viewControllers?.first as? WrapperViewController)?.completionBlock?()
-        }
-    }
-}
-
