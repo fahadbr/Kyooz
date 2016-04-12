@@ -83,9 +83,9 @@ final class AudioQueuePlayerWrapper : AudioQueuePlayer {
 		delegateAudioQueuePlayer.skipForwards()
 	}
 	
-	func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool) throws {
+	func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool) {
 		let oldSnapshot = playbackStateSnapshot
-		try delegateAudioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: index, shouldShuffleIfOff: shouldShuffleIfOff)
+		delegateAudioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: index, shouldShuffleIfOff: shouldShuffleIfOff)
 		publishNotification(updateType: .QueueUpdate, sender: delegateAudioQueuePlayer)
 		delegate?.audioQueuePlayerDidChangeContext(delegateAudioQueuePlayer, previousSnapshot:oldSnapshot)
 		
