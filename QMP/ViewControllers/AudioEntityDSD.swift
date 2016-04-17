@@ -24,6 +24,8 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     var rowLimit:Int = 0
     var rowLimitActive:Bool = false
     
+    var titleFontOverride:UIFont?
+    
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
@@ -66,6 +68,10 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
             audioCell.isNowPlaying = entityIsNowPlaying(entity, libraryGrouping: libraryGrouping, indexPath: indexPath)
         } else {
             cell.textLabel?.text = entity.titleForGrouping(libraryGrouping)
+        }
+        
+        if let libraryCell = cell as? MediaLibraryTableViewCell where titleFontOverride != nil {
+            libraryCell.titleLabel.font = titleFontOverride
         }
         
         return cell

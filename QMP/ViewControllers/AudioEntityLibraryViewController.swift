@@ -10,8 +10,6 @@ import UIKit
 
 final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, UIGestureRecognizerDelegate {
 	
-	private static let searchButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: RootViewController.instance, action: #selector(RootViewController.activateSearch))
-	
 	var reuseIdentifier:String {
 		if useCollapsableHeader {
 			return AlbumTrackTableViewCell.reuseIdentifier
@@ -38,7 +36,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		navigationItem.rightBarButtonItem = self.dynamicType.searchButton
+//		navigationItem.rightBarButtonItem = self.dynamicType.searchButton
 		popGestureRecognizer.enabled = !isBaseLevel
 		popGestureRecognizer.delegate = self
 		
@@ -82,7 +80,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	}
 	
 	
-	override func addCustomMenuActions(indexPath: NSIndexPath, menuController:KyoozMenuViewController) {
+    override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
         if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
             menuController.addAction(KyoozMenuAction(title: "Delete", image: nil, action: {_ in
                 self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)

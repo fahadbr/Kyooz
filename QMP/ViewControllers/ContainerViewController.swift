@@ -13,48 +13,45 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     static let instance:ContainerViewController = ContainerViewController()
     
+    enum Position : Int { case Left, Center, Right }
+    
     private let sideVCOffset:CGFloat = 60
-	private var invertedSideVCOffset:CGFloat { return view.bounds.width - sideVCOffset }
+	private var invertedCenterVCOffset:CGFloat { return view.bounds.width - sideVCOffset }
 	private var kvoContext:UInt8 = 123
     
     var longPressGestureRecognizer:UILongPressGestureRecognizer!
     var dragAndDropHandler:LongPressDragAndDropGestureHandler!
     
     var tapGestureRecognizer:UITapGestureRecognizer!
-    var panGestureRecognizer:UIPanGestureRecognizer!
-    var rightPanelExpandingGestureRecognizer:UIPanGestureRecognizer!
+    var centerPanelPanGestureRecognizer:UIPanGestureRecognizer!
     
     var rootViewController:RootViewController!
     
     var nowPlayingNavigationController:UINavigationController?
     var nowPlayingViewController:NowPlayingViewController?
+    var searchViewController = AudioEntitySearchViewController.instance
     
-    var sidePanelExpanded:Bool = false {
+    var centerPanelPosition:Position = .Center {
         didSet {
-            for gestureRecognizerObject in rootViewController.view.gestureRecognizers! {
-                let gestureRecognizer = gestureRecognizerObject 
-                if(gestureRecognizer == tapGestureRecognizer || gestureRecognizer == panGestureRecognizer) {
-                    gestureRecognizer.enabled = sidePanelExpanded
-                } else {
-                    gestureRecognizer.enabled = !sidePanelExpanded
-                }
-            }
-            rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelExpanded)
-            nowPlayingViewController?.viewExpanded = sidePanelExpanded
+            let sidePanelVisible = centerPanelPosition != .Center
+            searchViewController.isExpanded = centerPanelPosition == .Right
+            tapGestureRecognizer.enabled = sidePanelVisible
+            rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
+            nowPlayingViewController?.viewExpanded = centerPanelPosition == .Left
         }
     }
     
     private let _undoManager:NSUndoManager = {
-            let u = NSUndoManager()
-            u.levelsOfUndo = 2
-            return u
+        let undoManager = NSUndoManager()
+        undoManager.levelsOfUndo = 2
+        return undoManager
     }()
     
     override var undoManager:NSUndoManager! {
         return _undoManager
     }
     
-    private var queueViewLeftConstraint:NSLayoutConstraint!
+    private var centerViewRightConstraint:NSLayoutConstraint!
     
     deinit {
         unregisterForNotifications()
@@ -69,27 +66,23 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         let rootView = rootViewController.view
         addChildViewController(rootViewController)
         rootViewController.didMoveToParentViewController(self)
-        rootView.layer.shadowOffset = CGSize(width: 3, height: 0)
+        rootView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        rootView.layer.shadowRadius = 6
         rootView.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &kvoContext)
 		
-		queueViewLeftConstraint = ConstraintUtils.applyConstraintsToView(
+		centerViewRightConstraint = ConstraintUtils.applyConstraintsToView(
 			withAnchors: [.Top, .Bottom, .Width, .Right],
 			subView: rootView,
 			parentView: view)[.Right]!
 		
-        rightPanelExpandingGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handleScreenEdgePanGesture(_:)))
-        rightPanelExpandingGestureRecognizer.delegate = self
-        rootViewController.view.addGestureRecognizer(rightPanelExpandingGestureRecognizer)
+        centerPanelPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handlePanGesture(_:)))
+        centerPanelPanGestureRecognizer.delegate = self
+        rootViewController.view.addGestureRecognizer(centerPanelPanGestureRecognizer)
 
         //keep a reference of this gesture recogizer to enable/disable it
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ContainerViewController.handleTouchGesture(_:)))
-        tapGestureRecognizer.enabled = sidePanelExpanded
+        tapGestureRecognizer.enabled = false
         rootViewController.view.addGestureRecognizer(tapGestureRecognizer)
-        
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handlePanGesture(_:)))
-        panGestureRecognizer.enabled = sidePanelExpanded
-        rootViewController.view.addGestureRecognizer(panGestureRecognizer)
-        
 
         longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ContainerViewController.handleLongPressGesture(_:)))
         longPressGestureRecognizer.delegate = self
@@ -110,9 +103,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		view.sendSubviewToBack(npView)
 		
 		nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
-		
         
-
+        
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Width], subView: searchViewController.view, parentView: view)[.Width]!.constant = -sideVCOffset
+        addChildViewController(searchViewController)
+        view.sendSubviewToBack(searchViewController.view)
+        searchViewController.didMoveToParentViewController(self)
     }
 	
     override func canBecomeFirstResponder() -> Bool {
@@ -130,14 +126,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func toggleSidePanel() {
-        animateSidePanel(shouldExpand: !sidePanelExpanded)
+        let newPosition:Position = centerPanelPosition == .Center ? .Left : .Center
+        animateCenterPanel(toPosition: newPosition)
     }
     
-    
-    
     func pushViewController(vc:UIViewController) {
-        if sidePanelExpanded {
-            animateSidePanel(shouldExpand: false)
+        if centerPanelPosition != .Center {
+            animateCenterPanel(toPosition: .Center)
         }
         rootViewController.pushViewController(vc)
     }
@@ -182,49 +177,32 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     // MARK: Gesture recognizer
     
     func handleTouchGesture(recognizer:UITapGestureRecognizer) {
-        if(recognizer.state == .Ended) {
+        if recognizer.state == .Ended {
             toggleSidePanel()
         }
     }
     
-    func handleScreenEdgePanGesture(recognizer: UIPanGestureRecognizer) {
-
-        switch(recognizer.state) {
-        case .Began:
-            nowPlayingViewController?.view.layer.shouldRasterize = true
-        case .Changed:
-            applyTranslationToViews(recognizer)
-        case .Ended, .Cancelled:
-            if(nowPlayingViewController != nil) {
-                let hasMovedEnoughLeftOfCenter = (queueViewLeftConstraint.constant/(-invertedSideVCOffset)) > 0.15
-                animateSidePanel(shouldExpand: hasMovedEnoughLeftOfCenter)
+    private func animateCenterPanel(toPosition targetPosition:Position) {
+        if centerPanelPosition == .Left && targetPosition == .Center {
+            animateCenterPanelXPosition(toPosition: targetPosition) { finished in
+                self.centerPanelPosition = targetPosition
             }
-        default:
-            break
-        }
-        
-    }
-    
-    private func animateSidePanel(shouldExpand shouldExpand: Bool) {
-        if shouldExpand {
-            self.sidePanelExpanded = true
-            animateCenterPanelXPosition(targetPosition: -CGRectGetWidth(rootViewController.view.frame) +
-                sideVCOffset, shouldExpand: shouldExpand) { finished in
-
-                    self.nowPlayingViewController?.view?.layer.shouldRasterize = false
-            }
-            
         } else {
-            animateCenterPanelXPosition(targetPosition: 0, shouldExpand: shouldExpand) { finished in
-                self.sidePanelExpanded = false
-                self.nowPlayingViewController?.view?.layer.shouldRasterize = false
-            }
+            centerPanelPosition = targetPosition
+            animateCenterPanelXPosition(toPosition: targetPosition)
         }
     }
 	
     
-    private func animateCenterPanelXPosition(targetPosition targetPosition:CGFloat, shouldExpand:Bool, completion: ((Bool) -> Void)! = nil) {
-		queueViewLeftConstraint.constant = shouldExpand ? -invertedSideVCOffset : 0
+    private func animateCenterPanelXPosition(toPosition targetPosition:Position, completion: ((Bool) -> Void)! = nil) {
+        switch targetPosition {
+        case .Center:
+            centerViewRightConstraint.constant = 0
+        case .Left:
+            centerViewRightConstraint.constant = -invertedCenterVCOffset
+        case .Right:
+            centerViewRightConstraint.constant = invertedCenterVCOffset
+        }
         
         UIView.animateWithDuration(0.4,
             delay: 0,
@@ -239,26 +217,34 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
     
     private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
-	
-		
-		let newConstant = queueViewLeftConstraint.constant + recognizer.translationInView(view).x
-		queueViewLeftConstraint.constant = KyoozUtils.cap(newConstant, min: -invertedSideVCOffset, max: 0)
-		
-        recognizer.setTranslation(CGPointZero, inView: view)
+		let newConstant = centerViewRightConstraint.constant + recognizer.translationInView(view).x
+		centerViewRightConstraint.constant = KyoozUtils.cap(newConstant, min: -invertedCenterVCOffset, max: invertedCenterVCOffset)
+        recognizer.setTranslation(CGPoint.zero, inView: view)
     }
     
+    
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
-        
+
         switch(recognizer.state) {
-        case .Began:
-            nowPlayingViewController!.view.layer.shouldRasterize = true
         case .Changed:
             applyTranslationToViews(recognizer)
         case .Ended, .Cancelled:
-            if(nowPlayingViewController != nil) {
-                let hasMovedEnoughRightOfScreenEdge = recognizer.view!.center.x < -(view.center.x * 0.90)
-                animateSidePanel(shouldExpand: hasMovedEnoughRightOfScreenEdge)
+            let targetPosition:Position
+            let centerPanelXPos = rootViewController.view.frame.origin.x
+            
+            let movingRight = recognizer.velocityInView(recognizer.view).x > 0
+            
+            
+            if centerPanelXPos < 0 {
+                let markerX = movingRight ? (invertedCenterVCOffset * -0.80) : (invertedCenterVCOffset * -0.20)
+                targetPosition = centerPanelXPos < markerX ? .Left : .Center
+            } else if centerPanelXPos > 0 {
+                let markerX = movingRight ? (invertedCenterVCOffset * 0.20) : (invertedCenterVCOffset * 0.80)
+                targetPosition = centerPanelXPos > markerX ? .Right : .Center
+            } else {
+                targetPosition = .Center
             }
+            animateCenterPanel(toPosition: targetPosition)
         default:
             break
         }
@@ -274,13 +260,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 return
             }
             if(dragAndDropHandler == nil) {
-                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: rootViewController, dropDestination: nowPlayingViewController!)
+                let dragSource:DragSource = centerPanelPosition == .Right ? searchViewController : rootViewController
+                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: nowPlayingViewController!)
                 dragAndDropHandler.delegate = self
             }
         case .Ended, .Cancelled:
             nowPlayingViewController!.insertMode = false
             dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.6), dispatch_get_main_queue()) { [unowned self]() in
-                self.animateSidePanel(shouldExpand: false)
+                self.animateCenterPanel(toPosition: .Center)
                 self.dragAndDropHandler = nil
             }
         default:
@@ -293,9 +280,17 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		if keyPath != nil && keyPath! == "center" {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-			let fraction = Float(queueViewLeftConstraint.constant/(-invertedSideVCOffset))
-			rootViewController?.view.layer.shadowOpacity = fraction * 0.8
+			let fraction = Float(abs(centerViewRightConstraint.constant)/invertedCenterVCOffset)
+			rootViewController?.view.layer.shadowOpacity = fraction
             CATransaction.commit()
+            
+            if centerViewRightConstraint.constant > 0 {
+                nowPlayingNavigationController!.view.hidden = true
+                searchViewController.view.hidden = false
+            } else if centerViewRightConstraint.constant < 0 {
+                nowPlayingNavigationController!.view.hidden = false
+                searchViewController.view.hidden = true
+            }
 		}
 	}
 
@@ -304,16 +299,16 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
     func gestureDidBegin(sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
-            animateSidePanel(shouldExpand: true)
+            animateCenterPanel(toPosition: .Left)
             nowPlayingViewController!.insertMode = true
         }
     }
     
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === longPressGestureRecognizer {
-            return (!rootViewController.pullableViewExpanded && !sidePanelExpanded)
-        } else if gestureRecognizer === rightPanelExpandingGestureRecognizer {
-            let translation = rightPanelExpandingGestureRecognizer.translationInView(rightPanelExpandingGestureRecognizer.view)
+            return (!rootViewController.pullableViewExpanded || centerPanelPosition == .Right)
+        } else if gestureRecognizer === centerPanelPanGestureRecognizer {
+            let translation = centerPanelPanGestureRecognizer.translationInView(centerPanelPanGestureRecognizer.view)
             return abs(translation.x) > abs(translation.y)
         }
         return true
@@ -325,14 +320,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if otherGestureRecognizer === rightPanelExpandingGestureRecognizer {
+        if otherGestureRecognizer === centerPanelPanGestureRecognizer {
             return gestureRecognizer.view is UITableView 
         }
         return otherGestureRecognizer is UIScreenEdgePanGestureRecognizer || otherGestureRecognizer is UISwipeGestureRecognizer
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer === rightPanelExpandingGestureRecognizer {
+        if gestureRecognizer === centerPanelPanGestureRecognizer {
             return otherGestureRecognizer.view is UITableView
         }
         return gestureRecognizer is UIScreenEdgePanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer

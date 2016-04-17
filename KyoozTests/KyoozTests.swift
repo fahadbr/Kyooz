@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import Kyooz
 
 class KyoozTests: XCTestCase {
     
