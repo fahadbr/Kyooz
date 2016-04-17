@@ -15,7 +15,7 @@ final class ShortNotificationManager {
 	
 	static let instance = ShortNotificationManager()
 	
-	private let presentationController:UIViewController = ContainerViewController.instance
+	private lazy var presentationController:UIViewController = ContainerViewController.instance
 	private let fadeInAnimation:CABasicAnimation = {
 		let animation = CABasicAnimation(keyPath: "opacity")
 		animation.duration = 0.5

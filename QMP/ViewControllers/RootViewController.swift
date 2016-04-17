@@ -25,10 +25,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     var sourceTableView:UITableView? {
-        if searchController.active {
-            return searchResultsController.tableView
-        }
-        
         if let mediaItemViewController = libraryNavigationController.viewControllers.last as? AudioEntityViewControllerProtocol {
             return mediaItemViewController.tableView
         }
@@ -46,11 +42,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     private var expandedConstraint:NSLayoutConstraint!
     
     private var collapsedBarLayoutGuide:UILayoutGuide!
-    
-    var previousSearchText:String?
-    private var searchController:UISearchController!
-    private var resultsTableController:UITableViewController!
-    private let searchResultsController = AudioEntitySearchViewController.instance
     
     private var warningViewController:WarningViewController?
     
@@ -113,20 +104,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RootViewController.handleTapGesture(_:)))
         nowPlayingTapGestureRecognizer.delegate = self
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
-        
-        searchController = UISearchController(searchResultsController: searchResultsController)
-        searchController.searchResultsUpdater = searchResultsController
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.sizeToFit()
-        searchController.searchBar.searchBarStyle = UISearchBarStyle.Default
-        
-        searchController.searchBar.delegate = searchResultsController
-        searchController.searchBar.barStyle = UIBarStyle.Black
-        searchController.searchBar.translucent = false
-        searchResultsController.searchController = searchController
-        libraryNavigationController.definesPresentationContext = true
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
     }
     
     
@@ -137,10 +114,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     //MARK: - Navigation controller delegate
     func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
-        if viewController === navigationController.viewControllers[0] && previousSearchText != nil {
-            searchController.searchBar.text = previousSearchText
-            activateSearch()
-        }
         if !libraryNavigationController.toolbarHidden {
             libraryNavigationController.toolbarHidden = true
         }
@@ -157,12 +130,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         }
         return nil
     }
-    
-    //MARK: - Class Methods
-    func activateSearch() {
-        previousSearchText = nil
-        libraryNavigationController.presentViewController(searchController, animated: true, completion: nil)
-    }
+
     
     func presentWarningView(message:String, handler:()->()) {
         if self.warningViewController != nil {
@@ -215,7 +183,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     func pushViewController(vc:UIViewController) {
-        searchController.active = false
         if(pullableViewExpanded) {
             animatePullablePanel(shouldExpand: false)
         }
@@ -225,8 +192,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
         libraryNavigationController.view.userInteractionEnabled = shouldEnable
         nowPlayingSummaryViewController.view.userInteractionEnabled = shouldEnable
-        searchResultsController.view.userInteractionEnabled = shouldEnable
-        searchController.view.userInteractionEnabled = shouldEnable
     }
     
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
@@ -260,10 +225,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     func getSourceData() -> AudioEntitySourceData? {
-        if searchController.active {
-            return searchResultsController.getSourceData()
-        }
-        
         if let mediaItemViewController = libraryNavigationController.viewControllers.last as? AudioEntityViewControllerProtocol {
             return mediaItemViewController.getSourceData()
         }
@@ -302,9 +263,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         }, completion: completionBlock)
     }
     
-    func applicationDidEnterBackground(notification:NSNotification) {
-        previousSearchText = nil
-    }
     
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === nowPlayingPanGestureRecognizer {

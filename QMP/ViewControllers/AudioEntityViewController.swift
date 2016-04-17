@@ -87,7 +87,7 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
         KyoozUtils.addDefaultQueueingActions(tracks, menuController: kmvc)
         
         
-        addCustomMenuActions(indexPath, menuController:kmvc)
+        addCustomMenuActions(indexPath, tracks: tracks, menuController:kmvc)
         
         kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
         KyoozUtils.showMenuViewController(kmvc)
@@ -95,7 +95,7 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
     }
 
     
-    func addCustomMenuActions(indexPath:NSIndexPath, menuController:KyoozMenuViewController) {
+    func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
         //empty implementation
     }
     

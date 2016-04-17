@@ -112,7 +112,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     func reloadData(notification:NSNotification?) {
         guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else { return }
         
-        func transitionPageVC(pageVC:NowPlayingPageViewController, withVC vc:()->WrapperViewController) {
+        func transitionPageVC(pageVC:NowPlayingPageViewController, withVC vc:()->WrapperViewController){
 			if !((pageVC.viewControllers?.first as? WrapperViewController)?.isPresentedVC ?? false)
 				 || pageVC.refreshNeeded {
 				pageVC.refreshNeeded = false
@@ -127,8 +127,12 @@ final class NowPlayingSummaryViewController: UIViewController {
 		
 		let imageWrapper = { return ImageWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index, size: self.albumArtPageVC.view.frame.size) }
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
-
-        self.view.layer.contents = nowPlayingItem?.artwork?.imageWithSize(albumArtPageVC.view.frame.size)?.CGImage
+        
+        KyoozUtils.doInMainQueueAsync() {
+            if let image = (self.albumArtPageVC.viewControllers?.first as? ImageWrapperViewController)?.imageView.image?.CGImage {
+                self.view.layer.contents = image
+            }
+        }
     }
     
 
@@ -173,17 +177,6 @@ final class NowPlayingSummaryViewController: UIViewController {
 		labelPageVC.view.layer.transform = CATransform3DConcat(translationTransform, scaleTransform)
     }
 	
-	private func executeBlockInTransitionAnimation(view:UIView, delay:Double, block:()->()) {
-		if expanded || view !== albumArtPageVC {
-			let transition:UIViewAnimationOptions = view === albumArtPageVC ? .TransitionCrossDissolve : .TransitionFlipFromBottom
-			dispatch_after(KyoozUtils.getDispatchTimeForSeconds(delay), dispatch_get_main_queue()) {
-				UIView.transitionWithView(view, duration: 0.5, options: transition, animations: block, completion: nil)
-			}
-		} else {
-			block()
-		}
-	}
-
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()

@@ -46,6 +46,7 @@
 		0B29375B1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */; };
 		0B29375D1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375C1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift */; };
 		0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375E1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift */; };
+		0B2B1E921CC43F1500D8A932 /* StringNormalizationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2B1E911CC43F1500D8A932 /* StringNormalizationTest.swift */; };
 		0B31FE091BF04B7100B33F0A /* AudioEntitySearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */; };
 		0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
 		0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C711B21FA5400626810 /* AudioTrack.swift */; };
@@ -204,6 +205,7 @@
 		0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityViewControllerProtocol.swift; sourceTree = "<group>"; };
 		0B29375C1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragToRearrangeDSDWrapper.swift; sourceTree = "<group>"; };
 		0B29375E1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDWrapper.swift; sourceTree = "<group>"; };
+		0B2B1E911CC43F1500D8A932 /* StringNormalizationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringNormalizationTest.swift; sourceTree = "<group>"; };
 		0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySearchViewController.swift; sourceTree = "<group>"; };
 		0B476C6E1B1BFE5700626810 /* CancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelView.swift; sourceTree = "<group>"; };
 		0B476C711B21FA5400626810 /* AudioTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioTrack.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -663,6 +665,7 @@
 		100A8BC31C54423B009FAB17 /* KyoozTests */ = {
 			isa = PBXGroup;
 			children = (
+				0B2B1E911CC43F1500D8A932 /* StringNormalizationTest.swift */,
 				100A8BC41C54423B009FAB17 /* KyoozTests.swift */,
 				100A8BC61C54423B009FAB17 /* Info.plist */,
 			);
@@ -986,6 +989,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B2B1E921CC43F1500D8A932 /* StringNormalizationTest.swift in Sources */,
 				100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

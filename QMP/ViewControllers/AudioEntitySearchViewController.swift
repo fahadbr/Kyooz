@@ -9,13 +9,33 @@
 import UIKit
 import MediaPlayer
 
-final class AudioEntitySearchViewController : AudioEntityViewController, UISearchResultsUpdating, UISearchBarDelegate, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController : AudioEntityViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
     static let instance = AudioEntitySearchViewController()
     
-    //MARK: - Properties
-    var searchController:UISearchController!
+    var isExpanded = false {
+        didSet {
+            if isExpanded {
+                searchBar.becomeFirstResponder()
+                for subView in searchBar.subviews {
+                    if subView.subviews.count < 2 { continue }
+                    if let textField = subView.subviews[1] as? UITextField {
+                        textField.selectAll(nil)
+                        break
+                    }
+                }
+            } else {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
     
+    var sourceTableView: UITableView? {
+        return tableView
+    }
+    
+    
+    //MARK: - Properties
     private let searchExecutionControllers:[SearchExecutionController] = {
         let artistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Artists,
             searchKeys: [MPMediaItemPropertyAlbumArtist])
@@ -32,22 +52,38 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     private let rowLimitPerSection = [LibraryGrouping.Albums:4, LibraryGrouping.Songs:6]
 	
     private (set) var searchText:String!
+    
+    private let searchBar = UISearchBar()
 	
     
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchBar.searchBarStyle = UISearchBarStyle.Default
+        searchBar.sizeToFit()
+        searchBar.delegate = self
+        searchBar.barStyle = UIBarStyle.Black
+        searchBar.translucent = false
+        searchBar.placeholder = "Library Search"
+        searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: searchBar, parentView: view)
+        let height:CGFloat = 65
+        searchBar.heightAnchor.constraintEqualToConstant(height).active = true
+        
+        tableView.contentInset.top = height
+        tableView.scrollIndicatorInsets.top = height
+        tableView.rowHeight = 48
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         
         var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
-        
+        let overrideFont = UIFont(name: ThemeHelper.defaultFontNameBold, size: 12)
         for searchExecutionController in searchExecutionControllers {
             searchExecutionController.delegate = self
             let libraryGroup = searchExecutionController.libraryGroup
             let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController)
-            let datasourceDelegate:AudioEntityDSDProtocol
+            let datasourceDelegate:AudioEntityDSD
             let reuseIdentifier = libraryGroup == LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
             
             switch libraryGroup {
@@ -58,7 +94,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
             default:
                 datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             }
-            
+            datasourceDelegate.titleFontOverride = overrideFont
             datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
         }
         let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
@@ -85,9 +121,29 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         }
     }
     
-    override func getSourceData() -> AudioEntitySourceData {
-        searchController.searchBar.resignFirstResponder()
+    func getSourceData() -> AudioEntitySourceData? {
+        searchBar.resignFirstResponder()
         return sourceData
+    }
+
+    
+    override func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
+        searchBar.resignFirstResponder()
+        super.addCustomMenuActions(indexPath, tracks:tracks, menuController: menuController)
+        guard let mediaItem = tracks.first where tracks.count == 1 else { return }
+        if mediaItem.albumId != 0 {
+            let goToAlbumAction = KyoozMenuAction(title: "Jump To Album", image: nil) {
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!, parentGroup: LibraryGrouping.Albums, entity: mediaItem)
+            }
+            menuController.addAction(goToAlbumAction)
+        }
+        
+        if mediaItem.albumArtistId != 0 {
+            let goToArtistAction = KyoozMenuAction(title: "Jump To Artist", image: nil) {
+                ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
+            }
+            menuController.addAction(goToArtistAction)
+        }
     }
 
     
@@ -97,24 +153,23 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         searchBar.resignFirstResponder()
     }
     
-    
-    //MARK: - Search Results Updating
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        if let text = searchController.searchBar.text?.normalizedString where !text.isEmpty {
-            if let currentText = self.searchText where currentText == text {
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        if !searchText.isEmpty {
+            if let currentText = self.searchText where currentText == searchText {
                 return
             }
             
-            searchText = text
-            let searchStringComponents = text.componentsSeparatedByString(" ") as [String]
+            self.searchText = searchText
+            let searchStringComponents = searchText.componentsSeparatedByString(" ") as [String]
             
             for searchExecutor in searchExecutionControllers {
-                searchExecutor.executeSearchForStringComponents(text, stringComponents: searchStringComponents)
+                searchExecutor.executeSearchForStringComponents(searchText, stringComponents: searchStringComponents)
             }
         } else {
             (datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
         }
     }
+    
     
     //MARK: - SearchExecutionController Delegate
     func searchResultsDidGetUpdated() {
@@ -128,7 +183,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     }
     
     func willExpandOrCollapseSection() {
-        searchController.searchBar.resignFirstResponder()
+        searchBar.resignFirstResponder()
     }
     
 }
