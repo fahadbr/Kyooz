@@ -39,7 +39,7 @@ final class LastFmScrobbler {
     
     let error_key = "error"
     let error_code_key = "error.code"
-    let httpFailure = "httpFailure"
+    let httpFailure = "Unable To Reach Network"
     
     let USER_DEFAULTS_SESSION_KEY = "SESSION_KEY"
     let USER_DEFAULTS_USERNAME_KEY = "USERNAME_KEY"
@@ -123,7 +123,7 @@ final class LastFmScrobbler {
             }
         },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("failed to retrieve session because of error: \(info[self.error_key])")
-            completionHandler("Failed to log in: \(info[self.error_key])", logInSuccessful:false)
+            completionHandler("Failed to log in: \(info[self.error_key] ?? "Unknown Error")", logInSuccessful:false)
         })
 
     }
