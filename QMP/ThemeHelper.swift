@@ -39,7 +39,7 @@ struct ThemeHelper {
         titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontNameBold, size:defaultFontSize)
         
         UINavigationBar.appearance().titleTextAttributes = titleTextAttributes
-        UINavigationBar.appearance().tintColor = UIColor.whiteColor()
+        UINavigationBar.appearance().tintColor = defaultTintColor
         UINavigationBar.appearance().barStyle = defaultBarStyle
         UINavigationBar.appearance().translucent = barsAreTranslucent
         

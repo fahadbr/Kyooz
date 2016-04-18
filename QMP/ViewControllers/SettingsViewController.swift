@@ -15,6 +15,9 @@ final class SettingsViewController: CustomPopableTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(self.dismiss))
+		doneButton.tintColor = ThemeHelper.defaultTintColor
+		navigationItem.rightBarButtonItem = doneButton
         let value = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)
         enableAppleMusicSwitch.on = value == AudioQueuePlayerType.AppleDRM.rawValue
         // Do any additional setup after loading the view.
@@ -33,5 +36,14 @@ final class SettingsViewController: CustomPopableTableViewController {
         ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
         presentViewController(ac, animated: true, completion: nil)
     }
+	
+	func dismiss() {
+		dismissViewControllerAnimated(true, completion: nil)
+	}
+	
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+//		super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+	}
 
 }

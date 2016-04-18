@@ -12,12 +12,12 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
    
     
     
-    @IBOutlet weak var logoutButton: UIButton!
-    @IBOutlet weak var usernameField: UITextField!
-    @IBOutlet weak var passwordField: UITextField!
-    @IBOutlet weak var submitButton: UIButton!
-    @IBOutlet weak var loggedInAsLabel: UILabel!
-    @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet var logoutButton: UIButton!
+    @IBOutlet var usernameField: UITextField!
+    @IBOutlet var passwordField: UITextField!
+    @IBOutlet var submitButton: UIButton!
+    @IBOutlet var loggedInAsLabel: UILabel!
+    @IBOutlet var errorLabel: UILabel!
     
     let lastFmScrobbler = LastFmScrobbler.instance
     
@@ -32,6 +32,7 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
         updateViewBasedOnSession()
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         errorLabel.hidden = true
+		errorLabel.textColor = UIColor.redColor()
     }
     
     @IBAction func doLogIn(sender: AnyObject) {

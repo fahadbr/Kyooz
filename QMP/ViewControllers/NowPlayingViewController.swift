@@ -54,7 +54,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     //MARK:FUNCTIONS
     
     @IBAction func showSettings(sender: AnyObject) {
-        ContainerViewController.instance.pushViewController(UIStoryboard.settingsViewController())
+        ContainerViewController.instance.presentViewController(UIStoryboard.settingsViewController(), animated: true, completion: nil)
     }
     
     var datasourceDelegate:AudioEntityDSDProtocol! {
