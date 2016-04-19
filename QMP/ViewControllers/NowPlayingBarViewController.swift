@@ -67,6 +67,10 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		kmvc.addAction(KyoozMenuAction(title: "Jump To Artist", image: nil) {
 			self.goToVCWithGrouping(LibraryGrouping.Artists, nowPlayingItem: nowPlayingItem)
 			})
+        kmvc.addAction(KyoozMenuAction(title: "Add to Playlist..", image: nil) {
+            KyoozUtils.showAvailablePlaylistsForAddingTracks([nowPlayingItem])
+        })
+
 		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
 		KyoozUtils.showMenuViewController(kmvc)
 	}

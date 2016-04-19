@@ -19,30 +19,40 @@ class SearchExecutionController : NSObject {
     
     let libraryGroup:LibraryGrouping
     
+    override var description: String {
+        return libraryGroup.name
+    }
+    
     private (set) var searchResults:[AudioEntity] = [AudioEntity]()
-    private var searchIndex:SearchIndex<AudioEntity>?
+    private var searchIndex:SearchIndex<AudioEntity>? {
+        didSet {
+            if let previousSearchParams = self.previousSearchParams {
+                executeSearchForStringComponents(previousSearchParams.searchString, stringComponents: previousSearchParams.stringComponents)
+            }
+        }
+    }
     private let searchKeys:[String]
     private let defaultSearchQueue:NSOperationQueue
     
+    private var previousSearchParams:(searchString:String, stringComponents:[String])?
     weak var delegate:SearchExecutionControllerDelegate?
 
     init(libraryGroup:LibraryGrouping, searchKeys:[String]) {
         self.libraryGroup = libraryGroup
         self.searchKeys = searchKeys
+        self.defaultSearchQueue = NSOperationQueue()
+        super.init()
         
-        defaultSearchQueue = NSOperationQueue()
-        defaultSearchQueue.name = "Kyooz.SearchQueue.\(libraryGroup.name)"
+        defaultSearchQueue.name = "Kyooz.SearchQueue.\(description)"
         defaultSearchQueue.qualityOfService = NSQualityOfService.UserInteractive
         defaultSearchQueue.maxConcurrentOperationCount = 1
-
-        super.init()
         rebuildSearchIndex()
     }
     
 
     func executeSearchForStringComponents(searchString:String, stringComponents:[String]) {
         defaultSearchQueue.cancelAllOperations()
-
+        
         let finalPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: stringComponents.map { searchStringComponent in
             
             let searchStringExpression = NSExpression(forConstantValue: searchStringComponent)
@@ -76,6 +86,7 @@ class SearchExecutionController : NSObject {
         }
         
         defaultSearchQueue.addOperation(searchOperation)
+        previousSearchParams = (searchString, stringComponents)
     }
     
     func clearSearchResults() {
@@ -98,12 +109,8 @@ class SearchExecutionController : NSObject {
 
 final class IPodLibrarySearchExecutionController : SearchExecutionController {
     
-    override init(libraryGroup: LibraryGrouping, searchKeys: [String]) {
-        super.init(libraryGroup: libraryGroup, searchKeys: searchKeys)
-    }
     
     override func rebuildSearchIndex() {
-        self.searchIndex = nil
         if let values:[AudioEntity] = libraryGroup == LibraryGrouping.Songs ? libraryGroup.baseQuery.items : libraryGroup.baseQuery.collections {
             let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
             let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
@@ -131,6 +138,49 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController {
             return AdHocIPodLibrarySearchOperation(group: libraryGroup, searchString: searchString, searchPredicate: searchPredicate)
         }
     }
+}
+
+final class KyoozPlaylistSearchExecutionController : SearchExecutionController {
     
+    init() {
+        super.init(libraryGroup: LibraryGrouping.Playlists, searchKeys: ["name"])
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.rebuildSearchIndex), name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
+    }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    override var description: String {
+        return "KYOOZ PLAYLIST"
+    }
+    
+    override func rebuildSearchIndex() {
+        if let values:[AudioEntity] = KyoozPlaylistManager.instance.playlists.array as? [AudioEntity] {
+            let titlePropertyName = searchKeys.first!
+            let indexBuildingOp = IndexBuildingOperation(parentIndexName: "KYOOZ " + libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
+                if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
+                    return (titlePropertyName, primaryKey)
+                }
+                return (titlePropertyName,"null")
+            })
+            
+            indexBuildingOp.inThreadCompletionBlock = { (result) -> Void in
+                KyoozUtils.doInMainQueue() {
+                    self.searchIndex = result
+                    Logger.debug("finished building \(result.name) index")
+                }
+            }
+            
+            indexQueue.addOperation(indexBuildingOp)
+        }
+    }
+    
+    private override func createSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
+        if let searchIndex = self.searchIndex {
+            return IndexSearchOperation(searchIndex: searchIndex, searchPredicate: searchPredicate, searchString: searchString)
+        } else {
+            return AdHocKyoozPlaylistSearchOperation(primaryKeyName: searchKeys.first!, searchPredicate: searchPredicate, searchString: searchString)
+        }
+    }
 }

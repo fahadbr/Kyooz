@@ -91,6 +91,7 @@
 		0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242741C251671000170F9 /* AbstractTableViewCell.swift */; };
 		0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */; };
 		0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */; };
+		0BB01A5D1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */; };
 		0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */; };
 		0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */; };
 		0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */; };
@@ -250,6 +251,7 @@
 		0BA242741C251671000170F9 /* AbstractTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractTableViewCell.swift; sourceTree = "<group>"; };
 		0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemQueueResyncWorkflowController.swift; sourceTree = "<group>"; };
 		0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIteratorOperation.swift; sourceTree = "<group>"; };
+		0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocKyoozPlaylistSearchOperation.swift; sourceTree = "<group>"; };
 		0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractResultOperation.swift; sourceTree = "<group>"; };
 		0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchExecutionController.swift; sourceTree = "<group>"; };
 		0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexSearchOperation.swift; sourceTree = "<group>"; };
@@ -653,6 +655,7 @@
 			children = (
 				0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */,
 				0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */,
+				0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */,
 				0BBA91F41C081F8C00C79BA2 /* IndexBuildingOperation.swift */,
 				0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */,
 				0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */,
@@ -887,6 +890,7 @@
 				0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */,
 				0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */,
 				0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */,
+				0BB01A5D1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift in Sources */,
 				0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
 				100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */,

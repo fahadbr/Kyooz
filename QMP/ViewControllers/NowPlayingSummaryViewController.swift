@@ -48,6 +48,11 @@ final class NowPlayingSummaryViewController: UIViewController {
     @IBAction func goToAlbum(sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
+    
+    @IBAction func addToPlaylist(sender: AnyObject) {
+        guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else { return }
+        KyoozUtils.showAvailablePlaylistsForAddingTracks([nowPlayingItem])
+    }
 	
     private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
         if let nowPlayingItem = audioQueuePlayer.nowPlayingItem, let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {

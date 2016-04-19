@@ -15,7 +15,7 @@ final class SearchResultsSourceData : AudioEntitySourceData {
     }
     
     var sections:[SectionDescription] {
-        return [SectionDTO(name: libraryGrouping.name, count: entities.count)]
+        return [SectionDTO(name: searchExecutionController.description, count: entities.count)]
     }
     var entities:[AudioEntity] {
         return searchExecutionController.searchResults
@@ -36,7 +36,11 @@ final class SearchResultsSourceData : AudioEntitySourceData {
     }
     
     func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
-        return MediaQuerySourceData(filterEntity: self[indexPath], parentLibraryGroup: libraryGrouping, baseQuery: nil)
+        let entity = self[indexPath]
+        if let playlist = entity as? KyoozPlaylist {
+            return KyoozPlaylistSourceData(playlist: playlist)
+        }
+        return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: nil)
     }
     
     
