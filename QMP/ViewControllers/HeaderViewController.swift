@@ -52,7 +52,11 @@ class HeaderViewController : UIViewController {
     
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
-        guard let aehVC = parent as? AudioEntityHeaderViewController else { return }
+        guard let aehVC = parent as? AudioEntityHeaderViewController else {
+			shuffleButton.hidden = true
+			selectModeButton.hidden = true
+			return
+		}
         
         tableView = aehVC.tableView
         sourceData = aehVC.sourceData

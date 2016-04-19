@@ -152,6 +152,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
 		let vc = AudioEntityLibraryViewController()
         vc.subGroups = parentGroup.subGroupsForNextLevel
+		vc.isBaseLevel = false
         vc.sourceData = sourceData
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {

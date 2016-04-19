@@ -26,18 +26,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	var testDelegate:TestTableViewDataSourceDelegate!
 	
 	
-	var subGroups:[LibraryGrouping] = LibraryGrouping.values {
-		didSet {
-			isBaseLevel = false
-		}
-	}
-	
-	private var isBaseLevel:Bool = true
+	var subGroups:[LibraryGrouping] = LibraryGrouping.values
+	var isBaseLevel:Bool = true
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-//		navigationItem.rightBarButtonItem = self.dynamicType.searchButton
-		popGestureRecognizer.enabled = !isBaseLevel
 		popGestureRecognizer.delegate = self
 		
 		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
