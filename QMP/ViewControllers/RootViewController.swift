@@ -53,11 +53,11 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     override func viewDidLoad() {
         super.viewDidLoad()
-		let baseLibraryVC = AudioEntityLibraryViewController()
+		let baseLibraryVC = LibraryHomeViewController()
 		
 		libraryNavigationController = UINavigationController(rootViewController: baseLibraryVC)
-		libraryNavigationController.viewControllers.first?.title = "BROWSE"
-        
+//		libraryNavigationController.viewControllers.first?.title = "BROWSE"
+		
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
         collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(self.dynamicType.nowPlayingViewCollapsedOffset).active = true
