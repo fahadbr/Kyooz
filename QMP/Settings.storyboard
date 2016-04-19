@@ -98,6 +98,7 @@
                     <connections>
                         <outlet property="errorLabel" destination="jST-XS-6Hq" id="Djp-pF-x9V"/>
                         <outlet property="loggedInAsLabel" destination="aZ5-pt-scE" id="4bL-9x-i00"/>
+                        <outlet property="loginStackView" destination="rkd-53-dEg" id="PRh-cA-co1"/>
                         <outlet property="logoutButton" destination="f4p-eZ-wU5" id="xJu-mQ-4wd"/>
                         <outlet property="passwordField" destination="E4e-yf-zOE" id="tY0-T4-RXg"/>
                         <outlet property="submitButton" destination="QwF-xZ-2YV" id="Hx5-kk-sNZ"/>

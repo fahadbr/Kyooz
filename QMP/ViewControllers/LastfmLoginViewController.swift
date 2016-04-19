@@ -16,8 +16,12 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
     @IBOutlet var usernameField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var submitButton: UIButton!
+    @IBOutlet var loginStackView: UIStackView!
+    
+    
     @IBOutlet var loggedInAsLabel: UILabel!
     @IBOutlet var errorLabel: UILabel!
+
     
     let lastFmScrobbler = LastFmScrobbler.instance
     
@@ -37,8 +41,12 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
     
     @IBAction func doLogIn(sender: AnyObject) {
         lastFmScrobbler.initializeSession(usernameForSession: usernameField.text!, password: passwordField.text!) { [weak self](response:String, logInSuccessful:Bool) in
-            dispatch_async(dispatch_get_main_queue()) {
-                self?.updateViewBasedOnSession()
+            KyoozUtils.doInMainQueue() {
+                if let view = self?.view {
+                    UIView.transitionWithView(view, duration: 0.4, options: .TransitionCrossDissolve, animations: { 
+                        self?.updateViewBasedOnSession()
+                        }, completion: nil)
+                }
                 self?.loggedInFailed = !logInSuccessful
                 if(!logInSuccessful) {
                     self?.errorLabel.text = response
@@ -46,8 +54,6 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
                     //dismiss the keyboard
                     self?.usernameField.resignFirstResponder()
                     self?.passwordField.resignFirstResponder()
-                    
-                    self?.loggedInAsLabel.text = response
                 }
             }
         }
@@ -57,7 +63,9 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
         usernameField.text = ""
         passwordField.text = ""
         lastFmScrobbler.removeSession()
-        updateViewBasedOnSession()
+        UIView.transitionWithView(view, duration: 0.4, options: .TransitionCrossDissolve, animations: { [weak self] in
+            self?.updateViewBasedOnSession()
+            }, completion: nil)
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -71,14 +79,13 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
     }
     
     private func updateViewBasedOnSession() {
-        usernameField.hidden = lastFmScrobbler.validSessionObtained
-        passwordField.hidden = lastFmScrobbler.validSessionObtained
-        submitButton.hidden = lastFmScrobbler.validSessionObtained
+        loginStackView.hidden = lastFmScrobbler.validSessionObtained
         loggedInAsLabel.hidden = !lastFmScrobbler.validSessionObtained
         logoutButton.hidden = !lastFmScrobbler.validSessionObtained
         
         if(lastFmScrobbler.validSessionObtained) {
-            loggedInAsLabel.text = "Logged in as \(lastFmScrobbler.username_value)"
+            loggedInAsLabel.text = "Logged in as \(lastFmScrobbler.username_value ?? "Unknown User")".uppercaseString
         }
     }
+    
 }

@@ -10,7 +10,7 @@ import UIKit
 import MediaPlayer
 
 class AudioEntityViewController : CustomPopableViewController, AudioEntityViewControllerProtocol, ConfigurableAudioTableCellDelegate {
-	
+    
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     let tableView:UITableView = UITableView()

@@ -17,13 +17,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         didSet {
             if isExpanded {
                 searchBar.becomeFirstResponder()
-                for subView in searchBar.subviews {
-                    if subView.subviews.count < 2 { continue }
-                    if let textField = subView.subviews[1] as? UITextField {
-                        textField.selectAll(nil)
-                        break
-                    }
-                }
+                textField?.selectAll(nil)
             } else {
                 searchBar.resignFirstResponder()
             }
@@ -33,6 +27,16 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     var sourceTableView: UITableView? {
         return tableView
     }
+    
+    private lazy var textField:UITextField? = {
+        for subView in self.searchBar.subviews {
+            if subView.subviews.count < 2 { continue }
+            if let textField = subView.subviews[1] as? UITextField {
+                return textField
+            }
+        }
+        return nil
+    }()
     
     
     //MARK: - Properties
@@ -45,7 +49,8 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
             searchKeys: [MPMediaItemPropertyTitle, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
         let playlistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Playlists,
             searchKeys: [MPMediaPlaylistPropertyName])
-        return [artistSearchExecutor, albumSearchExecutor, songSearchExecutor, playlistSearchExecutor]
+        let kyoozPlaylistSearchExecutor = KyoozPlaylistSearchExecutionController()
+        return [artistSearchExecutor, albumSearchExecutor, songSearchExecutor, kyoozPlaylistSearchExecutor, playlistSearchExecutor]
     }()
     
     private let defaultRowLimit = 3
@@ -155,15 +160,16 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         if !searchText.isEmpty {
-            if let currentText = self.searchText where currentText == searchText {
+            let normalizedSearchText = searchText.normalizedString
+            if let currentText = self.searchText where currentText == normalizedSearchText {
                 return
             }
             
-            self.searchText = searchText
-            let searchStringComponents = searchText.componentsSeparatedByString(" ") as [String]
+            self.searchText = normalizedSearchText
+            let searchStringComponents = normalizedSearchText.componentsSeparatedByString(" ") as [String]
             
             for searchExecutor in searchExecutionControllers {
-                searchExecutor.executeSearchForStringComponents(searchText, stringComponents: searchStringComponents)
+                searchExecutor.executeSearchForStringComponents(normalizedSearchText, stringComponents: searchStringComponents)
             }
         } else {
             (datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()

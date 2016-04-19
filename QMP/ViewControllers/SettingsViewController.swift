@@ -9,7 +9,7 @@
 import UIKit
 
 
-final class SettingsViewController: CustomPopableTableViewController {
+final class SettingsViewController: UITableViewController {
 
     @IBOutlet var enableAppleMusicSwitch: UISwitch!
     

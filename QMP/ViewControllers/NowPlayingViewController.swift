@@ -277,7 +277,9 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
             }
             menuVC.addAction(clearUpcomingItemsAction)
         }
-		
+        menuVC.addAction(KyoozMenuAction(title: "Add to Playlist..", image: nil) {
+            KyoozUtils.showAvailablePlaylistsForAddingTracks([mediaItem])
+        })
 		let cancelAction = KyoozMenuAction(title: "Cancel", image: nil, action: nil)
 		menuVC.addAction(cancelAction)
 		menuVC.originatingCenter = originatingCenter

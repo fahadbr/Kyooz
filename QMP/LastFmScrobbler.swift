@@ -119,7 +119,7 @@ final class LastFmScrobbler {
                 self.session = key as String
                 self.username_value = name as String
                 self.validSessionObtained = true
-                completionHandler("Logged in as \(self.username_value)", logInSuccessful:true)
+                completionHandler("Logged in as \(self.username_value ?? "Unknown User")", logInSuccessful:true)
             }
         },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("failed to retrieve session because of error: \(info[self.error_key])")
