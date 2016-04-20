@@ -42,6 +42,7 @@ final class SettingsViewController: UITableViewController {
     
     @IBAction func reduceAnimationSwitchChanged(sender:UISwitch) {
         NSUserDefaults.standardUserDefaults().setBool(sender.on, forKey: UserDefaultKeys.ReduceAnimations)
+        RootViewController.instance.setNavigationDelegate()
     }
 	
 	func dismiss() {

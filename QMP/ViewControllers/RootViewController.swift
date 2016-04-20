@@ -44,8 +44,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     private var collapsedBarLayoutGuide:UILayoutGuide!
     
     private var warningViewController:WarningViewController?
-    
-    private let transition = ViewControllerFadeAnimator.instance
+    private lazy var reducedAnimationDelegate = ReducedAnimationNavigationControllerDelegate()
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -67,10 +66,10 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         view.addSubview(libraryNavigationController.view)
         addChildViewController(libraryNavigationController)
         libraryNavigationController.didMoveToParentViewController(self)
-        libraryNavigationController.delegate = self
         libraryNavigationController.navigationBar.backgroundColor = UIColor.clearColor()
         libraryNavigationController.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
         libraryNavigationController.navigationBar.shadowImage = UIImage()
+        setNavigationDelegate()
         
         let libraryView = libraryNavigationController.view
         libraryView.translatesAutoresizingMaskIntoConstraints = false
@@ -113,29 +112,18 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     //MARK: - Navigation controller delegate
     func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
-        if !libraryNavigationController.toolbarHidden {
-            libraryNavigationController.toolbarHidden = true
+        if !navigationController.toolbarHidden {
+            navigationController.toolbarHidden = true
         }
     }
     
-//    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//        guard NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) else {
-//            return nil
-//        }
-//        transition.operation = operation
-//        return transition
-//    }
-//    
-//    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-//        guard NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) else {
-//            return nil
-//        }
-//        if transition.interactive {
-//            return transition
-//        }
-//        return nil
-//    }
-
+    func setNavigationDelegate() {
+        if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) {
+            libraryNavigationController.delegate = reducedAnimationDelegate
+        } else {
+            libraryNavigationController.delegate = self
+        }
+    }
     
     func presentWarningView(message:String, handler:()->()) {
         if self.warningViewController != nil {
@@ -288,6 +276,28 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 		return gestureRecognizer === nowPlayingPanGestureRecognizer && otherGestureRecognizer is UISwipeGestureRecognizer
 	}
+}
 
-
+private class ReducedAnimationNavigationControllerDelegate : NSObject, UINavigationControllerDelegate {
+    
+    private let transition = ViewControllerFadeAnimator.instance
+    
+    //MARK: - Navigation controller delegate
+    @objc func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
+        if !navigationController.toolbarHidden {
+            navigationController.toolbarHidden = true
+        }
+    }
+    
+    @objc func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transition.operation = operation
+        return transition
+    }
+    
+    @objc func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        if transition.interactive {
+            return transition
+        }
+        return nil
+    }
 }
