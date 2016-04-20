@@ -25,6 +25,7 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     var rowLimitActive:Bool = false
     
     var titleFontOverride:UIFont?
+    var shouldAnimateCell:Bool = true
     
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
@@ -65,6 +66,7 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
         if let audioCell = cell as? ConfigurableAudioTableCell {
             audioCell.configureCellForItems(entity, libraryGrouping: libraryGrouping)
             audioCell.delegate = audioCellDelegate
+            audioCell.shouldAnimate = shouldAnimateCell
             audioCell.isNowPlaying = entityIsNowPlaying(entity, libraryGrouping: libraryGrouping, indexPath: indexPath)
         } else {
             cell.textLabel?.text = entity.titleForGrouping(libraryGrouping)

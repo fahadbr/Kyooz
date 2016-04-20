@@ -15,7 +15,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 			return AlbumTrackTableViewCell.reuseIdentifier
 		}
 		
-		if sourceData.libraryGrouping == LibraryGrouping.Albums {
+		if sourceData.libraryGrouping.usesArtwork {
 			return ImageTableViewCell.reuseIdentifier
 		}
 		return MediaCollectionTableViewCell.reuseIdentifier
@@ -26,7 +26,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	var testDelegate:TestTableViewDataSourceDelegate!
 	
 	
-	var subGroups:[LibraryGrouping] = LibraryGrouping.values
+	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
 	var isBaseLevel:Bool = true
 	
 	override func viewDidLoad() {
@@ -42,7 +42,10 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 		if testMode {
 			configureTestDelegates()
 		} else {
-			applyDataSourceAndDelegate()
+            KyoozUtils.doInMainQueueAsync() {
+                self.applyDataSourceAndDelegate()
+                self.reloadAllData()
+            }
 		}
 		
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),

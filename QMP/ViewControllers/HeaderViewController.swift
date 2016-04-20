@@ -53,8 +53,7 @@ class HeaderViewController : UIViewController {
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
         guard let aehVC = parent as? AudioEntityHeaderViewController else {
-			shuffleButton.hidden = true
-			selectModeButton.hidden = true
+            (shuffleButton.superview as? UIStackView)?.hidden = true
 			return
 		}
         

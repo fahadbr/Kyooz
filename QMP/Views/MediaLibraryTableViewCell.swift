@@ -22,6 +22,7 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     
     var shouldHideAccessoryStack:Bool = true
     
+    var shouldAnimate:Bool = true
     var isNowPlaying:Bool = false {
         didSet {
             if isNowPlaying != oldValue {

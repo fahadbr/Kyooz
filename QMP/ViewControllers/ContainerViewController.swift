@@ -155,7 +155,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		vc.isBaseLevel = false
         vc.sourceData = sourceData
         
-        if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations {
+        if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations || parentGroup === LibraryGrouping.Podcasts {
 			vc.useCollapsableHeader = true
         } else {
             vc.title = entity.titleForGrouping(parentGroup)?.uppercaseString
@@ -321,6 +321,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer === rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
+            return true
+        }
         if otherGestureRecognizer === centerPanelPanGestureRecognizer {
             return gestureRecognizer.view is UITableView 
         }
@@ -328,6 +331,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer === rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
+            return true
+        }
         if gestureRecognizer === centerPanelPanGestureRecognizer {
             return otherGestureRecognizer.view is UITableView
         }

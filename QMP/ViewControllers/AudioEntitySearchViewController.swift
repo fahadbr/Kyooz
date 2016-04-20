@@ -100,6 +100,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
                 datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             }
             datasourceDelegate.titleFontOverride = overrideFont
+            datasourceDelegate.shouldAnimateCell = false
             datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
         }
         let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
