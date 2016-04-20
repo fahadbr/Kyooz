@@ -14,26 +14,15 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 	private let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
 	
 	private var cellConfigurations = [[CellConfiguration]]()
-	private var sectionNames = [String]()
 	
-	
-	private lazy var itunesLibraryCellConfiguration:CellConfiguration = {
+	private lazy var allMusicCellConfiguration:CellConfiguration = {
+        let title = "ALL MUSIC"
 		let action = {
 			let vc = AudioEntityLibraryViewController()
-			vc.title = "BROWSE"
+			vc.title = title
 			ContainerViewController.instance.pushViewController(vc)
 		}
-		return ("BROWSE", action)
-	}()
-	
-	private lazy var playlistsCellConfiguration:CellConfiguration = {
-		let action = {
-			let vc = AudioEntityLibraryViewController()
-			vc.groupingTypeDidChange(LibraryGrouping.Playlists)
-			vc.subGroups = [LibraryGrouping]()
-			ContainerViewController.instance.pushViewController(vc)
-		}
-		return ("PLAYLISTS", action)
+		return (title, action)
 	}()
 	
 	private lazy var settingsCellConfiguration:CellConfiguration = {
@@ -51,10 +40,21 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		tableView.scrollIndicatorInsets.top = headerHeight
 		tableView.rowHeight = 50
 		
-		sectionNames.append("MUSIC LIBRARY")
-		cellConfigurations.append([itunesLibraryCellConfiguration, playlistsCellConfiguration])
+        var section = [allMusicCellConfiguration]
+        for group in LibraryGrouping.otherGroupings {
+            let title = group.name
+            let action = {
+                let vc = AudioEntityLibraryViewController()
+                vc.sourceData = MediaQuerySourceData(filterQuery: group.baseQuery, libraryGrouping: group)
+                vc.subGroups = [LibraryGrouping]()
+                vc.title = title
+                ContainerViewController.instance.pushViewController(vc)
+            }
+            section.append((title, action))
+        }
+        
+		cellConfigurations.append(section)
 		
-		sectionNames.append("")
 		cellConfigurations.append([settingsCellConfiguration])
 		
 		let headerVC = UIStoryboard.utilHeaderViewController()
@@ -67,8 +67,9 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		
 		tableView.delegate = self
 		tableView.dataSource = self
+        
+        title = "LIBRARY"
 	}
-	
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
 		return cellConfigurations.count
 	}
@@ -93,9 +94,5 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 		cellConfigurations[indexPath.section][indexPath.row].action()
-	}
-	
-	func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return sectionNames[section]
 	}
 }

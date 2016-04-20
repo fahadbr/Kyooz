@@ -111,7 +111,8 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController {
     
     
     override func rebuildSearchIndex() {
-        if let values:[AudioEntity] = libraryGroup == LibraryGrouping.Songs ? libraryGroup.baseQuery.items : libraryGroup.baseQuery.collections {
+        let query = libraryGroup.baseQuery
+        if let values:[AudioEntity] = libraryGroup == LibraryGrouping.Songs ? query.items : query.collections {
             let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
             let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
                 if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {

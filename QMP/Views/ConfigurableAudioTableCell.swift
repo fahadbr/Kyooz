@@ -15,6 +15,8 @@ protocol ConfigurableAudioTableCell : class {
     
     var isNowPlaying:Bool { get set }
     
+    var shouldAnimate:Bool { get set }
+    
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping)
 
 }

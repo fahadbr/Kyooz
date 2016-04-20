@@ -15,7 +15,7 @@ struct KyoozUtils {
 	
 	static let libraryDirectory:NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomainMask.UserDomainMask, true).first!
     
-    static let fadeInAnimation:CABasicAnimation = {
+    private static let fadeInAnimation:CABasicAnimation = {
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.duration = 0.2
         animation.fromValue = 0.0
@@ -30,6 +30,12 @@ struct KyoozUtils {
     
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
+    }
+    
+    static func fadeInAnimationWithDuration(duration:CFTimeInterval) -> CAAnimation {
+        let animationCopy = fadeInAnimation.copy() as! CABasicAnimation
+        animationCopy.duration = duration
+        return animationCopy
     }
 	
 	//MARK: - dispatch to main queue functions

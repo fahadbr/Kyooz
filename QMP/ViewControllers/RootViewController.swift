@@ -56,7 +56,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 		let baseLibraryVC = LibraryHomeViewController()
 		
 		libraryNavigationController = UINavigationController(rootViewController: baseLibraryVC)
-//		libraryNavigationController.viewControllers.first?.title = "BROWSE"
 		
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
@@ -119,17 +118,23 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         }
     }
     
-    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transition.operation = operation
-        return transition
-    }
-    
-    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if transition.interactive {
-            return transition
-        }
-        return nil
-    }
+//    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        guard NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) else {
+//            return nil
+//        }
+//        transition.operation = operation
+//        return transition
+//    }
+//    
+//    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+//        guard NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) else {
+//            return nil
+//        }
+//        if transition.interactive {
+//            return transition
+//        }
+//        return nil
+//    }
 
     
     func presentWarningView(message:String, handler:()->()) {
@@ -273,7 +278,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
 	
 	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-		return  gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer === nowPlayingPanGestureRecognizer
+		return gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer === nowPlayingPanGestureRecognizer
 	}
 	
 	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {

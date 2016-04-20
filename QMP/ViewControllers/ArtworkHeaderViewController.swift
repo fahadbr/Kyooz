@@ -12,6 +12,7 @@ import MediaPlayer
 final class ArtworkHeaderViewController : HeaderViewController {
     
     private static let clearGradiantDefaultLocations:(start:CGFloat, end:CGFloat) = (0.25, 0.75)
+    private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
     
     override var defaultHeight:CGFloat {
         return 375
@@ -133,6 +134,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
             KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView] in
                 if let image = albumArt.imageWithSize(imageView.frame.size) {
                     imageView.image = image
+                    imageView.layer.addAnimation(ArtworkHeaderViewController.fadeInAnimation, forKey: nil)
                 }
             }
         } else {

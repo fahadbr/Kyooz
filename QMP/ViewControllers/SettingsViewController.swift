@@ -12,6 +12,7 @@ import UIKit
 final class SettingsViewController: UITableViewController {
 
     @IBOutlet var enableAppleMusicSwitch: UISwitch!
+    @IBOutlet var reduceAnimationSwitch: UISwitch!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +21,8 @@ final class SettingsViewController: UITableViewController {
 		navigationItem.rightBarButtonItem = doneButton
         let value = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)
         enableAppleMusicSwitch.on = value == AudioQueuePlayerType.AppleDRM.rawValue
+        
+        reduceAnimationSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations)
         // Do any additional setup after loading the view.
     }
 
@@ -35,6 +38,10 @@ final class SettingsViewController: UITableViewController {
         let ac = UIAlertController(title: "Requires Restart", message: "Enabling/Disabling Apple Music won't take effect until Kyooz is restarted.  Please close and then reopen the app", preferredStyle: .Alert)
         ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
         presentViewController(ac, animated: true, completion: nil)
+    }
+    
+    @IBAction func reduceAnimationSwitchChanged(sender:UISwitch) {
+        NSUserDefaults.standardUserDefaults().setBool(sender.on, forKey: UserDefaultKeys.ReduceAnimations)
     }
 	
 	func dismiss() {

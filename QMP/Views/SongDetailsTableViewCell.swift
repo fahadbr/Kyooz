@@ -34,6 +34,7 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
             }
         }
     }
+    var shouldAnimate:Bool = false
     
     override func awakeFromNib() {
         super.awakeFromNib()

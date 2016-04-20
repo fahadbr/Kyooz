@@ -14,14 +14,14 @@
                         <viewControllerLayoutGuide type="bottom" id="hKE-4S-Mnt"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="xW5-7A-rGL">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="rkd-53-dEg">
-                                <rect key="frame" x="20" y="94" width="560" height="109"/>
+                                <rect key="frame" x="16" y="94" width="343" height="109"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="username" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="K5a-AW-Dqj">
-                                        <rect key="frame" x="0.0" y="0.0" width="560" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="30"/>
                                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
@@ -31,7 +31,7 @@
                                         </connections>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4e-yf-zOE">
-                                        <rect key="frame" x="0.0" y="30" width="560" height="30"/>
+                                        <rect key="frame" x="0.0" y="30" width="343" height="30"/>
                                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
@@ -41,7 +41,7 @@
                                         </connections>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QwF-xZ-2YV">
-                                        <rect key="frame" x="0.0" y="60" width="560" height="34"/>
+                                        <rect key="frame" x="0.0" y="60" width="343" height="34"/>
                                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="16"/>
                                         <state key="normal" title="Submit">
                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -52,7 +52,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="errorLabel" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jST-XS-6Hq">
-                                        <rect key="frame" x="0.0" y="94" width="560" height="15"/>
+                                        <rect key="frame" x="0.0" y="94" width="343" height="15"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" red="1" green="0.11008059161256623" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -60,7 +60,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f4p-eZ-wU5">
-                                <rect key="frame" x="273" y="318" width="55" height="30"/>
+                                <rect key="frame" x="161" y="352" width="55" height="30"/>
                                 <state key="normal" title="Log Out">
                                     <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -70,7 +70,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="logged in as" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aZ5-pt-scE">
-                                <rect key="frame" x="261" y="290" width="78" height="20"/>
+                                <rect key="frame" x="149" y="324" width="78" height="20"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="14"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -114,7 +114,7 @@
             <objects>
                 <tableViewController id="SHU-Hm-Gff" customClass="SettingsViewController" customModule="Kyooz" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="50" sectionHeaderHeight="18" sectionFooterHeight="18" id="WGI-0W-TPp">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="sectionIndexColor" cocoaTouchSystemColor="lightTextColor"/>
@@ -123,22 +123,22 @@
                                 <string key="footerTitle">When enabled, music is played using the system music player (the same player as the default music app) and DRM/Cloud music is playable.  When disabled, music is played within the Kyooz application itself (DRM/Cloud Music cannot be played)</string>
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="ovg-OL-Xwt" style="IBUITableViewCellStyleDefault" id="nsC-2T-fQU">
-                                        <rect key="frame" x="0.0" y="114" width="600" height="50"/>
+                                        <rect key="frame" x="0.0" y="114" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nsC-2T-fQU" id="cQj-dF-HVU">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="49"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Enable Apple Music/iCloud Music Library" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ovg-OL-Xwt">
-                                                    <rect key="frame" x="15" y="0.0" width="570" height="49"/>
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="49"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="15"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0If-eF-khC">
-                                                    <rect key="frame" x="537" y="14" width="51" height="31"/>
+                                                    <rect key="frame" x="312" y="9" width="51" height="31"/>
                                                     <connections>
-                                                        <action selector="switchValueChanged:" destination="SHU-Hm-Gff" eventType="valueChanged" id="DkO-CL-Iqp"/>
+                                                        <action selector="switchValueChanged:" destination="SHU-Hm-Gff" eventType="valueChanged" id="lJW-JD-qh3"/>
                                                     </connections>
                                                 </switch>
                                             </subviews>
@@ -153,14 +153,14 @@
                             <tableViewSection headerTitle="Social" footerTitle="Music is scrobbled by default when logged in" id="psW-Fm-42V">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="p9j-pf-a6x" style="IBUITableViewCellStyleDefault" id="HiA-s1-Xv0">
-                                        <rect key="frame" x="0.0" y="263" width="600" height="50"/>
+                                        <rect key="frame" x="0.0" y="295" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HiA-s1-Xv0" id="NBR-X4-7fz">
-                                            <rect key="frame" x="0.0" y="0.0" width="567" height="49"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="49"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="LAST.FM" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="p9j-pf-a6x">
-                                                    <rect key="frame" x="15" y="0.0" width="550" height="49"/>
+                                                    <rect key="frame" x="15" y="0.0" width="325" height="49"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="15"/>
                                                     <nil key="highlightedColor"/>
@@ -173,6 +173,37 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="OTHER" id="51O-pA-JAg">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="g6D-MF-h3E" style="IBUITableViewCellStyleDefault" id="agd-pQ-kNB">
+                                        <rect key="frame" x="0.0" y="412" width="375" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="agd-pQ-kNB" id="gLn-gU-wIz">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Reduce Transition Animations" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="g6D-MF-h3E">
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="49"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s4F-b8-SKp">
+                                                    <rect key="frame" x="312" y="9" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="reduceAnimationSwitchChanged:" destination="SHU-Hm-Gff" eventType="valueChanged" id="qAJ-MS-7iX"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="s4F-b8-SKp" firstAttribute="centerY" secondItem="g6D-MF-h3E" secondAttribute="centerY" id="IDG-ha-B87"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="s4F-b8-SKp" secondAttribute="trailing" constant="6" id="yhr-Md-0s6"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="SHU-Hm-Gff" id="ytU-IY-GgY"/>
@@ -181,8 +212,10 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="SETTINGS" id="6Zl-M7-D34"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="enableAppleMusicSwitch" destination="0If-eF-khC" id="VX4-1f-xlk"/>
+                        <outlet property="reduceAnimationSwitch" destination="s4F-b8-SKp" id="TpQ-6F-af3"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8pc-JS-nrZ" userLabel="First Responder" sceneMemberID="firstResponder"/>

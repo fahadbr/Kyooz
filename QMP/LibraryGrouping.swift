@@ -12,39 +12,78 @@ import MediaPlayer
 final class LibraryGrouping : NSObject {
     
     static let Songs = LibraryGrouping(name: "SONGS",
-        groupingType:MPMediaGrouping.Title)
+                                       groupingType:MPMediaGrouping.Title)
     static let Albums = LibraryGrouping(name: "ALBUMS",
-        groupingType:MPMediaGrouping.Album,
-        nextGroupLevel:Songs)
+                                        groupingType:MPMediaGrouping.Album,
+                                        usesArtwork:true,
+                                        nextGroupLevel:Songs)
     static let Composers = LibraryGrouping(name: "COMPOSERS",
-        groupingType:MPMediaGrouping.Composer,
-        nextGroupLevel:Albums,
-        subGroupsForNextLevel: [Albums, Songs])
+                                           groupingType:MPMediaGrouping.Composer,
+                                           nextGroupLevel:Albums,
+                                           subGroupsForNextLevel: [Albums, Songs])
     static let Compilations = LibraryGrouping(name: "COMPILATIONS",
-        groupingType:MPMediaGrouping.Album,
-		isCompilation:true,
-        nextGroupLevel:Songs)
+                                              groupingType:MPMediaGrouping.Album,
+                                              usesArtwork:true,
+                                              nextGroupLevel:Songs)
     static let Playlists = LibraryGrouping(name: "PLAYLISTS",
-        groupingType:MPMediaGrouping.Playlist,
-        nextGroupLevel:Songs,
-        subGroupsForNextLevel: [Songs, Artists, Albums, Genres, Composers])
+                                           groupingType:MPMediaGrouping.Playlist,
+                                           nextGroupLevel:Songs,
+                                           usesArtwork:true,
+                                           subGroupsForNextLevel: [Songs, Artists, Albums, Genres, Composers])
     static let Artists = LibraryGrouping(name: "ARTISTS",
-        groupingType: MPMediaGrouping.AlbumArtist,
-        nextGroupLevel:Albums,
-        subGroupsForNextLevel: [Albums, Songs])
+                                         groupingType: MPMediaGrouping.AlbumArtist,
+                                         nextGroupLevel:Albums,
+                                         subGroupsForNextLevel: [Albums, Songs])
     static let Genres = LibraryGrouping(name: "GENRES",
-        groupingType:MPMediaGrouping.Genre,
-        nextGroupLevel:Artists,
-        subGroupsForNextLevel: [Artists, Albums, Songs])
+                                        groupingType:MPMediaGrouping.Genre,
+                                        nextGroupLevel:Artists,
+                                        subGroupsForNextLevel: [Artists, Albums, Songs])
+    static let Podcasts = LibraryGrouping(name: "PODCASTS",
+                                          groupingType: MPMediaGrouping.PodcastTitle,
+                                          usesArtwork:true,
+                                          nextGroupLevel: Songs)
+    static let AudioBooks = LibraryGrouping(name: "AUDIOBOOKS",
+                                            groupingType: MPMediaGrouping.Title,
+                                            usesArtwork:true)
 
 
-    static let values = [Artists, Albums, Playlists, Songs, Genres, Compilations, Composers]
+    static let allMusicGroupings = [Artists, Albums, Songs, Genres, Composers]
+    static let otherGroupings = [AudioBooks, Compilations, Playlists, Podcasts]
     
     let name:String
-    let baseQuery:MPMediaQuery
+    
     let groupingType:MPMediaGrouping
     let nextGroupLevel:LibraryGrouping?
     let subGroupsForNextLevel:[LibraryGrouping]
+    let usesArtwork:Bool
+    
+    lazy var baseQuery:MPMediaQuery = {
+        switch self {
+        case LibraryGrouping.Songs:
+            return MPMediaQuery.songsQuery()
+        case LibraryGrouping.Albums:
+            return MPMediaQuery.albumsQuery()
+        case LibraryGrouping.Composers:
+            return MPMediaQuery.composersQuery()
+        case LibraryGrouping.Compilations:
+            return MPMediaQuery.compilationsQuery()
+        case LibraryGrouping.Playlists:
+            return MPMediaQuery.playlistsQuery()
+        case LibraryGrouping.Artists:
+            return MPMediaQuery.albumArtistsQuery()
+        case LibraryGrouping.Genres:
+            return MPMediaQuery.genresQuery()
+        case LibraryGrouping.Songs:
+            return MPMediaQuery.songsQuery()
+        case LibraryGrouping.Podcasts:
+            return MPMediaQuery.podcastsQuery()
+        case LibraryGrouping.AudioBooks:
+            return MPMediaQuery.audiobooksQuery()
+        default:
+            return MPMediaQuery()
+        }
+    }()
+    
     
     override var hashValue:Int {
         return name.hashValue
@@ -53,23 +92,13 @@ final class LibraryGrouping : NSObject {
     private init(name:String,
         groupingType:MPMediaGrouping,
         nextGroupLevel:LibraryGrouping? = nil,
-		isCompilation:Bool = false,
+        usesArtwork:Bool = false,
         subGroupsForNextLevel:[LibraryGrouping] = [LibraryGrouping]()) {
             self.name = name
-            self.baseQuery = MPMediaQuery.audioQueryForGrouping(groupingType, isCompilation: isCompilation)
             self.groupingType = groupingType
             self.nextGroupLevel = nextGroupLevel
+            self.usesArtwork = usesArtwork
             self.subGroupsForNextLevel = subGroupsForNextLevel
-    }
-    
-    func getAllEntriesForSource(source:AudioTrackSource) -> [NSObject]? {
-        switch source {
-        case .iPodLibrary:
-            let results:[MPMediaEntity]? = self === LibraryGrouping.Songs ? baseQuery.items : baseQuery.collections
-            return results
-        default:
-            return nil
-        }
     }
 
 }
