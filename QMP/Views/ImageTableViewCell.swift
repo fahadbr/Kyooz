@@ -13,8 +13,7 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
     
     static let reuseIdentifier = "imageTableViewCell"
     
-    private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.35)
-    
+    private static let fadeInAnimation:CAAnimation = KyoozUtils.fadeInAnimationWithDuration(0.35)
     
     @IBOutlet weak var albumArtwork: UIImageView!
     

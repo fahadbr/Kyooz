@@ -32,7 +32,7 @@ struct KyoozUtils {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
     }
     
-    static func fadeInAnimationWithDuration(duration:CFTimeInterval) -> CAAnimation {
+    static func fadeInAnimationWithDuration(duration:CFTimeInterval) -> CABasicAnimation {
         let animationCopy = fadeInAnimation.copy() as! CABasicAnimation
         animationCopy.duration = duration
         return animationCopy
