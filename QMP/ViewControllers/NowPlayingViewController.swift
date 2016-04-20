@@ -52,11 +52,6 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     }
     
     //MARK:FUNCTIONS
-    
-    @IBAction func showSettings(sender: AnyObject) {
-        ContainerViewController.instance.presentViewController(UIStoryboard.settingsViewController(), animated: true, completion: nil)
-    }
-    
     var datasourceDelegate:AudioEntityDSDProtocol! {
         didSet {
             tableView.dataSource = datasourceDelegate
@@ -74,6 +69,8 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         let editButton = editButtonItem()
         editButton.tintColor = ThemeHelper.defaultTintColor
         toolbarItems?[0] = editButton
+		
+		toolbarItems?.forEach() { $0.tintColor = ThemeHelper.defaultTintColor }
         
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)

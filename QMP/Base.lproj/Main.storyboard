@@ -15,11 +15,11 @@
                         <viewControllerLayoutGuide type="bottom" id="OWI-ym-SDW"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="tVN-Z3-FI3">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="48" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="zVD-YM-21y">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="A5d-sE-21l" id="yNu-uN-7by"/>
@@ -47,22 +47,16 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="v8t-C7-NI9"/>
-                        <barButtonItem title="Settings" id="4co-KO-mEY">
-                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="showSettings:" destination="A5d-sE-21l" id="oVy-GG-wEf"/>
-                            </connections>
-                        </barButtonItem>
-                    </toolbarItems>
-                    <navigationItem key="navigationItem" title="QUEUE" id="TBa-Zq-QGg">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="eiF-B4-tcI">
+                        <barButtonItem systemItem="save" id="eiF-B4-tcI">
                             <connections>
                                 <action selector="saveCurrentQueueAsPlaylist:" destination="A5d-sE-21l" id="kUX-ug-hWd"/>
                             </connections>
                         </barButtonItem>
-                    </navigationItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="QUEUE" id="TBa-Zq-QGg"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="tableView" destination="zVD-YM-21y" id="OLr-IP-egg"/>
                     </connections>
@@ -470,7 +464,7 @@
                                                         <action selector="goToAlbum:" destination="igl-8i-tSd" eventType="touchUpInside" id="Pk8-OQ-WfW"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cWT-4d-YP5">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cWT-4d-YP5">
                                                     <rect key="frame" x="114" y="0.0" width="133" height="30"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
                                                     <state key="normal" title="ADD TO PLAYLIST..">
