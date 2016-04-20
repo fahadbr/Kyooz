@@ -20,6 +20,8 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
                 textField?.selectAll(nil)
             } else {
                 searchBar.resignFirstResponder()
+				(datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
+				reloadTableViewData()
             }
         }
     }
@@ -160,21 +162,19 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        if !searchText.isEmpty {
-            let normalizedSearchText = searchText.normalizedString
-            if let currentText = self.searchText where currentText == normalizedSearchText {
-                return
-            }
-            
-            self.searchText = normalizedSearchText
-            let searchStringComponents = normalizedSearchText.componentsSeparatedByString(" ") as [String]
-            
-            for searchExecutor in searchExecutionControllers {
-                searchExecutor.executeSearchForStringComponents(normalizedSearchText, stringComponents: searchStringComponents)
-            }
-        } else {
-            (datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
-        }
+		guard !searchText.isEmpty else { return }
+		
+		let normalizedSearchText = searchText.normalizedString
+		if let currentText = self.searchText where currentText == normalizedSearchText {
+			return
+		}
+		
+		self.searchText = normalizedSearchText
+		let searchStringComponents = normalizedSearchText.componentsSeparatedByString(" ") as [String]
+		
+		for searchExecutor in searchExecutionControllers {
+			searchExecutor.executeSearchForStringComponents(normalizedSearchText, stringComponents: searchStringComponents)
+		}
     }
     
     

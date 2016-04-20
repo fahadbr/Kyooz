@@ -60,8 +60,12 @@ final class LastFmScrobbler {
     private (set) var validSessionObtained:Bool = false {
         didSet {
             ApplicationDefaults.evaluateMinimumFetchInterval()
+			if validSessionObtained {
+				currentStateDetails = nil
+			}
         }
     }
+	private (set) var currentStateDetails:String?
     
     var mediaItemToScrobble:AudioTrack!
     
@@ -96,12 +100,14 @@ final class LastFmScrobbler {
                     Logger.debug("logging into lastfm was a SUCCESS")
                     self.validSessionObtained = true
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
-                    Logger.debug("could not validate existing session because of error: \(info[self.error_key]), will attempt to get a new one")
+					let error = info[self.error_key]
+                    Logger.debug("could not validate existing session because of error: \(error), will attempt to get a new one")
+					self.currentStateDetails = error
             })
         }
     }
     
-    func initializeSession(usernameForSession usernameForSession:String, password:String, completionHandler:(String, logInSuccessful:Bool) -> Void) {
+    func initializeSession(usernameForSession usernameForSession:String, password:String, completionHandler:() -> Void) {
         Logger.debug("attempting to log in as \(usernameForSession)")
         let params:[String:String] = [
             api_key:api_key_value,
@@ -119,11 +125,13 @@ final class LastFmScrobbler {
                 self.session = key as String
                 self.username_value = name as String
                 self.validSessionObtained = true
-                completionHandler("Logged in as \(self.username_value ?? "Unknown User")", logInSuccessful:true)
+                completionHandler()
             }
         },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("failed to retrieve session because of error: \(info[self.error_key])")
-            completionHandler("Failed to log in: \(info[self.error_key] ?? "Unknown Error")", logInSuccessful:false)
+			let error = info[self.error_key]
+			self.currentStateDetails = "Failed to log in: \(error ?? "Unknown Error")"
+			completionHandler()
         })
 
     }

@@ -25,35 +25,21 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
     
     let lastFmScrobbler = LastFmScrobbler.instance
     
-    var loggedInFailed:Bool = false {
-        didSet {
-            errorLabel.hidden = !loggedInFailed
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateViewBasedOnSession()
+		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
-        errorLabel.hidden = true
 		errorLabel.textColor = UIColor.redColor()
+		updateViewBasedOnSession()
     }
     
     @IBAction func doLogIn(sender: AnyObject) {
-        lastFmScrobbler.initializeSession(usernameForSession: usernameField.text!, password: passwordField.text!) { [weak self](response:String, logInSuccessful:Bool) in
+        lastFmScrobbler.initializeSession(usernameForSession: usernameField.text!, password: passwordField.text!) { [weak self] in
             KyoozUtils.doInMainQueue() {
                 if let view = self?.view {
                     UIView.transitionWithView(view, duration: 0.4, options: .TransitionCrossDissolve, animations: { 
                         self?.updateViewBasedOnSession()
                         }, completion: nil)
-                }
-                self?.loggedInFailed = !logInSuccessful
-                if(!logInSuccessful) {
-                    self?.errorLabel.text = response
-                } else {
-                    //dismiss the keyboard
-                    self?.usernameField.resignFirstResponder()
-                    self?.passwordField.resignFirstResponder()
                 }
             }
         }
@@ -79,13 +65,28 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
     }
     
     private func updateViewBasedOnSession() {
-        loginStackView.hidden = lastFmScrobbler.validSessionObtained
-        loggedInAsLabel.hidden = !lastFmScrobbler.validSessionObtained
-        logoutButton.hidden = !lastFmScrobbler.validSessionObtained
+		let internetAvailable = KyoozUtils.internetConnectionAvailable
+		let validSessionObtained = lastFmScrobbler.validSessionObtained
+		
+		usernameField.enabled = internetAvailable
+		passwordField.enabled = internetAvailable
+		logoutButton.enabled = internetAvailable
+		submitButton.enabled = internetAvailable
+		
+		if usernameField.text == nil || usernameField.text!.isEmpty{
+			usernameField.text = lastFmScrobbler.username_value
+		}
+		let message = lastFmScrobbler.currentStateDetails
+		errorLabel.text = message
+		errorLabel.hidden = message == nil
+		
+        loginStackView.hidden = validSessionObtained
+        loggedInAsLabel.hidden = !validSessionObtained
+        logoutButton.hidden = !validSessionObtained
         
-        if(lastFmScrobbler.validSessionObtained) {
+        if lastFmScrobbler.validSessionObtained {
             loggedInAsLabel.text = "Logged in as \(lastFmScrobbler.username_value ?? "Unknown User")".uppercaseString
-        }
+		}
     }
     
 }
