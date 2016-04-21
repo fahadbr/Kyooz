@@ -464,7 +464,7 @@
                                                         <action selector="goToAlbum:" destination="igl-8i-tSd" eventType="touchUpInside" id="Pk8-OQ-WfW"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cWT-4d-YP5">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cWT-4d-YP5">
                                                     <rect key="frame" x="126" y="0.0" width="109" height="30"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
                                                     <state key="normal" title="ADD TO PLAYLIST">
