@@ -134,6 +134,8 @@
 		100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */; };
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
+		10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1011CC987B60058F44E /* HomeButtonView.swift */; };
+		10B9E1041CC987CF0058F44E /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10B9E1031CC987CF0058F44E /* TempView.xib */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
 		10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */; };
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
@@ -299,6 +301,8 @@
 		100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDProtocol.swift; sourceTree = "<group>"; };
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
+		10B9E1011CC987B60058F44E /* HomeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
+		10B9E1031CC987CF0058F44E /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
 		10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListButtonView.swift; sourceTree = "<group>"; };
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
@@ -551,6 +555,8 @@
 				0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */,
 				0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */,
 				0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */,
+				10B9E1011CC987B60058F44E /* HomeButtonView.swift */,
+				10B9E1031CC987CF0058F44E /* TempView.xib */,
 			);
 			name = "Custom Drawn Views";
 			sourceTree = "<group>";
@@ -845,6 +851,7 @@
 				0B778B0D1B938E2500004A1B /* SkipTrackButtonView.xib in Resources */,
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
 				10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */,
+				10B9E1041CC987CF0058F44E /* TempView.xib in Resources */,
 				0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */,
 				0B4E60081C2CD99C00BB9D77 /* RepeatButtonView.xib in Resources */,
 				0B4E60061C2CBB7700BB9D77 /* ShuffleButtonView.xib in Resources */,
@@ -936,6 +943,7 @@
 				0B5F13501C714F83009A1FDD /* SearchResultsSourceData.swift in Sources */,
 				0B650A5F1C39CF2D00C0DC51 /* AudioEntityViewController.swift in Sources */,
 				100A8BDD1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift in Sources */,
+				10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */,
 				0B58794D1C74140C009E713F /* UtilHeaderViewController.swift in Sources */,
 				0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */,
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
