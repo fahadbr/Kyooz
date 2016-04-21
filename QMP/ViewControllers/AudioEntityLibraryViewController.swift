@@ -33,6 +33,10 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 		super.viewDidLoad()
 		popGestureRecognizer.delegate = self
 		
+        let button = UIBarButtonItem(title: "⌂", style: .Plain, target: self, action: #selector(self.goHome))
+        button.setTitleTextAttributes([NSFontAttributeName:UIFont.systemFontOfSize(23)], forState: .Normal)
+        navigationItem.rightBarButtonItem = button
+        
 		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
@@ -48,9 +52,18 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
             }
 		}
 		
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
-			name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
-	}
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
+                                                         name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
+    }
+    
+    func goHome() {
+        navigationController?.popToRootViewControllerAnimated(true)
+    }
 	
 	private func configureTestDelegates() {
 		testDelegate = TestTableViewDataSourceDelegate()

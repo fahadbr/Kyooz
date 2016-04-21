@@ -27,6 +27,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     var expanded:Bool = false {
         didSet{
             albumArtPageVC?.view.hidden = !expanded
+            labelPageVC.view.userInteractionEnabled = !expanded
         }
     }
 	
@@ -76,7 +77,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 		nowPlayingBar.heightAnchor.constraintEqualToConstant(self.dynamicType.CollapsedHeight).active = true
         
         labelPageVC = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: labelPageVC.view, parentView: view)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: labelPageVC.view, parentView: view)[.Width]?.constant = -10
         labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingBar.centerYAnchor).active = true
         labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
 
@@ -88,7 +89,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         albumArtView.layer.shadowRadius = 10
         albumArtView.clipsToBounds = false
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: albumArtView, parentView: view)
-        albumArtView.topAnchor.constraintEqualToAnchor(labelPageVC.view.bottomAnchor, constant: 55).active = true
+        albumArtView.topAnchor.constraintEqualToAnchor(labelPageVC.view.bottomAnchor, constant: 70).active = true
         albumArtView.heightAnchor.constraintEqualToAnchor(albumArtView.widthAnchor, multiplier: 0.9).active = true
         
         ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX], subView: playbackProgressVC.view, parentView: view)
@@ -102,7 +103,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 
 		playbackControlsVC.view.heightAnchor.constraintEqualToConstant(65).active = true
 		playbackControlsVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
-		playbackControlsVC.view.topAnchor.constraintEqualToAnchor(playbackProgressVC.view.bottomAnchor, constant: 30).active = true
+		playbackControlsVC.view.topAnchor.constraintEqualToAnchor(playbackProgressVC.view.bottomAnchor, constant: 25).active = true
 		addChildViewController(playbackControlsVC)
 		playbackControlsVC.didMoveToParentViewController(self)
 
@@ -110,6 +111,7 @@ final class NowPlayingSummaryViewController: UIViewController {
             self.reloadData(nil)
             self.updateAlphaLevels()
         }
+        
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
     }
 	
@@ -173,7 +175,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 		nowPlayingBarVC.view.alpha = collapsedFraction
 				
 		let tX = (labelPageVC.view.center.x - nowPlayingBarVC.view.bounds.midX) * -expandedFraction
-		let tY = 35 * expandedFraction
+		let tY = 42.5 * expandedFraction
 		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
 		
 		let scale = 0.8 + (expandedFraction * 0.2)

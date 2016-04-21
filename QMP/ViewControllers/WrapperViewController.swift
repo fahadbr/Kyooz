@@ -140,7 +140,7 @@ final class LabelStackWrapperViewController : WrapperViewController {
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
-		wrappedView.center = view.center
+		wrappedView.frame = view.bounds
 	}
 	
 	private static func getLabelStringsFromTrack(track:AudioTrack?) -> (titleText:String, detailsText:String) {

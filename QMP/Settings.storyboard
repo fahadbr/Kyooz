@@ -173,7 +173,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="OTHER" id="51O-pA-JAg">
+                            <tableViewSection headerTitle="APPEARANCE" id="51O-pA-JAg">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="g6D-MF-h3E" style="IBUITableViewCellStyleDefault" id="agd-pQ-kNB">
                                         <rect key="frame" x="0.0" y="412" width="375" height="50"/>

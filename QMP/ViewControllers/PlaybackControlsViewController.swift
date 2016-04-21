@@ -25,6 +25,7 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 			view.widthAnchor.constraintEqualToAnchor(view.heightAnchor).active = true
 		}
 		
+        playPauseButton.hasOuterFrame = false
 		shuffleButton.addTarget(self, action: #selector(self.toggleShuffle(_:)), forControlEvents: .TouchUpInside)
 		skipBackButton.addTarget(self, action: #selector(self.skipBackward(_:)), forControlEvents: .TouchUpInside)
 		skipForwardButton.addTarget(self, action: #selector(self.skipForward(_:)), forControlEvents: .TouchUpInside)
@@ -38,9 +39,9 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 			$0.alpha = 0.8
 			if $0 is SkipTrackButtonView {
 				($0 as? SkipTrackButtonView)?.scale = 0.9
-				constant = 50
+				constant = 45
 			} else if $0 is PlayPauseButtonView {
-				constant = 65
+				constant = 50
 			} else {
 				$0.alpha = 0.6
 				constant = 40

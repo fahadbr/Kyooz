@@ -17,6 +17,6 @@ protocol RowLimitingDSDProtocol : UITableViewDelegate, UITableViewDataSource {
 protocol AudioEntityDSDProtocol : RowLimitingDSDProtocol {
     
     var sourceData:AudioEntitySourceData { get }
-
+    
 }
 
