@@ -33,6 +33,8 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 	}()
 	
 	override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
 		let headerHeight:CGFloat = 65
 
 		ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
@@ -57,11 +59,9 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		
 		cellConfigurations.append([settingsCellConfiguration])
 		
-		let headerVC = UIStoryboard.utilHeaderViewController()
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerVC.view, parentView: view)
-		headerVC.view.heightAnchor.constraintEqualToConstant(headerHeight).active = true
-		addChildViewController(headerVC)
-		headerVC.didMoveToParentViewController(self)
+		let headerView = PlainHeaderView()
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
+		headerView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
 		
 		automaticallyAdjustsScrollViewInsets = false
 		

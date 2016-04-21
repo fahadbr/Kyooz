@@ -137,7 +137,7 @@ public func ==(lhs:MPMediaItem, rhs:MPMediaItem) -> Bool {
 
 extension MPMediaQuery {
     static func albumArtistsQuery() -> MPMediaQuery {
-        let query = MPMediaQuery()
+        let query = MPMediaQuery.songsQuery()
         query.groupingType = MPMediaGrouping.AlbumArtist
         return query
     }

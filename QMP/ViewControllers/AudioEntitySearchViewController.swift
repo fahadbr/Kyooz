@@ -51,8 +51,12 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
             searchKeys: [MPMediaItemPropertyTitle, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
         let playlistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Playlists,
             searchKeys: [MPMediaPlaylistPropertyName])
+        let audioBooksSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.AudioBooks, searchKeys: [MPMediaItemPropertyTitle])
+        let compilationsSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Compilations, searchKeys: [MPMediaItemPropertyAlbumTitle])
+        let podcastSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Podcasts,
+                                                                         searchKeys: [MPMediaItemPropertyPodcastTitle, MPMediaItemPropertyAlbumArtist])
         let kyoozPlaylistSearchExecutor = KyoozPlaylistSearchExecutionController()
-        return [artistSearchExecutor, albumSearchExecutor, songSearchExecutor, kyoozPlaylistSearchExecutor, playlistSearchExecutor]
+        return [artistSearchExecutor, albumSearchExecutor, kyoozPlaylistSearchExecutor, playlistSearchExecutor, compilationsSearchExecutor, songSearchExecutor, podcastSearchExecutor, audioBooksSearchExecutor]
     }()
     
     private let defaultRowLimit = 3
@@ -61,20 +65,26 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     private (set) var searchText:String!
     
     private let searchBar = UISearchBar()
-	
     
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchBar.searchBarStyle = UISearchBarStyle.Default
+        let height:CGFloat = 65
+        
+        let backgroundHeaderView = PlainHeaderView()
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: backgroundHeaderView, parentView: view)
+        backgroundHeaderView.heightAnchor.constraintEqualToConstant(height).active = true
+
+        
+        searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
         searchBar.delegate = self
         searchBar.barStyle = UIBarStyle.Black
         searchBar.translucent = false
-        searchBar.placeholder = "Library Search"
+        searchBar.placeholder = "Kyooz Search"
+        searchBar.tintColor = ThemeHelper.defaultTintColor
         searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: searchBar, parentView: view)
-        let height:CGFloat = 65
         searchBar.heightAnchor.constraintEqualToConstant(height).active = true
         
         tableView.contentInset.top = height
@@ -91,7 +101,7 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
             let libraryGroup = searchExecutionController.libraryGroup
             let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController)
             let datasourceDelegate:AudioEntityDSD
-            let reuseIdentifier = libraryGroup == LibraryGrouping.Albums ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
+            let reuseIdentifier = libraryGroup.usesArtwork ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
             
             switch libraryGroup {
             case LibraryGrouping.Songs:

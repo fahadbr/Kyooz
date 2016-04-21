@@ -35,9 +35,21 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.showsVerticalScrollIndicator = true
         tableView.indicatorStyle = .White
-        
-        reloadSourceData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadTableViewData()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         registerForNotifications()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        unregisterForNotifications()
     }
     
     deinit {
