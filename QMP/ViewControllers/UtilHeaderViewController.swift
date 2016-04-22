@@ -33,11 +33,9 @@ final class UtilHeaderViewController: HeaderViewController {
 
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
-		
-//		view.backgroundColor = ThemeHelper.darkAccentColor
         view.layer.insertSublayer(gradiantLayer, atIndex: 0)
 		
-		libraryGroupingButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
+		libraryGroupingButton.alpha = 0.6
         libraryGroupingButton.hidden = subGroups == nil
     }
     

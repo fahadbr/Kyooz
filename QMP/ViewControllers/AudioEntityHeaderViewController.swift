@@ -41,6 +41,9 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
         tableView.scrollIndicatorInsets.top = maxHeight
         tableView.contentOffset.y = -tableView.contentInset.top
         
+        tableView.panGestureRecognizer.requireGestureRecognizerToFail(popGestureRecognizer)
+        tableView.panGestureRecognizer.requireGestureRecognizerToFail(ContainerViewController.instance.centerPanelPanGestureRecognizer)
+
 		if useCollapsableHeader {
 			tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
 			view.addGestureRecognizer(tableView.panGestureRecognizer)

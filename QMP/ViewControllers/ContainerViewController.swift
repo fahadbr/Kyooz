@@ -78,6 +78,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         centerPanelPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handlePanGesture(_:)))
         centerPanelPanGestureRecognizer.delegate = self
         rootViewController.view.addGestureRecognizer(centerPanelPanGestureRecognizer)
+        if let popGR = rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
+            ContainerViewController.instance.centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGR)
+        }
 
         //keep a reference of this gesture recogizer to enable/disable it
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ContainerViewController.handleTouchGesture(_:)))
@@ -305,6 +308,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
     }
     
+    //MARK: - Gesture recognizer delegates
+    
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === longPressGestureRecognizer {
             return (!rootViewController.pullableViewExpanded || centerPanelPosition == .Right)
@@ -317,27 +322,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return false
-    }
-    
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer === rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
-            return true
-        }
-        if otherGestureRecognizer === centerPanelPanGestureRecognizer {
-            return gestureRecognizer.view is UITableView 
-        }
-        return otherGestureRecognizer is UIScreenEdgePanGestureRecognizer || otherGestureRecognizer is UISwipeGestureRecognizer
-    }
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if otherGestureRecognizer === rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
-            return true
-        }
-        if gestureRecognizer === centerPanelPanGestureRecognizer {
-            return otherGestureRecognizer.view is UITableView
-        }
-        return gestureRecognizer is UIScreenEdgePanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer
     }
    
 }

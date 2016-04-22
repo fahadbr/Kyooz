@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, UIGestureRecognizerDelegate {
+final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	var reuseIdentifier:String {
 		if useCollapsableHeader {
@@ -31,10 +31,12 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		popGestureRecognizer.delegate = self
 		
-        let button = UIBarButtonItem(title: "⌂", style: .Plain, target: self, action: #selector(self.goHome))
-        button.setTitleTextAttributes([NSFontAttributeName:UIFont.systemFontOfSize(23)], forState: .Normal)
+        let homeButton = HomeButtonView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+        
+        homeButton.addTarget(self, action: #selector(self.goHome), forControlEvents: .TouchUpInside)
+        let button = UIBarButtonItem(customView: homeButton)
+        homeButton.alpha = ThemeHelper.defaultButtonTextAlpha
         navigationItem.rightBarButtonItem = button
         
 		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
@@ -119,23 +121,4 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController, 
 		}
 	}
 	
-	
-	
-	//MARK: - GESTURE RECOGNIZER DELEGATE
-	final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-		if otherGestureRecognizer === popGestureRecognizer {
-			return gestureRecognizer === tableView.panGestureRecognizer
-		}
-		return false
-	}
-	final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-		return false
-	}
-	
-	final func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-		if gestureRecognizer === popGestureRecognizer {
-			return otherGestureRecognizer === tableView.panGestureRecognizer
-		}
-		return false
-	}
 }

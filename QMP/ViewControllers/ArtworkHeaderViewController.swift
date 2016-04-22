@@ -191,8 +191,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
 			let overexpandedFraction = (expandedFraction - 1) * 5.0/2.0
 			let invertedOverexpandedFraction = 1 - overexpandedFraction
 			labelStackView.alpha = invertedOverexpandedFraction
-			shuffleButton.alpha = invertedOverexpandedFraction
-			selectModeButton.alpha = invertedOverexpandedFraction
+			shuffleButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+			selectModeButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
 			headerTitleLabel.alpha = invertedOverexpandedFraction
 			gradiantLayer.opacity = Float(invertedOverexpandedFraction)
 			adjustGradientLocation(expandedFraction: invertedOverexpandedFraction, invertedFraction: overexpandedFraction)

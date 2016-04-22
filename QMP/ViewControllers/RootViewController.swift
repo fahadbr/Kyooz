@@ -69,6 +69,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryNavigationController.navigationBar.backgroundColor = UIColor.clearColor()
         libraryNavigationController.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
         libraryNavigationController.navigationBar.shadowImage = UIImage()
+
         setNavigationDelegate()
         
         let libraryView = libraryNavigationController.view
