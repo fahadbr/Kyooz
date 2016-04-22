@@ -23,6 +23,7 @@ class CustomPopableViewController: UIViewController {
             return
         }
         view.addGestureRecognizer(popGestureRecognizer)
+        ContainerViewController.instance.centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGestureRecognizer)
     }
 
     //MARK: - gesture recognizer handling methods

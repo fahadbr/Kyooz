@@ -17,7 +17,7 @@ struct ThemeHelper {
 	static let defaultFontSize:CGFloat = 15.0
     
     static let defaultFont = UIFont(name: defaultFontNameMedium, size: defaultFontSize)
-    
+    static let defaultButtonTextAlpha:CGFloat = 0.6
     static let defaultTintColor = UIColor(white: 0.7, alpha: 1.0)
     
     static let defaultBarStyle = UIBarStyle.Black

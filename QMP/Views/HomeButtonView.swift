@@ -12,7 +12,7 @@ import UIKit
 final class HomeButtonView : UIButton {
 	
 	@IBInspectable
-	var scale:CGFloat = 0.8 {
+	var scale:CGFloat = 0.35 {
 		didSet {
 			setNeedsDisplay()
 		}
@@ -37,10 +37,10 @@ final class HomeButtonView : UIButton {
 	}
 	
 	@IBInspectable
-	var roofHeightProportion:CGFloat = 0.25
+	var roofHeightProportion:CGFloat = 0.4
 	
 	@IBInspectable
-	var sideExtensionLength:CGFloat = 10
+	var sideExtensionProportion:CGFloat = 0.13
 	
 	override func drawRect(rect: CGRect) {
 		if !enabled {
@@ -60,23 +60,32 @@ final class HomeButtonView : UIButton {
 		}
 		
 		let inset:CGFloat = (1 - scale)/2
-		let insetRect = CGRectInset(rect, inset * rect.width, inset)
+		let insetRect = CGRectInset(rect, inset * rect.width, inset * rect.height)
 		
 		let smallerSide = min(insetRect.height, insetRect.width)
 		let roofHeight = smallerSide * roofHeightProportion
 		let baseSide = smallerSide - roofHeight
+        let baseWidth = baseSide * 1.4
 		
-		let baseRect = CGRect(x: insetRect.midX - baseSide/2, y: insetRect.origin.y + roofHeight, width: baseSide, height: baseSide)
-		let basePath = UIBezierPath(rect: baseRect)
-		let slope = roofHeight/(baseSide/2)
+		let baseRect = CGRect(x: insetRect.midX - baseWidth/2, y: insetRect.origin.y + roofHeight, width: baseWidth, height: baseSide)
+        let basePath = UIBezierPath()
+        basePath.moveToPoint(baseRect.origin)
+        basePath.addLineToPoint(CGPoint(x: baseRect.origin.x, y: baseRect.maxY))
+        basePath.addLineToPoint(CGPoint(x: baseRect.maxX, y: baseRect.maxY))
+        basePath.addLineToPoint(CGPoint(x: baseRect.maxX, y: baseRect.origin.y))
+        
+		let slope = roofHeight/(baseWidth/2)
 		
-		let xOffset = sideExtensionLength
+		let xOffset = smallerSide * sideExtensionProportion
 		let yOffset = xOffset * slope
 		
 		basePath.moveToPoint(CGPoint(x: baseRect.origin.x - xOffset, y: baseRect.origin.y + yOffset))
 		basePath.addLineToPoint(CGPoint(x: insetRect.midX, y: insetRect.origin.y))
 		basePath.addLineToPoint(CGPoint(x: baseRect.maxX + xOffset, y: baseRect.origin.y + yOffset))
 		
+        basePath.lineCapStyle = .Round
+        basePath.lineWidth = smallerSide * 0.05
+        basePath.applyTransform(CGAffineTransformMakeTranslation(inset * rect.width * 0.6, 0))
 		basePath.stroke()
 		
 	}

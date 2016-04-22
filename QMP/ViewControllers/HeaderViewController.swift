@@ -50,6 +50,15 @@ class HeaderViewController : UIViewController {
         return UIBarButtonItem(customView: shuffleButtonView)
     }()
     
+    //MARK: - FUNCTIONS
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        shuffleButton.alpha = ThemeHelper.defaultButtonTextAlpha
+        selectModeButton.alpha = ThemeHelper.defaultButtonTextAlpha
+    }
+    
+    
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
         guard let aehVC = parent as? AudioEntityHeaderViewController else {
