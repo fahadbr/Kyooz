@@ -60,18 +60,18 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		kmvc.menuDetails = "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")"
 		let center = menuButton.superview?.convertPoint(menuButton.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace)
 		kmvc.originatingCenter = center
-		
-		kmvc.addAction(KyoozMenuAction(title: "Jump To Album", image: nil) {
+		var jumpToActions = [KyoozMenuActionProtocol]()
+		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
 			self.goToVCWithGrouping(LibraryGrouping.Albums, nowPlayingItem: nowPlayingItem)
 			})
-		kmvc.addAction(KyoozMenuAction(title: "Jump To Artist", image: nil) {
+		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST, image: nil) {
 			self.goToVCWithGrouping(LibraryGrouping.Artists, nowPlayingItem: nowPlayingItem)
 			})
-        kmvc.addAction(KyoozMenuAction(title: "Add to Playlist..", image: nil) {
+        kmvc.addActions(jumpToActions)
+        kmvc.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
             KyoozUtils.showAvailablePlaylistsForAddingTracks([nowPlayingItem])
-        })
+        }])
 
-		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
 		KyoozUtils.showMenuViewController(kmvc)
 	}
 	
