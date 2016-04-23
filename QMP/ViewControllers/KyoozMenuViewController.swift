@@ -10,7 +10,7 @@ import UIKit
 
 final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
-    private static let cellHeight:CGFloat = 44
+    private static let cellHeight:CGFloat = 50
 	
 	private let maxWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.70
 	private let minWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.55
@@ -71,14 +71,14 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		tableView.rowHeight = self.dynamicType.cellHeight
         tableView.delegate = self
         tableView.dataSource = self
-		tableView.layer.cornerRadius = 15
+		tableView.layer.cornerRadius = 10
 		tableView.registerClass(KyoozMenuCell.self, forCellReuseIdentifier: KyoozMenuCell.reuseIdentifier)
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 11)
+        tableView.separatorStyle = .None
         tableView.tableHeaderView = labelContainerView
         
         tableContainerView.layer.shadowOpacity = 0.8
         tableContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        tableContainerView.layer.shadowRadius = 6.0
+        tableContainerView.layer.shadowRadius = 4.0
         tableContainerView.layer.shadowColor = UIColor.whiteColor().CGColor
         
         view.backgroundColor = UIColor(white: 0, alpha: 0.40)
@@ -126,6 +126,18 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		labelContainerView = UIView()
         labelContainerView.frame.size = containerSize
 
+		let path = UIBezierPath()
+		path.moveToPoint(CGPoint(x: labelContainerView.bounds.origin.x + 10, y: labelContainerView.bounds.maxY))
+		path.addLineToPoint(CGPoint(x: labelContainerView.bounds.maxX - 10, y: labelContainerView.bounds.maxY))
+		
+		let linePath = CAShapeLayer()
+		linePath.path = path.CGPath
+		linePath.strokeColor = UIColor.darkGrayColor().CGColor
+		linePath.opacity = 0.7
+		
+		linePath.frame = labelContainerView.bounds
+		labelContainerView.layer.addSublayer(linePath)
+		
         stackView.center = labelContainerView.center
         labelContainerView.addSubview(stackView)
 
@@ -147,6 +159,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         menuActions.append(menuAction)
     }
 	
+	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return menuActions.count
 	}
@@ -155,15 +168,15 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         guard let cell = tableView.dequeueReusableCellWithIdentifier(KyoozMenuCell.reuseIdentifier) as? KyoozMenuCell else {
             return UITableViewCell()
         }
-        let action = menuActions[indexPath.row]
-        
+		let action = menuActions[indexPath.row]
+			
         cell.textLabel?.text = action.title
         cell.imageView?.image = action.image
         return cell
 	}
 	
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        menuActions[indexPath.row].action?()
+		menuActions[indexPath.row].action?()
         transitionOut()
 
         ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
