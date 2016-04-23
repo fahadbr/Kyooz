@@ -41,6 +41,8 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		tableView.contentInset.top = headerHeight
 		tableView.scrollIndicatorInsets.top = headerHeight
 		tableView.rowHeight = 50
+		tableView.panGestureRecognizer.requireGestureRecognizerToFail(ContainerViewController.instance.centerPanelPanGestureRecognizer)
+		tableView.backgroundColor = UIColor.blackColor()
 		
         var section = [allMusicCellConfiguration]
         for group in LibraryGrouping.otherGroupings {
