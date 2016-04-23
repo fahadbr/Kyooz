@@ -149,19 +149,21 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         searchBar.resignFirstResponder()
         super.addCustomMenuActions(indexPath, tracks:tracks, menuController: menuController)
         guard let mediaItem = tracks.first where tracks.count == 1 else { return }
+        var actions = [KyoozMenuActionProtocol]()
         if mediaItem.albumId != 0 {
-            let goToAlbumAction = KyoozMenuAction(title: "Jump To Album", image: nil) {
+            let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!, parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
-            menuController.addAction(goToAlbumAction)
+            actions.append(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = KyoozMenuAction(title: "Jump To Artist", image: nil) {
+            let goToArtistAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST, image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
-            menuController.addAction(goToArtistAction)
+            actions.append(goToArtistAction)
         }
+        menuController.addActions(actions)
     }
 
     

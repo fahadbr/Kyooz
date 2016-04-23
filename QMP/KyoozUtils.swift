@@ -113,25 +113,23 @@ struct KyoozUtils {
     
     static func addDefaultQueueingActions(tracks:[AudioTrack], menuController:KyoozMenuViewController, completionAction:(()->Void)? = nil) {
         let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-        let queueLastAction = KyoozMenuAction(title: "Queue Last", image: nil) {
+        let queueLastAction = KyoozMenuAction(title: "QUEUE LAST", image: nil) {
             audioQueuePlayer.enqueue(items: tracks, atPosition: .Last)
             completionAction?()
         }
-        let queueNextAction = KyoozMenuAction(title: "Queue Next", image: nil) {
+        let queueNextAction = KyoozMenuAction(title: "QUEUE NEXT", image: nil) {
             audioQueuePlayer.enqueue(items: tracks, atPosition: .Next)
             completionAction?()
         }
-        let queueRandomlyAction = KyoozMenuAction(title: "Queue Randomly", image: nil) {
+        let queueRandomlyAction = KyoozMenuAction(title: "QUEUE RANDOMLY", image: nil) {
             audioQueuePlayer.enqueue(items: tracks, atPosition: .Random)
             completionAction?()
         }
         
-        menuController.addAction(queueNextAction)
-        menuController.addAction(queueLastAction)
-        menuController.addAction(queueRandomlyAction)
-        menuController.addAction(KyoozMenuAction(title: "Add to Playlist..", image: nil) {
+        menuController.addActions([queueNextAction, queueLastAction, queueRandomlyAction])
+        menuController.addActions([KyoozMenuAction(title: "ADD TO PLAYLIST..", image: nil) {
             KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
-        })
+        }])
     }
     
     static func showAvailablePlaylistsForAddingTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {

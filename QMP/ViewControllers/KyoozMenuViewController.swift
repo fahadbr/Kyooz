@@ -13,15 +13,25 @@ private let largerMenuFont = ThemeHelper.defaultFont?.fontWithSize(16)
 final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
     private static let cellHeight:CGFloat = 50
+    private static let sectionHeight:CGFloat = 5
 	
 	private let maxWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.70
 	private let minWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.55
 	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.9
     
 	private let tableView = UITableView()
-    private var menuActions:[KyoozMenuAction] = [KyoozMenuAction]()
     
+    private lazy var dividerPath:UIBezierPath = {
+        let path = UIBezierPath()
+        let inset:CGFloat = 12
+        let containerWidth = self.tableView.frame.width
+        let midLine = self.dynamicType.sectionHeight/2
+        path.moveToPoint(CGPoint(x: inset, y: midLine))
+        path.addLineToPoint(CGPoint(x: containerWidth - inset, y: midLine))
+        return path
+    }()
     
+    private var menuActions = [[KyoozMenuActionProtocol]]()
 	private var estimatedLabelContainerSize:CGSize {
 		let titleSize = titleLabel?.frame.size ?? CGSize.zero
 		let detailsSize = detailsLabel?.frame.size ?? CGSize.zero
@@ -51,10 +61,11 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
     override func viewDidLoad() {
         super.viewDidLoad()
         fadeOutAnimation.duration = 0.2
+        menuActions.append([CancelAction()])
         initializeLabelContainerView()
 		
 		let labelContainerSize = labelContainerView?.frame.size ?? CGSize.zero
-		let height = self.dynamicType.cellHeight * CGFloat(menuActions.count) + labelContainerSize.height
+		let height = self.dynamicType.cellHeight * CGFloat(menuActions.flatten().count) + labelContainerSize.height + self.dynamicType.sectionHeight * CGFloat(menuActions.count)
 		let width = labelContainerSize.width
 		let estimatedSize = CGSize(width: width, height: height)
 
@@ -71,6 +82,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         
         ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: tableContainerView)
 		tableView.rowHeight = self.dynamicType.cellHeight
+        tableView.sectionHeaderHeight = self.dynamicType.sectionHeight
         tableView.delegate = self
         tableView.dataSource = self
 		tableView.layer.cornerRadius = 10
@@ -127,20 +139,6 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		let containerSize = CGSize(width: labelSize.width + offset, height: labelSize.height + offset)
 		labelContainerView = UIView()
         labelContainerView.frame.size = containerSize
-
-		
-		let path = UIBezierPath()
-        let inset:CGFloat = 12
-		path.moveToPoint(CGPoint(x: inset, y: containerSize.height))
-		path.addLineToPoint(CGPoint(x: containerSize.width - inset, y: containerSize.height))
-		
-		let linePath = CAShapeLayer()
-		linePath.path = path.CGPath
-		linePath.strokeColor = UIColor.darkGrayColor().CGColor
-		linePath.opacity = 0.7
-		
-		linePath.frame = labelContainerView.bounds
-		labelContainerView.layer.addSublayer(linePath)
 		
         stackView.center = labelContainerView.center
         labelContainerView.addSubview(stackView)
@@ -159,45 +157,76 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 	}
 	
 	
-    func addAction(menuAction:KyoozMenuAction) {
-        menuActions.append(menuAction)
+    func addActions(menuActions:[KyoozMenuActionProtocol]) {
+        self.menuActions.append(menuActions)
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return menuActions.count
     }
 	
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return menuActions.count
+		return menuActions[section].count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCellWithIdentifier(KyoozMenuCell.reuseIdentifier) as? KyoozMenuCell else {
             return UITableViewCell()
         }
-		let action = menuActions[indexPath.row]
+		let action = menuActions[indexPath.section][indexPath.row]
 			
-        cell.textLabel?.text = action.title.uppercaseString
+        cell.textLabel?.text = action.title
         cell.imageView?.image = action.image
         return cell
 	}
 	
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
-		menuActions[indexPath.row].action?()
+		menuActions[indexPath.section][indexPath.row].action?()
         transitionOut()
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: self.dynamicType.sectionHeight))
+
+        let dividerPathLayer = CAShapeLayer()
+        dividerPathLayer.path = dividerPath.CGPath
+        dividerPathLayer.strokeColor = UIColor.darkGrayColor().CGColor
+        dividerPathLayer.lineWidth = 0.5
+        dividerPathLayer.opacity = 0.7
+        
+        dividerPathLayer.frame = view.bounds
+        view.layer.addSublayer(dividerPathLayer)
+        return view
     }
     
 
 }
 
-struct KyoozMenuAction {
+protocol KyoozMenuActionProtocol {
+    var title:String { get }
+    var image:UIImage? { get }
+    var action:(()->())? { get }
+}
+
+struct KyoozMenuAction : KyoozMenuActionProtocol {
     
     let title:String
     let image:UIImage?
     let action:(()->())?
 }
 
+private struct CancelAction : KyoozMenuActionProtocol {
+    var title: String { return "CANCEL" }
+    var image: UIImage? { return nil }
+    var action: (() -> ())? { return nil }
+}
+
 private final class KyoozMenuCell : AbstractTableViewCell {
 	
 	static let reuseIdentifier = "kyoozMenuCell"
+    static let font = UIFont(name: ThemeHelper.defaultFontName, size: 14)
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -211,7 +240,7 @@ private final class KyoozMenuCell : AbstractTableViewCell {
 	
 	func initialize() {
         backgroundColor = UIColor.clearColor()
-		textLabel?.font = UIFont(name: ThemeHelper.defaultFontName, size: 14)
+		textLabel?.font = self.dynamicType.font
         textLabel?.textColor = ThemeHelper.defaultFontColor
         textLabel?.textAlignment = NSTextAlignment.Center
 	}

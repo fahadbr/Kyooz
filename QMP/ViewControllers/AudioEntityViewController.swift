@@ -92,16 +92,15 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 		kmvc.originatingCenter = originatingCenter
         
         if tracks.count == 1 {
-            kmvc.addAction(KyoozMenuAction(title: "Play Only This", image: nil) {
+            kmvc.addActions([KyoozMenuAction(title: "PLAY ONLY THIS", image: nil) {
                 self.audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: 0, shouldShuffleIfOff: false)
-            })
+            }])
         }
         KyoozUtils.addDefaultQueueingActions(tracks, menuController: kmvc)
         
         
         addCustomMenuActions(indexPath, tracks: tracks, menuController:kmvc)
         
-        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
         KyoozUtils.showMenuViewController(kmvc)
 
     }

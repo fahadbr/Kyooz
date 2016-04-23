@@ -62,13 +62,14 @@ final class UtilHeaderViewController: HeaderViewController {
         
 		let kmvc = KyoozMenuViewController()
 		kmvc.menuTitle = "Change Grouping Type"
+        var actions = [KyoozMenuActionProtocol]()
         for group in groups {
-			kmvc.addAction(KyoozMenuAction(title: group.name, image: nil, action: {
+			actions.append(KyoozMenuAction(title: group.name, image: nil, action: {
                 self.setActiveGroup(group)
                 (self.parentViewController as? AudioEntityLibraryViewController)?.groupingTypeDidChange(group)
             }))
         }
-		kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+        kmvc.addActions(actions)
         let center = libraryGroupingButton.convertPoint(CGPoint(x:libraryGroupingButton.bounds.midX, y: libraryGroupingButton.bounds.midY), toCoordinateSpace: UIScreen.mainScreen().fixedCoordinateSpace)
 		kmvc.originatingCenter = center
 		KyoozUtils.showMenuViewController(kmvc)

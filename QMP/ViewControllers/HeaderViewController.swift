@@ -189,7 +189,6 @@ class HeaderViewController : UIViewController {
         KyoozUtils.addDefaultQueueingActions(items, menuController: kmvc) {
             self.selectOrDeselectAll()
         }
-        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
         
         KyoozUtils.showMenuViewController(kmvc)
     }
@@ -199,10 +198,9 @@ class HeaderViewController : UIViewController {
         
         let kmvc = KyoozMenuViewController()
         kmvc.menuTitle = "Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?"
-        kmvc.addAction(KyoozMenuAction(title:"Yes", image: nil) {
+        kmvc.addActions([KyoozMenuAction(title:"YES", image: nil) {
             self.deleteInternal()
-        })
-        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action: nil))
+        }])
         KyoozUtils.showMenuViewController(kmvc)
         
     }

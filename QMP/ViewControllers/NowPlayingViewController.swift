@@ -116,8 +116,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         let kmvc = KyoozMenuViewController()
 		kmvc.menuTitle = title
         kmvc.menuDetails = details
-        kmvc.addAction(KyoozMenuAction(title: "Yes", image: nil, action: {_ in deleteBlock() }))
-        kmvc.addAction(KyoozMenuAction(title: "Cancel", image: nil, action:  nil))
+        kmvc.addActions([KyoozMenuAction(title: "YES", image: nil, action: {_ in deleteBlock() })])
         KyoozUtils.showMenuViewController(kmvc)
 
     }
@@ -225,23 +224,26 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
         
         
+        var jumpToActions = [KyoozMenuActionProtocol]()
         if mediaItem.albumId != 0 {
-			let goToAlbumAction = KyoozMenuAction(title: "Jump To Album", image: nil) {
+			let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!,
                     parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
-            menuVC.addAction(goToAlbumAction)
+            jumpToActions.append(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = KyoozMenuAction(title: "Jump To Artist", image: nil) {
+            let goToArtistAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST, image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
-            menuVC.addAction(goToArtistAction)
+            jumpToActions.append(goToArtistAction)
         }
+        menuVC.addActions(jumpToActions)
         
+        var removeActions = [KyoozMenuActionProtocol]()
         if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
-            let clearPrecedingItemsAction = KyoozMenuAction(title: "Remove Above", image: nil) {
+            let clearPrecedingItemsAction = KyoozMenuAction(title: "REMOVE ABOVE", image: nil) {
                 var indiciesToDelete = [NSIndexPath]()
                 indiciesToDelete.reserveCapacity(index)
                 for i in 0..<index {
@@ -252,17 +254,17 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
                     self.deleteIndexPaths(indiciesToDelete)
                 }
             }
-            menuVC.addAction(clearPrecedingItemsAction)
+            removeActions.append(clearPrecedingItemsAction)
         }
         
-		let deleteAction = KyoozMenuAction(title: "Remove", image: nil) {
+		let deleteAction = KyoozMenuAction(title: "REMOVE", image: nil) {
             self.datasourceDelegate.tableView?(self.tableView, commitEditingStyle: .Delete,
                 forRowAtIndexPath: indexPath)
         }
-        menuVC.addAction(deleteAction)
+        removeActions.append(deleteAction)
         
         if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
-			let clearUpcomingItemsAction = KyoozMenuAction(title: "Remove Below", image:nil) { 
+			let clearUpcomingItemsAction = KyoozMenuAction(title: "REMOVE BELOW", image:nil) {
                 var indiciesToDelete = [NSIndexPath]()
                 for i in (index + 1)...lastIndex {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
@@ -272,13 +274,12 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
                     self.deleteIndexPaths(indiciesToDelete)
                 }
             }
-            menuVC.addAction(clearUpcomingItemsAction)
+            removeActions.append(clearUpcomingItemsAction)
         }
-        menuVC.addAction(KyoozMenuAction(title: "Add to Playlist..", image: nil) {
+        menuVC.addActions(removeActions)
+        menuVC.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
             KyoozUtils.showAvailablePlaylistsForAddingTracks([mediaItem])
-        })
-		let cancelAction = KyoozMenuAction(title: "Cancel", image: nil, action: nil)
-		menuVC.addAction(cancelAction)
+        }])
 		menuVC.originatingCenter = originatingCenter
 		
 		KyoozUtils.showMenuViewController(menuVC)

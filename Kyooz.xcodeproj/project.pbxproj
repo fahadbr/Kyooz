@@ -93,6 +93,7 @@
 		0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */; };
 		0BB01A5D1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */; };
 		0BB01A5F1CC87A5C00D4B57F /* PlainHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB01A5E1CC87A5C00D4B57F /* PlainHeaderView.swift */; };
+		0BB01A611CCBD91900D4B57F /* KyoozConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB01A601CCBD91900D4B57F /* KyoozConstants.swift */; };
 		0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */; };
 		0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */; };
 		0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */; };
@@ -257,6 +258,7 @@
 		0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIteratorOperation.swift; sourceTree = "<group>"; };
 		0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocKyoozPlaylistSearchOperation.swift; sourceTree = "<group>"; };
 		0BB01A5E1CC87A5C00D4B57F /* PlainHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlainHeaderView.swift; sourceTree = "<group>"; };
+		0BB01A601CCBD91900D4B57F /* KyoozConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozConstants.swift; sourceTree = "<group>"; };
 		0BBA91EE1C02292B00C79BA2 /* AbstractResultOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractResultOperation.swift; sourceTree = "<group>"; };
 		0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchExecutionController.swift; sourceTree = "<group>"; };
 		0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexSearchOperation.swift; sourceTree = "<group>"; };
@@ -584,6 +586,7 @@
 				10171E041C373342002FD905 /* Test */,
 				0B778B081B9388BD00004A1B /* CGUtils.swift */,
 				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
+				0BB01A601CCBD91900D4B57F /* KyoozConstants.swift */,
 				100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */,
 				0BF917471BF8F36A001AC802 /* KyoozUtils.swift */,
 				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
@@ -931,6 +934,7 @@
 				10FD325D1C90E7B200004CAB /* ConstraintUtils.swift in Sources */,
 				0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */,
 				104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */,
+				0BB01A611CCBD91900D4B57F /* KyoozConstants.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
 				0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */,
 				10DB53CF1CB5C28F0041B179 /* AbstractPlaybackViewController.swift in Sources */,
