@@ -8,6 +8,8 @@
 
 import UIKit
 
+private let largerMenuFont = ThemeHelper.defaultFont?.fontWithSize(16)
+
 final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
     private static let cellHeight:CGFloat = 50
@@ -109,7 +111,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		}
 		
 		titleLabel = UILabel()
-		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:ThemeHelper.defaultFont)
+		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:largerMenuFont)
 		
 		detailsLabel = UILabel()
 		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:UIFont(name: ThemeHelper.defaultFontName, size: 12))
@@ -128,8 +130,9 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 
 		
 		let path = UIBezierPath()
-		path.moveToPoint(CGPoint(x: labelContainerView.bounds.origin.x + 10, y: labelContainerView.bounds.maxY))
-		path.addLineToPoint(CGPoint(x: labelContainerView.bounds.maxX - 10, y: labelContainerView.bounds.maxY))
+        let inset:CGFloat = 12
+		path.moveToPoint(CGPoint(x: inset, y: containerSize.height))
+		path.addLineToPoint(CGPoint(x: containerSize.width - inset, y: containerSize.height))
 		
 		let linePath = CAShapeLayer()
 		linePath.path = path.CGPath
@@ -171,17 +174,15 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         }
 		let action = menuActions[indexPath.row]
 			
-        cell.textLabel?.text = action.title
+        cell.textLabel?.text = action.title.uppercaseString
         cell.imageView?.image = action.image
         return cell
 	}
 	
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
 		menuActions[indexPath.row].action?()
         transitionOut()
-
-        ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
-
     }
     
 
@@ -210,7 +211,7 @@ private final class KyoozMenuCell : AbstractTableViewCell {
 	
 	func initialize() {
         backgroundColor = UIColor.clearColor()
-		textLabel?.font = ThemeHelper.defaultFont
+		textLabel?.font = UIFont(name: ThemeHelper.defaultFontName, size: 14)
         textLabel?.textColor = ThemeHelper.defaultFontColor
         textLabel?.textAlignment = NSTextAlignment.Center
 	}
