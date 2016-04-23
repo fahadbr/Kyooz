@@ -126,6 +126,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		labelContainerView = UIView()
         labelContainerView.frame.size = containerSize
 
+		
 		let path = UIBezierPath()
 		path.moveToPoint(CGPoint(x: labelContainerView.bounds.origin.x + 10, y: labelContainerView.bounds.maxY))
 		path.addLineToPoint(CGPoint(x: labelContainerView.bounds.maxX - 10, y: labelContainerView.bounds.maxY))
