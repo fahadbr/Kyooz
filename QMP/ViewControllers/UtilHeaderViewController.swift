@@ -50,6 +50,7 @@ final class UtilHeaderViewController: HeaderViewController {
         if vc.sourceData is GroupMutableAudioEntitySourceData {
             subGroups = vc.subGroups
         }
+        setActiveGroup(vc.sourceData.libraryGrouping)
     }
 
     override func didReceiveMemoryWarning() {
