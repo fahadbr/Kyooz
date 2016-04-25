@@ -28,8 +28,9 @@ struct ThemeHelper {
 	
 //    static let defaultVividColor = UIColor(red: 64.0/255.0, green: 224.0/255.0, blue: 208.0/255.0, alpha: 1.0)
     static let defaultVividColor = UIColor(red: 255.0/255.0, green: 93/255.0, blue: 53/255.0, alpha: 1.0)
-    static let darkAccentColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 1.0)
-    
+//    static let darkAccentColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 1.0)
+	static let darkAccentColor = UIColor(red: 75.0/255.0, green: 0/255.0, blue: 11.0/255.0, alpha: 1.0)
+	
     static let barsAreTranslucent = true
     
     static let tableViewSectionHeaderHeight:CGFloat = 40
