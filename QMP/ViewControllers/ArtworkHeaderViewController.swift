@@ -130,15 +130,15 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel3.text = details.joinWithSeparator(" • ")
         detailsLabel3.textColor = UIColor.lightGrayColor()
         detailsLabel2.textColor = UIColor.lightGrayColor()
-        if let albumArt = track.artwork {
-            KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView] in
-                if let image = albumArt.imageWithSize(imageView.frame.size) {
-                    imageView.image = image
-                    imageView.layer.addAnimation(ArtworkHeaderViewController.fadeInAnimation, forKey: nil)
-                }
+        
+        //fade in the artwork
+        KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView] in
+            if let albumArt = track.artwork, let image = albumArt.imageWithSize(imageView.frame.size) {
+                imageView.image = image
+            } else {
+                imageView.image = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: imageView.frame.size)
             }
-        } else {
-            view.backgroundColor = ThemeHelper.darkAccentColor
+            imageView.layer.addAnimation(ArtworkHeaderViewController.fadeInAnimation, forKey: nil)
         }
         
         headerTitleLabel.layer.shouldRasterize = true

@@ -20,6 +20,9 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		let action = {
 			let vc = AudioEntityLibraryViewController()
 			vc.title = title
+            let baseGroupIndex = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AllMusicBaseGroup)
+            let selectedGroup = LibraryGrouping.allMusicGroupings[baseGroupIndex]
+            vc.sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
 			ContainerViewController.instance.pushViewController(vc)
 		}
 		return (title, action)
