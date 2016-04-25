@@ -36,7 +36,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         
         homeButton.addTarget(self, action: #selector(self.goHome), forControlEvents: .TouchUpInside)
         let button = UIBarButtonItem(customView: homeButton)
-        homeButton.alpha = ThemeHelper.defaultButtonTextAlpha
         navigationItem.rightBarButtonItem = button
         
 		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
@@ -80,6 +79,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
 		if isBaseLevel {
 			sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
+            NSUserDefaults.standardUserDefaults().setInteger(subGroups.indexOf(selectedGroup) ?? 0, forKey: UserDefaultKeys.AllMusicBaseGroup)
 		} else {
 			if let groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
 				groupMutableSourceData.libraryGrouping = selectedGroup
