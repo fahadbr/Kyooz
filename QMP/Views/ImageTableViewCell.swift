@@ -34,8 +34,9 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
             }
         }
         detailsLabel.text = text
-        
+        albumArtwork.alpha = 0
         KyoozUtils.doInMainQueueAsync() { [albumArtwork = self.albumArtwork] in
+            albumArtwork.alpha = 1
             guard let track = entity.representativeTrack where track.albumId != self.currentAlbumImageID else {
                 return
             }
@@ -43,7 +44,7 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
                 albumArtwork.layer.addAnimation(ImageTableViewCell.fadeInAnimation, forKey: nil)
             }
             guard let albumArtworkTemp = track.artwork?.imageWithSize(albumArtwork.frame.size) else {
-                albumArtwork.image = ImageContainer.defaultAlbumArtworkImage
+                albumArtwork.image = ImageContainer.resizeImage(ImageContainer.smallDefaultArtworkImage, toSize: albumArtwork.frame.size)
                 self.currentAlbumImageID = 0
                 return
             }

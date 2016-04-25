@@ -194,7 +194,6 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         dividerPathLayer.path = dividerPath.CGPath
         dividerPathLayer.strokeColor = UIColor.darkGrayColor().CGColor
         dividerPathLayer.lineWidth = 0.5
-        dividerPathLayer.opacity = 0.7
         
         dividerPathLayer.frame = view.bounds
         view.layer.addSublayer(dividerPathLayer)

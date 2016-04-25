@@ -11,6 +11,7 @@ import Foundation
 struct UserDefaultKeys {
     static let AudioQueuePlayer = "AUDIO_QUEUE_PLAYER"
     static let ReduceAnimations = "ReduceAnimations"
+    static let AllMusicBaseGroup = "AllMusicBaseGroup"
 }
 
 enum AudioQueuePlayerType : Int {
