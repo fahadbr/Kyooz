@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 //view controller primarily used for wrapping a view in a view controller object
 class WrapperViewController : UIViewController {
@@ -26,7 +27,7 @@ class WrapperViewController : UIViewController {
         super.init(nibName:nil, bundle:nil)
 		
 		if isPresentedVC {
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshViewsIfPresented),
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
 				name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
 		}
     }
@@ -45,7 +46,7 @@ class WrapperViewController : UIViewController {
         view.addSubview(wrappedView)
     }
 	
-	func refreshViewsIfPresented() {
+	func refreshIndexAndViews() {
 		representingIndex = audioQueuePlayer.indexOfNowPlayingItem
 		refreshViews(audioQueuePlayer.nowPlayingItem)
 	}
@@ -71,6 +72,11 @@ final class ImageWrapperViewController : WrapperViewController {
 		imageView = UIImageView(image: albumArtImage)
 		imageView.contentMode = .ScaleAspectFit
 		super.init(wrappedView: imageView, isPresentedVC: isPresentedVC, representingIndex: representingIndex)
+        
+        if isPresentedVC {
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.clearImageIdAndRefreshViews),
+                                                             name: MPMediaLibraryDidChangeNotification, object: MPMediaLibrary.defaultMediaLibrary())
+        }
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -81,6 +87,11 @@ final class ImageWrapperViewController : WrapperViewController {
 		super.viewDidLayoutSubviews()
 		wrappedView.frame = CGRectInset(view.bounds, frameInset, frameInset)
 	}
+    
+    func clearImageIdAndRefreshViews() {
+        imageID = 0
+        refreshIndexAndViews()
+    }
 	
 	private static func albumArtForTrack(track:AudioTrack?, size:CGSize) -> UIImage {
         return track?.artwork?.imageWithSize(size) ?? {

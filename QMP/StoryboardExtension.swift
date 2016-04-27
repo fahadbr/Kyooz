@@ -24,10 +24,7 @@ extension UIStoryboard {
         }
         return Static.instance
     }
-    
-    static func nowPlayingViewController() -> NowPlayingViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingViewController") as! NowPlayingViewController
-    }
+
     
     static func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController

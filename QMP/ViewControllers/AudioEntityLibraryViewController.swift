@@ -9,6 +9,8 @@
 import UIKit
 
 final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
+    
+    static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
 	var reuseIdentifier:String {
 		if useCollapsableHeader {
@@ -119,6 +121,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		default:
 			datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
 		}
+        tableView.layer.addAnimation(self.dynamicType.fadeInAnimation, forKey: nil)
 	}
 	
 }

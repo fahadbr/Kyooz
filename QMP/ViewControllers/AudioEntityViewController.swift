@@ -31,7 +31,7 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 		
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         
-        tableView.rowHeight = 60
+        tableView.rowHeight = ThemeHelper.tableViewRowHeight
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.showsVerticalScrollIndicator = true
         tableView.indicatorStyle = .White

@@ -11,6 +11,8 @@ import UIKit
 
 struct ThemeHelper {
     
+    static let plainHeaderHight:CGFloat = 65
+    
     static let defaultFontName = "Avenir"
     static let defaultFontNameMedium = defaultFontName + "-Medium"
     static let defaultFontNameBold = defaultFontName + "-Heavy"
@@ -23,17 +25,23 @@ struct ThemeHelper {
     static let defaultBarStyle = UIBarStyle.Black
     
     static let defaultTableCellColor = UIColor(white: 0.09, alpha: 1.0)
+    static let sidePanelTableViewRowHeight:CGFloat = 48
+    static let tableViewRowHeight:CGFloat = 60
+    static let tableViewSectionHeaderHeight:CGFloat = 40
     
     static let defaultFontColor = UIColor.whiteColor()
 	
 //    static let defaultVividColor = UIColor(red: 64.0/255.0, green: 224.0/255.0, blue: 208.0/255.0, alpha: 1.0)
     static let defaultVividColor = UIColor(red: 255.0/255.0, green: 93/255.0, blue: 53/255.0, alpha: 1.0)
-//    static let darkAccentColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 1.0)
-	static let darkAccentColor = UIColor(red: 75.0/255.0, green: 0/255.0, blue: 11.0/255.0, alpha: 1.0)
+    static let darkAccentColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 1.0)
+//	static let darkAccentColor = UIColor(red: 75.0/255.0, green: 0/255.0, blue: 11.0/255.0, alpha: 1.0)
 	
     static let barsAreTranslucent = true
     
-    static let tableViewSectionHeaderHeight:CGFloat = 40
+    static func applyBottomShadowToView(view:UIView) {
+        view.layer.shadowOffset = CGSize(width: 0, height: 3)
+        view.layer.shadowOpacity = 0.8
+    }
     
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()
@@ -57,6 +65,7 @@ struct ThemeHelper {
         UITableView.appearance().sectionIndexBackgroundColor = defaultTableCellColor
         UITableView.appearance().sectionIndexTrackingBackgroundColor = defaultTableCellColor        
         UITableView.appearance().separatorColor = UIColor(white: 0.2, alpha: 1.0)
+        UITableView.appearance().separatorStyle = .None
         
         UIToolbar.appearance().tintColor = defaultTintColor
         UIToolbar.appearance().barStyle = defaultBarStyle

@@ -27,17 +27,17 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     var rootViewController:RootViewController!
     
-    var nowPlayingNavigationController:UINavigationController?
-    var nowPlayingViewController:NowPlayingViewController?
-    var searchViewController = AudioEntitySearchViewController.instance
+    private var nowPlayingNavigationController:UINavigationController!
+    private let nowPlayingQueueViewController = NowPlayingQueueViewController.instance
+    private let searchViewController = AudioEntitySearchViewController.instance
     
     var centerPanelPosition:Position = .Center {
         didSet {
-            let sidePanelVisible = centerPanelPosition != .Center
             searchViewController.isExpanded = centerPanelPosition == .Right
+            let sidePanelVisible = centerPanelPosition != .Center
             tapGestureRecognizer.enabled = sidePanelVisible
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
-            nowPlayingViewController?.viewExpanded = centerPanelPosition == .Left
+            nowPlayingQueueViewController.isExpanded = centerPanelPosition == .Left
         }
     }
     
@@ -93,19 +93,20 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		
 		//NOW PLAYING VC
         
-		nowPlayingViewController = UIStoryboard.nowPlayingViewController()
-		nowPlayingViewController?.tableView?.scrollsToTop = false
 		
-		nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingViewController!)
+		nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingQueueViewController)
 		
 		nowPlayingNavigationController!.toolbarHidden = false
 		let npView = nowPlayingNavigationController!.view
 		addChildViewController(nowPlayingNavigationController!)
-		nowPlayingNavigationController!.didMoveToParentViewController(self)
+		nowPlayingNavigationController.didMoveToParentViewController(self)
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Right, .Width], subView: npView, parentView: view)[.Width]!.constant = -sideVCOffset
 		view.sendSubviewToBack(npView)
+        nowPlayingNavigationController.navigationBar.backgroundColor = UIColor.clearColor()
+        nowPlayingNavigationController.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
+        nowPlayingNavigationController.navigationBar.shadowImage = UIImage()
 		
-		nowPlayingViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
+		nowPlayingQueueViewController.view.layer.rasterizationScale = UIScreen.mainScreen().scale
         
         
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Width], subView: searchViewController.view, parentView: view)[.Width]!.constant = -sideVCOffset
@@ -259,17 +260,17 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         switch(recognizer.state) {
         case .Began:
             //initialize the drag and drop handler and all the resources necessary for the drag and drop handler
-            if(!nowPlayingViewController!.laidOutSubviews) {
+            if(!nowPlayingQueueViewController.laidOutSubviews) {
                 dispatch_async(dispatch_get_main_queue()) { self.handleLongPressGesture(recognizer) }
                 return
             }
             if(dragAndDropHandler == nil) {
                 let dragSource:DragSource = centerPanelPosition == .Right ? searchViewController : rootViewController
-                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: nowPlayingViewController!)
+                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: nowPlayingQueueViewController)
                 dragAndDropHandler.delegate = self
             }
         case .Ended, .Cancelled:
-            nowPlayingViewController!.insertMode = false
+            nowPlayingQueueViewController.insertMode = false
             dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.6), dispatch_get_main_queue()) { [unowned self]() in
                 self.animateCenterPanel(toPosition: .Center)
                 self.dragAndDropHandler = nil
@@ -304,7 +305,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func gestureDidBegin(sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
             animateCenterPanel(toPosition: .Left)
-            nowPlayingViewController!.insertMode = true
+            nowPlayingQueueViewController.insertMode = true
         }
     }
     

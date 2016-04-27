@@ -81,6 +81,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 
         
         ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: tableContainerView)
+        tableView.scrollsToTop = false
 		tableView.rowHeight = self.dynamicType.cellHeight
         tableView.sectionHeaderHeight = self.dynamicType.sectionHeight
         tableView.delegate = self

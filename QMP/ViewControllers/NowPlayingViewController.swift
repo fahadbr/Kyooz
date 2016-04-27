@@ -9,21 +9,20 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate, GestureHandlerDelegate {
+final class NowPlayingQueueViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate, GestureHandlerDelegate {
 
-    @IBOutlet weak var toolBarEditButton: UIBarButtonItem!
+    static let instance = NowPlayingQueueViewController()
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    
     private var longPressGestureRecognizer:UILongPressGestureRecognizer!
     
     private (set) var laidOutSubviews:Bool = false
     private var multipleDeleteButton:UIBarButtonItem!
     
     var menuButtonTouched:Bool = false
-    var viewExpanded:Bool = false {
+    var isExpanded:Bool = false {
         didSet {
-            if(viewExpanded) {
+            if(isExpanded) {
                 reloadTableData()
             } else {
                 editing = false
@@ -32,6 +31,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
                     resetDSD()
                 }
             }
+            tableView.scrollsToTop = isExpanded
         }
     }
     
@@ -39,7 +39,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
         return tableView
     }
     
-    @IBOutlet var tableView: UITableView!
+    let tableView = UITableView()
     
     
     //MARK: GESTURE PROPERTIES
@@ -65,13 +65,36 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        func createFlexibleSpace() -> UIBarButtonItem {
+            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        }
+        
+        title = "QUEUE"
+        
+        ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
+        automaticallyAdjustsScrollViewInsets = false
+        tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
+        tableView.scrollsToTop = isExpanded
+        tableView.allowsMultipleSelectionDuringEditing = true
+        tableView.showsVerticalScrollIndicator = true
+        tableView.indicatorStyle = .White
+        tableView.contentInset.top = ThemeHelper.plainHeaderHight
+        tableView.contentInset.bottom = 44
+        
         let editButton = editButtonItem()
         editButton.tintColor = ThemeHelper.defaultTintColor
-        toolbarItems?[0] = editButton
-		
-		toolbarItems?.forEach() { $0.tintColor = ThemeHelper.defaultTintColor }
         
+        let deleteButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.confirmDelete(_:)))
+        deleteButton.tintColor = ThemeHelper.defaultTintColor
+        let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(self.saveCurrentQueueAsPlaylist(_:)))
+        saveButton.tintColor = ThemeHelper.defaultTintColor
+        self.toolbarItems = [editButton, createFlexibleSpace(), deleteButton, createFlexibleSpace(), saveButton]
+        
+        let headerView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
+        headerView.heightAnchor.constraintEqualToConstant(ThemeHelper.plainHeaderHight).active = true
+        ThemeHelper.applyBottomShadowToView(headerView)
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         dragToRearrangeGestureHandler.delegate = self
@@ -165,22 +188,22 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     //because there should already be animations taking place to reflect that content and reloading the data will interfere 
     //with the visual effect
     func reloadIfCollapsed() {
-        if !viewExpanded {
+        if !isExpanded {
             reloadTableData()
         }
     }
     
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
+        notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
+        notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
             name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
+        notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
             name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadIfCollapsed),
+        notificationCenter.addObserver(self, selector: #selector(self.reloadIfCollapsed),
             name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingViewController.reloadTableData),
+        notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
             name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
     
@@ -203,7 +226,7 @@ final class NowPlayingViewController: UIViewController, DropDestination, Configu
     
     //MARK: - Scroll View Delegate
     final func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
-        return viewExpanded
+        return isExpanded
     }
     
     func presentActionsForCell(cell:UITableViewCell, title: String?, details: String?, originatingCenter:CGPoint) {
