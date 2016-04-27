@@ -10,15 +10,7 @@ import UIKit
 
 class FadeOutViewController: UIViewController {
 
-    let fadeOutAnimation:CABasicAnimation = {
-        let animation = CABasicAnimation(keyPath: "opacity")
-        animation.duration = 0.5
-        animation.fromValue = 1.0
-        animation.toValue = 0.0
-        animation.removedOnCompletion = false
-        animation.fillMode = kCAFillModeForwards
-        return animation
-    }()
+    let fadeOutAnimation:CABasicAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.4)
     
     
     private var startedTransitioningOut = false

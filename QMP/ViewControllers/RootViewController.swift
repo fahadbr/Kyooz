@@ -25,10 +25,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     var sourceTableView:UITableView? {
-        if let mediaItemViewController = libraryNavigationController.viewControllers.last as? AudioEntityViewControllerProtocol {
-            return mediaItemViewController.tableView
-        }
-        return nil
+        return (libraryNavigationController.topViewController as? AudioEntityViewControllerProtocol)?.tableView
     }
     
     var libraryNavigationController:UINavigationController!
@@ -186,6 +183,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
         libraryNavigationController.view.userInteractionEnabled = shouldEnable
         nowPlayingSummaryViewController.view.userInteractionEnabled = shouldEnable
+        sourceTableView?.scrollsToTop = shouldEnable
     }
     
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {

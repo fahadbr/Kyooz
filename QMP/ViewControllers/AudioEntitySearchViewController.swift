@@ -20,9 +20,12 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
                 textField?.selectAll(nil)
             } else {
                 searchBar.resignFirstResponder()
-				(datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
-				reloadTableViewData()
+                KyoozUtils.doInMainQueueAfterDelay(0.4) {
+                    (self.datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
+                    self.reloadTableViewData()
+                }
             }
+            tableView.scrollsToTop = isExpanded
         }
     }
     
@@ -71,10 +74,10 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         super.viewDidLoad()
         let height:CGFloat = 65
         
-        let backgroundHeaderView = PlainHeaderView()
+        let backgroundHeaderView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: backgroundHeaderView, parentView: view)
         backgroundHeaderView.heightAnchor.constraintEqualToConstant(height).active = true
-
+        ThemeHelper.applyBottomShadowToView(backgroundHeaderView)
         
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
@@ -87,9 +90,10 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: searchBar, parentView: view)
         searchBar.heightAnchor.constraintEqualToConstant(height).active = true
         
+        tableView.scrollsToTop = isExpanded
         tableView.contentInset.top = height
         tableView.scrollIndicatorInsets.top = height
-        tableView.rowHeight = 48
+        tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)

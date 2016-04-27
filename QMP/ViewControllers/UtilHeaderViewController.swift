@@ -33,9 +33,14 @@ final class UtilHeaderViewController: HeaderViewController {
 
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
-        view.layer.insertSublayer(gradiantLayer, atIndex: 0)
+        view.backgroundColor = UIColor.clearColor()
+        
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
+        view.sendSubviewToBack(blurView)
+//        view.layer.insertSublayer(gradiantLayer, atIndex: 0)
 		
-		libraryGroupingButton.alpha = 0.6
+		libraryGroupingButton.alpha = ThemeHelper.defaultButtonTextAlpha
         libraryGroupingButton.hidden = subGroups == nil
     }
     

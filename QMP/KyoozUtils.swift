@@ -23,6 +23,16 @@ struct KyoozUtils {
         animation.fillMode = kCAFillModeBackwards
         return animation
     }()
+    
+    private static let fadeOutAnimation:CABasicAnimation = {
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.duration = 0.5
+        animation.fromValue = 1.0
+        animation.toValue = 0.0
+        animation.removedOnCompletion = false
+        animation.fillMode = kCAFillModeForwards
+        return animation
+    }()
 	
 	static var internetConnectionAvailable:Bool {
 		return Reachability.reachabilityForInternetConnection().currentReachabilityStatus() != NetworkStatus.NotReachable
@@ -34,6 +44,12 @@ struct KyoozUtils {
     
     static func fadeInAnimationWithDuration(duration:CFTimeInterval) -> CABasicAnimation {
         let animationCopy = fadeInAnimation.copy() as! CABasicAnimation
+        animationCopy.duration = duration
+        return animationCopy
+    }
+    
+    static func fadeOutAnimationWithDuration(duration:CFTimeInterval) -> CABasicAnimation {
+        let animationCopy = fadeOutAnimation.copy() as! CABasicAnimation
         animationCopy.duration = duration
         return animationCopy
     }

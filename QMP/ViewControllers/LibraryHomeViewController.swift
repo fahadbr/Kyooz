@@ -38,9 +38,11 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 	override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
-		let headerHeight:CGFloat = 65
+		let headerHeight:CGFloat = ThemeHelper.plainHeaderHight
 
 		ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
+        tableView.scrollsToTop = false
+        tableView.separatorStyle = .SingleLine
 		tableView.contentInset.top = headerHeight
 		tableView.scrollIndicatorInsets.top = headerHeight
 		tableView.rowHeight = 50
@@ -64,10 +66,11 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		
 		cellConfigurations.append([settingsCellConfiguration])
 		
-		let headerView = PlainHeaderView()
+		let headerView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
 		headerView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
-		
+		ThemeHelper.applyBottomShadowToView(headerView)
+        
 		automaticallyAdjustsScrollViewInsets = false
 		
 		tableView.delegate = self
@@ -84,7 +87,7 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = UITableViewCell()
+		let cell = AbstractTableViewCell()
 		cell.textLabel?.text = cellConfigurations[indexPath.section][indexPath.row].name
 		cell.textLabel?.font = ThemeHelper.defaultFont
 		cell.textLabel?.textColor = ThemeHelper.defaultFontColor
