@@ -106,6 +106,7 @@ struct KyoozUtils {
 	
 	static func showPopupError(withTitle title:String?, withMessage message:String?, presentationVC:UIViewController?) {
 		let errorAC = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+		errorAC.view.tintColor = ThemeHelper.defaultVividColor
 		errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
 		(presentationVC ?? ContainerViewController.instance).presentViewController(errorAC, animated: true, completion: nil)
 	}
@@ -150,6 +151,7 @@ struct KyoozUtils {
     
     static func showAvailablePlaylistsForAddingTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
         let ac = UIAlertController(title: "Select the playlist to add to", message: "\(tracks.count) tracks", preferredStyle: .ActionSheet)
+		ac.view.tintColor = ThemeHelper.defaultVividColor
         for obj in KyoozPlaylistManager.instance.playlists {
             guard let playlist = obj as? KyoozPlaylist else { return }
             ac.addAction(UIAlertAction(title: playlist.name, style: .Default, handler: { _ -> Void in
@@ -172,6 +174,7 @@ struct KyoozUtils {
     
     static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
         let ac = UIAlertController(title: "Save as Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
+		ac.view.tintColor = ThemeHelper.defaultVividColor
         ac.addTextFieldWithConfigurationHandler(nil)
         let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
             guard let text = ac.textFields?.first?.text else {

@@ -66,11 +66,11 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		
 		cellConfigurations.append([settingsCellConfiguration])
 		
-		let headerView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+		let headerView = PlainHeaderView()
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
 		headerView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
-		ThemeHelper.applyBottomShadowToView(headerView)
-        
+//		ThemeHelper.applyBottomShadowToView(headerView)
+		
 		automaticallyAdjustsScrollViewInsets = false
 		
 		tableView.delegate = self
@@ -93,9 +93,13 @@ final class LibraryHomeViewController : UIViewController, UITableViewDataSource,
 		cell.textLabel?.textColor = ThemeHelper.defaultFontColor
 		
 		if indexPath.section < cellConfigurations.count - 1 {
-			cell.accessoryType = .DisclosureIndicator
+			let disclosureLabel = UILabel()
+			disclosureLabel.text = "❯"
+			disclosureLabel.textColor = ThemeHelper.defaultVividColor
+			disclosureLabel.frame.size = disclosureLabel.intrinsicContentSize()
+			cell.accessoryView = disclosureLabel
 		}
-		
+				
 		return cell
 	}
 	

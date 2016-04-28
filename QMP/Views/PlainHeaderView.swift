@@ -8,31 +8,28 @@
 
 import UIKit
 
-final class PlainHeaderView : UIView {
+final class PlainHeaderView : UIVisualEffectView {
+	
+	private var path:UIBezierPath!
+	private var accentLayer:CAShapeLayer = CAShapeLayer()
     
-    private let gradiantLayer:CAGradientLayer = {
-        let gradiant = CAGradientLayer()
-        gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
-        gradiant.endPoint = CGPoint(x: 0.5, y: 0)
-        gradiant.colors = [ThemeHelper.darkAccentColor.CGColor, ThemeHelper.defaultTableCellColor.CGColor]
-        return gradiant
-    }()
-    
-    init() {
-        super.init(frame: CGRect.zero)
-        backgroundColor = ThemeHelper.darkAccentColor
-        layer.addSublayer(gradiantLayer)
-        layer.shadowOffset = CGSize(width: 0, height: 4)
-        layer.shadowOpacity = 0.8
+	init() {
+        super.init(effect: UIBlurEffect(style: .Dark))
+		accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
+		accentLayer.lineWidth = 0.75
+		layer.addSublayer(accentLayer)
         userInteractionEnabled = false
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+	
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
     
     override func layoutSubviews() {
-        gradiantLayer.frame = bounds
+		path = UIBezierPath()
+		path.moveToPoint(CGPoint(x: bounds.origin.x, y: bounds.height))
+		path.addLineToPoint(CGPoint(x: bounds.width, y: bounds.height))
+		accentLayer.path = path.CGPath
     }
-    
+	
 }

@@ -20,25 +20,22 @@ final class UtilHeaderViewController: HeaderViewController {
             }
         }
     }
-    private let gradiantLayer:CAGradientLayer = {
-        let gradiant = CAGradientLayer()
-        gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
-        gradiant.endPoint = CGPoint(x: 0.5, y: 0)
-        gradiant.colors = [ThemeHelper.darkAccentColor.CGColor, ThemeHelper.defaultTableCellColor.CGColor]
-        return gradiant
-    }()
-    
+	
+	private var path:UIBezierPath!
+	private var accentLayer:CAShapeLayer = CAShapeLayer()
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.layer.shadowOpacity = 0.8
-        view.layer.shadowOffset = CGSize(width: 0, height: 4)
         view.backgroundColor = UIColor.clearColor()
         
         let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
         view.sendSubviewToBack(blurView)
-//        view.layer.insertSublayer(gradiantLayer, atIndex: 0)
+		
+		accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
+		accentLayer.lineWidth = 0.75
+		view.layer.addSublayer(accentLayer)
 		
 		libraryGroupingButton.alpha = ThemeHelper.defaultButtonTextAlpha
         libraryGroupingButton.hidden = subGroups == nil
@@ -46,7 +43,10 @@ final class UtilHeaderViewController: HeaderViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        gradiantLayer.frame = view.bounds
+		path = UIBezierPath()
+		path.moveToPoint(CGPoint(x: view.bounds.origin.x, y: view.bounds.height))
+		path.addLineToPoint(CGPoint(x: view.bounds.width, y: view.bounds.height))
+		accentLayer.path = path.CGPath
     }
 	
     override func didMoveToParentViewController(parent: UIViewController?) {

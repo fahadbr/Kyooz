@@ -31,12 +31,13 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
 	var isBaseLevel:Bool = true
 	
+	private let tableFooterView = KyoozTableFooterView()
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
         let homeButton = HomeButtonView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
-        
-        homeButton.addTarget(self, action: #selector(self.goHome), forControlEvents: .TouchUpInside)
+        homeButton.addTarget(self, action: #selector(self.jumpToHomeScreen), forControlEvents: .TouchUpInside)
         let button = UIBarButtonItem(customView: homeButton)
         navigationItem.rightBarButtonItem = button
         
@@ -56,27 +57,38 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		}
 		
     }
-    
-    
+	
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
                                                          name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
     }
-    
-    func goHome() {
-        navigationController?.popToRootViewControllerAnimated(true)
-    }
-	
-	private func configureTestDelegates() {
-		testDelegate = TestTableViewDataSourceDelegate()
-		tableView.dataSource = testDelegate
-		tableView.delegate = testDelegate
-		tableView.sectionHeaderHeight = 40
-		tableView.rowHeight = 60
-	}
 	
 	//MARK: - Class functions
+	
+	override func reloadSourceData() {
+		super.reloadSourceData()
+		let count = sourceData.entities.count
+		var groupName = sourceData.libraryGrouping.name
+		if count == 1 {
+			groupName.removeAtIndex(groupName.endIndex.predecessor())
+		}
+		tableFooterView.text = "\(count) \(groupName)"
+		tableView.tableFooterView = tableFooterView
+	}
+	
+	override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
+		if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
+			menuController.addActions([KyoozMenuAction(title: "DELETE", image: nil, action: {_ in
+				self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+			})])
+		}
+	}
+	
+	func jumpToHomeScreen() {
+		navigationController?.popToRootViewControllerAnimated(true)
+	}
+	
 	
 	func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
 		if isBaseLevel {
@@ -90,15 +102,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		tableView.contentOffset.y = -tableView.contentInset.top
 		applyDataSourceAndDelegate()
 		reloadAllData()
-	}
-	
-	
-    override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
-        if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
-            menuController.addActions([KyoozMenuAction(title: "DELETE", image: nil, action: {_ in
-                self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
-            })])
-        }
 	}
 	
 	
@@ -122,6 +125,14 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 			datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
 		}
         tableView.layer.addAnimation(self.dynamicType.fadeInAnimation, forKey: nil)
+	}
+	
+	private func configureTestDelegates() {
+		testDelegate = TestTableViewDataSourceDelegate()
+		tableView.dataSource = testDelegate
+		tableView.delegate = testDelegate
+		tableView.sectionHeaderHeight = 40
+		tableView.rowHeight = 60
 	}
 	
 }

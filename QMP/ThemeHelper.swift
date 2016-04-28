@@ -21,7 +21,7 @@ struct ThemeHelper {
     static let defaultFont = UIFont(name: defaultFontNameMedium, size: defaultFontSize)
     static let defaultButtonTextAlpha:CGFloat = 0.6
     static let defaultTintColor = UIColor(white: 0.7, alpha: 1.0)
-    
+	
     static let defaultBarStyle = UIBarStyle.Black
     
     static let defaultTableCellColor = UIColor(white: 0.09, alpha: 1.0)
@@ -31,11 +31,13 @@ struct ThemeHelper {
     
     static let defaultFontColor = UIColor.whiteColor()
 	
-//    static let defaultVividColor = UIColor(red: 64.0/255.0, green: 224.0/255.0, blue: 208.0/255.0, alpha: 1.0)
-    static let defaultVividColor = UIColor(red: 255.0/255.0, green: 93/255.0, blue: 53/255.0, alpha: 1.0)
+//    static let defaultVividColor = UIColor(red: 255.0/255.0, green: 93/255.0, blue: 53/255.0, alpha: 1.0)
+//	static let defaultVividColor = UIColor(red: 255.0/255.0, green: 0/255.0, blue: 36/255.0, alpha: 1.0)
+//	static let defaultVividColor = UIColor(red: 255.0/255.0, green: 66/255.0, blue: 69/255.0, alpha: 1.0)
+	static let defaultVividColor = UIColor(red: 219.0/255.0, green: 44/255.0, blue: 56/255.0, alpha: 1.0)
     static let darkAccentColor = UIColor(red: 57.0/255.0, green: 0/255.0, blue: 8.0/255.0, alpha: 1.0)
-//	static let darkAccentColor = UIColor(red: 75.0/255.0, green: 0/255.0, blue: 11.0/255.0, alpha: 1.0)
-	
+
+//	static let defaultTintColor = defaultVividColor
     static let barsAreTranslucent = true
     
     static func applyBottomShadowToView(view:UIView) {
@@ -59,9 +61,9 @@ struct ThemeHelper {
         UIBarButtonItem.appearance().tintColor = defaultTintColor
         
         UITableViewCell.appearance().backgroundColor = defaultTableCellColor
-        
+		
         UITableView.appearance().backgroundColor = defaultTableCellColor
-        UITableView.appearance().tintColor = defaultTintColor
+        UITableView.appearance().tintColor = defaultVividColor
         UITableView.appearance().sectionIndexBackgroundColor = defaultTableCellColor
         UITableView.appearance().sectionIndexTrackingBackgroundColor = defaultTableCellColor        
         UITableView.appearance().separatorColor = UIColor(white: 0.2, alpha: 1.0)
