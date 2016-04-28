@@ -22,7 +22,7 @@ final class SearchResultsHeaderView: UIView {
         disclosureContainerView.backgroundColor = ThemeHelper.defaultTableCellColor
         headerTitleLabel.textColor = ThemeHelper.defaultFontColor
         headerTitleLabel.font = UIFont(name: ThemeHelper.defaultFontNameMedium, size: 12)
-        disclosureIndicator.textColor = ThemeHelper.defaultFontColor
+        disclosureIndicator.textColor = ThemeHelper.defaultVividColor
         disclosureIndicator.font = headerTitleLabel.font
     }
     
@@ -36,8 +36,8 @@ final class SearchResultsHeaderView: UIView {
         path.addLineToPoint(CGPoint(x: rect.maxX, y: yPosition))
         path.lineWidth = 0.5
 
-        ThemeHelper.defaultTintColor.setStroke()
-        
+        UIColor.lightGrayColor().setStroke()
+		
         path.stroke()
     }
     

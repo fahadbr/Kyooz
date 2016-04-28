@@ -17,7 +17,7 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		super.viewDidLoad()
 		//progressBarConfig
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: progressView, parentView: view)
-		progressView.progressTintColor = UIColor.whiteColor()
+		progressView.progressTintColor = ThemeHelper.defaultVividColor
 		progressView.trackTintColor = UIColor.darkGrayColor()
 		
 		

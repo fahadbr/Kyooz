@@ -137,6 +137,7 @@
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1011CC987B60058F44E /* HomeButtonView.swift */; };
 		10B9E1041CC987CF0058F44E /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10B9E1031CC987CF0058F44E /* TempView.xib */; };
+		10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
 		10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */; };
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
@@ -305,6 +306,7 @@
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		10B9E1011CC987B60058F44E /* HomeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
 		10B9E1031CC987CF0058F44E /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
+		10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozTableFooterView.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
 		10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListButtonView.swift; sourceTree = "<group>"; };
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 			isa = PBXGroup;
 			children = (
 				0B476C6E1B1BFE5700626810 /* CancelView.swift */,
+				10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */,
 				0B1DA0661CADDF2F00699D88 /* MarqueeLabel.swift */,
 				0BB01A5E1CC87A5C00D4B57F /* PlainHeaderView.swift */,
 				0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */,
@@ -882,6 +885,7 @@
 				0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */,
 				10FD325B1C90E43900004CAB /* KyoozMenuViewController.swift in Sources */,
 				100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */,
+				10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,

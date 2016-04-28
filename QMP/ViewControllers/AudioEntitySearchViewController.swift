@@ -42,7 +42,8 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         }
         return nil
     }()
-    
+	
+	
     
     //MARK: - Properties
     private let searchExecutionControllers:[SearchExecutionController] = {
@@ -68,16 +69,16 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     private (set) var searchText:String!
     
     private let searchBar = UISearchBar()
-    
+//	private var searchTextField = UITextView()
+	
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         let height:CGFloat = 65
         
-        let backgroundHeaderView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        let backgroundHeaderView = PlainHeaderView()
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: backgroundHeaderView, parentView: view)
         backgroundHeaderView.heightAnchor.constraintEqualToConstant(height).active = true
-        ThemeHelper.applyBottomShadowToView(backgroundHeaderView)
         
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
@@ -85,11 +86,14 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         searchBar.barStyle = UIBarStyle.Black
         searchBar.translucent = false
         searchBar.placeholder = "Kyooz Search"
-        searchBar.tintColor = ThemeHelper.defaultTintColor
+        searchBar.tintColor = ThemeHelper.defaultVividColor
         searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
+		searchBar.backgroundColor = UIColor.clearColor()
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: searchBar, parentView: view)
         searchBar.heightAnchor.constraintEqualToConstant(height).active = true
-        
+		
+		
+		
         tableView.scrollsToTop = isExpanded
         tableView.contentInset.top = height
         tableView.scrollIndicatorInsets.top = height

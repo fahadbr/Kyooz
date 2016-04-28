@@ -83,18 +83,15 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         tableView.contentInset.bottom = 44
         
         let editButton = editButtonItem()
-        editButton.tintColor = ThemeHelper.defaultTintColor
-        
         let deleteButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.confirmDelete(_:)))
-        deleteButton.tintColor = ThemeHelper.defaultTintColor
         let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(self.saveCurrentQueueAsPlaylist(_:)))
-        saveButton.tintColor = ThemeHelper.defaultTintColor
-        self.toolbarItems = [editButton, createFlexibleSpace(), deleteButton, createFlexibleSpace(), saveButton]
+		toolbarItems = [editButton, createFlexibleSpace(), deleteButton, createFlexibleSpace(), saveButton]
+		toolbarItems!.forEach() { $0.tintColor = ThemeHelper.defaultTintColor }
         
-        let headerView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        let headerView = PlainHeaderView()
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
         headerView.heightAnchor.constraintEqualToConstant(ThemeHelper.plainHeaderHight).active = true
-        ThemeHelper.applyBottomShadowToView(headerView)
+//        ThemeHelper.applyBottomShadowToView(headerView)
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         dragToRearrangeGestureHandler.delegate = self
