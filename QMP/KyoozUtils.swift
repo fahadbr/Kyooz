@@ -8,6 +8,8 @@
 
 import UIKit
 import SystemConfiguration
+import MediaPlayer
+import StoreKit
 
 struct KyoozUtils {
 	
@@ -175,6 +177,38 @@ struct KyoozUtils {
                 }
             }))
         }
+		
+		
+		
+		if #available(iOS 9.3, *) {
+			if let playlists = MPMediaQuery.playlistsQuery().collections as? [MPMediaPlaylist], let items = tracks as? [MPMediaItem] {
+				for playlist in playlists {
+					Logger.debug("playlist \(playlist.name) is of type \(playlist.playlistAttributes.rawValue)")
+					ac.addAction(UIAlertAction(title: playlist.name, style: .Default, handler: {_ in
+						let status = SKCloudServiceController.authorizationStatus()
+						guard status == .Authorized else {
+							if status == .NotDetermined {
+								SKCloudServiceController.requestAuthorization({ (status) in
+									if status == .Authorized {
+										playlist.addMediaItems(items, completionHandler: { (error) in
+											if let e = error {
+												KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name ?? "")", withThrownError: e, presentationVC: nil)
+											}
+										})
+									}
+								})
+							}
+							return
+						}
+						playlist.addMediaItems(items, completionHandler: { (error) in
+							if let e = error {
+								KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)", withThrownError: e, presentationVC: nil)
+							}
+						})
+					}))
+				}
+			}
+		}
         ac.addAction(UIAlertAction(title: "New Playlist..", style: .Default) { _ -> Void in
             showPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
         })

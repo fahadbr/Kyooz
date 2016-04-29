@@ -138,6 +138,8 @@
 		10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1011CC987B60058F44E /* HomeButtonView.swift */; };
 		10B9E1041CC987CF0058F44E /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10B9E1031CC987CF0058F44E /* TempView.xib */; };
 		10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */; };
+		10B9E1081CD3DBE20058F44E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10B9E1071CD3DBE20058F44E /* StoreKit.framework */; };
+		10B9E10C1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E10B1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift */; };
 		10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */; };
 		10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */; };
 		10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */; };
@@ -307,6 +309,8 @@
 		10B9E1011CC987B60058F44E /* HomeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
 		10B9E1031CC987CF0058F44E /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
 		10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozTableFooterView.swift; sourceTree = "<group>"; };
+		10B9E1071CD3DBE20058F44E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		10B9E10B1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityPlainHeaderViewController.swift; sourceTree = "<group>"; };
 		10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerDelegateImpl.swift; sourceTree = "<group>"; };
 		10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListButtonView.swift; sourceTree = "<group>"; };
 		10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListButtonView.xib; sourceTree = "<group>"; };
@@ -335,6 +339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10B9E1081CD3DBE20058F44E /* StoreKit.framework in Frameworks */,
 				10FD32711C9B68C600004CAB /* SystemConfiguration.framework in Frameworks */,
 				0B13DA291AE6FB0D00CC5C01 /* AVFoundation.framework in Frameworks */,
 				0B13DA271AE6FB0400CC5C01 /* MediaPlayer.framework in Frameworks */,
@@ -660,6 +665,7 @@
 		0BD43F6A1AF855E200D5B2D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				10B9E1071CD3DBE20058F44E /* StoreKit.framework */,
 				10FD32701C9B68C600004CAB /* SystemConfiguration.framework */,
 				0B13DA281AE6FB0D00CC5C01 /* AVFoundation.framework */,
 				0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */,
@@ -698,6 +704,7 @@
 				0BC317991C5D7AC2002BF431 /* TableView */,
 				10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */,
 				10FD32561C8F948100004CAB /* AudioEntityLibraryViewController.swift */,
+				10B9E10B1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift */,
 				0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */,
 				0B650A5E1C39CF2D00C0DC51 /* AudioEntityViewController.swift */,
 				0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */,
@@ -927,6 +934,7 @@
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
 				0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */,
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
+				10B9E10C1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift in Sources */,
 				0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,

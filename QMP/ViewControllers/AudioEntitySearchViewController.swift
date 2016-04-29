@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class AudioEntitySearchViewController : AudioEntityViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
     static let instance = AudioEntitySearchViewController()
     
@@ -73,11 +73,6 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        let height:CGFloat = 65
-        
-        let backgroundHeaderView = PlainHeaderView()
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: backgroundHeaderView, parentView: view)
-        backgroundHeaderView.heightAnchor.constraintEqualToConstant(height).active = true
         
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
@@ -88,16 +83,10 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         searchBar.tintColor = ThemeHelper.defaultVividColor
         searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
 		searchBar.backgroundColor = UIColor.clearColor()
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: searchBar, parentView: view)
-        searchBar.heightAnchor.constraintEqualToConstant(height).active = true
+        ConstraintUtils.applyStandardConstraintsToView(subView: searchBar, parentView: headerView.contentView)
 		
         tableView.scrollsToTop = isExpanded
-        tableView.contentInset.top = height
-        tableView.scrollIndicatorInsets.top = height
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
-        tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
-        tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
-        tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         
         var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
         let overrideFont = UIFont(name: ThemeHelper.defaultFontNameBold, size: 12)
