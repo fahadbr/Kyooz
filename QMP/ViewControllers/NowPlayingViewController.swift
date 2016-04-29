@@ -127,18 +127,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     
     @IBAction func confirmDelete(sender:AnyObject?) {
         let title = tableView.editing ? "Remove the \(tableView.indexPathsForSelectedRows?.count ?? 0) selected tracks?" : "Remove the entire queue?"
-        showConfirmDeleteAlertController(title) {
+        KyoozUtils.confirmAction(title) {
             self.commitDeletionOfIndexPaths()
         }
-    }
-    
-	private func showConfirmDeleteAlertController(title:String, details:String? = nil, deleteBlock:()->Void) {
-        let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = title
-        kmvc.menuDetails = details
-        kmvc.addActions([KyoozMenuAction(title: "YES", image: nil, action: {_ in deleteBlock() })])
-        KyoozUtils.showMenuViewController(kmvc)
-
     }
     
     private func commitDeletionOfIndexPaths() {
@@ -269,7 +260,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
                 for i in 0..<index {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Above?", details: "Selected Track: \(title ?? "" )\n\(details ?? "")") {
+                KyoozUtils.confirmAction("Remove the \(indiciesToDelete.count) tracks Above?", actionDetails: "Selected Track: \(title ?? "" )\n\(details ?? "")") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
@@ -289,7 +280,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
                 for i in (index + 1)...lastIndex {
                     indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
                 }
-                self.showConfirmDeleteAlertController("Remove the \(indiciesToDelete.count) tracks Below?", details: "Selected Track: \(title ?? "")\n\(details ?? "")") {
+                KyoozUtils.confirmAction("Remove the \(indiciesToDelete.count) tracks Below?", actionDetails: "Selected Track: \(title ?? "")\n\(details ?? "")") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
