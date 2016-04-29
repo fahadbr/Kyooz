@@ -14,6 +14,8 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     @IBOutlet var drmLabel: UILabel!
     
     @IBOutlet var accessoryStack: UIStackView!
+	
+	@IBOutlet var menuButton: MenuDotsView!
     
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var detailsLabel: UILabel!

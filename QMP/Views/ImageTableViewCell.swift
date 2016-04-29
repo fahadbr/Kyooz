@@ -9,9 +9,11 @@
 import UIKit
 import MediaPlayer
 
-final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
+class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
     
-    static let reuseIdentifier = "imageTableViewCell"
+	class var reuseIdentifier:String {
+		return "imageTableViewCell"
+	}
     
     private static let fadeInAnimation:CAAnimation = KyoozUtils.fadeInAnimationWithDuration(0.35)
     
@@ -19,7 +21,7 @@ final class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTabl
     
     private var currentAlbumImageID:UInt64 = 0
 
-    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    final func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
         titleLabel.text = entity.titleForGrouping(libraryGrouping)
         

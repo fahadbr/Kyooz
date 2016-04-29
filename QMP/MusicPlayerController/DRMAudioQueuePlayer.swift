@@ -10,6 +10,7 @@ import UIKit
 import MediaPlayer
 import Foundation
 
+private let outOfSyncMessage = "Another app is using the iOS music player! Play a new track or Tap to fix!"
 final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
     
@@ -21,7 +22,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         didSet {
             if queueStateInconsistent && nowPlayingQueue.count > 0 {
                 KyoozUtils.doInMainQueueAsync() {
-                    RootViewController.instance.presentWarningView("Kyooz is out of sync with the system music player. Play a new track or Tap to fix!", handler: { () -> () in
+                    RootViewController.instance.presentWarningView(outOfSyncMessage, handler: { () -> () in
                         let vc = UIStoryboard.systemQueueResyncWorkflowController()
                         vc.completionBlock = self.resyncWithSystemQueueUsingIndex
                         ContainerViewController.instance.presentViewController(vc, animated: true, completion: nil)

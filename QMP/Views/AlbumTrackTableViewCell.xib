@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -104,6 +104,7 @@
                 <outlet property="cloudLabel" destination="pKq-y3-IMQ" id="u4o-wM-YAC"/>
                 <outlet property="detailsLabel" destination="4y3-5C-Ov1" id="BrD-l0-Jyi"/>
                 <outlet property="drmLabel" destination="bpu-1U-Puv" id="Oiq-g2-tSd"/>
+                <outlet property="menuButton" destination="o1T-kX-gMO" id="WKU-fK-Sqe"/>
                 <outlet property="titleLabel" destination="SCA-XB-uCz" id="E78-W3-mtW"/>
                 <outlet property="trackDuration" destination="HdS-9w-nQ9" id="41Q-wH-QLi"/>
                 <outlet property="trackNumber" destination="zDO-6E-rNo" id="37c-8g-cey"/>

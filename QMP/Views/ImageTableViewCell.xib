@@ -97,6 +97,7 @@
                 <outlet property="cloudLabel" destination="UGd-0T-ff1" id="VnY-Mf-XAk"/>
                 <outlet property="detailsLabel" destination="Eux-9S-S4w" id="Hhc-Jh-kCH"/>
                 <outlet property="drmLabel" destination="lXv-gN-sWM" id="GIU-7h-8mD"/>
+                <outlet property="menuButton" destination="T2K-1G-oap" id="D8V-Eg-crC"/>
                 <outlet property="titleLabel" destination="fzu-AO-SHn" id="nwy-19-rKP"/>
             </connections>
             <point key="canvasLocation" x="558" y="410"/>
