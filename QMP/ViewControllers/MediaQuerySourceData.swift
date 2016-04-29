@@ -75,8 +75,7 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
         if sections != nil && sections!.count > 1 {
             self._sections = sections
         }
-        
-    }
+	}
     
     func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
         let entity = self[indexPath]

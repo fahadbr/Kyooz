@@ -79,14 +79,18 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
 		if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
-			menuController.addActions([KyoozMenuAction(title: "DELETE", image: nil, action: {_ in
-				self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+			menuController.addActions([KyoozMenuAction(title: "DELETE", image: nil, action: {[sourceData = self.sourceData] in
+				KyoozUtils.confirmAction("Are you sure you want to delete \(sourceData[indexPath].titleForGrouping(sourceData.libraryGrouping) ?? "this item")?") {
+					self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+				}
 			})])
 		}
 	}
 	
 	func jumpToHomeScreen() {
-		navigationController?.popToRootViewControllerAnimated(true)
+		KyoozUtils.confirmAction("Return to the home screen?") { [navigationController = self.navigationController] in
+			navigationController?.popToRootViewControllerAnimated(true)
+		}
 	}
 	
 	

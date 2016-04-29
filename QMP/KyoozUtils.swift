@@ -117,6 +117,14 @@ struct KyoozUtils {
         let message = "Error Description: \((error as? KyoozErrorProtocol)?.errorDescription ?? "\(error.dynamicType)")"
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
+	
+	static func confirmAction(actionTitle:String, actionDetails:String? = nil, action:()->()) {
+		let kmvc = KyoozMenuViewController()
+		kmvc.menuTitle = actionTitle
+		kmvc.menuDetails = actionDetails
+		kmvc.addActions([KyoozMenuAction(title:"YES", image: nil, action: action)])
+		showMenuViewController(kmvc)
+	}
     
     static func showMenuViewController(kmvc:KyoozMenuViewController) {
         let presentingVC = ContainerViewController.instance
