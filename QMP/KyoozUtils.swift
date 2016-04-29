@@ -108,7 +108,9 @@ struct KyoozUtils {
 		let errorAC = UIAlertController(title: title, message: message, preferredStyle: .Alert)
 		errorAC.view.tintColor = ThemeHelper.defaultVividColor
 		errorAC.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-		(presentationVC ?? ContainerViewController.instance).presentViewController(errorAC, animated: true, completion: nil)
+        (presentationVC ?? ContainerViewController.instance).presentViewController(errorAC, animated: true, completion: {
+            errorAC.view.tintColor = ThemeHelper.defaultVividColor
+        })
 	}
     
     static func showPopupError(withTitle title:String, withThrownError error:ErrorType, presentationVC:UIViewController?) {
@@ -169,7 +171,9 @@ struct KyoozUtils {
             showPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
         })
         ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion: {
+            ac.view.tintColor = ThemeHelper.defaultVividColor
+        })
     }
     
     static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
@@ -192,7 +196,9 @@ struct KyoozUtils {
         ac.addAction(saveAction)
         ac.preferredAction = saveAction
         ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+        ContainerViewController.instance.presentViewController(ac, animated: true, completion: {
+            ac.view.tintColor = ThemeHelper.defaultVividColor
+        })
 
     }
 	

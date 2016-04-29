@@ -69,7 +69,6 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
     private (set) var searchText:String!
     
     private let searchBar = UISearchBar()
-//	private var searchTextField = UITextView()
 	
     //MARK: - View life cycle
     override func viewDidLoad() {
@@ -85,14 +84,12 @@ final class AudioEntitySearchViewController : AudioEntityViewController, UISearc
         searchBar.delegate = self
         searchBar.barStyle = UIBarStyle.Black
         searchBar.translucent = false
-        searchBar.placeholder = "Kyooz Search"
+        searchBar.placeholder = "SEARCH"
         searchBar.tintColor = ThemeHelper.defaultVividColor
         searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
 		searchBar.backgroundColor = UIColor.clearColor()
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: searchBar, parentView: view)
         searchBar.heightAnchor.constraintEqualToConstant(height).active = true
-		
-		
 		
         tableView.scrollsToTop = isExpanded
         tableView.contentInset.top = height
