@@ -57,7 +57,7 @@ class AddToPlaylistViewController: UIViewController {
             datasourceDelegates.append(AddToAppleMusicPlaylistDSD(sourceData: queryDatasource, reuseIdentifier: ImageTableViewCell.reuseIdentifier, tracksToAdd: tracksToAdd, callbackVC: self))
         }
         
-        let sectionDelegator = AudioEntityDSDSectionDelegator(datasources: datasourceDelegates)
+        let sectionDelegator = AudioEntityDSDSectionDelegator(datasources: datasourceDelegates, showEmptySections: true)
         let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dismissOnly))
         cancelButton.tintColor = ThemeHelper.defaultTintColor
         
