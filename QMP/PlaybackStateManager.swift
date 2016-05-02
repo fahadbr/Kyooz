@@ -14,10 +14,11 @@ final class PlaybackStateManager: NSObject {
     
     
     static let PlaybackStateCorrectedNotification = "PlaybackStateCorrectedNotification"
-   
+    
+    private static let timeDelayInSeconds:Double = 1.0
+    
     private let musicPlayer:MPMusicPlayerController
     private let audioSession = AVAudioSession.sharedInstance()
-    private let timeDelayInSeconds:Double = 1.0/2.0
     private let stateDescriptions = ["Stopped", "Playing", "Paused", "Interrupted", "SeekingForward", "SeekingBackward"]
     private (set) var musicPlaybackState:MPMusicPlaybackState
     
@@ -27,6 +28,10 @@ final class PlaybackStateManager: NSObject {
         self.musicPlaybackState = musicPlayer.playbackState
         super.init()
         self.registerForNotifications()
+    }
+    
+    deinit {
+        unregisterForNotifications()
     }
    
     
@@ -39,12 +44,12 @@ final class PlaybackStateManager: NSObject {
     }
 
     func correctPlaybackState() {
-        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(timeDelayInSeconds), dispatch_get_main_queue(), { [unowned self]() -> Void in
-            let oldPlaybackTime = self.musicPlayer.currentPlaybackTime
-            dispatch_after(KyoozUtils.getDispatchTimeForSeconds(self.timeDelayInSeconds), dispatch_get_main_queue(), { [unowned self] ()  in
-                self.checkAgainstPlaybackTime(oldPlaybackTime)
-            })
-        })
+        KyoozUtils.doInMainQueueAfterDelay(PlaybackStateManager.timeDelayInSeconds) { [musicPlayer = self.musicPlayer]() -> Void in
+            let oldPlaybackTime = musicPlayer.currentPlaybackTime
+            KyoozUtils.doInMainQueueAfterDelay(PlaybackStateManager.timeDelayInSeconds) { [weak self] ()  in
+                self?.checkAgainstPlaybackTime(oldPlaybackTime)
+            }
+        }
     }
     
     private func checkAgainstPlaybackTime(playbackTime : NSTimeInterval) {
@@ -83,29 +88,18 @@ final class PlaybackStateManager: NSObject {
 
     
     func handlePlaybackStateChanged(notification:NSNotification){
-        if(notification.userInfo != nil) {
-            let object: AnyObject? = notification.userInfo!["MPMusicPlayerControllerPlaybackStateKey"]
-            if(object != nil) {
-                let stateRawValue = object! as! Int
-                let stateToSet = MPMusicPlaybackState(rawValue: stateRawValue)
-                if(stateToSet != nil) {
-                    self.musicPlaybackState = stateToSet!
-//                    Logger.debug("CurrentPlaybackState: " + self.musicPlaybackState.rawValue.description)
-                }
-            }
-        }
+        musicPlaybackState = musicPlayer.playbackState
+        correctPlaybackState()
     }
     
     private func registerForNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaybackStateManager.handlePlaybackStateChanged(_:)),
             name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
             object: musicPlayer)
-        musicPlayer.beginGeneratingPlaybackNotifications()
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: MPMusicPlayerControllerPlaybackStateDidChangeNotification, object: musicPlayer)
-        musicPlayer.endGeneratingPlaybackNotifications()
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     

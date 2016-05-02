@@ -16,6 +16,8 @@ struct ThemeHelper {
     static let defaultFontName = "Avenir"
     static let defaultFontNameMedium = defaultFontName + "-Medium"
     static let defaultFontNameBold = defaultFontName + "-Heavy"
+    
+    static let fontSize13:CGFloat = 13
 	static let defaultFontSize:CGFloat = 15.0
     
     static let defaultFont = UIFont(name: defaultFontNameMedium, size: defaultFontSize)

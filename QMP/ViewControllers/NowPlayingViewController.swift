@@ -14,6 +14,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     static let instance = NowPlayingQueueViewController()
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    private let tableFooterView = KyoozTableFooterView()
     private var longPressGestureRecognizer:UILongPressGestureRecognizer!
     
     private (set) var laidOutSubviews:Bool = false
@@ -25,6 +26,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
             if(isExpanded) {
                 reloadTableData()
             } else {
+                tableView.tableFooterView = nil
                 editing = false
                 insertMode = false
                 if !(tableView.dataSource is NowPlayingQueueDSD) || !(tableView.delegate is NowPlayingQueueDSD){
@@ -59,6 +61,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         }
     }
     
+    
     deinit {
         unregisterForNotifications()
     }
@@ -91,7 +94,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         let headerView = PlainHeaderView()
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
         headerView.heightAnchor.constraintEqualToConstant(ThemeHelper.plainHeaderHight).active = true
-//        ThemeHelper.applyBottomShadowToView(headerView)
 
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         dragToRearrangeGestureHandler.delegate = self
@@ -170,6 +172,16 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     //MARK: CLASS Functions
     func reloadTableData() {
         tableView.reloadData()
+        guard isExpanded else { return }
+        let queue = audioQueuePlayer.nowPlayingQueue
+        let count = queue.count
+        var duration:NSTimeInterval = 0
+        for item in queue {
+            duration += item.playbackDuration
+        }
+        let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration)
+        tableFooterView.text = "\(count) TRACK\(count == 1 ? "" : "S")\n\(albumDurationString ?? "")"
+        tableView.tableFooterView = tableFooterView
     }
     
     //for data source updates originating from the UI, we dont want to reload the table view in response to the queue changes

@@ -19,7 +19,7 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
     
     @IBOutlet weak var albumArtwork: UIImageView!
     
-    private var currentAlbumImageID:UInt64 = 0
+    private var currentAlbumImageID:UInt64? = nil
 
     final func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
@@ -39,13 +39,14 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
         albumArtwork.alpha = 0
         KyoozUtils.doInMainQueueAsync() { [albumArtwork = self.albumArtwork] in
             albumArtwork.alpha = 1
-            guard let track = entity.representativeTrack where track.albumId != self.currentAlbumImageID else {
-                return
-            }
+            let track = entity.representativeTrack
+            let albumId = track?.albumId ?? 0
+            guard albumId != self.currentAlbumImageID else { return }
+            
             if self.shouldAnimate {
                 albumArtwork.layer.addAnimation(ImageTableViewCell.fadeInAnimation, forKey: nil)
             }
-            guard let albumArtworkTemp = track.artwork?.imageWithSize(albumArtwork.frame.size) else {
+            guard let albumArtworkTemp = track?.artwork?.imageWithSize(albumArtwork.frame.size) else {
                 albumArtwork.image = ImageContainer.resizeImage(ImageContainer.smallDefaultArtworkImage, toSize: albumArtwork.frame.size)
                 self.currentAlbumImageID = 0
                 return

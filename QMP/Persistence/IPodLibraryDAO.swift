@@ -8,8 +8,9 @@
 
 import Foundation
 import MediaPlayer
+import StoreKit
 
-struct IPodLibraryDAO {
+class IPodLibraryDAO {
     
     static func queryMediaItemsFromIds(persistentIds:[AnyObject]) -> [AudioTrack]? {
         var queriedMediaItems = [AnyObject]()
@@ -32,5 +33,56 @@ struct IPodLibraryDAO {
         return query.items?.first
     }
     
+    
+    @available(iOS 9.3, *)
+    static func addTracksToPlaylist(playlist:MPMediaPlaylist, tracks:[MPMediaItem]) {
+        validateAndExecute() {
+            let message = playlist.items.count != 0 ? "Saved changes to playlist \(playlist.name ?? "")" : "Created playlist \(playlist.name ?? "")"
+            playlist.addMediaItems(tracks, completionHandler: { (error) in
+                if let e = error {
+                    KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)", withThrownError: e, presentationVC: nil)
+                } else {
+                    KyoozUtils.doInMainQueueAfterDelay(1) {
+                        ShortNotificationManager.instance.presentShortNotificationWithMessage(message, withSize: .Small)
+                    }
+                }
+            })
+        }
+    }
+    
+    @available(iOS 9.3, *)
+    static func createPlaylistWithName(name:String, tracks:[MPMediaItem]) {
+        validateAndExecute() {
+            let metaData = MPMediaPlaylistCreationMetadata(name: name)
+            MPMediaLibrary.defaultMediaLibrary().getPlaylistWithUUID(NSUUID(), creationMetadata: metaData, completionHandler: { (createdPlaylist, error) in
+                guard error == nil else {
+                    KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)", withThrownError: error!, presentationVC: nil)
+                    return
+                }
+                guard let playlist = createdPlaylist else {
+                    KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)", withMessage: "iTunes Media Library did not create the playlist", presentationVC: nil)
+                    return
+                }
+                addTracksToPlaylist(playlist, tracks: tracks)
+                
+            })
+        }
+    }
+    
+    @available(iOS 9.3, *)
+    private static func validateAndExecute(block:()->()) {
+        switch SKCloudServiceController.authorizationStatus() {
+        case .NotDetermined:
+            SKCloudServiceController.requestAuthorization({ (status) in
+                if status == .Authorized {
+                    block()
+                }
+            })
+        case .Authorized:
+            block()
+        default:
+            break
+        }
+    }
     
 }
