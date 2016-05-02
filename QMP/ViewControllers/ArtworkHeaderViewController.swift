@@ -15,7 +15,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
     
     override var defaultHeight:CGFloat {
-        return 375
+        return UIScreen.mainScreen().bounds.width
     }
     
     override var minimumHeight:CGFloat {
@@ -131,15 +131,6 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel3.textColor = UIColor.lightGrayColor()
         detailsLabel2.textColor = UIColor.lightGrayColor()
         
-        //fade in the artwork
-        KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView] in
-            if let albumArt = track.artwork, let image = albumArt.imageWithSize(imageView.frame.size) {
-                imageView.image = image
-            } else {
-                imageView.image = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: imageView.frame.size)
-            }
-            imageView.layer.addAnimation(ArtworkHeaderViewController.fadeInAnimation, forKey: nil)
-        }
         
         headerTitleLabel.layer.shouldRasterize = true
         headerTitleLabel.layer.rasterizationScale = UIScreen.mainScreen().scale
@@ -148,12 +139,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel3.layer.shouldRasterize = true
         detailsLabel3.layer.rasterizationScale = UIScreen.mainScreen().scale
 		
-        KyoozUtils.doInMainQueueAsync() { [detailsLabel2 = self.detailsLabel2] in
-            guard let tracks = entities as? [AudioTrack] else {
-                detailsLabel2.hidden = true
-                return
-            }
-            
+        if let tracks = entities as? [AudioTrack] {
             var duration:NSTimeInterval = 0
             for item in tracks {
                 duration += item.playbackDuration
@@ -163,6 +149,18 @@ final class ArtworkHeaderViewController : HeaderViewController {
             } else {
                 detailsLabel2.hidden = true
             }
+        } else {
+            detailsLabel2.hidden = true
+        }
+        
+        //fade in the artwork
+        KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation] in
+            if let albumArt = track.artwork, let image = albumArt.imageWithSize(imageView.frame.size) {
+                imageView.image = image
+            } else {
+                imageView.image = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: imageView.frame.size)
+            }
+            imageView.layer.addAnimation(fadeInAnimation, forKey: nil)
         }
     }
     

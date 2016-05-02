@@ -16,17 +16,21 @@ final class NowPlayingSummaryViewController: UIViewController {
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    private var labelPageVC:NowPlayingPageViewController!
-    private var albumArtPageVC: NowPlayingPageViewController!
-
-    private var observationContext:UInt8 = 123
+    private let labelPageVC:NowPlayingPageViewController = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+    private let albumArtPageVC: NowPlayingPageViewController = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+    private var collapseButton:UIButton!
+    
     private let playbackProgressVC = PlaybackProgressViewController.instance
 	private let nowPlayingBarVC = NowPlayingBarViewController()
 	private let playbackControlsVC = PlaybackControlsViewController()
     
+    private var observationContext:UInt8 = 123
+    
     var expanded:Bool = false {
         didSet{
-            albumArtPageVC?.view.hidden = !expanded
+            if !expanded {
+                albumArtPageVC.view.alpha = 0
+            }
             labelPageVC.view.userInteractionEnabled = !expanded
         }
     }
@@ -38,19 +42,15 @@ final class NowPlayingSummaryViewController: UIViewController {
     }
 
     
-    @IBAction func showQueue(sender: AnyObject) {
-        ContainerViewController.instance.toggleSidePanel()
-    }
-    
-    @IBAction func goToArtist(sender: AnyObject) {
+    func goToArtist(sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Artists)
     }
     
-    @IBAction func goToAlbum(sender: AnyObject) {
+    func goToAlbum(sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
     
-    @IBAction func addToPlaylist(sender: AnyObject) {
+    func addToPlaylist(sender: AnyObject) {
         guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else { return }
         KyoozUtils.showAvailablePlaylistsForAddingTracks([nowPlayingItem])
     }
@@ -61,7 +61,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
     }
     
-    @IBAction func collapseViewController(sender: AnyObject) {
+    func collapseViewController(sender: AnyObject) {
         RootViewController.instance.animatePullablePanel(shouldExpand: false)
     }
     
@@ -71,41 +71,71 @@ final class NowPlayingSummaryViewController: UIViewController {
         view.contentMode = .ScaleAspectFill
         view.clipsToBounds = true
         registerForNotifications()
+        
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
+        
+        let screenHeight = UIScreen.mainScreen().bounds.height
 		
 		let nowPlayingBar = nowPlayingBarVC.view
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: nowPlayingBar, parentView: view)
 		nowPlayingBar.heightAnchor.constraintEqualToConstant(self.dynamicType.CollapsedHeight).active = true
+        addChildViewController(nowPlayingBarVC)
+        nowPlayingBarVC.didMoveToParentViewController(self)
         
-        labelPageVC = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: labelPageVC.view, parentView: view)[.Width]?.constant = -10
         labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingBar.centerYAnchor).active = true
         labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
+        addChildViewController(labelPageVC)
+        labelPageVC.didMoveToParentViewController(self)
 
-        albumArtPageVC = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        let bottomButtonView = createBottomButtonView()
+
         
-        let albumArtView = albumArtPageVC.view
-        albumArtView.layer.shadowOpacity = 0.8
-        albumArtView.layer.shadowOffset = CGSize(width: 0, height: 3)
-        albumArtView.layer.shadowRadius = 10
-        albumArtView.clipsToBounds = false
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: albumArtView, parentView: view)
-        albumArtView.topAnchor.constraintEqualToAnchor(labelPageVC.view.bottomAnchor, constant: 70).active = true
-        albumArtView.heightAnchor.constraintEqualToAnchor(albumArtView.widthAnchor, multiplier: 0.9).active = true
+        let mainStackView = UIStackView(arrangedSubviews: [albumArtPageVC.view, playbackProgressVC.view, playbackControlsVC.view, bottomButtonView])
+        mainStackView.axis = .Vertical
+        mainStackView.distribution = .EqualSpacing
+        mainStackView.alignment = .Center
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX], subView: playbackProgressVC.view, parentView: view)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: mainStackView, parentView: view)
+        //the calculation of this constant is based off of how tall the screen is.  for an iPhone 6 with a portrait height of 667
+        //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
+        //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
+        let stackTopConstraintConstant:CGFloat = screenHeight * ((self.dynamicType.CollapsedHeight + 70)/667)
+        mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: stackTopConstraintConstant).active = true
+        
+        albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
+        if (UIScreen.mainScreen().bounds.width * 0.9) > (UIScreen.mainScreen().bounds.height * 0.55) {
+            albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.55).active = true
+        } else {
+            albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(albumArtPageVC.view.widthAnchor, multiplier: 0.9).active = true
+        }
+        addChildViewController(albumArtPageVC)
+        albumArtPageVC.didMoveToParentViewController(self)
+        
+
         playbackProgressVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.95).active = true
-        playbackProgressVC.view.topAnchor.constraintEqualToAnchor(albumArtView.bottomAnchor, constant: 35).active = true
         playbackProgressVC.view.heightAnchor.constraintEqualToConstant(25).active = true
         addChildViewController(playbackProgressVC)
         playbackProgressVC.didMoveToParentViewController(self)
-		
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX], subView: playbackControlsVC.view, parentView: view)
-
-		playbackControlsVC.view.heightAnchor.constraintEqualToConstant(65).active = true
-		playbackControlsVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
-		playbackControlsVC.view.topAnchor.constraintEqualToAnchor(playbackProgressVC.view.bottomAnchor, constant: 25).active = true
-		addChildViewController(playbackControlsVC)
-		playbackControlsVC.didMoveToParentViewController(self)
+        
+        playbackControlsVC.view.heightAnchor.constraintEqualToConstant(50).active = true
+        playbackControlsVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.9).active = true
+        addChildViewController(playbackControlsVC)
+        playbackControlsVC.didMoveToParentViewController(self)
+        
+        bottomButtonView.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.9).active = true
+        bottomButtonView.heightAnchor.constraintEqualToConstant(30).active = true
+        
+//        collapseButton = createAndConfigureButton("›", selector: #selector(self.collapseViewController(_:)))
+//        collapseButton.titleLabel?.font = ThemeHelper.defaultFont?.fontWithSize(20)
+//        collapseButton.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+//        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left], subView: collapseButton, parentView: view).forEach() {
+//            $1.constant = 10
+//        }
+//        collapseButton.heightAnchor.constraintEqualToConstant(45).active = true
+//        collapseButton.widthAnchor.constraintEqualToAnchor(collapseButton.heightAnchor).active = true
 
         KyoozUtils.doInMainQueueAsync() {
             self.reloadData(nil)
@@ -113,6 +143,32 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
         
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
+    }
+    
+    private func createBottomButtonView() -> UIView {
+        let font = UIFont(name:ThemeHelper.defaultFontName, size:ThemeHelper.fontSize13)
+        func createAndConfigureButton(title:String, selector:Selector) -> UIButton {
+            let button = UIButton()
+            button.setTitle(title, forState: .Normal)
+            button.addTarget(self, action: selector, forControlEvents: .TouchUpInside)
+            if let label = button.titleLabel {
+                label.textColor = UIColor.whiteColor()
+                label.alpha = ThemeHelper.defaultButtonTextAlpha
+                label.font = font
+                label.textAlignment = .Center
+            }
+            return button
+        }
+        
+        let goToAlbumButton = createAndConfigureButton("ALBUM", selector: #selector(self.goToAlbum(_:)))
+        let goToArtistButton = createAndConfigureButton("ARTIST", selector: #selector(self.goToArtist(_:)))
+        let addToPlaylistButton = createAndConfigureButton("ADD TO PLAYLIST", selector: #selector(self.addToPlaylist(_:)))
+        
+        let stackView = UIStackView(arrangedSubviews: [goToAlbumButton, addToPlaylistButton, goToArtistButton])
+        stackView.axis = .Horizontal
+        stackView.distribution = .EqualCentering
+        stackView.alignment = .Center
+        return stackView
     }
 	
 
@@ -171,11 +227,12 @@ final class NowPlayingSummaryViewController: UIViewController {
             albumArtPageVC.view.hidden = false
         }
         
+        collapseButton?.alpha = expandedFraction
         albumArtPageVC.view.alpha = expandedFraction
 		nowPlayingBarVC.view.alpha = collapsedFraction
 				
 		let tX = (labelPageVC.view.center.x - nowPlayingBarVC.view.bounds.midX) * -expandedFraction
-		let tY = 42.5 * expandedFraction
+		let tY = view.bounds.height * (42.5/667) * expandedFraction
 		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
 		
 		let scale = 0.8 + (expandedFraction * 0.2)

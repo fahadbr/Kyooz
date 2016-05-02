@@ -68,6 +68,14 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
         return dsdSections[section].tableView?(tableView, viewForHeaderInSection: 0)
     }
     
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return dsdSections[section].tableView?(tableView, viewForFooterInSection: 0)
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return dsdSections[section].tableView?(tableView, heightForFooterInSection: 0) ?? 0
+    }
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         dsdSections[indexPath.section].tableView?(tableView, didSelectRowAtIndexPath:indexPath)
     }

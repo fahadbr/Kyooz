@@ -26,10 +26,6 @@ extension UIStoryboard {
     }
 
     
-    static func nowPlayingSummaryViewController() -> NowPlayingSummaryViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("nowPlayingSummaryViewController") as! NowPlayingSummaryViewController
-    }
-    
     static func warningViewController() -> WarningViewController {
         return mainStoryboard().instantiateViewControllerWithIdentifier("warningViewController") as! WarningViewController
     }

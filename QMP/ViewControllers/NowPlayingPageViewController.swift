@@ -63,6 +63,15 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 }
 
 final class LabelPageViewController : NowPlayingPageViewController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.layer.shadowOpacity = 0.8
+        view.layer.shadowOffset = CGSize(width: 0, height: 3)
+        view.layer.shadowRadius = 10
+        view.clipsToBounds = false
+    }
+    
 	private override func getWrapperVCForTrack(track: AudioTrack, index:Int) -> WrapperViewController {
 		return LabelStackWrapperViewController(track: track, isPresentedVC: false, representingIndex: index)
 	}

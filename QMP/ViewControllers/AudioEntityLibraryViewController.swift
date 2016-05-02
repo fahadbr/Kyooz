@@ -27,14 +27,22 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	var testMode = false
 	var testDelegate:TestTableViewDataSourceDelegate!
 	
-	
+    var parentGroup:LibraryGrouping?
 	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
 	var isBaseLevel:Bool = true
 	
 	private let tableFooterView = KyoozTableFooterView()
 	
 	override func viewDidLoad() {
-		super.viewDidLoad()
+        //if there is only one song for the current group then change the grouping type to be songs
+        //must be done before call to super.viewDidLoad() bc the Util Header VC will be configured in that call
+        let entities = sourceData.entities
+        if sourceData.libraryGrouping !== LibraryGrouping.Songs && entities.count == 1 && ((entities.first as? AudioTrackCollection)?.tracks.count == 1) ?? false {
+            if let sd = sourceData as? GroupMutableAudioEntitySourceData {
+                sd.libraryGrouping = LibraryGrouping.Songs
+            }
+        }
+        super.viewDidLoad()
 		
         let homeButton = HomeButtonView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
         homeButton.addTarget(self, action: #selector(self.jumpToHomeScreen), forControlEvents: .TouchUpInside)
@@ -45,7 +53,8 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
 		tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
-		
+        
+
 		
 		if testMode {
 			configureTestDelegates()

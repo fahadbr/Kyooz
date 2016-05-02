@@ -158,6 +158,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         vc.subGroups = parentGroup.subGroupsForNextLevel
 		vc.isBaseLevel = false
         vc.sourceData = sourceData
+        vc.parentGroup = parentGroup
         
         if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations || parentGroup === LibraryGrouping.Podcasts {
 			vc.useCollapsableHeader = true

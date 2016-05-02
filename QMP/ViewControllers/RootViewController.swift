@@ -77,7 +77,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         libraryView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
         
-        nowPlayingSummaryViewController = UIStoryboard.nowPlayingSummaryViewController()
+        nowPlayingSummaryViewController = NowPlayingSummaryViewController()
         
         let nowPlayingView = nowPlayingSummaryViewController.view
         view.insertSubview(nowPlayingView, atIndex: 0)

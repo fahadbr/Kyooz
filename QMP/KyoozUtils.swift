@@ -162,64 +162,61 @@ struct KyoozUtils {
     }
     
     static func showAvailablePlaylistsForAddingTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
-        let ac = UIAlertController(title: "Select the playlist to add to", message: "\(tracks.count) tracks", preferredStyle: .ActionSheet)
-		ac.view.tintColor = ThemeHelper.defaultVividColor
-        for obj in KyoozPlaylistManager.instance.playlists {
-            guard let playlist = obj as? KyoozPlaylist else { return }
-            ac.addAction(UIAlertAction(title: playlist.name, style: .Default, handler: { _ -> Void in
-                var playlistTracks = playlist.tracks
-                playlistTracks.appendContentsOf(tracks)
-                do {
-                    try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: playlistTracks)
-                    completionAction?()
-                } catch let error {
-                    showPopupError(withTitle: "Failed to add \(tracks.count) tracks to playlist: \(playlist.name)", withThrownError: error, presentationVC: nil)
-                }
-            }))
-        }
-		
-		
-		
-		if #available(iOS 9.3, *) {
-			if let playlists = MPMediaQuery.playlistsQuery().collections as? [MPMediaPlaylist], let items = tracks as? [MPMediaItem] {
-				for playlist in playlists {
-					Logger.debug("playlist \(playlist.name) is of type \(playlist.playlistAttributes.rawValue)")
-					ac.addAction(UIAlertAction(title: playlist.name, style: .Default, handler: {_ in
-						let status = SKCloudServiceController.authorizationStatus()
-						guard status == .Authorized else {
-							if status == .NotDetermined {
-								SKCloudServiceController.requestAuthorization({ (status) in
-									if status == .Authorized {
-										playlist.addMediaItems(items, completionHandler: { (error) in
-											if let e = error {
-												KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name ?? "")", withThrownError: e, presentationVC: nil)
-											}
-										})
-									}
-								})
-							}
-							return
-						}
-						playlist.addMediaItems(items, completionHandler: { (error) in
-							if let e = error {
-								KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)", withThrownError: e, presentationVC: nil)
-							}
-						})
-					}))
-				}
-			}
-		}
-        ac.addAction(UIAlertAction(title: "New Playlist..", style: .Default) { _ -> Void in
-            showPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
-        })
-        ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        ContainerViewController.instance.presentViewController(ac, animated: true, completion: {
-            ac.view.tintColor = ThemeHelper.defaultVividColor
-        })
+        let presentingVC = ContainerViewController.instance
+        let addToPlaylistVC = AddToPlaylistViewController(tracksToAdd: tracks, completionAction: completionAction)
+        addToPlaylistVC.modalTransitionStyle = .CrossDissolve
+        
+        presentingVC.presentViewController(addToPlaylistVC, animated: true, completion: nil)
+        
     }
     
     static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
-        let ac = UIAlertController(title: "Save as Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
+        if #available(iOS 9.3, *) {
+            let kmvc = KyoozMenuViewController()
+            kmvc.menuTitle = "Select which type of playlist to create"
+            let createKyoozPlaylistAction = KyoozMenuAction(title: "KYOOZ PLAYLIST", image: nil) {
+                showKyoozPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+            }
+            let createItunesPlaylistAction = KyoozMenuAction(title: "ITUNES PLAYLIST", image: nil) {
+                showITunesPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+            }
+            kmvc.addActions([createKyoozPlaylistAction, createItunesPlaylistAction])
+            showMenuViewController(kmvc)
+        } else {
+            showKyoozPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+        }
+    }
+    
+    static func showKyoozPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+        let saveAction = { (text:String) in
+
+            do {
+                try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: tracks)
+                completionAction?()
+            } catch let error {
+                showPopupError(withTitle: "Failed to save playlist with name \(text)", withThrownError: error, presentationVC: nil)
+            }
+        }
+        showPlaylistCreationControllerForTracks(tracks, playlistTypeName: "Kyooz", saveAction: saveAction, completionAction: completionAction)
+        
+    }
+    
+    @available(iOS 9.3, *)
+    static func showITunesPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+        let saveAction = { (text:String) in
+            guard let mediaItems = tracks as? [MPMediaItem] else {
+                showPopupError(withTitle: "Couldn't save playlist with name \(text)", withMessage: "In compatible tracks in current queue", presentationVC: nil)
+                return
+            }
+            IPodLibraryDAO.createPlaylistWithName(text, tracks: mediaItems)
+        }
+        showPlaylistCreationControllerForTracks(tracks, playlistTypeName: "iTunes", saveAction: saveAction, completionAction: completionAction)
+        
+    }
+
+    
+    private static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], playlistTypeName:String, saveAction:(nameToSaveAs:String)->(), completionAction:(()->Void)? = nil) {
+        let ac = UIAlertController(title: "Save as \(playlistTypeName) Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
 		ac.view.tintColor = ThemeHelper.defaultVividColor
         ac.addTextFieldWithConfigurationHandler(nil)
         let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
@@ -227,13 +224,7 @@ struct KyoozUtils {
                 Logger.error("No name found")
                 return
             }
-            do {
-                try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: tracks)
-                completionAction?()
-            } catch let error {
-                showPopupError(withTitle: "Failed to save playlist with name \(text)", withThrownError: error, presentationVC: nil)
-            }
-            
+            saveAction(nameToSaveAs: text)
         })
         ac.addAction(saveAction)
         ac.preferredAction = saveAction

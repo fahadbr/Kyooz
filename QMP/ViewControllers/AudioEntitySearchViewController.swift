@@ -73,7 +73,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        headerView.userInteractionEnabled = true
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
         searchBar.delegate = self
