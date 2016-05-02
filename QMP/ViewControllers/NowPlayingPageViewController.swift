@@ -63,6 +63,12 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 }
 
 final class LabelPageViewController : NowPlayingPageViewController {
+	private override func getWrapperVCForTrack(track: AudioTrack, index:Int) -> WrapperViewController {
+		return LabelStackWrapperViewController(track: track, isPresentedVC: false, representingIndex: index)
+	}
+}
+
+final class ImagePageViewController : NowPlayingPageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,12 +78,6 @@ final class LabelPageViewController : NowPlayingPageViewController {
         view.clipsToBounds = false
     }
     
-	private override func getWrapperVCForTrack(track: AudioTrack, index:Int) -> WrapperViewController {
-		return LabelStackWrapperViewController(track: track, isPresentedVC: false, representingIndex: index)
-	}
-}
-
-final class ImagePageViewController : NowPlayingPageViewController {
 	private override func getWrapperVCForTrack(track: AudioTrack, index:Int) -> WrapperViewController {
 		return ImageWrapperViewController(track: track, isPresentedVC: false, representingIndex:index, size: view.frame.size)
 	}
