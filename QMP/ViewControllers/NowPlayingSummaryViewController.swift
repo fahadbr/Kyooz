@@ -145,6 +145,13 @@ final class NowPlayingSummaryViewController: UIViewController {
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        //doing this bc for some reason after the container vc dismisses a modal presented vc, the album art page vc disappears
+        //updating its alpha level prevents that
+        updateAlphaLevels()
+    }
+    
     private func createBottomButtonView() -> UIView {
         let font = UIFont(name:ThemeHelper.defaultFontName, size:ThemeHelper.fontSize13)
         func createAndConfigureButton(title:String, selector:Selector) -> UIButton {

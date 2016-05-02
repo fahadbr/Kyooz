@@ -83,6 +83,8 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         tableView.showsVerticalScrollIndicator = true
         tableView.indicatorStyle = .White
         tableView.contentInset.top = ThemeHelper.plainHeaderHight
+        tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight
+        tableView.contentOffset.y = -tableView.contentInset.top
         tableView.contentInset.bottom = 44
         
         let editButton = editButtonItem()
