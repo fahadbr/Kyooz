@@ -12,13 +12,16 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	
     let originalOrderedDatasources:[AudioEntityDSDProtocol]
     var dsdSections:[AudioEntityDSDProtocol] = [AudioEntityDSDProtocol]()
-	
+    
+    private let showEmptySections:Bool
+    
     var sourceData:AudioEntitySourceData {
         return self
     }
     
-	init(datasources:[AudioEntityDSDProtocol]) {
+	init(datasources:[AudioEntityDSDProtocol], showEmptySections:Bool = false) {
 		self.originalOrderedDatasources = datasources
+        self.showEmptySections = showEmptySections
         super.init()
         reloadSections()
 	}
@@ -81,6 +84,10 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
     }
 	
     func reloadSections() {
+        guard !showEmptySections else {
+            dsdSections = originalOrderedDatasources
+            return
+        }
 		dsdSections = originalOrderedDatasources.filter() {
 			return $0.hasData
 		}
