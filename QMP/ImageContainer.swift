@@ -11,8 +11,8 @@ import UIKit
 
 struct ImageContainer {
     
-    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "Kyooz-Icon-dark")!
-    static let smallDefaultArtworkImage:UIImage = UIImage(named: "Kyooz-Icon-Small-dark")!
+    static let defaultAlbumArtworkImage:UIImage = UIImage(named: "AlbumPlaceHolder")!
+    static let smallDefaultArtworkImage:UIImage = ImageContainer.resizeImage(defaultAlbumArtworkImage, toSize: CGSize(width: 150, height: 150))
     
     static func resizeImage(image:UIImage, toSize newSize:CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)

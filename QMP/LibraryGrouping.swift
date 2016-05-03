@@ -37,7 +37,7 @@ final class LibraryGrouping : NSObject {
     static let Genres = LibraryGrouping(name: "GENRES",
                                         groupingType:MPMediaGrouping.Genre,
                                         nextGroupLevel:Artists,
-                                        subGroupsForNextLevel: [Artists, Albums, Songs])
+                                        subGroupsForNextLevel: [Artists, Albums, Composers, Songs])
     static let Podcasts = LibraryGrouping(name: "PODCASTS",
                                           groupingType: MPMediaGrouping.PodcastTitle,
                                           usesArtwork:true,
