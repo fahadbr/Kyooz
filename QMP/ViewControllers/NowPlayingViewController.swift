@@ -50,6 +50,10 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         didSet {
             longPressGestureRecognizer.enabled = !insertMode
             toolbarItems?.forEach() { $0.enabled = !insertMode }
+			if !insertMode {
+				//removing the footer view improves the animation for items inserted from drag and drop
+				tableView.tableFooterView = nil
+			}
         }
     }
     
@@ -174,25 +178,32 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     //MARK: CLASS Functions
     func reloadTableData() {
         tableView.reloadData()
-        guard isExpanded else { return }
-        let queue = audioQueuePlayer.nowPlayingQueue
-        let count = queue.count
-        var duration:NSTimeInterval = 0
-        for item in queue {
-            duration += item.playbackDuration
-        }
-        let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration)
-        tableFooterView.text = "\(count) TRACK\(count == 1 ? "" : "S")\n\(albumDurationString ?? "")"
-        tableView.tableFooterView = tableFooterView
+		if isExpanded {
+			refreshTableFooter()
+		}
     }
-    
+	
+	func refreshTableFooter() {
+		let queue = audioQueuePlayer.nowPlayingQueue
+		let count = queue.count
+		var duration:NSTimeInterval = 0
+		for item in queue {
+			duration += item.playbackDuration
+		}
+		let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration)?.uppercaseString
+		tableFooterView.text = "\(count) TRACK\(count == 1 ? "" : "S")\n\(albumDurationString ?? "")"
+		tableView.tableFooterView = tableFooterView
+	}
+	
     //for data source updates originating from the UI, we dont want to reload the table view in response to the queue changes
     //because there should already be animations taking place to reflect that content and reloading the data will interfere 
     //with the visual effect
     func reloadIfCollapsed() {
         if !isExpanded {
             reloadTableData()
-        }
+		} else {
+			refreshTableFooter()
+		}
     }
     
     private func registerForNotifications() {

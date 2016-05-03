@@ -10,15 +10,8 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ag-7U-ZVI">
-                    <rect key="frame" x="0.0" y="0.0" width="600" height="100"/>
-                    <color key="backgroundColor" red="0.22352941176470587" green="0.0" blue="0.031372549019607843" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="100" id="fxb-g2-Y9z"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nIm-c3-4sK">
-                    <rect key="frame" x="0.0" y="545" width="600" height="55"/>
+                    <rect key="frame" x="0.0" y="555" width="600" height="45"/>
                     <subviews>
                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TuC-Tp-SYp">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="2"/>
@@ -31,18 +24,43 @@
                         <constraint firstAttribute="trailing" secondItem="TuC-Tp-SYp" secondAttribute="trailing" id="HTA-u6-v5g"/>
                         <constraint firstItem="TuC-Tp-SYp" firstAttribute="leading" secondItem="nIm-c3-4sK" secondAttribute="leading" id="Krb-ej-rxT"/>
                         <constraint firstItem="TuC-Tp-SYp" firstAttribute="top" secondItem="nIm-c3-4sK" secondAttribute="top" id="QkL-1e-I04"/>
-                        <constraint firstAttribute="height" constant="55" id="fjR-0e-yAK"/>
+                        <constraint firstAttribute="height" constant="45" id="fjR-0e-yAK"/>
                     </constraints>
                 </view>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="syq-Yb-Alk">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="65"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="8I6-KL-RX5">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="65"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IIt-uQ-5vi">
+                                <rect key="frame" x="0.0" y="64" width="600" height="1"/>
+                                <color key="backgroundColor" red="0.85882352939999995" green="0.17254901959999999" blue="0.21960784310000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="eRJ-IO-bG3"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="IIt-uQ-5vi" firstAttribute="leading" secondItem="8I6-KL-RX5" secondAttribute="leading" id="3EY-us-bLA"/>
+                            <constraint firstAttribute="trailing" secondItem="IIt-uQ-5vi" secondAttribute="trailing" id="Mfg-ww-ZE3"/>
+                            <constraint firstAttribute="bottom" secondItem="IIt-uQ-5vi" secondAttribute="bottom" id="iew-l8-fOD"/>
+                        </constraints>
+                    </view>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="65" id="KYC-fa-IaI"/>
+                    </constraints>
+                    <blurEffect style="dark"/>
+                </visualEffectView>
             </subviews>
-            <color key="backgroundColor" white="0.089999999999999997" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="syq-Yb-Alk" secondAttribute="trailing" id="0H6-EA-Zo5"/>
+                <constraint firstItem="syq-Yb-Alk" firstAttribute="leading" secondItem="Qjs-ZR-2aj" secondAttribute="leading" id="GOF-O6-JaS"/>
+                <constraint firstItem="syq-Yb-Alk" firstAttribute="top" secondItem="Qjs-ZR-2aj" secondAttribute="top" id="Nde-db-8yM"/>
                 <constraint firstAttribute="bottom" secondItem="nIm-c3-4sK" secondAttribute="bottom" id="SFF-bs-AAw"/>
-                <constraint firstAttribute="trailing" secondItem="8Ag-7U-ZVI" secondAttribute="trailing" id="XJI-qu-e9u"/>
                 <constraint firstAttribute="trailing" secondItem="nIm-c3-4sK" secondAttribute="trailing" id="ZQV-Ro-rpn"/>
-                <constraint firstItem="8Ag-7U-ZVI" firstAttribute="leading" secondItem="Qjs-ZR-2aj" secondAttribute="leading" id="fF7-T8-IDE"/>
                 <constraint firstItem="nIm-c3-4sK" firstAttribute="leading" secondItem="Qjs-ZR-2aj" secondAttribute="leading" id="mbz-ZW-C3I"/>
-                <constraint firstItem="8Ag-7U-ZVI" firstAttribute="top" secondItem="Qjs-ZR-2aj" secondAttribute="top" id="vhA-Cw-1Im"/>
             </constraints>
             <point key="canvasLocation" x="613" y="393"/>
         </view>
