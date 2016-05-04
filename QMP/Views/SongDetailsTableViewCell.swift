@@ -13,8 +13,8 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
 
     static let reuseIdentifier = "songDetailsTableViewCell"
     
-    private static let normalFont = UIFont(name:ThemeHelper.defaultFontName, size:12.0)
-    private static let boldFont = UIFont(name:ThemeHelper.defaultFontNameMedium, size:12.0)
+    private static let normalFont = ThemeHelper.smallFontForStyle(.Normal)
+    private static let boldFont = ThemeHelper.smallFontForStyle(.Medium)
     
     private static let albumImageCache:NSCache = NSCache()
     
