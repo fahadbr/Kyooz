@@ -13,19 +13,20 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
     weak var scrollViewDelegate:UIScrollViewDelegate?
     
-    var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    
-    private let reuseIdentifier:String
+	var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
 	
 	var hasData:Bool {
 		return !sourceData.entities.isEmpty
 	}
-    
+	
     var rowLimit:Int = 0
     var rowLimitActive:Bool = false
     
-    var titleFontOverride:UIFont?
+	var useSmallFont:Bool = false
     var shouldAnimateCell:Bool = true
+	
+	private let reuseIdentifier:String
+	private lazy var smallFont = ThemeHelper.smallFontForStyle(.Bold)
     
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
@@ -71,11 +72,11 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
         } else {
             cell.textLabel?.text = entity.titleForGrouping(libraryGrouping)
         }
-        
-        if let libraryCell = cell as? MediaLibraryTableViewCell where titleFontOverride != nil {
-            libraryCell.titleLabel.font = titleFontOverride
-        }
-        
+		
+		if useSmallFont {
+			(cell as? MediaLibraryTableViewCell)?.titleLabel.font = smallFont
+		}
+		
         return cell
         
     }

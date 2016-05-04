@@ -126,10 +126,10 @@ final class LabelStackWrapperViewController : WrapperViewController {
 		}
 		
 		trackTitleMarqueeLabel = MarqueeLabel(labelConfigurationBlock: { (label) in
-			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: 16))
+			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize + 1))
 		})
 		trackDetailsMarqueeLabel = MarqueeLabel(labelConfigurationBlock: { (label) in
-			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: 14))
+			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: ThemeHelper.defaultFontSize - 1))
 		})
 		
 		let labelStrings = LabelStackWrapperViewController.getLabelStringsFromTrack(track)

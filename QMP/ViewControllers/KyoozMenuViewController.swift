@@ -127,7 +127,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:largerMenuFont)
 		
 		detailsLabel = UILabel()
-		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:UIFont(name: ThemeHelper.defaultFontName, size: 12))
+		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:ThemeHelper.smallFontForStyle(.Normal))
 		
 		configureLabelSizes()
 		
@@ -226,7 +226,7 @@ private struct CancelAction : KyoozMenuActionProtocol {
 private final class KyoozMenuCell : AbstractTableViewCell {
 	
 	static let reuseIdentifier = "kyoozMenuCell"
-    static let font = UIFont(name: ThemeHelper.defaultFontName, size: 14)
+    static let font = UIFont(name: ThemeHelper.defaultFontName, size: ThemeHelper.defaultFontSize)
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)

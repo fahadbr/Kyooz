@@ -10,15 +10,20 @@ import Foundation
 import UIKit
 
 struct ThemeHelper {
+	
+	enum FontStyle : Int { case Normal, Medium, Bold }
     
     static let plainHeaderHight:CGFloat = 65
     
     static let defaultFontName = "Avenir"
     static let defaultFontNameMedium = defaultFontName + "-Medium"
     static let defaultFontNameBold = defaultFontName + "-Heavy"
-    
-    static let fontSize13:CGFloat = 13
-	static let defaultFontSize:CGFloat = 15.0
+	
+
+	private (set) static var defaultFontSize:CGFloat = 15.0
+	static var smallFontSize:CGFloat {
+		return defaultFontSize - 3
+	}
     
     static let defaultFont = UIFont(name: defaultFontNameMedium, size: defaultFontSize)
     static let defaultButtonTextAlpha:CGFloat = 0.6
@@ -36,6 +41,19 @@ struct ThemeHelper {
 	static let defaultVividColor = UIColor(red: 219.0/255.0, green: 44/255.0, blue: 56/255.0, alpha: 1.0)
 
     static let barsAreTranslucent = true
+	
+	static func smallFontForStyle(style:FontStyle) -> UIFont? {
+		let fontName:String
+		switch style {
+		case .Bold:
+			fontName = defaultFontNameBold
+		case .Medium:
+			fontName = defaultFontNameMedium
+		case .Normal:
+			fontName = defaultFontName
+		}
+		return UIFont(name: fontName, size: smallFontSize)
+	}
     
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()

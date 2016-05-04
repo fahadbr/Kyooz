@@ -153,7 +153,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     }
     
     private func createBottomButtonView() -> UIView {
-        let font = UIFont(name:ThemeHelper.defaultFontName, size:ThemeHelper.fontSize13)
+        let font = UIFont(name:ThemeHelper.defaultFontName, size:ThemeHelper.smallFontSize + 1)
         func createAndConfigureButton(title:String, selector:Selector) -> UIButton {
             let button = UIButton()
             button.setTitle(title, forState: .Normal)

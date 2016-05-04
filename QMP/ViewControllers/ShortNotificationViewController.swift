@@ -18,7 +18,7 @@ final class ShortNotificationViewController : FadeOutViewController {
         label.numberOfLines = 0
         label.textAlignment = .Center
         label.lineBreakMode = .ByWordWrapping
-        label.font = UIFont(name: ThemeHelper.defaultFontNameMedium, size: 12)
+        label.font = ThemeHelper.smallFontForStyle(.Medium)
         label.textColor = ThemeHelper.defaultFontColor
         return label
     }()

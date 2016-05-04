@@ -89,7 +89,6 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         
         var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
-        let overrideFont = UIFont(name: ThemeHelper.defaultFontNameBold, size: 12)
         for searchExecutionController in searchExecutionControllers {
             searchExecutionController.delegate = self
             let libraryGroup = searchExecutionController.libraryGroup
@@ -105,7 +104,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
             default:
                 datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             }
-            datasourceDelegate.titleFontOverride = overrideFont
+            datasourceDelegate.useSmallFont = true
             datasourceDelegate.shouldAnimateCell = false
             datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
         }
