@@ -42,7 +42,7 @@ class IPodLibraryDAO {
                 if let e = error {
                     KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)", withThrownError: e, presentationVC: nil)
                 } else {
-                    KyoozUtils.doInMainQueueAfterDelay(1) {
+                    KyoozUtils.doInMainQueueAfterDelay(0.5) {
                         ShortNotificationManager.instance.presentShortNotificationWithMessage(message, withSize: .Small)
                     }
                 }
@@ -72,7 +72,7 @@ class IPodLibraryDAO {
     @available(iOS 9.3, *)
     private static func validateAndExecute(block:()->()) {
         switch SKCloudServiceController.authorizationStatus() {
-        case .NotDetermined, .Denied:
+        case .NotDetermined :
             SKCloudServiceController.requestAuthorization({ (status) in
                 if status == .Authorized {
                     block()
@@ -81,7 +81,18 @@ class IPodLibraryDAO {
         case .Authorized:
             block()
         default:
-			KyoozUtils.showPopupError(withTitle: "Access to modify the iTunes Library is not available.  Please change in settings", withMessage: nil, presentationVC: nil)
+			let kmvc = KyoozMenuViewController()
+            kmvc.menuTitle = "Access to modify the iTunes Library is not available.  Please grant access to the media library in the system settings"
+            
+            let goToSettingsAction = KyoozMenuAction(title: "Jump To Settings", image: nil) {
+                if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
+                    UIApplication.sharedApplication().openURL(url)
+                } else {
+                    KyoozUtils.showPopupError(withTitle: "Error with opening URL to settings", withMessage: nil, presentationVC: nil)
+                }
+            }
+            kmvc.addActions([goToSettingsAction])
+            KyoozUtils.showMenuViewController(kmvc)
             break
         }
     }
