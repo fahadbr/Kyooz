@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
-        
+        Logger.error("testing error logs")
         return true
     }
 

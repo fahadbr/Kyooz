@@ -19,8 +19,36 @@ struct ThemeHelper {
     static let defaultFontNameMedium = defaultFontName + "-Medium"
     static let defaultFontNameBold = defaultFontName + "-Heavy"
 	
+    static var contentSizeRatio:CGFloat {
+        return defaultFontSize/referenceFontSize
+    }
 
-	private (set) static var defaultFontSize:CGFloat = 15.0
+    private static let referenceFontSize:CGFloat = 15
+    private (set) static var defaultFontSize:CGFloat = {
+        let sizeToUse:CGFloat
+        
+        Logger.debug("Setting content size category of \(UIApplication.sharedApplication().preferredContentSizeCategory)")
+        switch UIApplication.sharedApplication().preferredContentSizeCategory {
+//        case UIContentSizeCategoryExtraSmall:
+//            sizeToUse = referenceFontSize - 2
+//        case UIContentSizeCategorySmall:
+//            sizeToUse = referenceFontSize - 1
+//        case UIContentSizeCategoryMedium:
+//            sizeToUse = referenceFontSize
+        case UIContentSizeCategoryLarge:
+            sizeToUse = referenceFontSize + 1
+        case UIContentSizeCategoryExtraLarge:
+            sizeToUse = referenceFontSize + 2
+        case UIContentSizeCategoryExtraExtraLarge:
+            sizeToUse = referenceFontSize + 3
+        case UIContentSizeCategoryExtraExtraExtraLarge:
+            sizeToUse = referenceFontSize + 4
+        default:
+            sizeToUse = referenceFontSize
+        }
+        return sizeToUse
+    }()
+    
 	static var smallFontSize:CGFloat {
 		return defaultFontSize - 3
 	}
@@ -32,9 +60,9 @@ struct ThemeHelper {
     static let defaultBarStyle = UIBarStyle.Black
     
     static let defaultTableCellColor = UIColor(white: 0.09, alpha: 1.0)
-    static let sidePanelTableViewRowHeight:CGFloat = 48
-    static let tableViewRowHeight:CGFloat = 60
-    static let tableViewSectionHeaderHeight:CGFloat = 40
+    static let sidePanelTableViewRowHeight:CGFloat = 48 * contentSizeRatio
+    static let tableViewRowHeight:CGFloat = 60 * contentSizeRatio
+    static let tableViewSectionHeaderHeight:CGFloat = 40 * contentSizeRatio
     
     static let defaultFontColor = UIColor.whiteColor()
 	

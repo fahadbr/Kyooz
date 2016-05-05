@@ -8,15 +8,17 @@
 
 import UIKit
 
-private let largerMenuFont = ThemeHelper.defaultFont?.fontWithSize(16)
+
 
 final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
     private static let cellHeight:CGFloat = 50
     private static let sectionHeight:CGFloat = 5
+    
+    private static let absoluteMax:CGFloat = UIScreen.mainScreen().bounds.width * 95
 	
-	private let maxWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.70
-	private let minWidth:CGFloat = UIScreen.mainScreen().bounds.width * 0.55
+	private let maxWidth:CGFloat = min(375 * 0.70, KyoozMenuViewController.absoluteMax)
+	private let minWidth:CGFloat = min(UIScreen.mainScreen().bounds.width * 0.55 * ThemeHelper.contentSizeRatio, KyoozMenuViewController.absoluteMax)
 	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.9
     
 	private let tableView = UITableView()
@@ -124,7 +126,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		}
 		
 		titleLabel = UILabel()
-		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:largerMenuFont)
+		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:ThemeHelper.defaultFont?.fontWithSize(ThemeHelper.defaultFontSize + 1))
 		
 		detailsLabel = UILabel()
 		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:ThemeHelper.smallFontForStyle(.Normal))

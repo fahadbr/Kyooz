@@ -101,7 +101,7 @@ final class LastFmScrobbler {
                     self.validSessionObtained = true
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
 					let error = info[self.error_key]
-                    Logger.debug("could not validate existing session because of error: \(error), will attempt to get a new one")
+                    Logger.error("could not validate existing session because of error: \(error), will attempt to get a new one")
 					self.currentStateDetails = error
             })
         }
@@ -203,7 +203,7 @@ final class LastFmScrobbler {
                     Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
                     completionHandler?(shouldRemove:true)
                 }, failureHandler: { [unowned self](info:[String : String]) -> () in
-                    Logger.debug("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
+                    Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
                     let removeSlice = (info[self.error_key] != nil && info[self.error_key]! != self.httpFailure)
                     completionHandler?(shouldRemove:removeSlice)
                 })
@@ -245,7 +245,10 @@ final class LastFmScrobbler {
 
     
     func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
-        guard validSessionObtained else { return }
+        guard validSessionObtained else {
+            Logger.error("attempting to scrobble without a valid session")
+            return
+        }
         
         Logger.debug("caching the scrobble for track: \(mediaItemToScrobble.trackTitle) - \(mediaItemToScrobble.artist)")
         let i = scrobbleCache.count

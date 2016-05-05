@@ -29,7 +29,7 @@ final class PlaybackProgressViewController: UIViewController {
         super.viewDidLoad()
 
 		func configureLabel(label:UILabel) {
-			label.font = ThemeHelper.defaultFont?.fontWithSize(11)
+			label.font = ThemeHelper.defaultFont?.fontWithSize(ThemeHelper.smallFontSize - 1)
 			label.textColor = ThemeHelper.defaultFontColor
             label.textAlignment = .Center
 			label.text = "000:00"
