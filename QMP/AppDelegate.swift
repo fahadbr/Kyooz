@@ -35,7 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
-        Logger.error("testing error logs")
         return true
     }
 
@@ -55,6 +54,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(application: UIApplication) {
         lastFmScrobbler.initializeScrobbler()
         lastFmScrobbler.submitCachedScrobbles()
+        
+        if !Logger.errorLogString.isEmpty {
+            let kmvc = KyoozMenuViewController()
+            kmvc.menuTitle = "Error logs"
+            kmvc.menuDetails = Logger.errorLogString
+            
+            let clearAction = KyoozMenuAction(title: "CLEAR", image: nil, action: { 
+                Logger.errorLogString = ""
+            })
+            kmvc.addActions([clearAction])
+            KyoozUtils.showMenuViewController(kmvc)
+        }
+        
     }
 
     func applicationWillTerminate(application: UIApplication) {
