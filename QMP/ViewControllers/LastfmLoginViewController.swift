@@ -85,6 +85,8 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
         logoutButton.hidden = !validSessionObtained
         
         if lastFmScrobbler.validSessionObtained {
+            usernameField.resignFirstResponder()
+            passwordField.resignFirstResponder()
             loggedInAsLabel.text = "Logged in as \(lastFmScrobbler.username_value ?? "Unknown User")".uppercaseString
 		}
     }

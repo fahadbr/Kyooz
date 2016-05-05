@@ -10,7 +10,14 @@ import Foundation
 
 final class Logger {
     
+    static let errorLogKey = "errorLogKey"
     static let loggerQueue = dispatch_queue_create("com.riaz.fahad.Kyooz.Logger", DISPATCH_QUEUE_SERIAL)
+    
+    static var errorLogString = TempDataDAO.instance.getPersistentValue(key: errorLogKey) as? String ?? "" {
+        didSet {
+            TempDataDAO.instance.addPersistentValue(key: errorLogKey, value: errorLogString)
+        }
+    }
     
     private static let debugEnabled = true
     
@@ -31,11 +38,12 @@ final class Logger {
     }
     
     static func error(message:String) {
-//        let date = NSDate()
+        let date = NSDate()
         let threadId = threadName
         dispatch_async(loggerQueue) {
-//            print("\(date.description) [ERROR] [\(threadId)]:  \(message)")
-            NSLog("[ERROR] [%@]: %@", threadId, message)
+            let message = "\(date.description) [ERROR] [\(threadId)]:  \(message)"
+            errorLogString.appendContentsOf("\n\(message)")
+            print(message)
         }
     }
     
