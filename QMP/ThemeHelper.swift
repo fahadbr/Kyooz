@@ -41,7 +41,12 @@ struct ThemeHelper {
             sizeToUse = referenceFontSize + 2
         case UIContentSizeCategoryExtraExtraLarge:
             sizeToUse = referenceFontSize + 3
-        case UIContentSizeCategoryExtraExtraExtraLarge:
+        case UIContentSizeCategoryExtraExtraExtraLarge,
+             UIContentSizeCategoryAccessibilityMedium,
+             UIContentSizeCategoryAccessibilityLarge,
+             UIContentSizeCategoryAccessibilityExtraLarge,
+             UIContentSizeCategoryAccessibilityExtraExtraLarge,
+             UIContentSizeCategoryAccessibilityExtraExtraExtraLarge:
             sizeToUse = referenceFontSize + 4
         default:
             sizeToUse = referenceFontSize
