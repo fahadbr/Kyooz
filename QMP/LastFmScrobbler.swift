@@ -245,7 +245,7 @@ final class LastFmScrobbler {
 
     
     func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
-        guard validSessionObtained else {
+        guard validSessionObtained || (username_value != nil && session != nil) else {
             Logger.error("attempting to scrobble without a valid session")
             return
         }
