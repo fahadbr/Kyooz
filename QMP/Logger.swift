@@ -26,6 +26,10 @@ final class Logger {
         return NSOperationQueue.currentQueue()?.name ?? "null"
     }
     
+    static func initialize() {
+        
+    }
+    
     static func debug(@autoclosure messageBlock: ()->String) {
         if !debugEnabled { return }
         
