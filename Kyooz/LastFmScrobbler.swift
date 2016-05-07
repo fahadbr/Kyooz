@@ -10,43 +10,57 @@ import Foundation
 import MediaPlayer
 import SystemConfiguration
 
+//MARK: Key Constants
+private let API_URL = "https://ws.audioscrobbler.com/2.0/"
+private let api_key = "api_key"
+private let authToken = "authToken"
+private let method = "method"
+private let api_sig = "api_sig"
+private let username = "username"
+private let sk = "sk"
+private let artist = "artist"
+private let albumArtist = "albumArtist"
+private let track = "track"
+private let album = "album"
+private let duration = "duration"
+private let timestamp = "timestamp"
+
+private let method_getUserSession = "auth.getMobileSession"
+private let method_getSessionInfo = "auth.getSessionInfo"
+private let method_scrobble = "track.scrobble"
+
+private let status_key = "lfm.status"
+private let status_ok = "ok"
+private let status_failed = "failed"
+
+private let error_key = "error"
+private let error_code_key = "error.code"
+private let httpFailure = "Unable To Reach Network"
+
+//MARK: Session and API Properties
+
+private let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
+private let api_secret = "a0444ceba4d9f49eedc519699cec2624"
+
 final class LastFmScrobbler {
     
-    static let instance:LastFmScrobbler = LastFmScrobbler()
+    static let instance:LastFmScrobbler = LastFmScrobbler(tempDataDAO: TempDataDAO.instance, wsClient: SimpleWSClient.instance)
+    static let LastSessionValidationTimeKey = "LastFmLastSessionValidationTimeKey"
     
-    private static let LastSessionValidationTimeKey = "LastFmLastSessionValidationTimeKey"
+    //MARK: - Dependencies
     
-    //MARK: Key Constants
-    private let API_URL = "https://ws.audioscrobbler.com/2.0/"
-    private let api_key = "api_key"
-    private let authToken = "authToken"
-    private let method = "method"
-    private let api_sig = "api_sig"
-    private let username = "username"
-    private let sk = "sk"
-    private let artist = "artist"
-    private let albumArtist = "albumArtist"
-    private let track = "track"
-    private let album = "album"
-    private let duration = "duration"
-    private let timestamp = "timestamp"
+    private var tempDataDAO:TempDataDAO
+    private var simpleWsClient:SimpleWSClient
     
-    private let method_getUserSession = "auth.getMobileSession"
-    private let method_getSessionInfo = "auth.getSessionInfo"
-    private let method_scrobble = "track.scrobble"
+    //MARK: - initializers
     
-    private let status_key = "lfm.status"
-    private let status_ok = "ok"
-    private let status_failed = "failed"
+    init(tempDataDAO:TempDataDAO, wsClient:SimpleWSClient) {
+        self.tempDataDAO = tempDataDAO
+        self.simpleWsClient = wsClient
+        lastSessionValidationTime = tempDataDAO.getPersistentNumber(key: LastFmScrobbler.LastSessionValidationTimeKey)?.doubleValue ?? 0
+    }
     
-    private let error_key = "error"
-    private let error_code_key = "error.code"
-    private let httpFailure = "Unable To Reach Network"
-    
-    //MARK: Session and API Properties
-    
-    private let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
-    private let api_secret = "a0444ceba4d9f49eedc519699cec2624"
+    //MARK: - Properties
     
 	private (set) var username_value = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.LastFmUsernameKey) {
 		didSet {
@@ -60,9 +74,9 @@ final class LastFmScrobbler {
 		}
 	}
 	
-    private var lastSessionValidationTime:CFAbsoluteTime = TempDataDAO.instance.getPersistentNumber(key: LastFmScrobbler.LastSessionValidationTimeKey)?.doubleValue ?? 0 {
+    private (set) var lastSessionValidationTime:CFAbsoluteTime {
         didSet {
-            TempDataDAO.instance.addPersistentValue(key: LastFmScrobbler.LastSessionValidationTimeKey, value: NSNumber(double: lastSessionValidationTime))
+            tempDataDAO.addPersistentValue(key: LastFmScrobbler.LastSessionValidationTimeKey, value: NSNumber(double: lastSessionValidationTime))
         }
     }
 
@@ -87,11 +101,15 @@ final class LastFmScrobbler {
     //MARK: FUNCTIONS
 	
     
-    func initializeScrobbler() {
+    func initializeScrobbler(completionHandler:(()->())? = nil) {
 		func initializeScrobblerSync() {
-			guard !validSessionObtained else { return }
+			guard !validSessionObtained else {
+                completionHandler?()
+                return
+            }
 			
 			guard let session = self.session, let username_value = self.username_value else {
+                completionHandler?()
 				return
 			}
 			
@@ -104,10 +122,12 @@ final class LastFmScrobbler {
 			buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
 				Logger.debug("logging into lastfm was a SUCCESS")
 				self.validSessionObtained = true
+                completionHandler?()
 				},  failureHandler: { [unowned self](info:[String:String]) -> () in
-					let error = info[self.error_key]
+					let error = info[error_key]
 					Logger.error("could not validate existing session because of error: \(error), will attempt to get a new one")
 					self.currentStateDetails = error
+                    completionHandler?()
 				})
 		}
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), initializeScrobblerSync)
@@ -135,8 +155,8 @@ final class LastFmScrobbler {
                 completionHandler()
             }
         },  failureHandler: { [unowned self](info:[String:String]) -> () in
-                Logger.debug("failed to retrieve session because of error: \(info[self.error_key])")
-			let error = info[self.error_key]
+                Logger.debug("failed to retrieve session because of error: \(info[error_key])")
+			let error = info[error_key]
 			self.currentStateDetails = "Failed to log in: \(error ?? "Unknown Error")"
 			completionHandler()
         })
@@ -162,25 +182,25 @@ final class LastFmScrobbler {
             let timeStampToScrobble = NSDate().timeIntervalSince1970
             
             var params:[String:String] = [
-                self.track:mediaItem.trackTitle,
-                self.artist:mediaItem.artist,
-                self.album:mediaItem.albumTitle,
-                self.duration:"\(Int(mediaItem.playbackDuration))",
-                self.timestamp:"\(Int(timeStampToScrobble))",
-                self.method:self.method_scrobble,
-                self.api_key:self.api_key_value,
-                self.sk:session
+                track:mediaItem.trackTitle,
+                artist:mediaItem.artist,
+                album:mediaItem.albumTitle,
+                duration:"\(Int(mediaItem.playbackDuration))",
+                timestamp:"\(Int(timeStampToScrobble))",
+                method:method_scrobble,
+                api_key:api_key_value,
+                sk:session
             ]
             
             if(mediaItem.albumArtist != mediaItem.artist) {
-                params[self.albumArtist] = mediaItem.albumArtist
+                params[albumArtist] = mediaItem.albumArtist
             }
             
             self.buildApiSigAndCallWS(params, successHandler: { (info:[String:String]) in
                 Logger.debug("scrobble was successful for mediaItem: \(mediaItem.trackTitle)")
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
-                Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[self.error_key])")
-                if(info[self.error_key] != nil && info[self.error_key]! == self.httpFailure) {
+                Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[error_key])")
+                if(info[error_key] != nil && info[error_key]! == httpFailure) {
                     self.addToScrobbleCache(mediaItem, timeStampToScrobble: timeStampToScrobble)
                 }
             })
@@ -208,9 +228,9 @@ final class LastFmScrobbler {
             buildApiSigAndCallWS(params, successHandler: { (info:[String : String]) -> Void in
                     Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
                     completionHandler?(shouldRemove:true)
-                }, failureHandler: { [unowned self](info:[String : String]) -> () in
-                    Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[self.error_key])")
-                    let removeSlice = (info[self.error_key] != nil && info[self.error_key]! != self.httpFailure)
+                }, failureHandler: { (info:[String : String]) -> () in
+                    Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[error_key])")
+                    let removeSlice = (info[error_key] != nil && info[error_key]! != httpFailure)
                     completionHandler?(shouldRemove:removeSlice)
                 })
         }
@@ -251,19 +271,23 @@ final class LastFmScrobbler {
 
     
     func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
-        guard validSessionObtained || (username_value != nil && session != nil) else {
+        //check if there is a valid session before adding to the scrobble cache
+        //if the session/user name exists but hasnt been validated, check that it has been validated in the last 24 hours
+        //this is to prevent the scrobble cache from building up infinitely if there happens to be a username/session but no valid session
+        guard validSessionObtained
+            || (username_value != nil && session != nil && (CFAbsoluteTimeGetCurrent() - lastSessionValidationTime <= KyoozConstants.ONE_DAY_IN_SECONDS)) else {
             Logger.error("attempting to scrobble without a valid session")
             return
         }
         
         Logger.debug("caching the scrobble for track: \(mediaItemToScrobble.trackTitle) - \(mediaItemToScrobble.artist)")
-        let i = scrobbleCache.count
+        let i = "[\(scrobbleCache.count)]"
         var scrobbleDict = [String:String]()
-        scrobbleDict[self.track + "[\(i)]" ] = mediaItemToScrobble.trackTitle
-        scrobbleDict[self.artist + "[\(i)]" ] = mediaItemToScrobble.albumArtist //this is different (using albumArtist) from the single api call above intentionally
-        scrobbleDict[self.album + "[\(i)]" ] = mediaItemToScrobble.albumTitle
-        scrobbleDict[self.duration + "[\(i)]" ] = "\(Int(mediaItemToScrobble.playbackDuration))"
-        scrobbleDict[self.timestamp + "[\(i)]" ] = "\(Int(timeStampToScrobble))"
+        scrobbleDict[track + i] = mediaItemToScrobble.trackTitle
+        scrobbleDict[artist + i] = mediaItemToScrobble.albumArtist //this is different (using albumArtist) from the single api call above intentionally
+        scrobbleDict[album + i] = mediaItemToScrobble.albumTitle
+        scrobbleDict[duration + i] = "\(Int(mediaItemToScrobble.playbackDuration))"
+        scrobbleDict[timestamp + i] = "\(Int(timeStampToScrobble))"
         scrobbleCache.append(scrobbleDict)
     }
     
@@ -285,17 +309,20 @@ final class LastFmScrobbler {
         
         newParams.append("\(api_sig)=\(apiSig)")
         
-        SimpleWSClient.instance.executeHTTPSPOSTCall(baseURL: API_URL, params: newParams,
-            successHandler: { [unowned self](info:[String:String]) in
-                if(info[self.status_key]! == self.status_ok) {
+        simpleWsClient.executeHTTPSPOSTCall(baseURL: API_URL, params: newParams,
+            successHandler: { (info:[String:String]) in
+                let status = info[status_key] ?? ""
+                if(status == status_ok) {
                     lastFmSuccessHandler(info)
-                } else if (info[self.status_key]! == self.status_failed) {
+                } else if (status == status_failed) {
                     lastFmFailureHandler(info)
+                } else {
+                    lastFmFailureHandler([error_key:"unknown failure"])
                 }
                 
-            },  failureHandler: { [unowned self]() -> () in
+            },  failureHandler: {
                 Logger.debug("http failure occured, caching scrobble for now")
-                lastFmFailureHandler([self.error_key:self.httpFailure])
+                lastFmFailureHandler([error_key:httpFailure])
         })
     }
     

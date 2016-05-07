@@ -14,4 +14,6 @@ struct KyoozConstants {
     static let JUMP_TO_ARTIST = "JUMP TO ARTIST"
     static let ADD_TO_PLAYLIST = "ADD TO PLAYLIST.."
     
+    static let ONE_DAY_IN_SECONDS:Double = 86400 //60 * 60 * 24
+    
 }

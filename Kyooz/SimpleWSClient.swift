@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class SimpleWSClient {
+class SimpleWSClient {
     
     static let instance:SimpleWSClient = SimpleWSClient()
     
