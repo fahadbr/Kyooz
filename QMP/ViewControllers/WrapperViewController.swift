@@ -29,6 +29,8 @@ class WrapperViewController : UIViewController {
 		if isPresentedVC {
 			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
 				name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
+			    name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
 		}
     }
 	
@@ -47,6 +49,8 @@ class WrapperViewController : UIViewController {
     }
 	
 	func refreshIndexAndViews() {
+		guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else { return }
+		
 		representingIndex = audioQueuePlayer.indexOfNowPlayingItem
 		refreshViews(audioQueuePlayer.nowPlayingItem)
 	}

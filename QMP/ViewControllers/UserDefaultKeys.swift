@@ -12,6 +12,9 @@ struct UserDefaultKeys {
     static let AudioQueuePlayer = "AUDIO_QUEUE_PLAYER"
     static let ReduceAnimations = "ReduceAnimations"
     static let AllMusicBaseGroup = "AllMusicBaseGroup"
+	static let LastFmSessionKey = "SESSION_KEY"
+	static let LastFmUsernameKey = "USERNAME_KEY"
+	static let LastFmLastSessionValidationTimeKey = "LastFmLastSessionValidationTimeKey"
 }
 
 enum AudioQueuePlayerType : Int {

@@ -115,6 +115,11 @@ final class PlaybackProgressViewController: UIViewController {
 	}
     
     func resetProgressBar() {
+		guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else {
+			invalidateTimer()
+			return
+		}
+		
         progressSlider.maximumValue = Float(audioQueuePlayer.nowPlayingItem?.playbackDuration ?? 1.0)
         resetTimer()
         refreshProgressSlider()
