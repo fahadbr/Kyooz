@@ -15,47 +15,57 @@ final class LastFmScrobbler {
     static let instance:LastFmScrobbler = LastFmScrobbler()
     
     //MARK: Key Constants
-    let API_URL = "https://ws.audioscrobbler.com/2.0/"
-    let api_key = "api_key"
-    let authToken = "authToken"
-    let method = "method"
-    let api_sig = "api_sig"
-    let username = "username"
-    let sk = "sk"
-    let artist = "artist"
-    let albumArtist = "albumArtist"
-    let track = "track"
-    let album = "album"
-    let duration = "duration"
-    let timestamp = "timestamp"
+    private let API_URL = "https://ws.audioscrobbler.com/2.0/"
+    private let api_key = "api_key"
+    private let authToken = "authToken"
+    private let method = "method"
+    private let api_sig = "api_sig"
+    private let username = "username"
+    private let sk = "sk"
+    private let artist = "artist"
+    private let albumArtist = "albumArtist"
+    private let track = "track"
+    private let album = "album"
+    private let duration = "duration"
+    private let timestamp = "timestamp"
     
-    let method_getUserSession = "auth.getMobileSession"
-    let method_getSessionInfo = "auth.getSessionInfo"
-    let method_scrobble = "track.scrobble"
+    private let method_getUserSession = "auth.getMobileSession"
+    private let method_getSessionInfo = "auth.getSessionInfo"
+    private let method_scrobble = "track.scrobble"
     
-    let status_key = "lfm.status"
-    let status_ok = "ok"
-    let status_failed = "failed"
+    private let status_key = "lfm.status"
+    private let status_ok = "ok"
+    private let status_failed = "failed"
     
-    let error_key = "error"
-    let error_code_key = "error.code"
-    let httpFailure = "Unable To Reach Network"
-    
-    let USER_DEFAULTS_SESSION_KEY = "SESSION_KEY"
-    let USER_DEFAULTS_USERNAME_KEY = "USERNAME_KEY"
+    private let error_key = "error"
+    private let error_code_key = "error.code"
+    private let httpFailure = "Unable To Reach Network"
     
     //MARK: Session and API Properties
     
-    let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
-    let api_secret = "a0444ceba4d9f49eedc519699cec2624"
+    private let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
+    private let api_secret = "a0444ceba4d9f49eedc519699cec2624"
     
-    var username_value:String?
-    var session:String?
+	private (set) var username_value = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.LastFmUsernameKey) {
+		didSet {
+			NSUserDefaults.standardUserDefaults().setObject(username_value, forKey: UserDefaultKeys.LastFmUsernameKey)
+		}
+	}
+	
+	private (set) var session = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.LastFmSessionKey) {
+		didSet {
+			NSUserDefaults.standardUserDefaults().setObject(session, forKey: UserDefaultKeys.LastFmSessionKey)
+		}
+	}
+	
+	private var lastSessionValidationTime = TempDataDAO.getPersistentValue(UserDefaultKeys.LastFmLastSessionValidationTimeKey) as? UInt64?? 0 {
+		
+	}
 
-    var shouldCache = false
-    let cacheMax = 5
-    let BATCH_SIZE = 50
-    var scrobbleCache = [[String:String]]()
+    private var shouldCache = false
+    private let cacheMax = 5
+    private let BATCH_SIZE = 50
+    private (set) var scrobbleCache = TempDataDAO.instance.getLastFmScrobbleCacheFromFile() ?? [[String:String]]()
 
     private (set) var validSessionObtained:Bool = false {
         didSet {
@@ -70,43 +80,36 @@ final class LastFmScrobbler {
     var mediaItemToScrobble:AudioTrack!
     
     //MARK: FUNCTIONS
-    
-    init() {
-        if let scrobbles = TempDataDAO.instance.getLastFmScrobbleCacheFromFile() {
-            Logger.debug("restoring scrobble cache")
-            self.scrobbleCache = scrobbles
-        }
-    }
+	
     
     func initializeScrobbler() {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self] in
-            if(self.validSessionObtained) { return }
-            
-            guard let session = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_SESSION_KEY),
-				let username_value = NSUserDefaults.standardUserDefaults().stringForKey(self.USER_DEFAULTS_USERNAME_KEY) else {
-                self.validSessionObtained = false
-                return
-            }
-			self.session = session
-			self.username_value = username_value.lowercaseString
+		func initializeScrobblerSync() {
+			guard !validSessionObtained else { return }
 			
-            let params:[String:String] = [
-                self.api_key:self.api_key_value,
-                self.sk : session,
-                self.method: self.method_getSessionInfo,
-                self.username: username_value
-            ]
-            self.buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
-                    Logger.debug("logging into lastfm was a SUCCESS")
-                    self.validSessionObtained = true
-            },  failureHandler: { [unowned self](info:[String:String]) -> () in
+			guard let session = self.session, let username_value = self.username_value else {
+				return
+			}
+			
+			let params:[String:String] = [
+				api_key:api_key_value,
+				sk : session,
+				method: method_getSessionInfo,
+				username: username_value
+			]
+			buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
+				Logger.debug("logging into lastfm was a SUCCESS")
+				self.validSessionObtained = true
+				},  failureHandler: { [unowned self](info:[String:String]) -> () in
 					let error = info[self.error_key]
-                    Logger.error("could not validate existing session because of error: \(error), will attempt to get a new one")
+					Logger.error("could not validate existing session because of error: \(error), will attempt to get a new one")
 					self.currentStateDetails = error
-            })
-        }
-    }
-    
+				})
+		}
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), initializeScrobblerSync)
+	}
+	
+
+	
     func initializeSession(usernameForSession usernameForSession:String, password:String, completionHandler:() -> Void) {
         Logger.debug("attempting to log in as \(usernameForSession)")
         let params:[String:String] = [
@@ -120,10 +123,9 @@ final class LastFmScrobbler {
         buildApiSigAndCallWS(params, successHandler: { [unowned self](info:[String:String]) in
             if let key = info["key"], let name = info["name"] {
                 Logger.debug("successfully retrieved session for user \(name)")
-                NSUserDefaults.standardUserDefaults().setObject(key, forKey: self.USER_DEFAULTS_SESSION_KEY)
-                NSUserDefaults.standardUserDefaults().setObject(name, forKey: self.USER_DEFAULTS_USERNAME_KEY)
-                self.session = key as String
-                self.username_value = name as String
+
+                self.session = key
+                self.username_value = name
                 self.validSessionObtained = true
                 completionHandler()
             }
@@ -137,9 +139,8 @@ final class LastFmScrobbler {
     }
     
     func removeSession() {
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_SESSION_KEY)
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(USER_DEFAULTS_USERNAME_KEY)
         username_value = nil
+		session = nil
         validSessionObtained = false
     }
     
@@ -297,14 +298,9 @@ final class LastFmScrobbler {
 
     
     private func getOrderedParamKeys(params:[String:String]) -> [String] {
-        var orderedParamKeys = [String]()
-        for (key, _) in params {
-            orderedParamKeys.append(key)
+		return params.map({ return $0.0 }).sort() {
+            return $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending
         }
-        orderedParamKeys.sortInPlace { (val1:String, val2:String) -> Bool in
-            return val1.caseInsensitiveCompare(val2) == NSComparisonResult.OrderedAscending
-        }
-        return orderedParamKeys
     }
     
     
