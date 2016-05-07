@@ -14,6 +14,8 @@ final class LastFmScrobbler {
     
     static let instance:LastFmScrobbler = LastFmScrobbler()
     
+    private static let LastSessionValidationTimeKey = "LastFmLastSessionValidationTimeKey"
+    
     //MARK: Key Constants
     private let API_URL = "https://ws.audioscrobbler.com/2.0/"
     private let api_key = "api_key"
@@ -58,9 +60,11 @@ final class LastFmScrobbler {
 		}
 	}
 	
-	private var lastSessionValidationTime = TempDataDAO.getPersistentValue(UserDefaultKeys.LastFmLastSessionValidationTimeKey) as? UInt64?? 0 {
-		
-	}
+    private var lastSessionValidationTime:CFAbsoluteTime = TempDataDAO.instance.getPersistentNumber(key: LastFmScrobbler.LastSessionValidationTimeKey)?.doubleValue ?? 0 {
+        didSet {
+            TempDataDAO.instance.addPersistentValue(key: LastFmScrobbler.LastSessionValidationTimeKey, value: NSNumber(double: lastSessionValidationTime))
+        }
+    }
 
     private var shouldCache = false
     private let cacheMax = 5
@@ -71,6 +75,7 @@ final class LastFmScrobbler {
         didSet {
             ApplicationDefaults.evaluateMinimumFetchInterval()
 			if validSessionObtained {
+                lastSessionValidationTime = CFAbsoluteTimeGetCurrent()
 				currentStateDetails = nil
 			}
         }
