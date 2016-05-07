@@ -103,6 +103,7 @@
 		0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */; };
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
+		0BC2D7B41CDE5F1A001BEC9B /* LastFmScrobblerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC2D7B31CDE5F1A001BEC9B /* LastFmScrobblerTest.swift */; };
 		0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */; };
 		0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179C1C5D7BB2002BF431 /* AudioEntityDSD.swift */; };
 		0BC3179F1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BC3179E1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift */; };
@@ -274,6 +275,7 @@
 		0BBE15F91AF5BE20007C6189 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KyoozBridge.h; sourceTree = "<group>"; };
 		0BBE16011AF6AC9B007C6189 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Logger.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BC2D7B31CDE5F1A001BEC9B /* LastFmScrobblerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastFmScrobblerTest.swift; sourceTree = "<group>"; };
 		0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntitySourceData.swift; sourceTree = "<group>"; };
 		0BC3179C1C5D7BB2002BF431 /* AudioEntityDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSD.swift; sourceTree = "<group>"; };
 		0BC3179E1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPlayerFrameworkExtensions.swift; sourceTree = "<group>"; };
@@ -409,8 +411,7 @@
 				0B13D9C71AE6F80E00CC5C01 /* Images.xcassets */,
 				0B13D9BE1AE6F80E00CC5C01 /* Supporting Files */,
 			);
-			name = Kyooz;
-			path = QMP;
+			path = Kyooz;
 			sourceTree = "<group>";
 		};
 		0B13D9BE1AE6F80E00CC5C01 /* Supporting Files */ = {
@@ -618,6 +619,23 @@
 			name = Logger;
 			sourceTree = "<group>";
 		};
+		0BC2D7B11CDE5EFC001BEC9B /* AudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				0BC2D7B21CDE5F05001BEC9B /* LastFm */,
+			);
+			name = AudioPlayer;
+			sourceTree = "<group>";
+		};
+		0BC2D7B21CDE5F05001BEC9B /* LastFm */ = {
+			isa = PBXGroup;
+			children = (
+				0BC2D7B31CDE5F1A001BEC9B /* LastFmScrobblerTest.swift */,
+			);
+			name = LastFm;
+			path = AudioPlayer/LastFm;
+			sourceTree = "<group>";
+		};
 		0BC317991C5D7AC2002BF431 /* TableView */ = {
 			isa = PBXGroup;
 			children = (
@@ -697,6 +715,7 @@
 			isa = PBXGroup;
 			children = (
 				0B2B1E911CC43F1500D8A932 /* StringNormalizationTest.swift */,
+				0BC2D7B11CDE5EFC001BEC9B /* AudioPlayer */,
 				100A8BC41C54423B009FAB17 /* KyoozTests.swift */,
 				100A8BC61C54423B009FAB17 /* Info.plist */,
 			);
@@ -1034,6 +1053,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B2B1E921CC43F1500D8A932 /* StringNormalizationTest.swift in Sources */,
+				0BC2D7B41CDE5F1A001BEC9B /* LastFmScrobblerTest.swift in Sources */,
 				100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1157,6 +1177,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-red-gray";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1166,7 +1187,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/usr/include/libxml2,
 				);
-				INFOPLIST_FILE = QMP/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Kyooz/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
@@ -1175,7 +1196,7 @@
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INCLUDE_PATHS = "";
-				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = Kyooz/KyoozBridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1188,6 +1209,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-red-gray";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1197,7 +1219,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/usr/include/libxml2,
 				);
-				INFOPLIST_FILE = QMP/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Kyooz/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
@@ -1205,7 +1227,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = QMP/KyoozBridge.h;
+				SWIFT_OBJC_BRIDGING_HEADER = Kyooz/KyoozBridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

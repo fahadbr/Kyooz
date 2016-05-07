@@ -302,7 +302,7 @@ final class LastFmScrobbler {
     //MARK: Parameter builders
 
     
-    private func getOrderedParamKeys(params:[String:String]) -> [String] {
+    func getOrderedParamKeys(params:[String:String]) -> [String] {
 		return params.map({ return $0.0 }).sort() {
             return $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending
         }
