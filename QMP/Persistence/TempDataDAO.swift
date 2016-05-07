@@ -50,6 +50,10 @@ final class TempDataDAO : NSObject {
         return miscellaneousValues.valueForKey(key)
     }
     
+    func getPersistentNumber(key key:String) -> NSNumber? {
+        return getPersistentValue(key: key) as? NSNumber
+    }
+    
     func persistData(notification:NSNotification) {
         persistLastFmScrobbleCache()
         persistPlaybackStateSnapshotToTempStorage()
