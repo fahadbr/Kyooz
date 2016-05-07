@@ -27,7 +27,8 @@ class KyoozTests: XCTestCase {
         let scrobbleCache = Array<Int>(0...130)
 
         let maxValue = scrobbleCache.count
-        for var i=0 ; i < maxValue ;  {
+        var i = 0
+        while i < maxValue {
             let nextIndexToUse = min(i + BATCH_SIZE, maxValue)
             let slice = scrobbleCache[i..<(nextIndexToUse)]
             print("\(slice)")
@@ -35,7 +36,7 @@ class KyoozTests: XCTestCase {
             i = nextIndexToUse
         }
         
-        var i = 0
+        i = 0
         while i < maxValue {
             let nextIndexToUse = min(i + BATCH_SIZE, maxValue)
             let slice = scrobbleCache[i..<(nextIndexToUse)]

@@ -10,6 +10,6 @@
 #define Kyooz_KyoozBridge_h
 
 #import <CommonCrypto/CommonDigest.h>
-#import <Reachability.h>
+#import "Reachability.h"
 
 #endif

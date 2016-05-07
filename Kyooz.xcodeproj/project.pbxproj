@@ -633,8 +633,8 @@
 				0BC2D7B31CDE5F1A001BEC9B /* LastFmScrobblerTest.swift */,
 			);
 			name = LastFm;
-			path = AudioPlayer/LastFm;
-			sourceTree = "<group>";
+			path = KyoozTests/AudioPlayer/LastFm;
+			sourceTree = SOURCE_ROOT;
 		};
 		0BC317991C5D7AC2002BF431 /* TableView */ = {
 			isa = PBXGroup;
@@ -1173,11 +1173,11 @@
 		0B13D9DB1AE6F80E00CC5C01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-red-gray";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1205,11 +1205,11 @@
 		0B13D9DC1AE6F80E00CC5C01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-red-gray";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

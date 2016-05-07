@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-final class TempDataDAO : NSObject {
+class TempDataDAO : NSObject {
     //MARK: STATIC PROPERTIES
     static let tempDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory())
     private static let playbackStateSnapshotFileName = tempDirectory.URLByAppendingPathComponent("playbackStateSnapshot.archive").path!
