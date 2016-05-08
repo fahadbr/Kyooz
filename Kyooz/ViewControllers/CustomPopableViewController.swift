@@ -19,11 +19,18 @@ class CustomPopableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) else {
-            return
-        }
+        popGestureRecognizer.enabled = NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations)
         view.addGestureRecognizer(popGestureRecognizer)
         ContainerViewController.instance.centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGestureRecognizer)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        enableCustomPopGestureRecognizer(NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations))
+    }
+    
+    func enableCustomPopGestureRecognizer(shouldEnable:Bool) {
+        popGestureRecognizer.enabled = shouldEnable
     }
 
     //MARK: - gesture recognizer handling methods

@@ -88,6 +88,13 @@ struct ThemeHelper {
 		return UIFont(name: fontName, size: smallFontSize)
 	}
     
+    static func configureNavigationBar(navigationBar:UINavigationBar) {
+        let image = UIImage()
+        navigationBar.setBackgroundImage(image, forBarMetrics: .Default)
+        navigationBar.shadowImage = image
+    }
+    
+    
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()
         titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontNameBold, size:defaultFontSize)
@@ -96,6 +103,8 @@ struct ThemeHelper {
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().barStyle = defaultBarStyle
         UINavigationBar.appearance().translucent = barsAreTranslucent
+        UINavigationBar.appearance().backgroundColor = UIColor.clearColor()
+
         
         var uiBarButtonTextAttributes = [String : AnyObject]()
         uiBarButtonTextAttributes[NSFontAttributeName] = defaultFont

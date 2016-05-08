@@ -85,7 +85,7 @@ final class HomeButtonView : UIButton {
 		
         basePath.lineCapStyle = .Round
         basePath.lineWidth = smallerSide * 0.05
-        basePath.applyTransform(CGAffineTransformMakeTranslation(inset * rect.width * 0.6, 0))
+//        basePath.applyTransform(CGAffineTransformMakeTranslation(inset * rect.width * 0.6, 0))
 		basePath.stroke()
 		
 	}
