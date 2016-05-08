@@ -153,7 +153,7 @@
 		10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FD1CB877A2008402BB /* NowPlayingBarViewController.swift */; };
 		10DB79001CBAF53E008402BB /* NowPlayingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */; };
 		10DB79021CBC7026008402BB /* AudioQueuePlayerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB79011CBC7026008402BB /* AudioQueuePlayerWrapper.swift */; };
-		10DB79041CC6E420008402BB /* LibraryHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB79031CC6E420008402BB /* LibraryHomeViewController.swift */; };
+		10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */; };
 		10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */; };
 		10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */; };
 		10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */; };
@@ -327,7 +327,7 @@
 		10DB78FD1CB877A2008402BB /* NowPlayingBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingBarViewController.swift; sourceTree = "<group>"; };
 		10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingPageViewController.swift; sourceTree = "<group>"; };
 		10DB79011CBC7026008402BB /* AudioQueuePlayerWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerWrapper.swift; sourceTree = "<group>"; };
-		10DB79031CC6E420008402BB /* LibraryHomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryHomeViewController.swift; sourceTree = "<group>"; };
+		10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozNavigationViewController.swift; sourceTree = "<group>"; };
 		10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationManager.swift; sourceTree = "<group>"; };
 		10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowLimitedSectionDelegator.swift; sourceTree = "<group>"; };
 		10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityHeaderViewController.swift; sourceTree = "<group>"; };
@@ -460,6 +460,7 @@
 				100A8BCD1C56EBEB009FAB17 /* Util VCs */,
 				0B0FE16E1C40B8F7001E4ABE /* VC Helpers */,
 				0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */,
+				10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */,
 				0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
 			);
@@ -732,7 +733,6 @@
 				0B31FE081BF04B7100B33F0A /* AudioEntitySearchViewController.swift */,
 				0B650A5E1C39CF2D00C0DC51 /* AudioEntityViewController.swift */,
 				0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */,
-				10DB79031CC6E420008402BB /* LibraryHomeViewController.swift */,
 			);
 			name = MediaLibrary;
 			sourceTree = "<group>";
@@ -1024,7 +1024,7 @@
 				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,
 				0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */,
 				0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */,
-				10DB79041CC6E420008402BB /* LibraryHomeViewController.swift in Sources */,
+				10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */,
 				0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */,
 				0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */,
 				0B4E600A1C2CD9AD00BB9D77 /* RepeatButtonView.swift in Sources */,

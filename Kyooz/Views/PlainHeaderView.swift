@@ -18,7 +18,6 @@ final class PlainHeaderView : UIVisualEffectView {
 		accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
 		accentLayer.lineWidth = 0.75
 		layer.addSublayer(accentLayer)
-        userInteractionEnabled = false
     }
 	
 	required init?(coder aDecoder: NSCoder) {

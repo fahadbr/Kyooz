@@ -18,75 +18,26 @@ private struct BasicCellConfiguration : CellConfiguration {
     let action:()->()
 }
 
-private class ViewSwitcher : CellConfiguration {
-    
-    let name: String
-    let viewControllerGeneratingBlock:()->UIViewController
-    var isSelected:Bool = false
-    var viewControllers:[UIViewController]?
-    
-    var action:()->() {
-        return setVCs
-    }
-    
-    init(name:String, viewControllerGeneratingBlock:()->UIViewController) {
-        self.name = name
-        self.viewControllerGeneratingBlock = viewControllerGeneratingBlock
-    }
-    
-    func setVCs() {
-        if isSelected {
-            RootViewController.instance.libraryNavigationController.popToRootViewControllerAnimated(true)
-        } else if let vcs = viewControllers {
-            RootViewController.instance.libraryNavigationController.setViewControllers(vcs, animated: false)
-        } else {
-            RootViewController.instance.libraryNavigationController.setViewControllers([viewControllerGeneratingBlock()], animated: false)
-        }
-        
-        isSelected = true
-    }
-    
-    func recallVCs() {
-//        viewControllers = RootViewController.instance.libraryNavigationController.viewControllers
-        isSelected = false
-    }
-    
-    
-}
 
 final class KyoozNavigationViewController : UIViewController, UITableViewDataSource, UITableViewDelegate {
 	
-	private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.35)
     private static let reuseIdentifier = "kyoozNavigationViewControllerCell"
     
     private let fadeOutAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.4)
     
 	private let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
-	
-    private var cellConfigurations = [[CellConfiguration]]()
-    private var selectedIndexPath:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0) {
-        willSet {
-            if newValue != selectedIndexPath {
-                (cellConfigurations[selectedIndexPath.section][selectedIndexPath.row] as? ViewSwitcher)?.recallVCs()
-            }
-        }
-    }
     
-    private var delay:Double = 0
+    private var cellConfigurations = [[CellConfiguration]]()
+
     private var blurView:UIVisualEffectView?
+    private var initialLoadComplete = false
 	
 	private lazy var allMusicCellConfiguration:CellConfiguration = {
-        let title = "ALL MUSIC"
-		let action = { () -> UIViewController in
-			let vc = AudioEntityLibraryViewController()
-			vc.title = title
-            let baseGroupIndex = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AllMusicBaseGroup)
-            let selectedGroup = LibraryGrouping.allMusicGroupings[baseGroupIndex]
-            vc.sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
-			return vc
+        let title = "HOME"
+		let action = { () -> () in
+			RootViewController.instance.libraryNavigationController.popToRootViewControllerAnimated(true)
 		}
-        let vs = ViewSwitcher(name: title, viewControllerGeneratingBlock: action)
-        return vs
+        return BasicCellConfiguration(name:title, action: action)
 	}()
 	
 	private lazy var settingsCellConfiguration:CellConfiguration = {
@@ -103,56 +54,66 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         fadeOutAnimation.delegate = self
 		let headerHeight:CGFloat = ThemeHelper.plainHeaderHight
+        let headerView = PlainHeaderView()
+        headerView.effect = nil
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
+        headerView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
 
-		ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
-        tableView.scrollsToTop = false
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: tableView, parentView: view)
+        tableView.topAnchor.constraintEqualToAnchor(headerView.bottomAnchor).active = true
         tableView.separatorStyle = .SingleLine
-		tableView.contentInset.top = headerHeight
-		tableView.scrollIndicatorInsets.top = headerHeight
 		tableView.rowHeight = 50
-		tableView.panGestureRecognizer.requireGestureRecognizerToFail(ContainerViewController.instance.centerPanelPanGestureRecognizer)
         tableView.backgroundColor = UIColor.clearColor()
         tableView.registerClass(AbstractTableViewCell.self, forCellReuseIdentifier: KyoozNavigationViewController.reuseIdentifier)
-		
-        var section = [allMusicCellConfiguration]
+        
+        cellConfigurations.append([allMusicCellConfiguration])
+        
+        var section = [CellConfiguration]()
         for group in LibraryGrouping.otherGroupings {
             let title = group.name
-            let action = { () -> UIViewController in
+            let action = {
                 let vc = AudioEntityLibraryViewController()
                 vc.sourceData = MediaQuerySourceData(filterQuery: group.baseQuery, libraryGrouping: group)
                 vc.subGroups = [LibraryGrouping]()
                 vc.title = title
-                return vc
+                ContainerViewController.instance.pushViewController(vc)
             }
-            section.append(ViewSwitcher(name: title, viewControllerGeneratingBlock: action))
+            section.append(BasicCellConfiguration(name: title, action: action))
         }
         
 		cellConfigurations.append(section)
 		
 		cellConfigurations.append([settingsCellConfiguration])
-        
-        let cancelConfig = BasicCellConfiguration(name: "CANCEL", action: {
-            //no op
-        })
-        cellConfigurations.append([cancelConfig])
-		
-		let headerView = PlainHeaderView()
-        headerView.effect = nil
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
-		headerView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
+
 		
 		automaticallyAdjustsScrollViewInsets = false
 		
 		tableView.delegate = self
 		tableView.dataSource = self
         
-        title = "LIBRARY"
+        let titleLabel = UILabel()
+        titleLabel.text = "NAVIGATION"
+        titleLabel.textColor = ThemeHelper.defaultFontColor
+        titleLabel.font = UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize)
+        titleLabel.textAlignment = .Center
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: titleLabel, parentView: headerView.contentView)
+        titleLabel.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        
+        let cancelButton = UIButton()
+        cancelButton.setTitle("╳", forState: .Normal)
+        cancelButton.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
+        cancelButton.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
+//        cancelButton.titleLabel?.font = UIFont.boldSystemFontOfSize(20)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Bottom], subView: cancelButton, parentView: headerView.contentView)
+        cancelButton.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        cancelButton.widthAnchor.constraintEqualToAnchor(cancelButton.heightAnchor).active = true
+        cancelButton.addTarget(self, action: #selector(self.transitionOut), forControlEvents: .TouchUpInside)
 	}
+    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        delay = 0
-        tableView.reloadData()
+        animateCells()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -161,8 +122,20 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         self.blurView = blurView
         ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
         view.sendSubviewToBack(blurView)
-        UIView.animateWithDuration(0.3) { 
+        UIView.animateWithDuration(0.35, delay: 0, options: .CurveEaseIn, animations: {
             blurView.effect = UIBlurEffect(style: .Dark)
+        }, completion: nil)
+    }
+    
+    private func animateCells() {
+        var delay:Double = 0
+        for cell in tableView.visibleCells {
+            cell.alpha = 0
+            cell.contentView.alpha = 1
+            UIView.animateWithDuration(0.35, delay: delay, options: .CurveEaseOut, animations: {
+                cell.alpha = 1
+                }, completion: nil)
+            delay += 0.05
         }
     }
 
@@ -179,29 +152,36 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 		let cell = tableView.dequeueReusableCellWithIdentifier(KyoozNavigationViewController.reuseIdentifier) ?? AbstractTableViewCell()
 		cell.textLabel?.text = cellConfigurations[indexPath.section][indexPath.row].name
 		cell.textLabel?.font = ThemeHelper.defaultFont
-        cell.textLabel?.textColor = indexPath == selectedIndexPath ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
+        cell.textLabel?.textColor = ThemeHelper.defaultFontColor
+        if !initialLoadComplete {
+            cell.contentView.alpha = 0
+        }
 		cell.backgroundColor = UIColor.clearColor()
-        cell.alpha = 0
-        UIView.animateWithDuration(0.35, delay: delay, options: .CurveEaseOut, animations: { 
-            cell.alpha = 1
-        }, completion: nil)
-        delay += 0.05
         
+        //upon loading the last cell, trigger the cell animations
+        if indexPath.section == cellConfigurations.count - 1 && indexPath.row == cellConfigurations[indexPath.section].count - 1 && !initialLoadComplete {
+            initialLoadComplete = true
+            KyoozUtils.doInMainQueueAsync(animateCells)
+        }
+
 		return cell
 	}
+
 	
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+		tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
         let cellConfiguration = cellConfigurations[indexPath.section][indexPath.row]
-        if cellConfiguration is ViewSwitcher {
-            selectedIndexPath = indexPath
-        }
 		
         cellConfiguration.action()
+        
+        transitionOut()
+	}
+    
+    func transitionOut() {
         ContainerViewController.instance.longPressGestureRecognizer.enabled = true
         view.layer.addAnimation(fadeOutAnimation, forKey: nil)
-	}
+    }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         blurView?.removeFromSuperview()

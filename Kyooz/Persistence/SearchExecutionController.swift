@@ -13,15 +13,19 @@ private let fatalErrorAbstractClassMessage = "this is an abstract class, subclas
 
 protocol SearchExecutionControllerDelegate: class {
     func searchResultsDidGetUpdated()
+    func searchDidComplete()
 }
 
 class SearchExecutionController : NSObject {
+    
     
     let libraryGroup:LibraryGrouping
     
     override var description: String {
         return libraryGroup.name
     }
+    
+    var searchInProgress:Bool = false
     
     private (set) var searchResults:[AudioEntity] = [AudioEntity]()
     private var searchIndex:SearchIndex<AudioEntity>? {
@@ -52,7 +56,7 @@ class SearchExecutionController : NSObject {
 
     func executeSearchForStringComponents(searchString:String, stringComponents:[String]) {
         defaultSearchQueue.cancelAllOperations()
-        
+
         let finalPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: stringComponents.map { searchStringComponent in
             
             let searchStringExpression = NSExpression(forConstantValue: searchStringComponent)
@@ -86,6 +90,12 @@ class SearchExecutionController : NSObject {
         }
         
         defaultSearchQueue.addOperation(searchOperation)
+        searchInProgress = true
+        defaultSearchQueue.addOperationWithBlock() {
+            self.searchInProgress = false
+            self.delegate?.searchDidComplete()
+        }
+        
         previousSearchParams = (searchString, stringComponents)
     }
     

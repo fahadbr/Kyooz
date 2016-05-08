@@ -49,9 +49,14 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     override func viewDidLoad() {
         super.viewDidLoad()
-		let baseLibraryVC = LibraryHomeViewController()
+
+        let aelvc = AudioEntityLibraryViewController()
+        let baseGroupIndex = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AllMusicBaseGroup)
+        let selectedGroup = LibraryGrouping.allMusicGroupings[baseGroupIndex]
+        aelvc.title = "ALL MUSIC"
+        aelvc.sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
 		
-		libraryNavigationController = UINavigationController(rootViewController: baseLibraryVC)
+		libraryNavigationController = UINavigationController(rootViewController: aelvc)
 		
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
@@ -116,11 +121,13 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     func setNavigationDelegate() {
-        if NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations) {
+        let reduceAnimations = NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations)
+        if reduceAnimations {
             libraryNavigationController.delegate = reducedAnimationDelegate
         } else {
             libraryNavigationController.delegate = self
         }
+        (libraryNavigationController.topViewController as? CustomPopableViewController)?.enableCustomPopGestureRecognizer(reduceAnimations)
     }
     
     func presentWarningView(message:String, handler:()->()) {

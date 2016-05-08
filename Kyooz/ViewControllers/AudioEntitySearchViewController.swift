@@ -69,6 +69,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     private (set) var searchText:String!
     
     private let searchBar = UISearchBar()
+    private let activityIndicator = UIActivityIndicatorView()
 	
     //MARK: - View life cycle
     override func viewDidLoad() {
@@ -79,14 +80,23 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         searchBar.delegate = self
         searchBar.barStyle = UIBarStyle.Black
         searchBar.translucent = false
-        searchBar.placeholder = "SEARCH"
+        searchBar.placeholder = "Search"
         searchBar.tintColor = ThemeHelper.defaultVividColor
         searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
 		searchBar.backgroundColor = UIColor.clearColor()
-        ConstraintUtils.applyStandardConstraintsToView(subView: searchBar, parentView: headerView.contentView)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Bottom], subView: searchBar, parentView: headerView.contentView)
+        
 		
         tableView.scrollsToTop = isExpanded
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
+        
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Bottom, .Right], subView: activityIndicator, parentView: headerView.contentView).forEach() {
+            $1.constant = -8
+        }
+        activityIndicator.color = ThemeHelper.defaultVividColor
+        activityIndicator.widthAnchor.constraintEqualToConstant(30).active = true
+        activityIndicator.heightAnchor.constraintEqualToAnchor(activityIndicator.widthAnchor).active = true
+        activityIndicator.leftAnchor.constraintEqualToAnchor(searchBar.rightAnchor).active = true
         
         var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
         for searchExecutionController in searchExecutionControllers {
@@ -167,10 +177,13 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        defer {
+            refreshActivityView()
+        }
 		guard !searchText.isEmpty else { return }
 		
 		let normalizedSearchText = searchText.normalizedString
-		if let currentText = self.searchText where currentText == normalizedSearchText {
+		guard (self.searchText ?? "") != normalizedSearchText else {
 			return
 		}
 		
@@ -186,6 +199,25 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     //MARK: - SearchExecutionController Delegate
     func searchResultsDidGetUpdated() {
         reloadTableViewData()
+    }
+    
+    func searchDidComplete() {
+        KyoozUtils.doInMainQueue(refreshActivityView)
+    }
+    
+    func refreshActivityView() {
+        var searchInProgress = false
+        for se in searchExecutionControllers {
+            if se.searchInProgress {
+                searchInProgress = true
+                break
+            }
+        }
+        if searchInProgress && !activityIndicator.isAnimating() {
+            activityIndicator.startAnimating()
+        } else if !searchInProgress && activityIndicator.isAnimating() {
+            activityIndicator.stopAnimating()
+        }
     }
     
     func initializeIndicies() {

@@ -35,9 +35,6 @@ final class IndexSearchOperation<T:SearchIndexValue> : AbstractResultOperation<[
         
         if(secondaryResults.isEmpty) { return }
 		
-//        let tracksSet = Set<T>(results)
-//        let resultsSet = Set<T>(secondaryResults)
-//        let differenceSet = resultsSet.subtract(tracksSet)
 		let tracksSet = NSSet(array: results)
 		let resultsSet = NSMutableSet(array: secondaryResults)
 		resultsSet.minusSet(tracksSet as Set<NSObject>)

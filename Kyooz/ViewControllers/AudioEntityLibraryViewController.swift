@@ -10,6 +10,14 @@ import UIKit
 
 final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
+    static let navigationMenuButton:MenuDotsView = {
+        let button = MenuDotsView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+        button.position = 0.85
+        button.color = ThemeHelper.defaultFontColor
+        button.addTarget(ContainerViewController.instance, action: #selector(ContainerViewController.presentKyoozNavigationController), forControlEvents: .TouchUpInside)
+        return button
+    }()
+    
     static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
 	var reuseIdentifier:String {
@@ -43,19 +51,14 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
             }
         }
         super.viewDidLoad()
-		
-        let homeButton = HomeButtonView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
-        homeButton.addTarget(self, action: #selector(self.jumpToHomeScreen), forControlEvents: .TouchUpInside)
-        let button = UIBarButtonItem(customView: homeButton)
-        navigationItem.rightBarButtonItem = button
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.dynamicType.navigationMenuButton)
         
 		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
 		tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
-        
-
-		
+         
 		if testMode {
 			configureTestDelegates()
 		} else {
@@ -93,12 +96,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 					self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
 				}
 			})])
-		}
-	}
-	
-	func jumpToHomeScreen() {
-		KyoozUtils.confirmAction("Return to the home screen?") { [navigationController = self.navigationController] in
-			navigationController?.popToRootViewControllerAnimated(true)
 		}
 	}
 	

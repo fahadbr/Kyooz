@@ -30,6 +30,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     private var nowPlayingNavigationController:UINavigationController!
     private let nowPlayingQueueViewController = NowPlayingQueueViewController.instance
     private let searchViewController = AudioEntitySearchViewController.instance
+    private let kyoozNavigationViewController = KyoozNavigationViewController()
     
     var centerPanelPosition:Position = .Center {
         didSet {
@@ -167,6 +168,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         }
 		
         pushViewController(vc)
+    }
+    
+    func presentKyoozNavigationController() {
+        let nc = kyoozNavigationViewController
+        ConstraintUtils.applyStandardConstraintsToView(subView: nc.view, parentView: view)
+        addChildViewController(nc)
+        nc.didMoveToParentViewController(self)
+        longPressGestureRecognizer.enabled = false
     }
     
     //MARK: NOTIFICATION REGISTRATIONS

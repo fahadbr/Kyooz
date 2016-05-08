@@ -21,6 +21,12 @@ final class MenuDotsView: UIButton {
 	@IBInspectable
 	var position:CGFloat = 0.75
     
+    var scale:CGFloat = 0.24 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override var highlighted:Bool {
         didSet {
             setNeedsDisplay()
@@ -40,7 +46,7 @@ final class MenuDotsView: UIButton {
         }
         color.setFill()
         
-        let rectToUse = CGRectInset(rect, 0, 0.38 * rect.height)
+        let rectToUse = CGRectInset(rect, 0, ((1 - scale)/2) * rect.height)
         
         let minX = rect.origin.x
 
