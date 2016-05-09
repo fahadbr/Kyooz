@@ -18,6 +18,15 @@ private struct BasicCellConfiguration : CellConfiguration {
     let action:()->()
 }
 
+private struct SectionConfiguration {
+	let sectionName:String
+	let cellConfigurations:[CellConfiguration]
+	var count:Int { return cellConfigurations.count }
+	subscript(i:Int) -> CellConfiguration {
+		return cellConfigurations[i]
+	}
+}
+
 
 final class KyoozNavigationViewController : UIViewController, UITableViewDataSource, UITableViewDelegate {
 	
@@ -27,13 +36,14 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
     
 	private let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
     
-    private var cellConfigurations = [[CellConfiguration]]()
+    private var sectionConfigurations = [SectionConfiguration]()
 
     private var blurView:UIVisualEffectView?
+	private var sectionHeaderFont = UIFont(name: ThemeHelper.defaultFontNameMedium, size: ThemeHelper.smallFontSize - 1)
     private var initialLoadComplete = false
 	
 	private lazy var allMusicCellConfiguration:CellConfiguration = {
-        let title = "HOME"
+        let title = "ALL MUSIC"
 		let action = { () -> () in
 			RootViewController.instance.libraryNavigationController.popToRootViewControllerAnimated(true)
 		}
@@ -65,32 +75,32 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 		tableView.rowHeight = 50
         tableView.backgroundColor = UIColor.clearColor()
         tableView.registerClass(AbstractTableViewCell.self, forCellReuseIdentifier: KyoozNavigationViewController.reuseIdentifier)
-        
-        cellConfigurations.append([allMusicCellConfiguration])
-        
-        var section = [CellConfiguration]()
-        for group in LibraryGrouping.otherGroupings {
-            let title = group.name
-            let action = {
-                let vc = AudioEntityLibraryViewController()
-                vc.sourceData = MediaQuerySourceData(filterQuery: group.baseQuery, libraryGrouping: group)
-                vc.subGroups = [LibraryGrouping]()
-                vc.title = title
-                ContainerViewController.instance.pushViewController(vc)
-            }
-            section.append(BasicCellConfiguration(name: title, action: action))
-        }
-        
-		cellConfigurations.append(section)
 		
-		cellConfigurations.append([settingsCellConfiguration])
-
+		func cellConfigurationForGrouping(libraryGrouping:LibraryGrouping) -> CellConfiguration {
+			let title = libraryGrouping.name
+			let action = {
+				let vc = AudioEntityLibraryViewController()
+				vc.sourceData = MediaQuerySourceData(filterQuery: libraryGrouping.baseQuery, libraryGrouping: libraryGrouping)
+				vc.subGroups = [LibraryGrouping]()
+				vc.title = title
+				ContainerViewController.instance.pushViewController(vc)
+			}
+			return BasicCellConfiguration(name: title, action: action)
+		}
+		
+		var musicGroupings:[CellConfiguration] = [allMusicCellConfiguration]
+		musicGroupings.appendContentsOf(LibraryGrouping.otherMusicGroupings.map(cellConfigurationForGrouping))
+		sectionConfigurations.append(SectionConfiguration(sectionName: "MUSIC", cellConfigurations: musicGroupings))
+		
+		let otherAudio = LibraryGrouping.otherGroupings.map(cellConfigurationForGrouping)
+		sectionConfigurations.append(SectionConfiguration(sectionName: "OTHER AUDIO", cellConfigurations:  otherAudio))
+		sectionConfigurations.append(SectionConfiguration(sectionName: "SETTINGS", cellConfigurations:  [settingsCellConfiguration]))
 		
 		automaticallyAdjustsScrollViewInsets = false
 		
 		tableView.delegate = self
 		tableView.dataSource = self
-        
+		
         let titleLabel = UILabel()
         titleLabel.text = "NAVIGATION"
         titleLabel.textColor = ThemeHelper.defaultFontColor
@@ -125,6 +135,13 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         UIView.animateWithDuration(0.35, delay: 0, options: .CurveEaseIn, animations: {
             blurView.effect = UIBlurEffect(style: .Dark)
         }, completion: nil)
+		
+		if !initialLoadComplete {
+			KyoozUtils.doInMainQueueAsync() {
+				self.initialLoadComplete = true
+				KyoozUtils.doInMainQueueAsync(self.animateCells)
+			}
+		}
     }
     
     private func animateCells() {
@@ -141,28 +158,22 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 
     
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		return cellConfigurations.count
+		return sectionConfigurations.count
 	}
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return cellConfigurations[section].count
+		return sectionConfigurations[section].count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCellWithIdentifier(KyoozNavigationViewController.reuseIdentifier) ?? AbstractTableViewCell()
-		cell.textLabel?.text = cellConfigurations[indexPath.section][indexPath.row].name
+		cell.textLabel?.text = sectionConfigurations[indexPath.section][indexPath.row].name
 		cell.textLabel?.font = ThemeHelper.defaultFont
         cell.textLabel?.textColor = ThemeHelper.defaultFontColor
         if !initialLoadComplete {
             cell.contentView.alpha = 0
         }
 		cell.backgroundColor = UIColor.clearColor()
-        
-        //upon loading the last cell, trigger the cell animations
-        if indexPath.section == cellConfigurations.count - 1 && indexPath.row == cellConfigurations[indexPath.section].count - 1 && !initialLoadComplete {
-            initialLoadComplete = true
-            KyoozUtils.doInMainQueueAsync(animateCells)
-        }
 
 		return cell
 	}
@@ -171,13 +182,28 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        let cellConfiguration = cellConfigurations[indexPath.section][indexPath.row]
+        let cellConfiguration = sectionConfigurations[indexPath.section][indexPath.row]
 		
         cellConfiguration.action()
         
         transitionOut()
 	}
-    
+	
+	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let label = UILabel()
+		label.text = "\(sectionConfigurations[section].sectionName)"
+		label.textAlignment = .Center
+		label.font = sectionHeaderFont
+		label.textColor = ThemeHelper.defaultVividColor
+		return label
+	}
+	
+	//only implementing this method because of a bug with viewForHeaderInSection
+	//which doesnt load the first section unless this method is implemented
+	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 30
+	}
+	
     func transitionOut() {
         ContainerViewController.instance.longPressGestureRecognizer.enabled = true
         view.layer.addAnimation(fadeOutAnimation, forKey: nil)
