@@ -28,6 +28,7 @@ class AddToPlaylistViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(white: 0, alpha: 0.4)
+        
         @available(iOS 9.3, *)
         func dsdForForPlaylistAttribute(attribute:MPMediaPlaylistAttribute) -> MPMediaQuery {
             let playlistQuery = MPMediaQuery.playlistsQuery()
@@ -49,20 +50,29 @@ class AddToPlaylistViewController: UIViewController {
         let kyoozPlaylistDSD = AddToKyoozPlaylistDSD(sourceData: KyoozPlaylistManager.instance, reuseIdentifier: ImageTableViewCell.reuseIdentifier, tracksToAdd: tracksToAdd, callbackVC: self)
         var datasourceDelegates:[AudioEntityDSDProtocol] = [kyoozPlaylistDSD]
         
+        
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dismissOnly))
+        cancelButton.tintColor = ThemeHelper.defaultTintColor
+        
         if #available(iOS 9.3, *) {
             let standardPlaylistsQuery = dsdForForPlaylistAttribute(.None)
             let otgPlaylistsQuery = dsdForForPlaylistAttribute(.OnTheGo)
             let jointQuery = JointMediaQuery(query1: standardPlaylistsQuery, query2: otgPlaylistsQuery)
             let queryDatasource = MediaQuerySourceData(filterQuery: jointQuery, libraryGrouping: LibraryGrouping.Playlists, singleSectionName: "ITUNES PLAYLISTS")
             datasourceDelegates.append(AddToAppleMusicPlaylistDSD(sourceData: queryDatasource, reuseIdentifier: ImageTableViewCell.reuseIdentifier, tracksToAdd: tracksToAdd, callbackVC: self))
+            
+            let infoButton = UIBarButtonItem(title: "??", style: .Plain, target: self, action: #selector(self.showInfo))
+            infoButton.tintColor = ThemeHelper.defaultTintColor
+            vc.toolbarItems = [createFlexibleSpace(), cancelButton, createFlexibleSpace(), infoButton]
+            
+        } else {
+            vc.toolbarItems = [createFlexibleSpace(), cancelButton, createFlexibleSpace()]
         }
         
         let sectionDelegator = AudioEntityDSDSectionDelegator(datasources: datasourceDelegates, showEmptySections: true)
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dismissOnly))
-        cancelButton.tintColor = ThemeHelper.defaultTintColor
         
         vc.title = "ADD TO PLAYLIST"
-        vc.toolbarItems = [createFlexibleSpace(), cancelButton, createFlexibleSpace()]
+        
         vc.sourceData = sectionDelegator
         vc.datasourceDelegate = sectionDelegator
         
@@ -75,6 +85,11 @@ class AddToPlaylistViewController: UIViewController {
         addChildViewController(navController)
         navController.didMoveToParentViewController(self)
         navController.toolbarHidden = false
+    }
+    
+    @available(iOS 9.3, *)
+    func showInfo() {
+        KyoozUtils.showPlaylistTypeInfoView(self)
     }
     
     func dismissAddToPlaylistController() {

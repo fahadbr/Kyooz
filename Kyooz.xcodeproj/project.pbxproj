@@ -11,6 +11,7 @@
 		0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B055A221C4C6A97007CB60A /* MenuDotsView.swift */; };
 		0B055A251C4C6AB0007CB60A /* MenuDotsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */; };
 		0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */; };
+		0B0FB0AD1CDFEE010062AB4E /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */; };
 		0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */; };
 		0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */; };
 		0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */; };
@@ -180,6 +181,7 @@
 		0B055A221C4C6A97007CB60A /* MenuDotsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuDotsView.swift; sourceTree = "<group>"; };
 		0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuDotsView.xib; sourceTree = "<group>"; };
 		0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLibraryTableViewCell.swift; sourceTree = "<group>"; };
+		0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerFadeAnimator.swift; sourceTree = "<group>"; };
 		0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kyooz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B13D9BF1AE6F80E00CC5C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -749,6 +751,7 @@
 				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
 				104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */,
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
+				0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
 				10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */,
 				0B1DA0681CB0849F00699D88 /* WrapperViewController.swift */,
@@ -925,6 +928,7 @@
 				0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */,
 				0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
+				0B0FB0AD1CDFEE010062AB4E /* TextViewController.swift in Sources */,
 				0B63061B1CD505C4006CD211 /* AddToPlaylistViewController.swift in Sources */,
 				10DB78FC1CB87770008402BB /* PlaybackControlsViewController.swift in Sources */,
 				10FD32741C9B6B4300004CAB /* Reachability.m in Sources */,
