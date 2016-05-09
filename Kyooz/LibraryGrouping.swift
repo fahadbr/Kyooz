@@ -48,7 +48,8 @@ final class LibraryGrouping : NSObject {
 
 
     static let allMusicGroupings = [Artists, Albums, Songs, Genres, Composers]
-    static let otherGroupings = [AudioBooks, Compilations, Playlists, Podcasts]
+	static let otherMusicGroupings = [Compilations, Playlists]
+    static let otherGroupings = [AudioBooks, Podcasts]
     
     let name:String
     
