@@ -35,6 +35,14 @@ final class JointMediaQuery : MPMediaQuery {
         return returnCollections
     }
     
+    override var itemSections: [MPMediaQuerySection]? {
+        return nil
+    }
+    
+    override var collectionSections: [MPMediaQuerySection]? {
+        return nil
+    }
+    
     init(query1:MPMediaQuery, query2:MPMediaQuery) {
         self.query1 = query1
         self.query2 = query2
