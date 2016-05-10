@@ -51,6 +51,7 @@ final class LastFmScrobbler {
     
     private var tempDataDAO:TempDataDAO
     private var simpleWsClient:SimpleWSClient
+	var shortNotificationManager = ShortNotificationManager.instance
     
     //MARK: - initializers
     
@@ -196,8 +197,10 @@ final class LastFmScrobbler {
                 params[albumArtist] = mediaItem.albumArtist
             }
             
-            self.buildApiSigAndCallWS(params, successHandler: { (info:[String:String]) in
-                Logger.debug("scrobble was successful for mediaItem: \(mediaItem.trackTitle)")
+            self.buildApiSigAndCallWS(params, successHandler: { [weak self](info:[String:String]) in
+				let message = "Successfully scrobbled track \(mediaItem.trackTitle) to last.fm"
+                Logger.debug(message)
+				self?.shortNotificationManager.presentShortNotificationWithMessage(message)
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[error_key])")
                 if(info[error_key] != nil && info[error_key]! == httpFailure) {
@@ -225,8 +228,10 @@ final class LastFmScrobbler {
             params[api_key] = api_key_value
             params[sk] = session
 			
-            buildApiSigAndCallWS(params, successHandler: { (info:[String : String]) -> Void in
-                    Logger.debug("scrobble was successful for \(scrobbleBatch.count) mediaItems")
+            buildApiSigAndCallWS(params, successHandler: { [weak self](info:[String : String]) -> Void in
+					let message = "Successfully scrobbled \(scrobbleBatch.count) tracks to last.fm"
+                    Logger.debug(message)
+					self?.shortNotificationManager.presentShortNotificationWithMessage(message)
                     completionHandler?(shouldRemove:true)
                 }, failureHandler: { (info:[String : String]) -> () in
                     Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[error_key])")
