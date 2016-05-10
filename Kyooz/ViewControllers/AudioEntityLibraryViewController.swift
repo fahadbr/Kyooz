@@ -10,10 +10,12 @@ import UIKit
 
 final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
-    static let navigationMenuButton:MenuDotsView = {
-        let button = MenuDotsView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
-        button.position = 0.85
+    static let navigationMenuButton:UIButton = {
+        let button = ListButtonView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        button.showBullets = false
+        button.pathTransform = CGAffineTransformMakeTranslation(10, 0)
         button.color = ThemeHelper.defaultFontColor
+        button.alignRight = true
         button.addTarget(ContainerViewController.instance, action: #selector(ContainerViewController.presentKyoozNavigationController), forControlEvents: .TouchUpInside)
         return button
     }()

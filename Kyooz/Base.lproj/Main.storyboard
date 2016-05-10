@@ -83,15 +83,12 @@
                                             <action selector="showSubGroupings:" destination="ToZ-Wa-gsY" eventType="touchUpInside" id="jfF-m4-med"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jUC-pq-9bY" userLabel="selectButton" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jUC-pq-9bY" userLabel="selectButton" customClass="MultiSelectButtonView" customModule="Kyooz" customModuleProvider="target">
                                         <rect key="frame" x="303" y="0.0" width="40" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="hhb-LG-8lm"/>
                                             <constraint firstAttribute="width" constant="40" id="ozF-99-vMS"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="showBullets" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="toggleSelectMode:" destination="ToZ-Wa-gsY" eventType="touchUpInside" id="XQf-qU-qAz"/>
                                         </connections>
@@ -179,15 +176,12 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IfZ-g4-jGC" userLabel="selectModeButton" customClass="ListButtonView" customModule="Kyooz" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IfZ-g4-jGC" userLabel="selectModeButton" customClass="MultiSelectButtonView" customModule="Kyooz" customModuleProvider="target">
                                 <rect key="frame" x="319" y="331" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="IfZ-g4-jGC" secondAttribute="height" multiplier="1:1" id="1a4-o2-JyT"/>
                                     <constraint firstAttribute="height" constant="40" id="Bre-E8-ZMO"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showBullets" value="YES"/>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="toggleSelectMode:" destination="Jbk-XA-SMT" eventType="touchUpInside" id="YxZ-aX-HUM"/>
                                 </connections>

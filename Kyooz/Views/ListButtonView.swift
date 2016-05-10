@@ -31,6 +31,12 @@ final class ListButtonView: UIButton {
         }
     }
     
+    var pathTransform:CGAffineTransform? {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     override var highlighted:Bool {
         didSet {
             setNeedsDisplay()
@@ -80,7 +86,7 @@ final class ListButtonView: UIButton {
         
         if showBullets {
             path.applyTransform(CGAffineTransformMakeTranslation(insetRect.width * 0.15, 0))
-            let size = insetRect.height * 0.2
+            let size = insetRect.height * 0.3
             let circlePath = UIBezierPath()
             circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: minY, width: size, height: size)))
             
@@ -90,7 +96,14 @@ final class ListButtonView: UIButton {
             
             let translationAmount = -size/2
             circlePath.applyTransform(CGAffineTransformMakeTranslation(translationAmount, translationAmount))
+            if let t = pathTransform {
+                circlePath.applyTransform(t)
+            }
             circlePath.fill()
+        }
+        
+        if let t = pathTransform {
+            path.applyTransform(t)
         }
         
         path.stroke()

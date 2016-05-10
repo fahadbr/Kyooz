@@ -73,6 +73,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         tableView.topAnchor.constraintEqualToAnchor(headerView.bottomAnchor).active = true
         tableView.separatorStyle = .SingleLine
 		tableView.rowHeight = 50
+        tableView.sectionFooterHeight = 0
         tableView.backgroundColor = UIColor.clearColor()
         tableView.registerClass(AbstractTableViewCell.self, forCellReuseIdentifier: KyoozNavigationViewController.reuseIdentifier)
 		
@@ -174,6 +175,12 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
             cell.contentView.alpha = 0
         }
 		cell.backgroundColor = UIColor.clearColor()
+        
+        if indexPath.row == 0 && indexPath.section == 0 {
+            let homeView = HomeButtonView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+            homeView.userInteractionEnabled = false
+            cell.accessoryView = homeView
+        }
 
 		return cell
 	}
@@ -190,12 +197,16 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	}
 	
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
 		let label = UILabel()
 		label.text = "\(sectionConfigurations[section].sectionName)"
 		label.textAlignment = .Center
+        
 		label.font = sectionHeaderFont
-		label.textColor = ThemeHelper.defaultVividColor
-		return label
+		label.textColor = ThemeHelper.defaultFontColor
+        label.alpha = ThemeHelper.defaultButtonTextAlpha
+        
+        return label
 	}
 	
 	//only implementing this method because of a bug with viewForHeaderInSection
@@ -203,6 +214,10 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return 30
 	}
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionConfigurations[section].sectionName
+    }
 	
     func transitionOut() {
         ContainerViewController.instance.longPressGestureRecognizer.enabled = true
