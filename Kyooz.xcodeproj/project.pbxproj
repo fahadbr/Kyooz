@@ -12,6 +12,7 @@
 		0B055A251C4C6AB0007CB60A /* MenuDotsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */; };
 		0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */; };
 		0B0FB0AD1CDFEE010062AB4E /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */; };
+		0B0FB0AF1CE16A390062AB4E /* MultiSelectButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0FB0AE1CE16A390062AB4E /* MultiSelectButtonView.swift */; };
 		0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */; };
 		0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9C01AE6F80E00CC5C01 /* AppDelegate.swift */; };
 		0B13D9C61AE6F80E00CC5C01 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B13D9C41AE6F80E00CC5C01 /* Main.storyboard */; };
@@ -182,6 +183,7 @@
 		0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuDotsView.xib; sourceTree = "<group>"; };
 		0B055A261C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLibraryTableViewCell.swift; sourceTree = "<group>"; };
 		0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
+		0B0FB0AE1CE16A390062AB4E /* MultiSelectButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelectButtonView.swift; sourceTree = "<group>"; };
 		0B0FE16F1C40B92A001E4ABE /* ViewControllerFadeAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerFadeAnimator.swift; sourceTree = "<group>"; };
 		0B13D9BB1AE6F80E00CC5C01 /* Kyooz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kyooz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B13D9BF1AE6F80E00CC5C01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -561,10 +563,12 @@
 		0B4E60021C27731D00BB9D77 /* Custom Drawn Views */ = {
 			isa = PBXGroup;
 			children = (
+				10B9E1011CC987B60058F44E /* HomeButtonView.swift */,
 				10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */,
 				10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */,
 				0B055A221C4C6A97007CB60A /* MenuDotsView.swift */,
 				0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */,
+				0B0FB0AE1CE16A390062AB4E /* MultiSelectButtonView.swift */,
 				0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */,
 				0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */,
 				0B4E60091C2CD9AD00BB9D77 /* RepeatButtonView.swift */,
@@ -573,7 +577,6 @@
 				0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */,
 				0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */,
 				0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */,
-				10B9E1011CC987B60058F44E /* HomeButtonView.swift */,
 				10B9E1031CC987CF0058F44E /* TempView.xib */,
 			);
 			name = "Custom Drawn Views";
@@ -976,6 +979,7 @@
 				10FD325D1C90E7B200004CAB /* ConstraintUtils.swift in Sources */,
 				0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */,
 				104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */,
+				0B0FB0AF1CE16A390062AB4E /* MultiSelectButtonView.swift in Sources */,
 				0BB01A611CCBD91900D4B57F /* KyoozConstants.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
 				0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */,

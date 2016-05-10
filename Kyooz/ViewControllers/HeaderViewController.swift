@@ -25,7 +25,7 @@ class HeaderViewController : UIViewController {
     private var sourceData:AudioEntitySourceData!
     
     @IBOutlet var shuffleButton: ShuffleButtonView!
-    @IBOutlet var selectModeButton: ListButtonView!
+    @IBOutlet var selectModeButton: MultiSelectButtonView!
     
     
     private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(HeaderViewController.showAddToOptions(_:)))
@@ -56,6 +56,7 @@ class HeaderViewController : UIViewController {
         super.viewDidLoad()
         shuffleButton.alpha = ThemeHelper.defaultButtonTextAlpha
         selectModeButton.alpha = ThemeHelper.defaultButtonTextAlpha
+        selectModeButton.scale = 0.5
     }
     
     
@@ -108,7 +109,7 @@ class HeaderViewController : UIViewController {
 			parentViewController?.toolbarItems = createToolbarItems()
 		}
 		
-		(sender as? ListButtonView)?.showBullets = !willEdit
+		(sender as? MultiSelectButtonView)?.isActive = willEdit
 		
 		refreshButtonStates()
 	}
