@@ -35,13 +35,13 @@ final class KyoozPlaylistManager : NSObject {
 		try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: false)
         
         let newCount = playlistsSet.count
-        ShortNotificationManager.instance.presentShortNotificationWithMessage("Saved \(oldCount < newCount ? "" : "changes to ")playlist: \(playlist.name)", withSize: .Small)
+        ShortNotificationManager.instance.presentShortNotificationWithMessage("Saved \(oldCount < newCount ? "" : "changes to ")playlist: \(playlist.name)")
 	}
 	
     func deletePlaylist(playlist:KyoozPlaylist) throws {
 		try playlist.setTracks(nil)
         try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: true)
-		ShortNotificationManager.instance.presentShortNotificationWithMessage("Deleted playlist \(playlist.name)", withSize: .Small)
+		ShortNotificationManager.instance.presentShortNotificationWithMessage("Deleted playlist \(playlist.name)")
     }
 	
 	private func updatePlaylistSet(withPlaylist playlist:KyoozPlaylist, actionIsDelete:Bool) throws {

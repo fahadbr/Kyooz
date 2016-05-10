@@ -15,20 +15,16 @@ final class ShortNotificationManager {
 	
 	static let instance = ShortNotificationManager()
 	
+	private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.5)
+	
 	private lazy var presentationController:UIViewController = ContainerViewController.instance
-	private let fadeInAnimation:CABasicAnimation = {
-		let animation = CABasicAnimation(keyPath: "opacity")
-		animation.duration = 0.5
-		animation.fromValue = 0.0
-		animation.toValue = 1.0
-		animation.fillMode = kCAFillModeBackwards
-		return animation
-	}()
-		
+	
 	private weak var shortNotificationVC:ShortNotificationViewController?
 	
 	
-    func presentShortNotificationWithMessage(message:String, withSize size:Size) {
+    func presentShortNotificationWithMessage(message:String) {
+		guard UIApplication.sharedApplication().applicationState == .Active else { return }
+		
         if let previousVC = self.shortNotificationVC {
             previousVC.transitionOut()
         }
@@ -49,7 +45,7 @@ final class ShortNotificationManager {
 		
 		vc.view.layer.rasterizationScale = UIScreen.mainScreen().scale
 		vc.view.layer.shouldRasterize = true
-		vc.view.layer.addAnimation(fadeInAnimation, forKey: nil)
+		vc.view.layer.addAnimation(self.dynamicType.fadeInAnimation, forKey: nil)
 	}
 	
 }
