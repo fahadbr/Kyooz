@@ -175,7 +175,7 @@ struct NowPlayingQueueContext {
     }
     
     private mutating func restoreOriginalQueue() {
-        if shuffledQueue == nil {
+        guard shuffledQueue != nil && !shuffledQueue.isEmpty else {
             return
         }
         

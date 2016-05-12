@@ -112,8 +112,6 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         titleLabel.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
         
         let cancelButton = CrossButtonView()
-        cancelButton.showsCircle = false
-        cancelButton.scale = 0.35
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Bottom], subView: cancelButton, parentView: headerView.contentView)
         cancelButton.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
         cancelButton.widthAnchor.constraintEqualToAnchor(cancelButton.heightAnchor).active = true

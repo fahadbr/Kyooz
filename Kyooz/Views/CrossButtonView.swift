@@ -19,7 +19,7 @@ class CrossButtonView : UIButton {
     }
     
     @IBInspectable
-    var scale:CGFloat = 0.65 {
+    var scale:CGFloat = 0.35 {
         didSet {
             setNeedsDisplay()
         }
@@ -37,7 +37,7 @@ class CrossButtonView : UIButton {
         }
     }
     
-    var showsCircle:Bool = true {
+    var showsCircle:Bool = false {
         didSet {
             setNeedsDisplay()
         }
@@ -65,7 +65,7 @@ class CrossButtonView : UIButton {
             circlePath.fill()
         }
         
-        let crossInset = showsCircle ? 2 : inset
+//        let crossInset = showsCircle ? 2 : inset
         let rectToUse = CGRectInset(showsCircle ? circleRect : rect, inset, inset)
         
         let crossPath = UIBezierPath()

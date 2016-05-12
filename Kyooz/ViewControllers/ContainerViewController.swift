@@ -114,7 +114,15 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         addChildViewController(searchViewController)
         view.sendSubviewToBack(searchViewController.view)
         searchViewController.didMoveToParentViewController(self)
+		showTutorial()
     }
+	
+	func showTutorial() {
+		let tvc = TutorialViewController(text: "Tutorial Example", forTutorial: .DragAndDrop)
+		ConstraintUtils.applyStandardConstraintsToView(subView: tvc.view, parentView: view)
+		addChildViewController(tvc)
+		tvc.didMoveToParentViewController(self)
+	}
 	
     override func canBecomeFirstResponder() -> Bool {
         return true
