@@ -69,14 +69,8 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
                 self.reloadAllData()
             }
 		}
-		
     }
 	
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
-                                                         name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
-    }
 	
 	//MARK: - Class functions
 	
@@ -146,5 +140,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		tableView.sectionHeaderHeight = 40
 		tableView.rowHeight = 60
 	}
+    
+    override func registerForNotifications() {
+        super.registerForNotifications()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
+                                                         name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
+    }
 	
 }

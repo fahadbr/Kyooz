@@ -61,9 +61,10 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
             return
         }
         
+        let newPosition = viewToFadeIn?.convertPoint(CGPoint(x: viewToFadeIn!.bounds.midX, y: viewToFadeIn!.bounds.midY), toView: viewToFadeOut.superview)
         UIView.animateWithDuration(0.15, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
-            if(viewToFadeIn != nil) {
-                viewToFadeOut.center = viewToFadeIn!.convertPoint(CGPoint(x: viewToFadeIn!.bounds.midX, y: viewToFadeIn!.bounds.midY), toView: viewToFadeOut.superview)
+            if(newPosition != nil) {
+                viewToFadeOut.center = newPosition!
             }
             viewToFadeOut.layer.shadowOpacity = 0
             viewToFadeOut.alpha = 0.5

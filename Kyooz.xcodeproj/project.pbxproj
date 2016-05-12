@@ -141,7 +141,6 @@
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		108DBA061CE295480013E990 /* CrossButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA051CE295480013E990 /* CrossButtonView.swift */; };
-		108DBA081CE295550013E990 /* KyoozButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA071CE295550013E990 /* KyoozButtonView.swift */; };
 		10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1011CC987B60058F44E /* HomeButtonView.swift */; };
 		10B9E1041CC987CF0058F44E /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10B9E1031CC987CF0058F44E /* TempView.xib */; };
 		10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */; };
@@ -319,7 +318,6 @@
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		108DBA051CE295480013E990 /* CrossButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossButtonView.swift; sourceTree = "<group>"; };
-		108DBA071CE295550013E990 /* KyoozButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozButtonView.swift; sourceTree = "<group>"; };
 		10B9E1011CC987B60058F44E /* HomeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
 		10B9E1031CC987CF0058F44E /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
 		10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozTableFooterView.swift; sourceTree = "<group>"; };
@@ -569,7 +567,6 @@
 			children = (
 				108DBA051CE295480013E990 /* CrossButtonView.swift */,
 				10B9E1011CC987B60058F44E /* HomeButtonView.swift */,
-				108DBA071CE295550013E990 /* KyoozButtonView.swift */,
 				10C7B9D41C3C8A4D00ADAAB6 /* ListButtonView.swift */,
 				10C7B9D61C3C8A6100ADAAB6 /* ListButtonView.xib */,
 				0B055A221C4C6A97007CB60A /* MenuDotsView.swift */,
@@ -976,7 +973,6 @@
 				10B9E10C1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift in Sources */,
 				0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
-				108DBA081CE295550013E990 /* KyoozButtonView.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
 				0B13DA231AE6FA9A00CC5C01 /* AudioQueuePlayer.swift in Sources */,

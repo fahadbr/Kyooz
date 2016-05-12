@@ -90,6 +90,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight
         tableView.contentOffset.y = -tableView.contentInset.top
         tableView.contentInset.bottom = 44
+        tableView.scrollIndicatorInsets.bottom = 44
         
         let editButton = editButtonItem()
         let deleteButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.confirmDelete(_:)))

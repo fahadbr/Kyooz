@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import Kyooz
 
 class StringNormalizationTest: XCTestCase {
     
@@ -35,6 +36,44 @@ class StringNormalizationTest: XCTestCase {
             }
         }
         XCTAssert(true)
+    }
+    
+    func testCurrentNormalizationMethod() {
+        // This is an example of a performance test case.
+        let numberOfIterations = 100000
+        let testString = "Bitch Don't Kill My Vibe - å∂ç√ß"
+        self.measureBlock {
+            for _ in 0...numberOfIterations {
+                testString.normalizedString
+            }
+        }
+        XCTAssert(true)
+    }
+    
+    func testCountPerformance() {
+        let index = 4
+        
+        self.measureBlock() {
+            for _ in 0...10000 {
+                let string = "123456"
+                XCTAssertTrue(index < string.characters.count)
+            }
+        }
+    }
+    
+    func testCountPerformanceByUsingIndex() {
+        let index = 4
+        
+        self.measureBlock() {
+            for _ in 0...10000 {
+                let string = "123456"
+                XCTAssertTrue(string.startIndex.advancedBy(index, limit: string.endIndex.predecessor()) < string.endIndex)
+            }
+        }
+    }
+    
+    func testEmptyString() {
+        XCTAssertEqual("", "".normalizedString)
     }
     
     private func normalizeStringOld(s:String) -> String {

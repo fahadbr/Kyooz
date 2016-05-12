@@ -16,7 +16,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     
     private (set) var snapshotContainer:UIView!
     private (set) var snapshot:UIView!
-    private lazy var dragGestureScrollingController:DragGestureScrollingController = DragGestureScrollingController(scrollView: self.destinationTableView, delegate: self)
+    private lazy var dragGestureScrollingController:DragGestureScrollingController! = DragGestureScrollingController(scrollView: self.destinationTableView, delegate: self)
 
     private var beginningAnimationEnded = false
     private var gestureActivated = false
@@ -93,6 +93,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
                 return
             }
             gestureActivated = false
+            dragGestureScrollingController.invalidateDisplayLink()
+            dragGestureScrollingController = nil
             
             do {
                 try wrapperDSD?.persistChanges()
@@ -163,7 +165,6 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         snapshot = ImageHelper.customSnapshotFromView(viewForSnapshot)
         snapshotContainer = UIView(frame: snapshot.frame)
         snapshotContainer.addSubview(snapshot)
-        //TODO: set the original position for the snapshot container?
 		
         viewForSnapshot.layer.masksToBounds = false
         

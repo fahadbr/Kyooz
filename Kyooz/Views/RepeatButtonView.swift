@@ -11,11 +11,7 @@ import UIKit
 @IBDesignable
 final class RepeatButtonView: UIButton {
 
-    var repeatState:RepeatState = .Off {
-        didSet {
-            color = repeatState != .Off ? ThemeHelper.defaultVividColor : ThemeHelper.defaultFontColor
-        }
-    }
+    var repeatState:RepeatState = .Off
     
     private var color:UIColor = ThemeHelper.defaultFontColor {
         didSet {
@@ -30,13 +26,19 @@ final class RepeatButtonView: UIButton {
     }
     
     override func drawRect(rect: CGRect) {
-        if highlighted {
-            ThemeHelper.defaultTintColor.setFill()
-            ThemeHelper.defaultTintColor.setStroke()
+        let colorToUse:UIColor
+        if !enabled {
+            colorToUse = UIColor.darkGrayColor()
+        } else if highlighted {
+            colorToUse = UIColor.redColor()
+        } else if repeatState != .Off {
+            colorToUse = ThemeHelper.defaultVividColor
         } else {
-            color.setFill()
-            color.setStroke()
+            colorToUse = color
         }
+        
+        colorToUse.setStroke()
+        colorToUse.setFill()
         
         
         let insetX = rect.width * 0.30
