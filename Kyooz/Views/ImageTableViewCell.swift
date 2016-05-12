@@ -36,7 +36,9 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
             }
         }
         detailsLabel.text = text
-        albumArtwork.alpha = 0
+        if shouldAnimate {
+            albumArtwork.alpha = 0
+        }
         KyoozUtils.doInMainQueueAsync() { [albumArtwork = self.albumArtwork] in
             albumArtwork.alpha = 1
             let track = entity.representativeTrack

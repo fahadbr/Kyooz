@@ -36,7 +36,7 @@ extension String {
     var normalizedString:String {
         guard startIndex != endIndex else { return self }
         var stringToNormalize = self
-        if startIndex.successor() == endIndex {
+        if startIndex.successor() != endIndex {
             let charsToRemove = NSCharacterSet.punctuationCharacterSet()
             stringToNormalize = stringToNormalize.componentsSeparatedByCharactersInSet(charsToRemove).joinWithSeparator("")
         }

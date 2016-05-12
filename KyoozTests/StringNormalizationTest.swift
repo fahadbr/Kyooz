@@ -11,6 +11,9 @@ import XCTest
 
 class StringNormalizationTest: XCTestCase {
     
+    private let testString = "  Bitch Don't Kill My Vibé - (ft. Jay-Z)  "
+    private let expectedString = "bitch dont kill my vibe  ft jayz"
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,18 +24,17 @@ class StringNormalizationTest: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testNormaizeString() {
+        XCTAssertEqual(expectedString, testString.normalizedString)
+        XCTAssertEqual("*", "*".normalizedString)
     }
     
     func testOldNormalizationMethod() {
         // This is an example of a performance test case.
         let numberOfIterations = 100000
-        let testString = "Bitch Don't Kill My Vibe - å∂ç√ß"
         self.measureBlock {
             for _ in 0...numberOfIterations {
-                self.normalizeStringOld(testString)
+                XCTAssertEqual(self.expectedString, self.normalizeStringOld(self.testString))
             }
         }
         XCTAssert(true)
@@ -41,35 +43,12 @@ class StringNormalizationTest: XCTestCase {
     func testCurrentNormalizationMethod() {
         // This is an example of a performance test case.
         let numberOfIterations = 100000
-        let testString = "Bitch Don't Kill My Vibe - å∂ç√ß"
         self.measureBlock {
             for _ in 0...numberOfIterations {
-                testString.normalizedString
+                XCTAssertEqual(self.expectedString, self.testString.normalizedString)
             }
         }
         XCTAssert(true)
-    }
-    
-    func testCountPerformance() {
-        let index = 4
-        
-        self.measureBlock() {
-            for _ in 0...10000 {
-                let string = "123456"
-                XCTAssertTrue(index < string.characters.count)
-            }
-        }
-    }
-    
-    func testCountPerformanceByUsingIndex() {
-        let index = 4
-        
-        self.measureBlock() {
-            for _ in 0...10000 {
-                let string = "123456"
-                XCTAssertTrue(string.startIndex.advancedBy(index, limit: string.endIndex.predecessor()) < string.endIndex)
-            }
-        }
     }
     
     func testEmptyString() {
