@@ -80,12 +80,16 @@ extension KyoozPlaylistManager : MutableAudioEntitySourceData {
 	
     func reloadSourceData() {
         guard let object = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) else {
-            Logger.error("couldnt find playlist set in list directory")
+            Logger.debug("couldnt find playlist set in list directory")
+			guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory) else {
+				Logger.error("couldn't save kyooz playlist set")
+				return
+			}
             return
         }
         
         guard let set = object as? NSMutableOrderedSet else {
-            Logger.error("object is not a mutable set")
+            Logger.debug("object is not a mutable set")
             return
         }
         playlistsSet = set
