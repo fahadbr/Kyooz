@@ -75,6 +75,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 		tableView.rowHeight = 50
         tableView.sectionFooterHeight = 0
         tableView.backgroundColor = UIColor.clearColor()
+        
         tableView.registerClass(AbstractTableViewCell.self, forCellReuseIdentifier: KyoozNavigationViewController.reuseIdentifier)
 		
 		func cellConfigurationForGrouping(libraryGrouping:LibraryGrouping) -> CellConfiguration {
@@ -195,22 +196,23 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	}
 	
 	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-		let label = UILabel()
-		label.text = "\(sectionConfigurations[section].sectionName)"
-		label.textAlignment = .Center
-        
-		label.font = sectionHeaderFont
-		label.textColor = ThemeHelper.defaultFontColor
-        label.alpha = ThemeHelper.defaultButtonTextAlpha
-        
-        return label
+        let cell = UITableViewCell(style: .Subtitle, reuseIdentifier: nil)
+        cell.textLabel?.text = " "
+        cell.backgroundColor = UIColor.clearColor()
+        if let label = cell.detailTextLabel {
+            label.text = "\(sectionConfigurations[section].sectionName)"
+            label.textAlignment = .Center
+            label.font = sectionHeaderFont
+            label.textColor = ThemeHelper.defaultFontColor
+            label.alpha = ThemeHelper.defaultButtonTextAlpha
+        }
+        return cell
 	}
 	
 	//only implementing this method because of a bug with viewForHeaderInSection
 	//which doesnt load the first section unless this method is implemented
 	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return 30
+		return 45
 	}
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
