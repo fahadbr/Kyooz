@@ -34,17 +34,17 @@ final class MenuDotsView: UIButton {
     }
 
     override func drawRect(rect: CGRect) {
-        var color:UIColor!
-        if highlighted {
-            if let highlightColor = titleColorForState(.Highlighted) {
-                color = highlightColor
-            } else {
-                color = ThemeHelper.defaultVividColor
-            }
+        let colorToUse:UIColor
+        if !enabled {
+            colorToUse = UIColor.darkGrayColor()
+        } else if highlighted {
+            colorToUse = ThemeHelper.defaultVividColor
         } else {
-            color = self.color
+            colorToUse = color
         }
-        color.setFill()
+        
+        colorToUse.setStroke()
+        colorToUse.setFill()
         
         let rectToUse = CGRectInset(rect, 0, ((1 - scale)/2) * rect.height)
         

@@ -110,11 +110,9 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: titleLabel, parentView: headerView.contentView)
         titleLabel.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
         
-        let cancelButton = UIButton()
-        cancelButton.setTitle("╳", forState: .Normal)
-        cancelButton.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
-        cancelButton.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
-//        cancelButton.titleLabel?.font = UIFont.boldSystemFontOfSize(20)
+        let cancelButton = CrossButtonView()
+        cancelButton.showsCircle = false
+        cancelButton.scale = 0.35
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Bottom], subView: cancelButton, parentView: headerView.contentView)
         cancelButton.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
         cancelButton.widthAnchor.constraintEqualToAnchor(cancelButton.heightAnchor).active = true

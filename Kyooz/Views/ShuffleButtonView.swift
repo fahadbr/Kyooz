@@ -47,24 +47,19 @@ final class ShuffleButtonView : UIButton {
     
  
     override func drawRect(rect: CGRect) {
+        let colorToUse:UIColor
         if !enabled {
-            UIColor.darkGrayColor().setFill()
-            UIColor.darkGrayColor().setStroke()
+            colorToUse = UIColor.darkGrayColor()
         } else if highlighted {
-            if let highlightColor = titleColorForState(.Highlighted) {
-                highlightColor.setFill()
-                highlightColor.setStroke()
-            } else {
-                UIColor.darkGrayColor().setFill()
-                UIColor.darkGrayColor().setStroke()
-            }
+            colorToUse = UIColor.redColor()
         } else if isActive {
-            ThemeHelper.defaultVividColor.setFill()
-            ThemeHelper.defaultVividColor.setStroke()
+            colorToUse = ThemeHelper.defaultVividColor
         } else {
-            color.setFill()
-            color.setStroke()
+            colorToUse = color
         }
+        
+        colorToUse.setStroke()
+        colorToUse.setFill()
         
         var rectToUse = rect
         if alignRight {

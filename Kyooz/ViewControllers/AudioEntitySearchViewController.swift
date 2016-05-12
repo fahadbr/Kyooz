@@ -43,7 +43,6 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         return nil
     }()
 	
-	
     
     //MARK: - Properties
     private let searchExecutionControllers:[SearchExecutionController] = {
@@ -122,9 +121,14 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
 		sectionDelegator.delegate = self
         sourceData = sectionDelegator
 		datasourceDelegate = sectionDelegator
-
+    
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         popGestureRecognizer.enabled = false
     }
+    
 	
     //MARK: - AbstractMediaEntityTableViewController methods
     override func reloadSourceData() {
@@ -188,7 +192,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
 		}
 		
 		self.searchText = normalizedSearchText
-		let searchStringComponents = normalizedSearchText.componentsSeparatedByString(" ") as [String]
+		let searchStringComponents = normalizedSearchText.componentsSeparatedByString(" ")
 		
 		for searchExecutor in searchExecutionControllers {
 			searchExecutor.executeSearchForStringComponents(normalizedSearchText, stringComponents: searchStringComponents)

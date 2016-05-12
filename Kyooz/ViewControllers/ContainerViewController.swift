@@ -281,7 +281,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             }
         case .Ended, .Cancelled:
             nowPlayingQueueViewController.insertMode = false
-            dispatch_after(KyoozUtils.getDispatchTimeForSeconds(0.6), dispatch_get_main_queue()) { [unowned self]() in
+            KyoozUtils.doInMainQueueAfterDelay(0.6) { [unowned self]() in
                 self.animateCenterPanel(toPosition: .Center)
                 self.dragAndDropHandler = nil
             }

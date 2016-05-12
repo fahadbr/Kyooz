@@ -27,6 +27,12 @@ final class SkipTrackButtonView: UIButton {
         }
     }
     
+    var color:UIColor = ThemeHelper.defaultFontColor {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     var scaleFactor:CGFloat = 0.5
     var offsetFactor:CGFloat = 0.8
     
@@ -34,6 +40,18 @@ final class SkipTrackButtonView: UIButton {
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect) {
+        
+        let colorToUse:UIColor
+        if !enabled {
+            colorToUse = UIColor.darkGrayColor()
+        } else if highlighted {
+            colorToUse = ThemeHelper.defaultVividColor
+        } else {
+            colorToUse = color
+        }
+        
+        colorToUse.setStroke()
+        colorToUse.setFill()
         
         let smallerSide = min(rect.width, rect.height)
         let sideLength:CGFloat = smallerSide * scaleFactor
@@ -61,14 +79,6 @@ final class SkipTrackButtonView: UIButton {
         strokePath.moveToPoint(CGPoint(x: strokeEndX, y: path.bounds.minY))
         strokePath.addLineToPoint(CGPoint(x: strokeEndX, y: path.bounds.maxY))
         
-        
-        if highlighted {
-            UIColor.lightGrayColor().setFill()
-            UIColor.lightGrayColor().setStroke()
-        } else {
-            UIColor.whiteColor().setFill()
-            UIColor.whiteColor().setStroke()
-        }
             
         strokePath.stroke()
         path.fill()

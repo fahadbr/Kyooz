@@ -109,7 +109,7 @@ class HeaderViewController : UIViewController {
 			parentViewController?.toolbarItems = createToolbarItems()
 		}
 		
-		(sender as? MultiSelectButtonView)?.isActive = willEdit
+		selectModeButton?.isActive = willEdit
 		
 		refreshButtonStates()
 	}
@@ -181,6 +181,7 @@ class HeaderViewController : UIViewController {
         playTracks(tracks, shouldShuffle: (sender != nil && sender is ShuffleButtonView))
         
         selectOrDeselectAll()
+        toggleSelectMode(nil)
     }
     
     func showAddToOptions(sender:UIBarButtonItem!) {
@@ -189,6 +190,7 @@ class HeaderViewController : UIViewController {
         kmvc.menuTitle = "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items"
         KyoozUtils.addDefaultQueueingActions(items, menuController: kmvc) {
             self.selectOrDeselectAll()
+            self.toggleSelectMode(nil)
         }
         
         KyoozUtils.showMenuViewController(kmvc)

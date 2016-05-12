@@ -43,21 +43,17 @@ final class PlayPauseButtonView: UIButton {
     }
     
     override func drawRect(rect: CGRect) {
+        let colorToUse:UIColor
         if !enabled {
-            UIColor.darkGrayColor().setFill()
-            UIColor.darkGrayColor().setStroke()
+            colorToUse = UIColor.darkGrayColor()
         } else if highlighted {
-            if let highlightColor = titleColorForState(.Highlighted) {
-                highlightColor.setFill()
-                highlightColor.setStroke()
-            } else {
-                UIColor.darkGrayColor().setFill()
-                UIColor.darkGrayColor().setStroke()
-            }
+            colorToUse = ThemeHelper.defaultVividColor
         } else {
-            color.setFill()
-            color.setStroke()
+            colorToUse = color
         }
+        
+        colorToUse.setStroke()
+        colorToUse.setFill()
         
         let path = isPlayButton ? drawPlayButton(rect) : drawPauseButton(rect)
         

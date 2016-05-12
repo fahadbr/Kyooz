@@ -111,7 +111,7 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
     }
     
     
-    private func registerForNotifications() {
+    func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(AudioEntityViewController.reloadTableViewData),
             name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
