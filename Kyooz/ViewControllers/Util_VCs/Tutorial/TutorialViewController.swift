@@ -11,9 +11,21 @@ import UIKit
 class TutorialViewController : UIViewController {
 	
 	private static let unfulfilledColor = UIColor.blueColor()
+    private static let fulfilledColor = UIColor.greenColor()
 	
-	private let text:String
-	private let tutorial:Tutorial
+    let tutorialDTO:TutorialDTO
+    
+    lazy var tutorialManager = TutorialManager.instance
+    
+    private lazy var instructionLabel:UILabel = {
+        let label = UILabel()
+        label.font = ThemeHelper.defaultFont
+        label.numberOfLines = 0
+        label.lineBreakMode = .ByWordWrapping
+        label.textColor = ThemeHelper.defaultFontColor
+        label.text = self.tutorialDTO.instructionText
+        return label
+    }()
 	
 	private lazy var stackView:UIView = {
 		let cancelButton = CrossButtonView()
@@ -22,14 +34,7 @@ class TutorialViewController : UIViewController {
 		cancelButton.heightAnchor.constraintEqualToConstant(45).active = true
 		cancelButton.widthAnchor.constraintEqualToAnchor(cancelButton.heightAnchor).active = true
 		
-		let instructionLabel = UILabel()
-		instructionLabel.font = ThemeHelper.defaultFont
-		instructionLabel.numberOfLines = 0
-		instructionLabel.lineBreakMode = .ByWordWrapping
-		instructionLabel.textColor = ThemeHelper.defaultFontColor
-		instructionLabel.text = self.text
-		
-		let stackView = UIStackView(arrangedSubviews: [instructionLabel, cancelButton])
+		let stackView = UIStackView(arrangedSubviews: [self.instructionLabel, cancelButton])
 		stackView.axis = .Horizontal
 		stackView.alignment = .Center
 		return stackView
@@ -37,9 +42,8 @@ class TutorialViewController : UIViewController {
 	
 	private lazy var instructionView = UIView()
 	
-	init(text:String, forTutorial tutorial:Tutorial) {
-		self.text = text
-		self.tutorial = tutorial
+    init(tutorialDTO:TutorialDTO) {
+		self.tutorialDTO = tutorialDTO
 		super.init(nibName: nil, bundle: nil)
 		
 	}
@@ -76,17 +80,48 @@ class TutorialViewController : UIViewController {
 		slideDownAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
 		instructionView.layer.addAnimation(slideDownAnimation, forKey: nil)
 	}
+    
+    func transitionOut(action:TutorialAction) {
+        switch action {
+        case .Fulfill:
+            doFulfillAnimation()
+        case .DismissFulfilled:
+            doSlideUpAnimation()
+        case .DismissUnfulfilled:
+            doFadeOutAnimation()
+        }
+    }
 	
 	func dismissTutorial() {
-		
-		let slideUpAnimation = CABasicAnimation(keyPath: "position")
-		slideUpAnimation.duration = 0.25
-		slideUpAnimation.toValue = NSValue(CGPoint: CGPoint(x:instructionView.layer.position.x, y: instructionView.layer.position.y - ThemeHelper.plainHeaderHight))
-		slideUpAnimation.fillMode = kCAFillModeForwards
-		slideUpAnimation.removedOnCompletion = false
-		slideUpAnimation.delegate = self
-		instructionView.layer.addAnimation(slideUpAnimation, forKey: nil)
+		tutorialManager.dismissTutorial(tutorialDTO.tutorial, action: .DismissFulfilled)
 	}
+    
+    private func doFulfillAnimation() {
+        UIView.transitionWithView(instructionView, duration: 0.3, options: .TransitionCrossDissolve, animations: {
+            self.instructionView.backgroundColor = self.dynamicType.fulfilledColor
+            self.instructionLabel.text = "Great!"
+        }, completion: { _ in
+            KyoozUtils.doInMainQueueAfterDelay(1) {
+                self.doSlideUpAnimation()
+            }
+        })
+    }
+    
+    private func doFadeOutAnimation() {
+        let fadeOutAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.25)
+        fadeOutAnimation.delegate = self
+        view.layer.addAnimation(fadeOutAnimation, forKey: nil)
+    }
+    
+    private func doSlideUpAnimation() {
+        let slideUpAnimation = CABasicAnimation(keyPath: "position")
+        slideUpAnimation.duration = 0.25
+        slideUpAnimation.toValue = NSValue(CGPoint: CGPoint(x:instructionView.layer.position.x, y: instructionView.layer.position.y - ThemeHelper.plainHeaderHight))
+        slideUpAnimation.fillMode = kCAFillModeForwards
+        slideUpAnimation.removedOnCompletion = false
+        slideUpAnimation.delegate = self
+        instructionView.layer.addAnimation(slideUpAnimation, forKey: nil)
+    }
 	
 	override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
 		view.removeFromSuperview()

@@ -31,6 +31,10 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 		skipForwardButton.addTarget(self, action: #selector(self.skipForward(_:)), forControlEvents: .TouchUpInside)
 		repeatButton.addTarget(self, action: #selector(self.switchRepeatMode(_:)), forControlEvents: .TouchUpInside)
 		
+        let inactiveColor = UIColor(white: 1, alpha: ThemeHelper.defaultButtonTextAlpha)
+        shuffleButton.color = inactiveColor
+        repeatButton.color = inactiveColor
+        
 		skipForwardButton.isForwardButton = true
 		
 		let viewArray = [shuffleButton, skipBackButton, playPauseButton, skipForwardButton, repeatButton]
@@ -43,7 +47,7 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 			} else if $0 is PlayPauseButtonView {
 				constant = 50
 			} else {
-				$0.alpha = 0.6
+//				$0.alpha = 0.6
 				constant = 40
 			}
 			addConstraint($0, constant: constant)

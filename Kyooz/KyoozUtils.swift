@@ -141,23 +141,22 @@ struct KyoozUtils {
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
 	
-	static func confirmAction(actionTitle:String, actionDetails:String? = nil, action:()->()) {
+    static func confirmAction(actionTitle:String, actionDetails:String? = nil, presentingVC:UIViewController = ContainerViewController.instance, action:()->()) {
 		let kmvc = KyoozMenuViewController()
 		kmvc.menuTitle = actionTitle
 		kmvc.menuDetails = actionDetails
 		kmvc.addActions([KyoozMenuAction(title:"YES", image: nil, action: action)])
-		showMenuViewController(kmvc)
+		showMenuViewController(kmvc, presentingVC: presentingVC)
 	}
     
-    static func showMenuViewController(kmvc:KyoozMenuViewController) {
-        let presentingVC = ContainerViewController.instance
+    static func showMenuViewController(kmvc:KyoozMenuViewController, presentingVC:UIViewController = ContainerViewController.instance) {
         kmvc.view.frame = presentingVC.view.frame
         
         presentingVC.addChildViewController(kmvc)
         kmvc.didMoveToParentViewController(presentingVC)
         presentingVC.view.addSubview(kmvc.view)
         kmvc.view.layer.addAnimation(fadeInAnimation, forKey: nil)
-        presentingVC.longPressGestureRecognizer?.enabled = false
+        (presentingVC as? ContainerViewController)?.longPressGestureRecognizer?.enabled = false
 
     }
     

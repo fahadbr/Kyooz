@@ -39,6 +39,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             tapGestureRecognizer.enabled = sidePanelVisible
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
             nowPlayingQueueViewController.isExpanded = centerPanelPosition == .Left
+            
+            switch centerPanelPosition {
+            case .Right:
+                TutorialManager.instance.dismissTutorial(.GestureActivatedSearch, action: .Fulfill)
+            default:
+                break
+            }
         }
     }
     
@@ -118,10 +125,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
 	
 	func showTutorial() {
-		let tvc = TutorialViewController(text: "Tutorial Example", forTutorial: .DragAndDrop)
-		ConstraintUtils.applyStandardConstraintsToView(subView: tvc.view, parentView: view)
-		addChildViewController(tvc)
-		tvc.didMoveToParentViewController(self)
+		TutorialManager.instance.presentTutorialIfUnfulfilled(Tutorial.GestureActivatedSearch)
 	}
 	
     override func canBecomeFirstResponder() -> Bool {

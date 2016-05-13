@@ -9,14 +9,25 @@
 import Foundation
 
 
-enum Tutorial : Int {
+enum Tutorial : String {
 	
-	private static let instructionMap:[Tutorial:String] = [.DragAndDrop:"Press and hold to drag, let go to drop"
-		.GestureActivatedSearch : "",
-		.GestureToViewQueue: ""]
-	
-	case DragAndDrop, GestureActivatedSearch, GestureToViewQueue
-	
-	
+    case GestureActivatedSearch = "GestureActivatedSearch"
+    case GestureToViewQueue = "GestureToViewQueue"
+    case DragAndDrop = "DragAndDrop"
+    case InsertOrCancel = "InsertOrCancel"
+    case DragToRearrange = "DragToRearrange"
 	
 }
+
+enum TutorialAction : Int {
+    case Fulfill, DismissUnfulfilled, DismissFulfilled
+}
+
+struct TutorialDTO {
+
+    let tutorial:Tutorial
+    let instructionText:String
+    let nextTutorial:Tutorial?
+    
+}
+

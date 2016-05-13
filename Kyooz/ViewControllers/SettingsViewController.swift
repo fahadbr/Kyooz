@@ -49,7 +49,11 @@ final class SettingsViewController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
-//		super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) where cell.tag == 1 {
+            KyoozUtils.confirmAction("Are you sure you want to reset all tutorials?", presentingVC: self) {
+                TutorialManager.instance.resetAllTutorials()
+            }
+        }
 	}
 
 }
