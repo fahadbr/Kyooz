@@ -13,7 +13,7 @@ final class RepeatButtonView: UIButton {
 
     var repeatState:RepeatState = .Off
     
-    private var color:UIColor = ThemeHelper.defaultFontColor {
+    var color:UIColor = ThemeHelper.defaultFontColor {
         didSet {
             setNeedsDisplay()
         }
