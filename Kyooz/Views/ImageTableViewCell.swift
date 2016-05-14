@@ -27,14 +27,17 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
         
         let pluralText = entity.count > 1 ? "s" : ""
         var text = "\(entity.count) Track\(pluralText)"
-        if libraryGrouping === LibraryGrouping.Albums || libraryGrouping === LibraryGrouping.Compilations {
-            if let mediaItem = entity.representativeTrack as? MPMediaItem {
-                if let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
-                    text = text + " • \(releaseDate)"
-                }
-                configureDRMAndCloudLabels(mediaItem)
-            }
-        }
+		if let mediaItem = entity.representativeTrack as? MPMediaItem {
+			if libraryGrouping === LibraryGrouping.Albums || libraryGrouping === LibraryGrouping.Compilations {
+				if let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
+					text = text + " • \(releaseDate)"
+				}
+			}
+			configureDRMAndCloudLabels(mediaItem)
+		} else {
+			accessoryStack.hidden = true
+		}
+		
         detailsLabel.text = text
         if shouldAnimate {
             albumArtwork.alpha = 0

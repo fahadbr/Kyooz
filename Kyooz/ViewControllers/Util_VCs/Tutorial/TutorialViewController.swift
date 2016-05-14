@@ -11,7 +11,7 @@ import UIKit
 class TutorialViewController : UIViewController {
 	
 	private static let unfulfilledColor = UIColor.blueColor()
-    private static let fulfilledColor = UIColor.greenColor()
+    private static let fulfilledColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
 	
     let tutorialDTO:TutorialDTO
     
