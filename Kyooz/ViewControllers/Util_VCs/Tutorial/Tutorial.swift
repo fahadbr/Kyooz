@@ -9,13 +9,13 @@
 import Foundation
 
 
-enum Tutorial : String {
+enum Tutorial : Int {
 	
-    case GestureActivatedSearch = "GestureActivatedSearch"
-    case GestureToViewQueue = "GestureToViewQueue"
-    case DragAndDrop = "DragAndDrop"
-    case InsertOrCancel = "InsertOrCancel"
-    case DragToRearrange = "DragToRearrange"
+    case GestureActivatedSearch
+    case GestureToViewQueue
+    case DragAndDrop
+    case InsertOrCancel
+    case DragToRearrange
 	
 }
 

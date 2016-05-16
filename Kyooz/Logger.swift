@@ -13,6 +13,12 @@ final class Logger {
     static let errorLogKey = "errorLogKey"
     static let loggerQueue = dispatch_queue_create("com.riaz.fahad.Kyooz.Logger", DISPATCH_QUEUE_SERIAL)
     
+    static let dateFormatter:NSDateFormatter = {
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "MM-dd-yy hh:mm:ss:SSS a"
+        return formatter
+    }()
+    
     static var errorLogString = TempDataDAO.instance.getPersistentValue(key: errorLogKey) as? String ?? "" {
         didSet {
             TempDataDAO.instance.addPersistentValue(key: errorLogKey, value: errorLogString)
@@ -23,7 +29,9 @@ final class Logger {
     
     
     private static var threadName:String {
-        return NSOperationQueue.currentQueue()?.name ?? "null"
+        var t =  NSOperationQueue.currentQueue()?.name ?? "null"
+        t.removeSubstring("NSOperationQueue ")
+        return t
     }
     
     static func initialize() {
@@ -37,7 +45,8 @@ final class Logger {
         let threadId = threadName
         let message = messageBlock()
         dispatch_async(loggerQueue) {
-            print("\(date.description) [DEBUG] [\(threadId)]:  \(message)")
+            let dateString = dateFormatter.stringFromDate(date)
+            print("\(dateString) DEBUG [\(threadId)]:  \(message)")
         }
     }
     
@@ -45,7 +54,8 @@ final class Logger {
         let date = NSDate()
         let threadId = threadName
         dispatch_async(loggerQueue) {
-            let message = "\(date.description) [ERROR] [\(threadId)]:  \(message)"
+            let dateString = dateFormatter.stringFromDate(date)
+            let message = "\(dateString) ERROR [\(threadId)]:  \(message)"
             errorLogString.appendContentsOf("\n\(message)")
             print(message)
         }

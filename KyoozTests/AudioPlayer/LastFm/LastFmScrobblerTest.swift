@@ -14,16 +14,27 @@ class LastFmScrobblerTest: XCTestCase {
     
     private var mockTempDataDao:MockTempDataDAO!
     private var mockSimpleWsClient:MockSimpleWsClient!
+    private var mockUserDefaults:MockUserDefaults!
+    
     private var lastFmScrobbler:LastFmScrobbler!
+    
     
     override func setUp() {
         super.setUp()
+        lastFmScrobbler = LastFmScrobbler()
         mockTempDataDao = MockTempDataDAO()
         mockSimpleWsClient = MockSimpleWsClient()
-        NSUserDefaults.standardUserDefaults().setObject("username", forKey: UserDefaultKeys.LastFmUsernameKey)
-        NSUserDefaults.standardUserDefaults().setObject("session", forKey: UserDefaultKeys.LastFmSessionKey)
+        mockUserDefaults = MockUserDefaults()
+        
+        lastFmScrobbler.tempDataDAO = mockTempDataDao
+        lastFmScrobbler.simpleWsClient = mockSimpleWsClient
+        lastFmScrobbler.userDefaults = mockUserDefaults
+        
+        mockUserDefaults.setObject("username", forKey: UserDefaultKeys.LastFmUsernameKey)
+        mockUserDefaults.setObject("session", forKey: UserDefaultKeys.LastFmSessionKey)
         mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent()
-        lastFmScrobbler = LastFmScrobbler(tempDataDAO: mockTempDataDao, wsClient: mockSimpleWsClient)
+        
+        lastFmScrobbler.initialize()
     }
     
     override func tearDown() {
@@ -36,7 +47,7 @@ class LastFmScrobblerTest: XCTestCase {
         
 
         mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent() - (KyoozConstants.ONE_DAY_IN_SECONDS * 2)
-        lastFmScrobbler = LastFmScrobbler(tempDataDAO: mockTempDataDao, wsClient:mockSimpleWsClient)
+        lastFmScrobbler.initialize()
         
         lastFmScrobbler.addToScrobbleCache(MPMediaItem(), timeStampToScrobble: NSDate().timeIntervalSince1970)
         
@@ -55,7 +66,7 @@ class LastFmScrobblerTest: XCTestCase {
     
     func testLastSessionValidationTimeUpdated() {
         mockTempDataDao.persistentNumberToReturn = 0
-        lastFmScrobbler = LastFmScrobbler(tempDataDAO: mockTempDataDao, wsClient:mockSimpleWsClient)
+        lastFmScrobbler.initialize()
         
         XCTAssertFalse(lastFmScrobbler.validSessionObtained)
         XCTAssertEqual(0, lastFmScrobbler.lastSessionValidationTime)
@@ -137,7 +148,21 @@ class LastFmScrobblerTest: XCTestCase {
         override func executeHTTPSPOSTCall(baseURL baseURL: String, params: [String], successHandler: ([String : String]) -> Void, failureHandler: () -> ()) {
             successHandler(["info":"i", "session":"s", "username":"U", "lfm.status":"ok"])
         }
+    }
+    
+    class MockUserDefaults : NSUserDefaults {
+        let values = NSMutableDictionary()
+        override func setObject(value: AnyObject?, forKey defaultName: String) {
+            if let v = value {
+                values.setObject(v, forKey: defaultName)
+            } else {
+                values.removeObjectForKey(defaultName)
+            }
+        }
         
+        override func objectForKey(defaultName: String) -> AnyObject? {
+            return values.objectForKey(defaultName)
+        }
     }
     
 }

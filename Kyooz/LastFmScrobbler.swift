@@ -44,38 +44,39 @@ private let api_secret = "***REMOVED***"
 
 final class LastFmScrobbler {
     
-    static let instance:LastFmScrobbler = LastFmScrobbler(tempDataDAO: TempDataDAO.instance, wsClient: SimpleWSClient.instance)
+    static let instance:LastFmScrobbler = LastFmScrobbler().initialize()
     static let LastSessionValidationTimeKey = "LastFmLastSessionValidationTimeKey"
     
     //MARK: - Dependencies
     
-    private var tempDataDAO:TempDataDAO
-    private var simpleWsClient:SimpleWSClient
-	var shortNotificationManager = ShortNotificationManager.instance
+    lazy var tempDataDAO:TempDataDAO = TempDataDAO.instance
+    lazy var userDefaults:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+	lazy var shortNotificationManager = ShortNotificationManager.instance
+    lazy var simpleWsClient:SimpleWSClient = SimpleWSClient.instance
     
     //MARK: - initializers
-    
-    init(tempDataDAO:TempDataDAO, wsClient:SimpleWSClient) {
-        self.tempDataDAO = tempDataDAO
-        self.simpleWsClient = wsClient
+    func initialize() -> LastFmScrobbler {
         lastSessionValidationTime = tempDataDAO.getPersistentNumber(key: LastFmScrobbler.LastSessionValidationTimeKey)?.doubleValue ?? 0
+        username_value = userDefaults.stringForKey(UserDefaultKeys.LastFmUsernameKey)
+        session = userDefaults.stringForKey(UserDefaultKeys.LastFmSessionKey)
+        return self
     }
-    
+
     //MARK: - Properties
     
-	private (set) var username_value = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.LastFmUsernameKey) {
-		didSet {
-			NSUserDefaults.standardUserDefaults().setObject(username_value, forKey: UserDefaultKeys.LastFmUsernameKey)
+    private (set) var username_value:String? {
+        didSet {
+			userDefaults.setObject(username_value, forKey: UserDefaultKeys.LastFmUsernameKey)
 		}
 	}
 	
-	private (set) var session = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.LastFmSessionKey) {
-		didSet {
-			NSUserDefaults.standardUserDefaults().setObject(session, forKey: UserDefaultKeys.LastFmSessionKey)
+    private (set) var session:String? {
+        didSet {
+			userDefaults.setObject(session, forKey: UserDefaultKeys.LastFmSessionKey)
 		}
 	}
 	
-    private (set) var lastSessionValidationTime:CFAbsoluteTime {
+    private (set) var lastSessionValidationTime:CFAbsoluteTime = 0 {
         didSet {
             tempDataDAO.addPersistentValue(key: LastFmScrobbler.LastSessionValidationTimeKey, value: NSNumber(double: lastSessionValidationTime))
         }
@@ -268,7 +269,7 @@ final class LastFmScrobbler {
                 Logger.debug("completed all async tasks for submitting scrobbles")
                 self.scrobbleCache = splitCache.flatMap() { return $1 } //assign back to the main scrobbleCache if any batches failed and did not remove their portion of the caches
                 completionHandler?()
-                TempDataDAO.instance.persistLastFmScrobbleCache()
+                self.tempDataDAO.persistLastFmScrobbleCache()
             }
         })
     }

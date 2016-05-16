@@ -12,7 +12,7 @@ final class BlurViewController : UIViewController {
 	
 	var blurRadius:Double = 0 {
 		didSet {
-			let cappedRadius = min(max(blurRadius, 0), 1)
+			let cappedRadius = KyoozUtils.cap(blurRadius, min: 0, max: 1)
 			blurRadius = cappedRadius
 			visualEffectView?.layer.timeOffset = cappedRadius
 		}
@@ -38,13 +38,8 @@ final class BlurViewController : UIViewController {
 	
 	override func viewDidLoad() {
 		view.backgroundColor = UIColor.clearColor()
-		
-		let notificationCenter = NSNotificationCenter.defaultCenter()
-		notificationCenter.addObserver(self, selector: #selector(BlurViewController.createSnapshotBlur), name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
-		notificationCenter.addObserver(self, selector: #selector(BlurViewController.removeBlurAnimation), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-		notificationCenter.addObserver(self, selector: #selector(BlurViewController.resetBlurAnimation), name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
-		notificationCenter.addObserver(self, selector: #selector(BlurViewController.removeSnapshotBlur), name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
 	}
+
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
@@ -55,6 +50,11 @@ final class BlurViewController : UIViewController {
 			removeSnapshotBlur()
 		}
 	}
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        registerForApplicationNotifications()
+    }
 	
 	override func viewDidDisappear(animated: Bool) {
 		super.viewDidDisappear(animated)
@@ -62,6 +62,7 @@ final class BlurViewController : UIViewController {
 		createSnapshotBlur()
 		removeBlurAnimation()
 		removedFromViewHierarchy = true
+        unregisterForNotifications()
 	}
 	
 	func createSnapshotBlur() {
@@ -96,5 +97,17 @@ final class BlurViewController : UIViewController {
 	func removeSnapshotBlur() {
 		blurSnapshotView = nil
 	}
+    
+    func registerForApplicationNotifications() {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: #selector(self.createSnapshotBlur), name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
+        notificationCenter.addObserver(self, selector: #selector(self.removeBlurAnimation), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
+        notificationCenter.addObserver(self, selector: #selector(self.resetBlurAnimation), name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
+        notificationCenter.addObserver(self, selector: #selector(self.removeSnapshotBlur), name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+    }
+    
+    func unregisterForNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
 	
 }
