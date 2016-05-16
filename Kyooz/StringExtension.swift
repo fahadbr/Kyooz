@@ -62,4 +62,10 @@ extension String {
         }
         return (false, nil)
     }
+    
+    mutating func removeSubstring(stringToRemove:String) {
+        if let range = rangeOfString(stringToRemove) {
+            removeRange(range)
+        }
+    }
 }

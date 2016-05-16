@@ -39,13 +39,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             tapGestureRecognizer.enabled = sidePanelVisible
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
             nowPlayingQueueViewController.isExpanded = centerPanelPosition == .Left
-            
-            switch centerPanelPosition {
-            case .Right:
-                TutorialManager.instance.dismissTutorial(.GestureActivatedSearch, action: .Fulfill)
-            default:
-                break
-            }
         }
     }
     
@@ -121,11 +114,21 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         addChildViewController(searchViewController)
         view.sendSubviewToBack(searchViewController.view)
         searchViewController.didMoveToParentViewController(self)
-		showTutorial()
     }
 	
-	func showTutorial() {
-		TutorialManager.instance.presentTutorialIfUnfulfilled(Tutorial.GestureActivatedSearch)
+    func showOrUpdateTutorials(targetPosition:Position) {
+        switch targetPosition {
+        case .Right:
+            if !TutorialManager.instance.dismissTutorial(.GestureActivatedSearch, action: .Fulfill) {
+                TutorialManager.instance.dimissTutorials([.GestureToViewQueue], action: .DismissUnfulfilled)
+            }
+        case .Left:
+            if !TutorialManager.instance.dismissTutorial(.GestureToViewQueue, action: .Fulfill) {
+                TutorialManager.instance.dimissTutorials([.GestureActivatedSearch, .DragAndDrop], action: .DismissUnfulfilled)
+            }
+        case .Center:
+            TutorialManager.instance.presentUnfulfilledTutorials([.GestureActivatedSearch, .GestureToViewQueue, .DragAndDrop])
+        }
 	}
 	
     override func canBecomeFirstResponder() -> Bool {
@@ -135,6 +138,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         becomeFirstResponder()
+        KyoozUtils.doInMainQueueAfterDelay(3) {
+            self.showOrUpdateTutorials(self.centerPanelPosition)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -271,6 +277,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             } else {
                 targetPosition = .Center
             }
+            showOrUpdateTutorials(targetPosition)
             animateCenterPanel(toPosition: targetPosition)
         default:
             break
@@ -291,6 +298,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: nowPlayingQueueViewController)
                 dragAndDropHandler.delegate = self
             }
+            TutorialManager.instance.dismissTutorial(.DragAndDrop, action: .Fulfill)
         case .Ended, .Cancelled:
             nowPlayingQueueViewController.insertMode = false
             KyoozUtils.doInMainQueueAfterDelay(0.6) { [unowned self]() in

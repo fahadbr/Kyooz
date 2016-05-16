@@ -92,6 +92,8 @@
 		0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */; };
 		0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9016051C4ABFFD00B1ACD1 /* PlayCountIterator.swift */; };
 		0B9016081C4B197D00B1ACD1 /* BackgroundFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */; };
+		0B9D79CC1CE8DF7F0035E162 /* TutorialManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */; };
+		0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */; };
 		0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242741C251671000170F9 /* AbstractTableViewCell.swift */; };
 		0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */; };
 		0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */; };
@@ -125,6 +127,7 @@
 		0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */; };
 		0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE21C541BAF8915000509FD /* ApplicationIconView.swift */; };
 		0BE21C571BAF8925000509FD /* ApplicationIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BE21C561BAF8925000509FD /* ApplicationIconView.xib */; };
+		0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */; };
 		0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */; };
 		0BEBCCB71B92123700EFC47D /* PlayPauseButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */; };
 		0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917401BF7FD7D001AC802 /* SearchIndex.swift */; };
@@ -269,6 +272,8 @@
 		0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMAudioQueuePlayer.swift; sourceTree = "<group>"; };
 		0B9016051C4ABFFD00B1ACD1 /* PlayCountIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIterator.swift; sourceTree = "<group>"; };
 		0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchController.swift; sourceTree = "<group>"; };
+		0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TutorialManagerTest.swift; path = KyoozTests/ViewControllers/Util_VCs/Tutorial/TutorialManagerTest.swift; sourceTree = SOURCE_ROOT; };
+		0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewControllerFactory.swift; sourceTree = "<group>"; };
 		0BA242741C251671000170F9 /* AbstractTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractTableViewCell.swift; sourceTree = "<group>"; };
 		0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemQueueResyncWorkflowController.swift; sourceTree = "<group>"; };
 		0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIteratorOperation.swift; sourceTree = "<group>"; };
@@ -303,6 +308,7 @@
 		0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = IPodLibraryDAO.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BE21C541BAF8915000509FD /* ApplicationIconView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationIconView.swift; sourceTree = "<group>"; };
 		0BE21C561BAF8925000509FD /* ApplicationIconView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplicationIconView.xib; sourceTree = "<group>"; };
+		0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanTutorialViewController.swift; sourceTree = "<group>"; };
 		0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayPauseButtonView.swift; sourceTree = "<group>"; };
 		0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayPauseButtonView.xib; sourceTree = "<group>"; };
 		0BF917401BF7FD7D001AC802 /* SearchIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndex.swift; sourceTree = "<group>"; };
@@ -604,6 +610,32 @@
 			name = SourceData;
 			sourceTree = "<group>";
 		};
+		0B6E48711CE8D4DB003B6683 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				0B6E48721CE8D510003B6683 /* Util VCs */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		0B6E48721CE8D510003B6683 /* Util VCs */ = {
+			isa = PBXGroup;
+			children = (
+				0B6E48731CE8D517003B6683 /* Tutorial */,
+			);
+			name = "Util VCs";
+			path = Util_VCs;
+			sourceTree = "<group>";
+		};
+		0B6E48731CE8D517003B6683 /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */,
+			);
+			name = Tutorial;
+			path = Util_VCs/Tutorial;
+			sourceTree = "<group>";
+		};
 		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -730,8 +762,9 @@
 			isa = PBXGroup;
 			children = (
 				0B2B1E911CC43F1500D8A932 /* StringNormalizationTest.swift */,
-				0BC2D7B11CDE5EFC001BEC9B /* AudioPlayer */,
 				100A8BC41C54423B009FAB17 /* KyoozTests.swift */,
+				0BC2D7B11CDE5EFC001BEC9B /* AudioPlayer */,
+				0B6E48711CE8D4DB003B6683 /* ViewControllers */,
 				100A8BC61C54423B009FAB17 /* Info.plist */,
 			);
 			path = KyoozTests;
@@ -786,6 +819,8 @@
 				108DBA0C1CE537990013E990 /* Tutorial.swift */,
 				1060F6031CE5399C001DE868 /* TutorialManager.swift */,
 				108DBA091CE4CCA10013E990 /* TutorialViewController.swift */,
+				0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */,
+				0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */,
 			);
 			name = Tutorial;
 			path = Util_VCs/Tutorial;
@@ -961,6 +996,7 @@
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
+				0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */,
 				0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */,
 				0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */,
 				10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */,
@@ -1009,6 +1045,7 @@
 				10DB53CF1CB5C28F0041B179 /* AbstractPlaybackViewController.swift in Sources */,
 				0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
+				0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */,
 				10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
 				0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */,
@@ -1088,6 +1125,7 @@
 				0B2B1E921CC43F1500D8A932 /* StringNormalizationTest.swift in Sources */,
 				0BC2D7B41CDE5F1A001BEC9B /* LastFmScrobblerTest.swift in Sources */,
 				100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */,
+				0B9D79CC1CE8DF7F0035E162 /* TutorialManagerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

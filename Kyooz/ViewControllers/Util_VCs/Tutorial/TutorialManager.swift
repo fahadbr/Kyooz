@@ -17,8 +17,9 @@ class TutorialManager {
 	//MARK: - DEPENDENCIES
 	lazy var userDefaults = NSUserDefaults.standardUserDefaults()
 	lazy var presentationController:UIViewController = ContainerViewController.instance
+    lazy var tutorialViewControllerFactory = TutorialViewControllerFactory()
 	
-    lazy var tutorialDataMap:[Tutorial:TutorialDTO] = {
+    let tutorialDataMap:[Tutorial:TutorialDTO] = {
         var tutorials = [TutorialDTO]()
         tutorials.append(TutorialDTO(tutorial: .DragAndDrop,
             instructionText: "Press and hold a cell to place it on to the play queue",
@@ -47,12 +48,20 @@ class TutorialManager {
         return map
     }()
     
-    private weak var presentedTutorial:TutorialViewController?
+    weak var presentedTutorial:TutorialViewController?
     
-    func dismissTutorial(tutorial:Tutorial, action:TutorialAction) {
+    func dimissTutorials(tutorials:[Tutorial], action:TutorialAction) {
+        for tutorial in tutorials {
+            if dismissTutorial(tutorial, action: action){
+                break
+            }
+        }
+    }
+    
+    func dismissTutorial(tutorial:Tutorial, action:TutorialAction) -> Bool {
         guard let tvc = presentedTutorial where tvc.tutorialDTO.tutorial == tutorial else {
-            Logger.debug("cannot dismiss tutorial \(tutorial.rawValue) when its not being presented")
-            return
+            Logger.debug("cannot dismiss tutorial \(tutorial) when its not being presented")
+            return false
         }
         
         switch action {
@@ -62,8 +71,9 @@ class TutorialManager {
         case .DismissUnfulfilled:
             break
         }
-        tvc.transitionOut(action)
         
+        tvc.transitionOut(action)
+        return true
     }
     
     func resetAllTutorials() {
@@ -73,34 +83,54 @@ class TutorialManager {
     }
 	
     private func setFulfulled(tutorial:Tutorial, fulfilled:Bool) {
-		userDefaults.setBool(fulfilled, forKey: keyForTutorial(tutorial))
+		userDefaults.setBool(fulfilled, forKey: self.dynamicType.keyForTutorial(tutorial))
 	}
+    
+    //use this function when the intention is to present one of many
+    //unfulfilled tutorials in the same invocation
+    func presentUnfulfilledTutorials(tutorials:[Tutorial]) {
+        for tutorial in tutorials {
+            if presentTutorialIfUnfulfilled(tutorial) {
+                break
+            }
+        }
+    }
 	
-	func presentTutorialIfUnfulfilled(tutorial:Tutorial) {
-        guard presentedTutorial == nil else {
-            Logger.debug("already presenting a tutorial")
-            return
+	func presentTutorialIfUnfulfilled(tutorial:Tutorial) -> Bool {
+        guard !tutorialIsFulfilled(tutorial) else {
+            Logger.debug("tutorial has already been fulfilled")
+            return false
         }
-		guard !tutorialIsFulfilled(tutorial) else {
-			Logger.debug("tutorial has already been fulfilled")
-			return
-		}
+        
+        if let tvc = presentedTutorial {
+            if tvc.tutorialDTO.tutorial == tutorial {
+                return true
+            } else {
+                //this dismisses the presenting tutorial when a new one is requested to be shown
+                dismissTutorial(tvc.tutorialDTO.tutorial, action: .DismissUnfulfilled)
+            }
+        }
+        
         guard let dto = tutorialDataMap[tutorial] else {
-            fatalError("no tutorial defined for \(tutorial.rawValue)")
+            fatalError("no tutorial defined for \(tutorial)")
         }
-        let tvc = TutorialViewController(tutorialDTO:dto)
+        
+        let tvc:TutorialViewController = tutorialViewControllerFactory.viewControllerForTutorial(dto)
 		ConstraintUtils.applyStandardConstraintsToView(subView: tvc.view, parentView: presentationController.view)
 		presentationController.addChildViewController(tvc)
 		tvc.didMoveToParentViewController(presentationController)
         presentedTutorial = tvc
+        return true
 	}
 	
 	private func tutorialIsFulfilled(tutorial:Tutorial) -> Bool {
-		return userDefaults.boolForKey(keyForTutorial(tutorial))
+		return userDefaults.boolForKey(self.dynamicType.keyForTutorial(tutorial))
 	}
 	
-	private func keyForTutorial(tutorial:Tutorial) -> String {
-		return "\(self.dynamicType.userDefaultKeyPrefix)\(tutorial.rawValue)"
+    static func keyForTutorial(tutorial:Tutorial) -> String {
+		return "\(userDefaultKeyPrefix)\(tutorial)"
 	}
+    
+    
 	
 }
