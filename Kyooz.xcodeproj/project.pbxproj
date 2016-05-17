@@ -144,6 +144,7 @@
 		10171E061C373364002FD905 /* TestTableViewDataSourceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		1060F6041CE5399C001DE868 /* TutorialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1060F6031CE5399C001DE868 /* TutorialManager.swift */; };
+		1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */; };
 		108DBA061CE295480013E990 /* CrossButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA051CE295480013E990 /* CrossButtonView.swift */; };
 		108DBA0A1CE4CCA10013E990 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA091CE4CCA10013E990 /* TutorialViewController.swift */; };
 		108DBA0D1CE537990013E990 /* Tutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA0C1CE537990013E990 /* Tutorial.swift */; };
@@ -327,6 +328,7 @@
 		10171E051C373364002FD905 /* TestTableViewDataSourceDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewDataSourceDelegate.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		1060F6031CE5399C001DE868 /* TutorialManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialManager.swift; sourceTree = "<group>"; };
+		1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongPressTutorialViewController.swift; sourceTree = "<group>"; };
 		108DBA051CE295480013E990 /* CrossButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossButtonView.swift; sourceTree = "<group>"; };
 		108DBA091CE4CCA10013E990 /* TutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
 		108DBA0C1CE537990013E990 /* Tutorial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tutorial.swift; sourceTree = "<group>"; };
@@ -816,11 +818,12 @@
 		108DBA0B1CE536AD0013E990 /* Tutorial */ = {
 			isa = PBXGroup;
 			children = (
+				1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */,
+				0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */,
 				108DBA0C1CE537990013E990 /* Tutorial.swift */,
 				1060F6031CE5399C001DE868 /* TutorialManager.swift */,
 				108DBA091CE4CCA10013E990 /* TutorialViewController.swift */,
 				0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */,
-				0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */,
 			);
 			name = Tutorial;
 			path = Util_VCs/Tutorial;
@@ -1020,6 +1023,7 @@
 				0B5879511C756097009E713F /* ArtworkHeaderViewController.swift in Sources */,
 				10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */,
 				0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */,
+				1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */,
 				0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,

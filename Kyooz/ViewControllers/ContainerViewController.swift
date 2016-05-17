@@ -39,6 +39,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             tapGestureRecognizer.enabled = sidePanelVisible
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
             nowPlayingQueueViewController.isExpanded = centerPanelPosition == .Left
+			showTutorials()
         }
     }
     
@@ -116,7 +117,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         searchViewController.didMoveToParentViewController(self)
     }
 	
-    func showOrUpdateTutorials(targetPosition:Position) {
+    func dismissTutorials(targetPosition:Position) {
         switch targetPosition {
         case .Right:
             if !TutorialManager.instance.dismissTutorial(.GestureActivatedSearch, action: .Fulfill) {
@@ -126,9 +127,15 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             if !TutorialManager.instance.dismissTutorial(.GestureToViewQueue, action: .Fulfill) {
                 TutorialManager.instance.dimissTutorials([.GestureActivatedSearch, .DragAndDrop], action: .DismissUnfulfilled)
             }
-        case .Center:
-            TutorialManager.instance.presentUnfulfilledTutorials([.GestureActivatedSearch, .GestureToViewQueue, .DragAndDrop])
+		case .Center:
+			break
         }
+	}
+	
+	func showTutorials() {
+		if centerPanelPosition == .Center {
+			TutorialManager.instance.presentUnfulfilledTutorials([.GestureActivatedSearch, .GestureToViewQueue, .DragAndDrop])
+		}
 	}
 	
     override func canBecomeFirstResponder() -> Bool {
@@ -139,7 +146,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         super.viewDidAppear(animated)
         becomeFirstResponder()
         KyoozUtils.doInMainQueueAfterDelay(3) {
-            self.showOrUpdateTutorials(self.centerPanelPosition)
+            self.showTutorials()
         }
     }
     
@@ -277,7 +284,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             } else {
                 targetPosition = .Center
             }
-            showOrUpdateTutorials(targetPosition)
+            dismissTutorials(targetPosition)
             animateCenterPanel(toPosition: targetPosition)
         default:
             break

@@ -17,6 +17,8 @@ class TutorialViewControllerFactory {
             return PanTutorialViewController(tutorialDTO: dto, isPanningRight: true)
         case .GestureToViewQueue:
             return PanTutorialViewController(tutorialDTO: dto, isPanningRight: false)
+		case .DragAndDrop:
+			return LongPressTutorialViewController(tutorialDTO: dto)
         default:
             return TutorialViewController(tutorialDTO:dto)
         }
