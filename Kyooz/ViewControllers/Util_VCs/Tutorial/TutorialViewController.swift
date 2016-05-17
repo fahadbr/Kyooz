@@ -15,7 +15,7 @@ class TutorialViewController : UIViewController {
 	
     let tutorialDTO:TutorialDTO
     
-    var circleSize:CGFloat = 55
+    private static let circleSize:CGFloat = 55
     private var startedTransitioningOut = false
     
     lazy var tutorialManager = TutorialManager.instance
@@ -45,17 +45,7 @@ class TutorialViewController : UIViewController {
 	
 	private lazy var instructionView = UIView()
     
-    lazy var circleLayer:CAShapeLayer = {
-        let size = self.circleSize
-        let layer = CAShapeLayer()
-        let path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: size, height: size))
-        layer.path = path.CGPath
-        layer.strokeColor = ThemeHelper.defaultFontColor.CGColor
-        layer.fillColor = UIColor.clearColor().CGColor
-        layer.lineWidth = 2
-        layer.frame = CGRect(x: self.view.bounds.midX - size/2, y: self.view.bounds.midY + size/2, width: size, height: size)
-        return layer
-    }()
+    lazy var circleLayer:CAShapeLayer = self.createCircleLayer()
     
 	
     init(tutorialDTO:TutorialDTO) {
@@ -71,6 +61,18 @@ class TutorialViewController : UIViewController {
     deinit {
         Logger.debug("deinit tutorial vc")
     }
+	
+	func createCircleLayer() -> CAShapeLayer {
+		let size = self.dynamicType.circleSize
+		let layer = CAShapeLayer()
+		let path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: size, height: size))
+		layer.path = path.CGPath
+		layer.strokeColor = ThemeHelper.defaultFontColor.CGColor
+		layer.fillColor = UIColor.clearColor().CGColor
+		layer.lineWidth = 2
+		layer.frame = CGRect(x: self.view.bounds.midX - size/2, y: self.view.bounds.midY + size/2, width: size, height: size)
+		return layer
+	}
 	
 	override func loadView() {
 		self.view = OverlayView()
@@ -117,8 +119,7 @@ class TutorialViewController : UIViewController {
         guard !startedTransitioningOut else { return }
         startedTransitioningOut = true
         
-        circleLayer.removeAllAnimations()
-        circleLayer.removeFromSuperlayer()
+        removeAnimations()
         
         switch action {
         case .Fulfill:
@@ -146,22 +147,16 @@ class TutorialViewController : UIViewController {
 
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
-        circleLayer.removeAllAnimations()
-    }
-    
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesEnded(touches, withEvent: event)
-        applyAnimation()
-    }
-    
     func removeAnimations() {
-        circleLayer.removeAllAnimations()
+		circleLayer.removeAllAnimations()
+		circleLayer.removeFromSuperlayer()
     }
-    
+	
     func applyAnimation() {
-        //no op
+		circleLayer.removeAllAnimations()
+		if circleLayer.superlayer == nil {
+			view.layer.addSublayer(circleLayer)
+		}
     }
     
     private func doFadeOutAnimation() {

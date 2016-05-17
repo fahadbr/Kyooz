@@ -63,17 +63,10 @@ class PanTutorialViewController : TutorialViewController {
         super.viewDidLayoutSubviews()
         circleLayer.transform = CATransform3DMakeTranslation(0, view.frame.height * 0.15, 0)
     }
-    
-    override func removeAnimations() {
-        circleLayer.removeAllAnimations()
-        circleLayer.removeFromSuperlayer()
-    }
+
     
     override func applyAnimation() {
-        circleLayer.removeAllAnimations()
-        if circleLayer.superlayer == nil {
-            view.layer.addSublayer(circleLayer)
-        }
+        super.applyAnimation()
         circleLayer.addAnimation(panAnimation, forKey: "tutorial")
     }
     

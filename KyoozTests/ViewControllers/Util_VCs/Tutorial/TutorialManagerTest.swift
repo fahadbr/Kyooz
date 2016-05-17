@@ -40,7 +40,7 @@ class TutorialManagerTest: XCTestCase {
     func testPresentTutorialIfUnfulfilledGreenPath() {
         let tutorial:Tutorial = .GestureActivatedSearch
         XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(tutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
+        ensureTutorialIsPresented(tutorial)
     }
     
     func testPresentTutorialAlreadyFulfulled() {
@@ -53,13 +53,14 @@ class TutorialManagerTest: XCTestCase {
     
     func testPresentTutorialWhileOtherIsPresented() {
         let tutorial:Tutorial = .GestureActivatedSearch
-        XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(tutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
+		
+		tutorialManager.presentedTutorial = createMockVCForTutorial(tutorial)
         let originalTutorialVC = mockVCFactory.tutorialVC
-        
+		
         let overrideTutorial = Tutorial.DragAndDrop
-        XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(overrideTutorial))
-        ensureTutorialPresented(overrideTutorial, invocationNumber: 2)
+		
+		XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(overrideTutorial))
+        ensureTutorialIsPresented(overrideTutorial)
         XCTAssertEqual(overrideTutorial, mockVCFactory.tutorialVC.tutorialDTO.tutorial)
         XCTAssertEqual(1, originalTutorialVC.transitionOutInvocations.count)
         XCTAssertEqual(TutorialAction.DismissUnfulfilled, originalTutorialVC.transitionOutInvocations[0])
@@ -68,42 +69,38 @@ class TutorialManagerTest: XCTestCase {
     func testPresentTutorialThatsAlreadyPresented() {
         let tutorial:Tutorial = .GestureActivatedSearch
         XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(tutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
+        ensureTutorialIsPresented(tutorial)
         
         XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(tutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
+        ensureTutorialIsPresented(tutorial)
     }
     
     func testPresentFulfilledTutorialWhileOtherIsPresented() {
         let tutorial:Tutorial = .GestureActivatedSearch
-        XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(tutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
+        let tutorialVC = createMockVCForTutorial(tutorial)
+		tutorialManager.presentedTutorial = tutorialVC
         
         let secondTutorial:Tutorial = .GestureActivatedSearch
         mockUserDefaults.setBool(true, forKey: TutorialManager.keyForTutorial(secondTutorial))
         
         XCTAssertFalse(tutorialManager.presentTutorialIfUnfulfilled(secondTutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
     }
     
-    func testPresentUnfulfilledTutorials() {
+    func testPresentFirstOfUnfulfilledTutorials() {
         let tutorials = tutorialManager.tutorialDataMap.map({$0.0})
         tutorialManager.presentUnfulfilledTutorials(tutorials)
-        ensureTutorialPresented(tutorials[0], invocationNumber: 1)
+        ensureTutorialIsPresented(tutorials[0])
     }
     
-    func testPresentFulfilledTutorialsWhenTutorialAlreadyPresented() {
+    func testPresentLastOfUnfulfilledTutorials() {
         let tutorial = Tutorial.DragAndDrop
-        XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(tutorial))
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
-        
         [Tutorial.GestureActivatedSearch, Tutorial.GestureToViewQueue].forEach {
             mockUserDefaults.setBool(true, forKey: TutorialManager.keyForTutorial($0))
         }
         
         let tutorials:[Tutorial] = [.GestureActivatedSearch, .GestureToViewQueue, .DragAndDrop]
         tutorialManager.presentUnfulfilledTutorials(tutorials)
-        ensureTutorialPresented(tutorial, invocationNumber: 1)
+        ensureTutorialIsPresented(tutorial)
     }
     
     func testResetAllTutorials() {
@@ -116,20 +113,68 @@ class TutorialManagerTest: XCTestCase {
         }
     }
     
-    func testDismissTutorialGreenPath() {
-        
+    func testDismissTutorialDismissFulfilled() {
+		dismissTutorial(.DragAndDrop, withAction: .DismissFulfilled)
     }
-    
-    private func ensureTutorialPresented(tutorial:Tutorial, invocationNumber:Int) {
+	
+	func testDismissTutorialDismissUnfulfilled() {
+		dismissTutorial(.DragAndDrop, withAction: .DismissUnfulfilled)
+	}
+	
+	func testDismissTutorialFulfill() {
+		dismissTutorial(.DragAndDrop, withAction: .Fulfill)
+	}
+	
+	func testDismissTutorialNotPresented() {
+		tutorialManager.presentedTutorial = createMockVCForTutorial(.DragAndDrop)
+		let actions:[TutorialAction] = [.DismissUnfulfilled, .DismissFulfilled, .Fulfill]
+		actions.forEach() {
+			XCTAssertFalse(tutorialManager.dismissTutorial(.DragToRearrange, action: $0))
+			validateTutorialDismissed(.DragToRearrange, withAction: $0, dismissExpected: false)
+		}
+	}
+	
+	func testDimissTutorials() {
+		let tutorial = Tutorial.DragAndDrop
+		let action = TutorialAction.DismissFulfilled
+		tutorialManager.presentedTutorial = createMockVCForTutorial(tutorial)
+		
+		let tutorials:[Tutorial] = [.GestureToViewQueue, .GestureToViewQueue, tutorial]
+		tutorialManager.dimissTutorials(tutorials, action: action)
+		
+		tutorials.forEach() {
+			validateTutorialDismissed($0, withAction: action, dismissExpected: $0 == tutorial)
+		}
+	}
+	
+    private func ensureTutorialIsPresented(tutorial:Tutorial) {
         XCTAssertNotNil(presentationController.childVc)
-        XCTAssertEqual(invocationNumber, presentationController.invocations)
-        XCTAssertEqual(tutorial, mockVCFactory.tutorialVC.tutorialDTO.tutorial)
-        XCTAssertTrue(mockVCFactory.tutorialVC.transitionOutInvocations.isEmpty)
+        XCTAssertEqual(1, presentationController.invocations)
+		XCTAssertNotNil(tutorialManager.presentedTutorial)
+		XCTAssertEqual(presentationController.childVc, tutorialManager.presentedTutorial)
+        XCTAssertEqual(tutorial, tutorialManager.presentedTutorial!.tutorialDTO.tutorial)
+        XCTAssertTrue(mockVCFactory.tutorialVC?.transitionOutInvocations.isEmpty ?? true)
     }
-    
-    private func createMockVCForTutorial(tutorial:Tutorial) -> MockTutorialViewController {
+	
+	private func dismissTutorial(tutorial:Tutorial, withAction action:TutorialAction) {
+		tutorialManager.presentedTutorial = createMockVCForTutorial(tutorial)
+		
+		XCTAssertTrue(tutorialManager.dismissTutorial(tutorial, action: action))
+		validateTutorialDismissed(tutorial, withAction: action, dismissExpected: true)
+	}
+	
+	private func validateTutorialDismissed(tutorial:Tutorial, withAction action:TutorialAction, dismissExpected:Bool) {
+		XCTAssertEqual(dismissExpected && action != .DismissUnfulfilled, mockUserDefaults.boolForKey(TutorialManager.keyForTutorial(tutorial)))
+		if dismissExpected {
+			XCTAssertEqual(1, mockVCFactory.tutorialVC.transitionOutInvocations.count)
+			XCTAssertEqual(action, mockVCFactory.tutorialVC.transitionOutInvocations[0])
+		}
+	}
+
+	
+    private func createMockVCForTutorial(tutorial:Tutorial) -> TutorialViewController {
         let tutorialDTO = TutorialDTO(tutorial: tutorial, instructionText: "", nextTutorial: nil)
-        return MockTutorialViewController(tutorialDTO: tutorialDTO)
+        return mockVCFactory.viewControllerForTutorial(tutorialDTO)
     }
     
     class MockUserDefaults : NSUserDefaults {
