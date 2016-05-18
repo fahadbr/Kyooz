@@ -54,23 +54,34 @@ final class SearchResultsHeaderView: UIView {
         let translation = CGAffineTransformMakeTranslation(0, shouldExpand ? 3 : 0)
         self.disclosureIndicator.transform = CGAffineTransformConcat(rotation, translation)
     }
+	
+	func setLabelText(mainText:String, subText:String) {
+		let mainTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : ThemeHelper.defaultFontColor]
+		let subTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : UIColor.darkGrayColor()]
+		
+		let mainAttributedText = NSMutableAttributedString(string: mainText, attributes: mainTextAttributes)
+		mainAttributedText.appendAttributedString(NSAttributedString(string: "   " + subText, attributes: subTextAttributes))
+		
+		headerTitleLabel.attributedText = mainAttributedText
+	}
 
 }
 
 final class SearchHeaderFooterView : UITableViewHeaderFooterView {
     
-    var headerView:SearchResultsHeaderView!
-    
-    func initializeHeaderView() {
-        guard headerView == nil else { return }
-        
-        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
-            return
-        }
-        headerView = view
-        view.frame = contentView.frame
-        contentView.addSubview(headerView)
-    }
-    
-    
+	lazy var headerView:SearchResultsHeaderView = {
+		guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+			fatalError("could not load nib named SearchResultsHeaderView")
+		}
+	
+		view.frame = self.contentView.frame
+		self.contentView.addSubview(view)
+		return view
+	}()
+	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		headerView.frame = contentView.frame
+	}
+
 }

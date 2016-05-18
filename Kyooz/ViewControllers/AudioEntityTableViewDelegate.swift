@@ -20,12 +20,10 @@ class AudioEntityTableViewDelegate : NSObject, UITableViewDelegate {
         guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
             return nil
         }
-        view.initializeHeaderView()
         
-        if let headerView = view.headerView {
-            headerView.headerTitleLabel.text = sourceData.sections[section].name
-            headerView.disclosureContainerView.hidden = true
-        }
+        let headerView = view.headerView
+		headerView.headerTitleLabel.text = sourceData.sections[section].name
+		headerView.disclosureContainerView.hidden = true
         return view
     }
 }

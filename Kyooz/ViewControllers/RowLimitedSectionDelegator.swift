@@ -34,22 +34,31 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 	}
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+		Logger.debug("tapGestureMap count = \(tapGestureRecognizerHashToDSD.count)")
         return dsdSections.count
     }
 	
 	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		guard let view = super.tableView(tableView, viewForHeaderInSection: section) as? SearchHeaderFooterView, headerView = view.headerView else {
+		guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
 			return nil
 		}
+		
+		let headerView = view.headerView
+		
+		
         let datasourceDelegate = dsdSections[section]
 		if dsdSections.count > 1 || expandedSection != nil {
-			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RowLimitedSectionDelegator.didTapHeaderView(_:)))
+			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTapHeaderView(_:)))
 			headerView.addGestureRecognizer(tapGestureRecognizer)
 			headerView.disclosureContainerView.hidden = false
 			tapGestureRecognizerHashToDSD[tapGestureRecognizer.hashValue] = datasourceDelegate
 		} else {
 			headerView.disclosureContainerView.hidden = true
 		}
+		
+		let headerViewText = sourceData.sections[section].name
+		let subText = "\(datasourceDelegate.sourceData.entities.count) TOTAL"
+		headerView.setLabelText(headerViewText, subText: subText)
 		
 		headerView.applyRotation(shouldExpand: expandedSection != nil && datasourceDelegate === expandedSection!)
 
