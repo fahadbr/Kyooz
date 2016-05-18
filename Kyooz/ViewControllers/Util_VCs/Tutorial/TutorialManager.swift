@@ -22,7 +22,7 @@ class TutorialManager {
     let tutorialDataMap:[Tutorial:TutorialDTO] = {
         var tutorials = [TutorialDTO]()
         tutorials.append(TutorialDTO(tutorial: .DragAndDrop,
-            instructionText: "Press and hold a cell to place it on to the play queue",
+            instructionText: "Press and hold a cell to drag and drop it on to the play queue",
             nextTutorial: .InsertOrCancel))
         
         tutorials.append(TutorialDTO(tutorial: .GestureActivatedSearch,
@@ -34,11 +34,11 @@ class TutorialManager {
             nextTutorial: nil))
         
         tutorials.append(TutorialDTO(tutorial: .InsertOrCancel,
-            instructionText: "Let go to insert the tracks. Move it left to cancel",
+            instructionText: "Let go to insert the tracks\nMove left to cancel",
             nextTutorial: nil))
         
         tutorials.append(TutorialDTO(tutorial: .DragToRearrange,
-            instructionText: "Press and hold to rearrange cells",
+            instructionText: "Press and hold on a cell in the play queue to rearrange",
             nextTutorial: nil))
         
         var map = [Tutorial:TutorialDTO]()

@@ -35,8 +35,11 @@ class PanTutorialViewController : TutorialViewController {
         let scaleAnimation = createKeyframeAnimation("transform.scale")
         scaleAnimation.values = [scale, 1, 1, scale]
         
+        let defaultTimingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+        let easeInTimingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
         let translateAnimation = createKeyframeAnimation("transform.translation.x")
         translateAnimation.values = [-offsetX, -offsetX, offsetX, offsetX]
+        translateAnimation.timingFunctions = [defaultTimingFunction, easeInTimingFunction, easeInTimingFunction, defaultTimingFunction]
         
         let opacityAnimation = createKeyframeAnimation("opacity")
         opacityAnimation.values = [0, 1, 1, 0]
@@ -69,8 +72,5 @@ class PanTutorialViewController : TutorialViewController {
         super.applyAnimation()
         circleLayer.addAnimation(panAnimation, forKey: "tutorial")
     }
-    
-
-    
     
 }

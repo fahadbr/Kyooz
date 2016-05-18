@@ -306,12 +306,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 dragAndDropHandler.delegate = self
             }
             TutorialManager.instance.dismissTutorial(.DragAndDrop, action: .Fulfill)
-        case .Ended, .Cancelled:
-            nowPlayingQueueViewController.insertMode = false
-            KyoozUtils.doInMainQueueAfterDelay(0.6) { [unowned self]() in
-                self.animateCenterPanel(toPosition: .Center)
-                self.dragAndDropHandler = nil
-            }
         default:
             break
         }
@@ -341,8 +335,17 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
     func gestureDidBegin(sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
-            animateCenterPanel(toPosition: .Left)
             nowPlayingQueueViewController.insertMode = true
+            animateCenterPanel(toPosition: .Left)
+        }
+    }
+    
+    func gestureDidEnd(sender: UIGestureRecognizer) {
+        TutorialManager.instance.dismissTutorial(Tutorial.InsertOrCancel, action: .Fulfill)
+        nowPlayingQueueViewController.insertMode = false
+        KyoozUtils.doInMainQueueAfterDelay(0.3) { [unowned self]() in
+            self.animateCenterPanel(toPosition: .Center)
+            self.dragAndDropHandler = nil
         }
     }
     

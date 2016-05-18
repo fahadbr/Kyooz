@@ -23,9 +23,15 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     var menuButtonTouched:Bool = false
     var isExpanded:Bool = false {
         didSet {
-            if(isExpanded) {
+            if isExpanded {
                 reloadTableData()
+                KyoozUtils.doInMainQueueAfterDelay(0.5) {
+                    if !self.insertMode && self.audioQueuePlayer.nowPlayingQueue.count > 1 {
+                        TutorialManager.instance.presentTutorialIfUnfulfilled(.DragToRearrange)
+                    }
+                }
             } else {
+                TutorialManager.instance.dismissTutorial(.DragToRearrange, action: .DismissUnfulfilled)
                 tableView.tableFooterView = nil
                 editing = false
                 insertMode = false
@@ -43,6 +49,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     
     let tableView = UITableView()
     
+    private let multiSelectButton = MultiSelectButtonView()
+    private lazy var addToPlaylistButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.addToPlaylist))
+    private lazy var saveButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(self.saveCurrentQueueAsPlaylist(_:)))
     
     //MARK: GESTURE PROPERTIES
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
@@ -92,9 +101,13 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         tableView.contentInset.bottom = 44
         tableView.scrollIndicatorInsets.bottom = 44
         
-        let editButton = editButtonItem()
+        let buttonSize:CGFloat = 44
+        multiSelectButton.color = ThemeHelper.defaultTintColor
+        multiSelectButton.frame.size = CGSize(width: buttonSize, height: buttonSize)
+        multiSelectButton.addTarget(self, action: #selector(self.toggleEditing), forControlEvents: .TouchUpInside)
+        let editButton = UIBarButtonItem(customView: multiSelectButton)
         let deleteButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.confirmDelete(_:)))
-        let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(self.saveCurrentQueueAsPlaylist(_:)))
+        
 		toolbarItems = [editButton, createFlexibleSpace(), deleteButton, createFlexibleSpace(), saveButton]
 		toolbarItems!.forEach() { $0.tintColor = ThemeHelper.defaultTintColor }
         
@@ -119,10 +132,37 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         laidOutSubviews = true
     }
     
+    func addToPlaylist() {
+        guard let indexPaths = tableView.indexPathsForSelectedRows where tableView.editing else { return }
+        let indicies = indexPaths.map({$0.row}).sort(<)
+        let queue = audioQueuePlayer.nowPlayingQueue
+        
+        var tracks = [AudioTrack]()
+        tracks.reserveCapacity(indicies.count)
+        for i in indicies {
+            tracks.append(queue[i])
+        }
+        
+        KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
+    }
+    
+    func toggleEditing() {
+        setEditing(!tableView.editing, animated: true)
+    }
+    
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
         longPressGestureRecognizer.enabled = !editing
+        multiSelectButton.isActive = editing
+        
+        if let toolbarItemCount = toolbarItems?.count {
+            if editing {
+                toolbarItems?[toolbarItemCount - 1] = addToPlaylistButton
+            } else {
+                toolbarItems?[toolbarItemCount - 1] = saveButton
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -174,6 +214,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     
     func gestureDidEnd(sender: UIGestureRecognizer) {
         resetDSD()
+        TutorialManager.instance.dismissTutorial(.DragToRearrange, action: .Fulfill)
     }
 
     //MARK: CLASS Functions
@@ -244,6 +285,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     }
     
     func presentActionsForCell(cell:UITableViewCell, title: String?, details: String?, originatingCenter:CGPoint) {
+        guard !tableView.editing  else { return }
         guard let indexPath = tableView.indexPathForCell(cell) else {
             Logger.error("no index path found for cell with tile \(title)")
             return

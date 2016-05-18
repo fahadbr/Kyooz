@@ -90,7 +90,10 @@ class HeaderViewController : UIViewController {
         toolbarItems.forEach() {
             $0.tintColor = tintColor
         }
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HeaderViewController.refreshButtonStates), name: UITableViewSelectionDidChangeNotification, object: tableView)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(self.refreshButtonStates),
+                                                         name: UITableViewSelectionDidChangeNotification,
+                                                         object: tableView)
         return toolbarItems
     }
 	

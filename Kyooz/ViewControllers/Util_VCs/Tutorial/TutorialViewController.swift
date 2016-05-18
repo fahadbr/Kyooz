@@ -12,7 +12,8 @@ class TutorialViewController : UIViewController {
 	
 	private static let unfulfilledColor = UIColor.blueColor()
     private static let fulfilledColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
-	
+    private static let headerHeight = ThemeHelper.plainHeaderHight + 20
+    
     let tutorialDTO:TutorialDTO
     
     private static let circleSize:CGFloat = 55
@@ -84,16 +85,16 @@ class TutorialViewController : UIViewController {
 		view.backgroundColor = UIColor.clearColor()
 
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: instructionView, parentView: view)
-		instructionView.heightAnchor.constraintEqualToConstant(ThemeHelper.plainHeaderHight).active = true
+		instructionView.heightAnchor.constraintEqualToConstant(TutorialViewController.headerHeight).active = true
 		
 		instructionView.backgroundColor = self.dynamicType.unfulfilledColor
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: instructionView)
 		stackView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
 		stackView.widthAnchor.constraintEqualToAnchor(instructionView.widthAnchor, multiplier: 0.9).active = true
         
-        let slideDownAnimation = CABasicAnimation(keyPath: "transform")
+        let slideDownAnimation = CABasicAnimation(keyPath: "transform.translation.y")
         slideDownAnimation.duration = 0.5
-        slideDownAnimation.fromValue = NSValue(CATransform3D: CATransform3DMakeTranslation(0, -ThemeHelper.plainHeaderHight, 0))
+        slideDownAnimation.fromValue = -TutorialViewController.headerHeight
         slideDownAnimation.fillMode = kCAFillModeBackwards
         slideDownAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         instructionView.layer.addAnimation(slideDownAnimation, forKey: nil)
@@ -122,6 +123,8 @@ class TutorialViewController : UIViewController {
         removeAnimations()
         
         switch action {
+        case .Fulfill where tutorialDTO.nextTutorial != nil:
+            doFadeOutAnimation()
         case .Fulfill:
             doFulfillAnimation()
         case .DismissFulfilled:
@@ -166,9 +169,9 @@ class TutorialViewController : UIViewController {
     }
     
     private func doSlideUpAnimation() {
-        let slideUpAnimation = CABasicAnimation(keyPath: "transform")
+        let slideUpAnimation = CABasicAnimation(keyPath: "transform.translation.y")
         slideUpAnimation.duration = 0.2
-        slideUpAnimation.toValue = NSValue(CATransform3D: CATransform3DMakeTranslation(0, -ThemeHelper.plainHeaderHight, 0))
+        slideUpAnimation.toValue = -TutorialViewController.headerHeight
         slideUpAnimation.fillMode = kCAFillModeForwards
         slideUpAnimation.removedOnCompletion = false
         slideUpAnimation.delegate = self
@@ -180,6 +183,9 @@ class TutorialViewController : UIViewController {
         instructionView.layer.removeAllAnimations()
 		view.removeFromSuperview()
 		removeFromParentViewController()
+        if let nextTutorial = tutorialDTO.nextTutorial {
+            tutorialManager.presentTutorialIfUnfulfilled(nextTutorial)
+        }
 	}
 	
 }
