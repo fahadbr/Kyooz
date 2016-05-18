@@ -17,8 +17,8 @@ class TutorialViewController : UIViewController {
     let tutorialDTO:TutorialDTO
     
     private static let circleSize:CGFloat = 55
-    private var startedTransitioningOut = false
-    
+	private var dismissalAction:TutorialAction?
+	
     lazy var tutorialManager = TutorialManager.instance
     
     private lazy var instructionLabel:UILabel = {
@@ -117,8 +117,8 @@ class TutorialViewController : UIViewController {
     
     
     func transitionOut(action:TutorialAction) {
-        guard !startedTransitioningOut else { return }
-        startedTransitioningOut = true
+        guard dismissalAction == nil else { return }
+        dismissalAction = action
         
         removeAnimations()
         
@@ -183,7 +183,7 @@ class TutorialViewController : UIViewController {
         instructionView.layer.removeAllAnimations()
 		view.removeFromSuperview()
 		removeFromParentViewController()
-        if let nextTutorial = tutorialDTO.nextTutorial {
+        if let nextTutorial = tutorialDTO.nextTutorial, let action = dismissalAction where action == .Fulfill {
             tutorialManager.presentTutorialIfUnfulfilled(nextTutorial)
         }
 	}
