@@ -317,8 +317,8 @@
                                             <action selector="cancelWorkflow:" destination="yug-B7-DM9" eventType="touchUpInside" id="HRk-r3-kdv"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="select the track to play next" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Roy-eB-Qkg">
-                                        <rect key="frame" x="8" y="50" width="359" height="42"/>
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="select the track to play next" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Roy-eB-Qkg">
+                                        <rect key="frame" x="8" y="50" width="359" height="50"/>
                                         <gestureRecognizers/>
                                         <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -335,7 +335,7 @@
                                     <constraint firstItem="Roy-eB-Qkg" firstAttribute="leading" secondItem="YyH-sy-0Fk" secondAttribute="leadingMargin" id="OUV-NW-bse"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="Roy-eB-Qkg" secondAttribute="trailing" id="SdW-qK-F0f"/>
                                     <constraint firstItem="T7z-5C-3IS" firstAttribute="leading" secondItem="YyH-sy-0Fk" secondAttribute="leadingMargin" id="YEO-MN-3WP"/>
-                                    <constraint firstAttribute="bottomMargin" secondItem="Roy-eB-Qkg" secondAttribute="bottom" id="gsd-t2-S1y"/>
+                                    <constraint firstAttribute="bottom" secondItem="Roy-eB-Qkg" secondAttribute="bottom" id="gsd-t2-S1y"/>
                                 </constraints>
                             </view>
                         </subviews>

@@ -104,6 +104,7 @@
 		0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */; };
 		0BBA91F31C06B95300C79BA2 /* IndexSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */; };
 		0BBA91F51C081F8C00C79BA2 /* IndexBuildingOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBA91F41C081F8C00C79BA2 /* IndexBuildingOperation.swift */; };
+		0BBDCA5B1CEC035300581339 /* DragToRearrangeTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBDCA5A1CEC035300581339 /* DragToRearrangeTutorialViewController.swift */; };
 		0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */; };
 		0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE15F91AF5BE20007C6189 /* StringExtension.swift */; };
 		0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBE16011AF6AC9B007C6189 /* Logger.swift */; };
@@ -285,6 +286,7 @@
 		0BBA91F01C06A64E00C79BA2 /* SearchExecutionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchExecutionController.swift; sourceTree = "<group>"; };
 		0BBA91F21C06B95300C79BA2 /* IndexSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexSearchOperation.swift; sourceTree = "<group>"; };
 		0BBA91F41C081F8C00C79BA2 /* IndexBuildingOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexBuildingOperation.swift; sourceTree = "<group>"; };
+		0BBDCA5A1CEC035300581339 /* DragToRearrangeTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragToRearrangeTutorialViewController.swift; sourceTree = "<group>"; };
 		0BBE15F71AF5AC08007C6189 /* SimpleWSClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleWSClient.swift; sourceTree = "<group>"; };
 		0BBE15F91AF5BE20007C6189 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		0BBE15FB1AF5BECF007C6189 /* KyoozBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KyoozBridge.h; sourceTree = "<group>"; };
@@ -818,6 +820,7 @@
 		108DBA0B1CE536AD0013E990 /* Tutorial */ = {
 			isa = PBXGroup;
 			children = (
+				0BBDCA5A1CEC035300581339 /* DragToRearrangeTutorialViewController.swift */,
 				1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */,
 				0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */,
 				108DBA0C1CE537990013E990 /* Tutorial.swift */,
@@ -997,6 +1000,7 @@
 				0BBA91F51C081F8C00C79BA2 /* IndexBuildingOperation.swift in Sources */,
 				0BCE21A31B1403C70074DA47 /* AudioEngineController.swift in Sources */,
 				0BBE15F81AF5AC08007C6189 /* SimpleWSClient.swift in Sources */,
+				0BBDCA5B1CEC035300581339 /* DragToRearrangeTutorialViewController.swift in Sources */,
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
 				0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */,
