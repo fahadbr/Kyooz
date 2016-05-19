@@ -12,6 +12,7 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 	
 	private let menuButton = MenuDotsView()
 	private let progressView = UIProgressView()
+    private let labelPageVC = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -33,6 +34,11 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		menuButton.position = 0.6
 		menuButton.color = UIColor.whiteColor()
 		menuButton.addTarget(self, action: #selector(self.menuButtonPressed(_:)), forControlEvents: .TouchUpInside)
+        
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom], subView: labelPageVC.view, parentView: view)
+        labelPageVC.view.leftAnchor.constraintEqualToAnchor(playPauseButton.rightAnchor).active = true
+        labelPageVC.view.rightAnchor.constraintEqualToAnchor(menuButton.leftAnchor).active = true
+        
 		
 	}
 	
@@ -49,6 +55,17 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 	func updateProgress(percentComplete: Float) {
 		progressView.setProgress(percentComplete, animated: true)
 	}
+    
+    override func updateButtonStates() {
+        super.updateButtonStates()
+        if !((labelPageVC.viewControllers?.first as? WrapperViewController)?.isPresentedVC ?? false) || labelPageVC.refreshNeeded {
+            let nowPlayingItem = audioQueuePlayer.nowPlayingItem
+            let index = audioQueuePlayer.indexOfNowPlayingItem
+            let labelWrapper = LabelStackWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index)
+            labelPageVC.refreshNeeded = false
+            labelPageVC.setViewControllers([labelWrapper], direction: .Forward, animated: false, completion: nil)
+        }
+    }
 	
 	func menuButtonPressed(sender: AnyObject) {
 		guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else {
@@ -80,4 +97,15 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: libraryGrouping, entity: nowPlayingItem)
 		}
 	}
+    
+    override func registerForNotifications() {
+        super.registerForNotifications()
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
+                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+        //this is for refreshing the page views
+        notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
+                                       name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
+        
+    }
 }

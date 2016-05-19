@@ -199,3 +199,9 @@ class OverlayView : UIView {
 		return view
 	}
 }
+
+class NoAnimationTutorialViewController : TutorialViewController {
+    override func applyAnimation() {
+        //noop
+    }
+}

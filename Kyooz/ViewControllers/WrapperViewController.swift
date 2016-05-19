@@ -120,20 +120,22 @@ final class LabelStackWrapperViewController : WrapperViewController {
 	
 	private let trackTitleMarqueeLabel:MarqueeLabel
 	private let trackDetailsMarqueeLabel:MarqueeLabel
+    private let useSmallFont:Bool
 	
-	init(track:AudioTrack?, isPresentedVC:Bool, representingIndex:Int) {
+    init(track:AudioTrack?, isPresentedVC:Bool, representingIndex:Int, useSmallFont:Bool = true) {
 		
 		func configureLabel(label:UILabel, font:UIFont?) {
 			label.textColor = ThemeHelper.defaultFontColor
 			label.textAlignment = .Center
 			label.font = font
 		}
-		
+		self.useSmallFont = useSmallFont
+        let sizeToUse = useSmallFont ? ThemeHelper.smallFontSize : ThemeHelper.defaultFontSize
 		trackTitleMarqueeLabel = MarqueeLabel(labelConfigurationBlock: { (label) in
-			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize + 1))
+			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontNameBold, size: sizeToUse + 1))
 		})
 		trackDetailsMarqueeLabel = MarqueeLabel(labelConfigurationBlock: { (label) in
-			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: ThemeHelper.defaultFontSize - 1))
+			configureLabel(label, font: UIFont(name: ThemeHelper.defaultFontName, size: sizeToUse - 1))
 		})
 		
 		let labelStrings = LabelStackWrapperViewController.getLabelStringsFromTrack(track)
@@ -158,7 +160,11 @@ final class LabelStackWrapperViewController : WrapperViewController {
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
-		wrappedView.frame = view.bounds
+        if useSmallFont {
+            wrappedView.frame = CGRectInset(view.bounds, 0, 5)
+        } else {
+            wrappedView.frame = view.bounds
+        }
 	}
 	
 	private static func getLabelStringsFromTrack(track:AudioTrack?) -> (titleText:String, detailsText:String) {
