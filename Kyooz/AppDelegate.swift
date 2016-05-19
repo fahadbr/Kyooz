@@ -55,17 +55,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lastFmScrobbler.initializeScrobbler()
         lastFmScrobbler.submitCachedScrobbles()
         
-        if !Logger.errorLogString.isEmpty {
-            let kmvc = KyoozMenuViewController()
-            kmvc.menuTitle = "Error logs"
-            kmvc.menuDetails = Logger.errorLogString
-            
-            let clearAction = KyoozMenuAction(title: "CLEAR", image: nil, action: { 
-                Logger.errorLogString = ""
-            })
-            kmvc.addActions([clearAction])
-            KyoozUtils.showMenuViewController(kmvc)
-        }
+//        if !Logger.errorLogString.isEmpty {
+//            let kmvc = KyoozMenuViewController()
+//            kmvc.menuTitle = "Error logs"
+//            kmvc.menuDetails = Logger.errorLogString
+//            
+//            let clearAction = KyoozMenuAction(title: "CLEAR", image: nil, action: { 
+//                Logger.errorLogString = ""
+//            })
+//            kmvc.addActions([clearAction])
+//            KyoozUtils.showMenuViewController(kmvc)
+//        }
         
     }
 

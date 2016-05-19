@@ -30,6 +30,10 @@ class WrapperViewController : UIViewController {
 			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
 				name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
 			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
+			                                                 name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
+			                                                 name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
 			    name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
 		}
     }
