@@ -9,10 +9,13 @@
 import UIKit
 import MediaPlayer
 
+private let bottomButtonHeight:CGFloat = 35
+
 final class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
 	
 	static let CollapsedHeight:CGFloat = 45
+	static let heightScale:CGFloat = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)/667
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -26,7 +29,8 @@ final class NowPlayingSummaryViewController: UIViewController {
     private lazy var labelWrapperVC:LabelStackWrapperViewController = {
         let track = self.audioQueuePlayer.nowPlayingItem
         let index = self.audioQueuePlayer.indexOfNowPlayingItem
-        let vc = LabelStackWrapperViewController(track: track, isPresentedVC: true, representingIndex: index, useSmallFont: false)
+		Logger.debug("heightScale = \(self.dynamicType.heightScale)")
+        let vc = LabelStackWrapperViewController(track: track, isPresentedVC: true, representingIndex: index, useSmallFont: self.dynamicType.heightScale < 0.8)
         return vc
     }()
     
@@ -48,7 +52,6 @@ final class NowPlayingSummaryViewController: UIViewController {
                 albumArtPageVC.view.alpha = 0
                 labelWrapperVC.view.alpha = 0
             }
-//            labelPageVC.view.userInteractionEnabled = !expanded
         }
     }
 	
@@ -92,8 +95,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
         blurView.contentView.layer.addSublayer(gradiantLayer)
-        
-        let screenHeight = UIScreen.mainScreen().bounds.height
 		
 		let nowPlayingBar = nowPlayingBarVC.view
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: nowPlayingBar, parentView: view)
@@ -109,14 +110,14 @@ final class NowPlayingSummaryViewController: UIViewController {
         mainStackView.distribution = .EqualSpacing
         mainStackView.alignment = .Center
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: mainStackView, parentView: view)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: mainStackView, parentView: view)
         //the calculation of this constant is based off of how tall the screen is.  for an iPhone 6 with a portrait height of 667
         //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
         //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
-        
-        let stackTopConstraintConstant:CGFloat = screenHeight * ((self.dynamicType.CollapsedHeight )/667)
-        mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: stackTopConstraintConstant).active = true
-        
+		
+        mainStackView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        mainStackView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -5).active = true
+		
         albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
         if (UIScreen.mainScreen().bounds.width * 0.9) > (UIScreen.mainScreen().bounds.height * 0.55) {
             albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.55).active = true
@@ -125,7 +126,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
         addChildViewController(albumArtPageVC)
         albumArtPageVC.didMoveToParentViewController(self)
-        
         
         labelWrapperVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
         labelWrapperVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.95).active = true
@@ -143,16 +143,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         playbackControlsVC.didMoveToParentViewController(self)
         
         bottomButtonView.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.9).active = true
-        bottomButtonView.heightAnchor.constraintEqualToConstant(30).active = true
-        
-//        collapseButton = createAndConfigureButton("›", selector: #selector(self.collapseViewController(_:)))
-//        collapseButton.titleLabel?.font = ThemeHelper.defaultFont?.fontWithSize(20)
-//        collapseButton.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
-//        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left], subView: collapseButton, parentView: view).forEach() {
-//            $1.constant = 10
-//        }
-//        collapseButton.heightAnchor.constraintEqualToConstant(45).active = true
-//        collapseButton.widthAnchor.constraintEqualToAnchor(collapseButton.heightAnchor).active = true
+        bottomButtonView.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
 
         KyoozUtils.doInMainQueueAsync() {
             self.reloadData(nil)
@@ -175,25 +166,50 @@ final class NowPlayingSummaryViewController: UIViewController {
     }
     
     private func createBottomButtonView() -> UIView {
-        let font = UIFont(name:ThemeHelper.defaultFontName, size:ThemeHelper.smallFontSize + 1)
+        let font = ThemeHelper.smallFontForStyle(.Medium)
         func createAndConfigureButton(title:String, selector:Selector) -> UIButton {
             let button = UIButton()
             button.setTitle(title, forState: .Normal)
+			button.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
+			button.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
             button.addTarget(self, action: selector, forControlEvents: .TouchUpInside)
             if let label = button.titleLabel {
-                label.textColor = UIColor.whiteColor()
                 label.alpha = ThemeHelper.defaultButtonTextAlpha
                 label.font = font
                 label.textAlignment = .Center
+				button.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
+				button.widthAnchor.constraintEqualToConstant(label.intrinsicContentSize().width + 20).active = true
             }
+//			button.backgroundColor = UIColor(white: 1, alpha: 0.4)
+			button.layer.borderColor = UIColor.darkGrayColor().CGColor
+			button.layer.borderWidth = 1
             return button
-        }
-        
+		}
+		
+		func stackViewWrapperForViews(views:[UIView]) -> UIView {
+			let stackView = UIStackView(arrangedSubviews: views)
+			stackView.axis = .Horizontal
+			stackView.distribution = .EqualSpacing
+//			stackView.spacing = 2
+
+			let wrapperView = UIView()
+			ConstraintUtils.applyStandardConstraintsToView(subView: stackView, parentView: wrapperView)
+			wrapperView.layer.cornerRadius = 5
+			wrapperView.layer.borderColor = UIColor.darkGrayColor().CGColor
+			wrapperView.layer.borderWidth = 1
+			wrapperView.layer.masksToBounds = true
+			return wrapperView
+		}
+		
         let goToAlbumButton = createAndConfigureButton("ALBUM", selector: #selector(self.goToAlbum(_:)))
         let goToArtistButton = createAndConfigureButton("ARTIST", selector: #selector(self.goToArtist(_:)))
-        let addToPlaylistButton = createAndConfigureButton("ADD TO PLAYLIST", selector: #selector(self.addToPlaylist(_:)))
+        let addToPlaylistButton = createAndConfigureButton("＋", selector: #selector(self.addToPlaylist(_:)))
+		let hideButton = createAndConfigureButton("HIDE", selector: #selector(self.collapseViewController(_:)))
+		
+		let goToStack = stackViewWrapperForViews([goToAlbumButton, goToArtistButton, addToPlaylistButton])
+		let otherStack = stackViewWrapperForViews([hideButton])
         
-        let stackView = UIStackView(arrangedSubviews: [goToAlbumButton, addToPlaylistButton, goToArtistButton])
+        let stackView = UIStackView(arrangedSubviews: [goToStack, otherStack])
         stackView.axis = .Horizontal
         stackView.distribution = .EqualCentering
         stackView.alignment = .Center

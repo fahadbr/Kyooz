@@ -19,12 +19,12 @@ final class Logger {
         return formatter
     }()
     
-    static var errorLogString = TempDataDAO.instance.getPersistentValue(key: errorLogKey) as? String ?? "" {
-        didSet {
-            TempDataDAO.instance.addPersistentValue(key: errorLogKey, value: errorLogString)
-        }
-    }
-    
+//    static var errorLogString = TempDataDAO.instance.getPersistentValue(key: errorLogKey) as? String ?? "" {
+//        didSet {
+//            TempDataDAO.instance.addPersistentValue(key: errorLogKey, value: errorLogString)
+//        }
+//    }
+	
     private static let debugEnabled = true
     
     
@@ -56,7 +56,7 @@ final class Logger {
         dispatch_async(loggerQueue) {
             let dateString = dateFormatter.stringFromDate(date)
             let message = "\(dateString) ERROR [\(threadId)]:  \(message)"
-            errorLogString.appendContentsOf("\n\(message)")
+//            errorLogString.appendContentsOf("\n\(message)")
             print(message)
         }
     }

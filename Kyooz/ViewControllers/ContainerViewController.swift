@@ -305,7 +305,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: nowPlayingQueueViewController)
                 dragAndDropHandler.delegate = self
             }
-            TutorialManager.instance.dismissTutorial(.DragAndDrop, action: .Fulfill)
         default:
             break
         }
@@ -335,6 +334,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
     func gestureDidBegin(sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
+			TutorialManager.instance.dismissTutorial(.DragAndDrop, action: .Fulfill)
             nowPlayingQueueViewController.insertMode = true
             animateCenterPanel(toPosition: .Left)
         }
