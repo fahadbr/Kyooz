@@ -10,6 +10,7 @@ import UIKit
 
 protocol RowLimitedSectionDelegatorDelegate : class {
     func willExpandOrCollapseSection()
+    func didExpandOrCollapseSection()
 }
 
 final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
@@ -17,8 +18,16 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
     weak var delegate:RowLimitedSectionDelegatorDelegate?
     
     private unowned var tableView:UITableView
-    private var tapGestureRecognizerHashToDSD = [Int:AudioEntityDSDProtocol]()
+
+    private var tapGestureRecognizers = [UITapGestureRecognizer]()
 	private var expandedSection:AudioEntityDSDProtocol?
+    
+    private var otherSectionsHaveData:Bool {
+        for dsd in originalOrderedDatasources {
+            if dsd !== expandedSection && dsd.hasData { return true }
+        }
+        return false
+    }
 	
     init(datasourcesWithRowLimits: [(AudioEntityDSDProtocol, Int)], tableView:UITableView) {
 
@@ -34,7 +43,6 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 	}
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-		Logger.debug("tapGestureMap count = \(tapGestureRecognizerHashToDSD.count)")
         return dsdSections.count
     }
 	
@@ -47,13 +55,20 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 		
 		
         let datasourceDelegate = dsdSections[section]
-		if dsdSections.count > 1 || expandedSection != nil {
+		if dsdSections.count > 1 || (expandedSection != nil && otherSectionsHaveData){
 			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTapHeaderView(_:)))
 			headerView.addGestureRecognizer(tapGestureRecognizer)
 			headerView.disclosureContainerView.hidden = false
-			tapGestureRecognizerHashToDSD[tapGestureRecognizer.hashValue] = datasourceDelegate
+            headerView.userInteractionEnabled = true
+            if tapGestureRecognizers.count - 1 < section {
+                tapGestureRecognizers.append(tapGestureRecognizer)
+            } else {
+                tapGestureRecognizers[section] = tapGestureRecognizer
+            }
+            
 		} else {
 			headerView.disclosureContainerView.hidden = true
+            headerView.userInteractionEnabled = false
 		}
 		
 		let headerViewText = sourceData.sections[section].name
@@ -95,9 +110,11 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 		
 		if let expandedSection = self.expandedSection {
 			collapseSection(sender, dsdToCollapse: expandedSection)
-		} else if let selectedSection = tapGestureRecognizerHashToDSD[sender.hashValue] {
-			expandSection(sender, dsdToExpand: selectedSection)
+		} else if let selectedSection = tapGestureRecognizers.indexOf(sender) {
+			expandSection(sender, dsdToExpand: dsdSections[selectedSection])
 		}
+        
+        delegate?.didExpandOrCollapseSection()
 	}
     
     private func collapseSection(sender:UITapGestureRecognizer, dsdToCollapse:AudioEntityDSDProtocol) {
@@ -124,7 +141,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
             }
         }
         
-        self.reloadSections()
+        reloadSections()
         
         let indexSet = NSMutableIndexSet()
         for (i, dsd) in dsdSections.enumerate() {

@@ -69,6 +69,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     
     private let searchBar = UISearchBar()
     private let activityIndicator = UIActivityIndicatorView()
+    private let tableFooterView = KyoozTableFooterView()
 	
     //MARK: - View life cycle
     override func viewDidLoad() {
@@ -141,7 +142,10 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     
     override func reloadTableViewData() {
         KyoozUtils.doInMainQueue() {
-            (self.datasourceDelegate as? RowLimitedSectionDelegator)?.reloadSections()
+            if let rowLimitedDSD = self.datasourceDelegate as? RowLimitedSectionDelegator {
+                rowLimitedDSD.reloadSections()
+                self.reloadTableFooter(rowLimitedDSD)
+            }
             super.reloadTableViewData()
         }
     }
@@ -149,6 +153,28 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     func getSourceData() -> AudioEntitySourceData? {
         searchBar.resignFirstResponder()
         return sourceData
+    }
+    
+    
+    private func reloadTableFooter(rowLimitedDSD:RowLimitedSectionDelegator) {
+        var count = 0
+        rowLimitedDSD.dsdSections.forEach() {
+            count += $0.sourceData.entities.count
+        }
+        let items:String
+        if rowLimitedDSD.dsdSections.count == 1 {
+            var groupName = rowLimitedDSD.dsdSections[0].sourceData.libraryGrouping.name
+            if count == 1 {
+                groupName.removeAtIndex(groupName.endIndex.predecessor())
+            }
+            items = groupName
+        } else {
+            items = count == 1 ? "RESULT" : "RESULTS"
+        }
+        
+        self.tableFooterView.text = "\(count) \(items)"
+        self.tableView.tableFooterView = self.tableFooterView
+
     }
 
     
@@ -232,6 +258,12 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     
     func willExpandOrCollapseSection() {
         searchBar.resignFirstResponder()
+    }
+    
+    func didExpandOrCollapseSection() {
+        if let rowLimitedDSD = datasourceDelegate as? RowLimitedSectionDelegator {
+            reloadTableFooter(rowLimitedDSD)
+        }
     }
     
 }
