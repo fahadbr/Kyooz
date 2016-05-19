@@ -60,7 +60,6 @@ class TutorialManager {
     
     func dismissTutorial(tutorial:Tutorial, action:TutorialAction) -> Bool {
         guard let tvc = presentedTutorial where tvc.tutorialDTO.tutorial == tutorial else {
-            Logger.debug("cannot dismiss tutorial \(tutorial) when its not being presented")
             return false
         }
         
@@ -98,7 +97,6 @@ class TutorialManager {
 	
 	func presentTutorialIfUnfulfilled(tutorial:Tutorial) -> Bool {
         guard !tutorialIsFulfilled(tutorial) else {
-            Logger.debug("tutorial has already been fulfilled")
             return false
         }
         

@@ -22,7 +22,7 @@ class TutorialViewControllerFactory {
         case .DragToRearrange:
             return DragToRearrangeTutorialViewController(tutorialDTO: dto)
         default:
-            return TutorialViewController(tutorialDTO:dto)
+            return NoAnimationTutorialViewController(tutorialDTO: dto)
         }
         
     }

@@ -16,13 +16,29 @@ final class NowPlayingSummaryViewController: UIViewController {
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    private let labelPageVC:NowPlayingPageViewController = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+//    private let labelPageVC:NowPlayingPageViewController = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
     private let albumArtPageVC: NowPlayingPageViewController = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
     private var collapseButton:UIButton!
     
     private let playbackProgressVC = PlaybackProgressViewController.instance
 	private let nowPlayingBarVC = NowPlayingBarViewController()
 	private let playbackControlsVC = PlaybackControlsViewController()
+    private lazy var labelWrapperVC:LabelStackWrapperViewController = {
+        let track = self.audioQueuePlayer.nowPlayingItem
+        let index = self.audioQueuePlayer.indexOfNowPlayingItem
+        let vc = LabelStackWrapperViewController(track: track, isPresentedVC: true, representingIndex: index, useSmallFont: false)
+        return vc
+    }()
+    
+    
+    private let gradiantLayer:CAGradientLayer = {
+        let gradiant = CAGradientLayer()
+        gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
+        gradiant.endPoint = CGPoint(x: 0.5, y: 0)
+        gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
+        gradiant.locations = [0.0,0.25,0.75,1.0]
+        return gradiant
+    }()
     
     private var observationContext:UInt8 = 123
     
@@ -30,8 +46,9 @@ final class NowPlayingSummaryViewController: UIViewController {
         didSet{
             if !expanded {
                 albumArtPageVC.view.alpha = 0
+                labelWrapperVC.view.alpha = 0
             }
-            labelPageVC.view.userInteractionEnabled = !expanded
+//            labelPageVC.view.userInteractionEnabled = !expanded
         }
     }
 	
@@ -74,6 +91,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         
         let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
+        blurView.contentView.layer.addSublayer(gradiantLayer)
         
         let screenHeight = UIScreen.mainScreen().bounds.height
 		
@@ -82,18 +100,11 @@ final class NowPlayingSummaryViewController: UIViewController {
 		nowPlayingBar.heightAnchor.constraintEqualToConstant(self.dynamicType.CollapsedHeight).active = true
         addChildViewController(nowPlayingBarVC)
         nowPlayingBarVC.didMoveToParentViewController(self)
-        
-        
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Width, .CenterX], subView: labelPageVC.view, parentView: view)[.Width]?.constant = -10
-        labelPageVC.view.centerYAnchor.constraintEqualToAnchor(nowPlayingBar.centerYAnchor).active = true
-        labelPageVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
-        addChildViewController(labelPageVC)
-        labelPageVC.didMoveToParentViewController(self)
 
         let bottomButtonView = createBottomButtonView()
 
         
-        let mainStackView = UIStackView(arrangedSubviews: [albumArtPageVC.view, playbackProgressVC.view, playbackControlsVC.view, bottomButtonView])
+        let mainStackView = UIStackView(arrangedSubviews: [labelWrapperVC.view, albumArtPageVC.view, playbackProgressVC.view, playbackControlsVC.view, bottomButtonView])
         mainStackView.axis = .Vertical
         mainStackView.distribution = .EqualSpacing
         mainStackView.alignment = .Center
@@ -102,7 +113,8 @@ final class NowPlayingSummaryViewController: UIViewController {
         //the calculation of this constant is based off of how tall the screen is.  for an iPhone 6 with a portrait height of 667
         //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
         //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
-        let stackTopConstraintConstant:CGFloat = screenHeight * ((self.dynamicType.CollapsedHeight + 70)/667)
+        
+        let stackTopConstraintConstant:CGFloat = screenHeight * ((self.dynamicType.CollapsedHeight )/667)
         mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: stackTopConstraintConstant).active = true
         
         albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
@@ -114,6 +126,11 @@ final class NowPlayingSummaryViewController: UIViewController {
         addChildViewController(albumArtPageVC)
         albumArtPageVC.didMoveToParentViewController(self)
         
+        
+        labelWrapperVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
+        labelWrapperVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.95).active = true
+        addChildViewController(labelWrapperVC)
+        labelWrapperVC.didMoveToParentViewController(self)
 
         playbackProgressVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.95).active = true
         playbackProgressVC.view.heightAnchor.constraintEqualToConstant(25).active = true
@@ -143,6 +160,11 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
         
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradiantLayer.frame = view.bounds
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -192,8 +214,8 @@ final class NowPlayingSummaryViewController: UIViewController {
         
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem
 		let index = audioQueuePlayer.indexOfNowPlayingItem
-		let labelWrapper = { return LabelStackWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index) }
-        transitionPageVC(labelPageVC, withVC: labelWrapper)
+//		let labelWrapper = { return LabelStackWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index) }
+//        transitionPageVC(labelPageVC, withVC: labelWrapper)
 		
 		let imageWrapper = { return ImageWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index, size: self.albumArtPageVC.view.frame.size) }
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
@@ -221,6 +243,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     //MARK: - FUNCTIONS: - Private Functions
     
     private func updateAlphaLevels() {
+        
         let frame = self.view.frame
         let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
         let currentY = maxY - (frame.origin.y - RootViewController.nowPlayingViewCollapsedOffset)
@@ -237,15 +260,13 @@ final class NowPlayingSummaryViewController: UIViewController {
         collapseButton?.alpha = expandedFraction
         albumArtPageVC.view.alpha = expandedFraction
 		nowPlayingBarVC.view.alpha = collapsedFraction
-				
-		let tX = (labelPageVC.view.center.x - nowPlayingBarVC.view.bounds.midX) * -expandedFraction
-		let tY = view.bounds.height * (42.5/667) * expandedFraction
-		let translationTransform = CATransform3DMakeTranslation(tX, tY, 0)
-		
-		let scale = 0.8 + (expandedFraction * 0.2)
-		let scaleTransform = CATransform3DMakeScale(scale, scale, scale)
-		
-		labelPageVC.view.layer.transform = CATransform3DConcat(translationTransform, scaleTransform)
+        labelWrapperVC.view.alpha = expandedFraction
+        
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        gradiantLayer.opacity = Float(expandedFraction)
+        CATransaction.commit()
+
     }
 	
     private func registerForNotifications() {
