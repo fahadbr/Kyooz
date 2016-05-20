@@ -39,7 +39,9 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
         labelPageVC.view.leftAnchor.constraintEqualToAnchor(playPauseButton.rightAnchor).active = true
         labelPageVC.view.rightAnchor.constraintEqualToAnchor(menuButton.leftAnchor).active = true
         
-		
+        KyoozUtils.doInMainQueueAsync() {
+            self.updateButtonStates()
+        }
 	}
 	
 	override func viewDidAppear(animated: Bool) {

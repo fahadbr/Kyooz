@@ -13,7 +13,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     static let instance:RootViewController = RootViewController()
     
-    static let nowPlayingViewCollapsedOffset:CGFloat = 45
+    static let nowPlayingViewCollapsedOffset:CGFloat = NowPlayingSummaryViewController.CollapsedHeight
 
     var pullableViewExpanded:Bool  {
         get {
@@ -21,6 +21,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         } set {
             nowPlayingSummaryViewController.expanded = newValue
             nowPlayingTapGestureRecognizer.enabled = !newValue
+            TutorialManager.instance.dimissTutorials([.DragAndDrop], action: .DismissUnfulfilled)
         }
     }
     

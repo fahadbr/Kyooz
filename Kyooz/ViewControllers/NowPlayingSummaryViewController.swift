@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-private let bottomButtonHeight:CGFloat = 35
+private let bottomButtonHeight:CGFloat = 30
 
 final class NowPlayingSummaryViewController: UIViewController {
     //MARK: - PROPERTIES
@@ -110,12 +110,13 @@ final class NowPlayingSummaryViewController: UIViewController {
         mainStackView.distribution = .EqualSpacing
         mainStackView.alignment = .Center
         
+        
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: mainStackView, parentView: view)
         //the calculation of this constant is based off of how tall the screen is.  for an iPhone 6 with a portrait height of 667
         //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
         //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
 		
-        mainStackView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 35 * self.dynamicType.heightScale).active = true
         mainStackView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -5).active = true
 		
         albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
@@ -151,6 +152,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         }
         
         view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
+        view.bringSubviewToFront(nowPlayingBarVC.view)
     }
     
     override func viewDidLayoutSubviews() {
@@ -181,8 +183,8 @@ final class NowPlayingSummaryViewController: UIViewController {
 				button.widthAnchor.constraintEqualToConstant(label.intrinsicContentSize().width + 20).active = true
             }
 //			button.backgroundColor = UIColor(white: 1, alpha: 0.4)
-			button.layer.borderColor = UIColor.darkGrayColor().CGColor
-			button.layer.borderWidth = 1
+//			button.layer.borderColor = UIColor.darkGrayColor().CGColor
+//			button.layer.borderWidth = 1
             return button
 		}
 		
@@ -191,6 +193,15 @@ final class NowPlayingSummaryViewController: UIViewController {
 			stackView.axis = .Horizontal
 			stackView.distribution = .EqualSpacing
 //			stackView.spacing = 2
+            
+            var apply = false
+            views.forEach() {
+                if apply {
+                    $0.layer.borderColor = UIColor.darkGrayColor().CGColor
+                    $0.layer.borderWidth = 1
+                }
+                apply = !apply
+            }
 
 			let wrapperView = UIView()
 			ConstraintUtils.applyStandardConstraintsToView(subView: stackView, parentView: wrapperView)
@@ -275,8 +286,17 @@ final class NowPlayingSummaryViewController: UIViewController {
         
         collapseButton?.alpha = expandedFraction
         albumArtPageVC.view.alpha = expandedFraction
-		nowPlayingBarVC.view.alpha = collapsedFraction
-        labelWrapperVC.view.alpha = expandedFraction
+        
+        func updateAlphaForView(view:UIView, fraction:CGFloat) {
+            if fraction > 0.75 {
+                view.alpha = (fraction - 0.75) * 4
+            } else {
+                view.alpha = 0
+            }
+        }
+        
+        updateAlphaForView(nowPlayingBarVC.view, fraction: collapsedFraction)
+        updateAlphaForView(labelWrapperVC.view, fraction: expandedFraction)
         
         CATransaction.begin()
         CATransaction.setDisableActions(true)
