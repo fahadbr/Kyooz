@@ -39,8 +39,13 @@ private let httpFailure = "Unable To Reach Network"
 
 //MARK: Session and API Properties
 
-private let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
-private let api_secret = "a0444ceba4d9f49eedc519699cec2624"
+//OLD QMP KEYs
+//private let api_key_value = "ed98119153a2fe3b04e57c3b3112f090"
+//private let api_secret = "a0444ceba4d9f49eedc519699cec2624"
+
+private let api_key_value = "3e796dbbe5b7c75b7a59dba77cde203f"
+private let api_secret = "aeb87f6dd24a6c8fa5024768435d235e"
+
 
 final class LastFmScrobbler {
     
