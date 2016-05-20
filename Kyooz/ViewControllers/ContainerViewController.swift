@@ -25,7 +25,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     var tapGestureRecognizer:UITapGestureRecognizer!
     var centerPanelPanGestureRecognizer:UIPanGestureRecognizer!
     
-    var rootViewController:RootViewController!
+    lazy var rootViewController:RootViewController = RootViewController.instance
     
     private var nowPlayingNavigationController:UINavigationController!
     private let nowPlayingQueueViewController = NowPlayingQueueViewController.instance
@@ -62,8 +62,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         registerForNotifications()
-        
-        rootViewController = RootViewController.instance
         
         let rootView = rootViewController.view
         addChildViewController(rootViewController)
@@ -133,7 +131,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	}
 	
 	func showTutorials() {
-		if centerPanelPosition == .Center {
+		if centerPanelPosition == .Center && !rootViewController.pullableViewExpanded {
 			TutorialManager.instance.presentUnfulfilledTutorials([.GestureActivatedSearch, .GestureToViewQueue, .DragAndDrop])
 		}
 	}
@@ -316,7 +314,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             CATransaction.begin()
             CATransaction.setDisableActions(true)
 			let fraction = Float(abs(centerViewRightConstraint.constant)/invertedCenterVCOffset)
-			rootViewController?.view.layer.shadowOpacity = fraction
+			rootViewController.view.layer.shadowOpacity = fraction
             CATransaction.commit()
             
             if centerViewRightConstraint.constant > 0 {
