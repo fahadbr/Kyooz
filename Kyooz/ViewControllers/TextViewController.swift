@@ -11,6 +11,7 @@ import UIKit
 class TextViewController: UIViewController {
     
     let textView:UITextView = UITextView()
+    var showDimissButton = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +21,8 @@ class TextViewController: UIViewController {
 
         textView.backgroundColor = ThemeHelper.defaultTableCellColor
         textView.textColor = ThemeHelper.defaultFontColor
+        
+        guard showDimissButton else { return }
         
         func flexibleSpace() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
@@ -32,5 +35,18 @@ class TextViewController: UIViewController {
     
     func dismiss() {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func loadHtmlFile(withName name:String) throws {
+        var d:NSDictionary? = nil
+        guard let htmlFilePath = NSBundle.mainBundle().URLForResource(name, withExtension: "html") else {
+            throw KyoozError(errorDescription:"no file named \(name).html exists")
+        }
+        
+        guard let string = try? NSAttributedString(URL: htmlFilePath, options: [NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType], documentAttributes: &d) else {
+            throw KyoozError(errorDescription:"could not load file \(name).html")
+        }
+        
+        textView.attributedText = string
     }
 }

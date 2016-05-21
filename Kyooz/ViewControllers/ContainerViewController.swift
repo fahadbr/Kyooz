@@ -158,6 +158,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         animateCenterPanel(toPosition: newPosition)
     }
     
+    override func childViewControllerForStatusBarHidden() -> UIViewController? {
+        return rootViewController
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
+    
     func pushViewController(vc:UIViewController) {
         if centerPanelPosition != .Center {
             animateCenterPanel(toPosition: .Center)

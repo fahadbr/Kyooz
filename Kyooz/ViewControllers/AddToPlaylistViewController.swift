@@ -92,6 +92,10 @@ class AddToPlaylistViewController: UIViewController {
         KyoozUtils.showPlaylistTypeInfoView(self)
     }
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
+    
     func dismissAddToPlaylistController() {
         dismissViewControllerAnimated(true, completion: nil)
         completionAction?()
