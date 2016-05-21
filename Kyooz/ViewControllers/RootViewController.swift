@@ -21,7 +21,9 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         } set {
             nowPlayingSummaryViewController.expanded = newValue
             nowPlayingTapGestureRecognizer.enabled = !newValue
-            TutorialManager.instance.dimissTutorials([.DragAndDrop], action: .DismissUnfulfilled)
+            if newValue {
+                TutorialManager.instance.dimissTutorials([.DragAndDrop], action: .DismissUnfulfilled)
+            }
         }
     }
     
@@ -106,12 +108,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RootViewController.handleTapGesture(_:)))
         nowPlayingTapGestureRecognizer.delegate = self
         nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
-    }
-    
-    
-    override func viewDidAppear(animated: Bool) {
-        //explicitly setting this here
-        pullableViewExpanded = false
     }
     
     //MARK: - Navigation controller delegate
@@ -250,17 +246,22 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         collapsedConstraint.constant = 0
         expandedConstraint.constant = 0
         
-        var completionBlock:((Bool)->Void)?
-        if(shouldExpand) {
-            pullableViewExpanded = true
-        } else {
-            completionBlock = { finished in
-                self.pullableViewExpanded = false
-            }
-        }
+        var completionBlock:((Bool)->Void)? = nil
+//        if(shouldExpand) {
+//            pullableViewExpanded = true
+//        } else {
+//            completionBlock = { finished in
+//                self.pullableViewExpanded = false
+//            }
+//        }
+        pullableViewExpanded = shouldExpand
         UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: { () -> Void in
             self.view.layoutIfNeeded()
         }, completion: completionBlock)
+    }
+    
+    override func childViewControllerForStatusBarHidden() -> UIViewController? {
+        return nowPlayingSummaryViewController
     }
     
     

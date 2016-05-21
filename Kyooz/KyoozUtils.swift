@@ -35,28 +35,7 @@ struct KyoozUtils {
         animation.fillMode = kCAFillModeForwards
         return animation
     }()
-    
-    private static let playlistInfoString:NSAttributedString = {
-        var descriptionString = [NSAttributedString]()
-        
-        let largerFontAttributes:[String : AnyObject] = [NSFontAttributeName : UIFont(name:ThemeHelper.defaultFontNameBold, size:ThemeHelper.defaultFontSize) ?? UIFont.systemFontOfSize(UIFont.systemFontSize())]
-        var smallerFontAttributes:[String : AnyObject] = [NSFontAttributeName : UIFont(name:ThemeHelper.defaultFontName, size:ThemeHelper.defaultFontSize) ?? UIFont.systemFontOfSize(UIFont.systemFontSize())]        
-        descriptionString.append(NSAttributedString(string: "Kyooz Playlists:\n\n", attributes: largerFontAttributes))
-        
-        descriptionString.append(NSAttributedString(string: "• Can be fully modified (tracks can be rearranged/deleted) within Kyooz\n", attributes: smallerFontAttributes))
-        descriptionString.append(NSAttributedString(string: "• Is managed only by Kyooz\n", attributes: smallerFontAttributes))
-        descriptionString.append(NSAttributedString(string: "• Does not sync with iTunes\n", attributes: smallerFontAttributes))
-        
-        descriptionString.append(NSAttributedString(string: "\n\niTunes Playlists:\n\n", attributes: largerFontAttributes))
-        descriptionString.append(NSAttributedString(string: "• Kyooz can only create or add to iTunes playlists (available only from iOS 9.3 onwards)\n", attributes: smallerFontAttributes))
-        descriptionString.append(NSAttributedString(string: "• Deleting/rearranging must be done in the Apple Music app\n", attributes: smallerFontAttributes))
-        descriptionString.append(NSAttributedString(string: "• Syncs with iTunes\n", attributes: smallerFontAttributes))
-        
-        let fullString = NSMutableAttributedString()
-        descriptionString.forEach() { fullString.appendAttributedString($0) }
-        return fullString
-    }()
-	
+    	
 	static var internetConnectionAvailable:Bool {
 		return Reachability.reachabilityForInternetConnection().currentReachabilityStatus() != NetworkStatus.NotReachable
 	}
@@ -244,7 +223,7 @@ struct KyoozUtils {
     static func showPlaylistTypeInfoView(presentationController:UIViewController = ContainerViewController.instance) {
 
         let textVC = TextViewController()
-        textVC.textView.attributedText = playlistInfoString
+        _ = try? textVC.loadHtmlFile(withName: "PlaylistTypeDescriptions")
         
         presentationController.presentViewController(UINavigationController(rootViewController:textVC), animated: true, completion: nil)
     }

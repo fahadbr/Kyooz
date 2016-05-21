@@ -48,10 +48,10 @@ final class NowPlayingSummaryViewController: UIViewController {
     
     var expanded:Bool = false {
         didSet{
-            if !expanded {
-                albumArtPageVC.view.alpha = 0
-                labelWrapperVC.view.alpha = 0
+            UIView.animateWithDuration(0.5) { 
+                self.setNeedsStatusBarAppearanceUpdate()
             }
+            
         }
     }
 	
@@ -111,13 +111,14 @@ final class NowPlayingSummaryViewController: UIViewController {
         mainStackView.alignment = .Center
         
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right], subView: mainStackView, parentView: view)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .CenterY], subView: mainStackView, parentView: view)
         //the calculation of this constant is based off of how tall the screen is.  for an iPhone 6 with a portrait height of 667
         //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
         //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
 		
-        mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 35 * self.dynamicType.heightScale).active = true
-        mainStackView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -5).active = true
+//        mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 35 * self.dynamicType.heightScale).active = true
+//        mainStackView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -5).active = true
+        mainStackView.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.95).active = true
 		
         albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
         if (UIScreen.mainScreen().bounds.width * 0.9) > (UIScreen.mainScreen().bounds.height * 0.55) {
@@ -160,13 +161,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         gradiantLayer.frame = view.bounds
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        //doing this bc for some reason after the container vc dismisses a modal presented vc, the album art page vc disappears
-        //updating its alpha level prevents that
-        updateAlphaLevels()
-    }
-    
     private func createBottomButtonView() -> UIView {
         let font = ThemeHelper.smallFontForStyle(.Medium)
         func createAndConfigureButton(title:String, selector:Selector) -> UIButton {
@@ -182,9 +176,6 @@ final class NowPlayingSummaryViewController: UIViewController {
 				button.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
 				button.widthAnchor.constraintEqualToConstant(label.intrinsicContentSize().width + 20).active = true
             }
-//			button.backgroundColor = UIColor(white: 1, alpha: 0.4)
-//			button.layer.borderColor = UIColor.darkGrayColor().CGColor
-//			button.layer.borderWidth = 1
             return button
 		}
 		
@@ -192,7 +183,6 @@ final class NowPlayingSummaryViewController: UIViewController {
 			let stackView = UIStackView(arrangedSubviews: views)
 			stackView.axis = .Horizontal
 			stackView.distribution = .EqualSpacing
-//			stackView.spacing = 2
             
             var apply = false
             views.forEach() {
@@ -214,7 +204,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 		
         let goToAlbumButton = createAndConfigureButton("ALBUM", selector: #selector(self.goToAlbum(_:)))
         let goToArtistButton = createAndConfigureButton("ARTIST", selector: #selector(self.goToArtist(_:)))
-        let addToPlaylistButton = createAndConfigureButton("＋", selector: #selector(self.addToPlaylist(_:)))
+        let addToPlaylistButton = createAndConfigureButton(" ＋  ", selector: #selector(self.addToPlaylist(_:)))
 		let hideButton = createAndConfigureButton("HIDE", selector: #selector(self.collapseViewController(_:)))
 		
 		let goToStack = stackViewWrapperForViews([goToAlbumButton, goToArtistButton, addToPlaylistButton])
@@ -225,6 +215,14 @@ final class NowPlayingSummaryViewController: UIViewController {
         stackView.distribution = .EqualCentering
         stackView.alignment = .Center
         return stackView
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return expanded
+    }
+    
+    override func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
+        return .Slide
     }
 	
 
@@ -241,8 +239,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem
 		let index = audioQueuePlayer.indexOfNowPlayingItem
-//		let labelWrapper = { return LabelStackWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index) }
-//        transitionPageVC(labelPageVC, withVC: labelWrapper)
 		
 		let imageWrapper = { return ImageWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index, size: self.albumArtPageVC.view.frame.size) }
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
@@ -273,7 +269,8 @@ final class NowPlayingSummaryViewController: UIViewController {
         
         let frame = self.view.frame
         let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
-        let currentY = maxY - (frame.origin.y - RootViewController.nowPlayingViewCollapsedOffset)
+        let currentY = maxY - frame.origin.y
+        
         var expandedFraction = (currentY/maxY)
         
         if(expandedFraction > 1.0 || expandedFraction < 0.1) {

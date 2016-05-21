@@ -58,15 +58,22 @@ final class SettingsViewController: UITableViewController {
 				TutorialManager.instance.resetAllTutorials()
 			}
 		case 2:
-			showPrivacyPolicy()
+            do {
+                try showPrivacyPolicy()
+            } catch let error {
+                KyoozUtils.showPopupError(withTitle: "Could not find Privacy Policy File", withThrownError: error, presentationVC: self)
+            }
 		default:
 			break
 		}
 
 	}
 	
-	private func showPrivacyPolicy() {
-		let string = NSAttributedString(u)
+	private func showPrivacyPolicy() throws {
+        let textVC = TextViewController()
+        textVC.showDimissButton = false
+        try textVC.loadHtmlFile(withName: "PrivacyPolicy")
+        navigationController?.pushViewController(textVC, animated: true)
 	}
 
 }
