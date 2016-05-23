@@ -51,7 +51,6 @@ final class NowPlayingSummaryViewController: UIViewController {
             UIView.animateWithDuration(0.5) { 
                 self.setNeedsStatusBarAppearanceUpdate()
             }
-            
         }
     }
 	
@@ -271,15 +270,9 @@ final class NowPlayingSummaryViewController: UIViewController {
         let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
         let currentY = maxY - frame.origin.y
         
-        var expandedFraction = (currentY/maxY)
+        let expandedFraction = KyoozUtils.cap((currentY/maxY), min: 0, max: 1)
         
-        if(expandedFraction > 1.0 || expandedFraction < 0.1) {
-            expandedFraction = floor(expandedFraction)
-        }
         let collapsedFraction = 1 - expandedFraction
-        if expandedFraction > 0 && albumArtPageVC.view.hidden {
-            albumArtPageVC.view.hidden = false
-        }
         
         collapseButton?.alpha = expandedFraction
         albumArtPageVC.view.alpha = expandedFraction
