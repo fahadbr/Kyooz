@@ -246,18 +246,10 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         collapsedConstraint.constant = 0
         expandedConstraint.constant = 0
         
-        var completionBlock:((Bool)->Void)? = nil
-//        if(shouldExpand) {
-//            pullableViewExpanded = true
-//        } else {
-//            completionBlock = { finished in
-//                self.pullableViewExpanded = false
-//            }
-//        }
         pullableViewExpanded = shouldExpand
         UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: { () -> Void in
             self.view.layoutIfNeeded()
-        }, completion: completionBlock)
+        }, completion: nil)
     }
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
