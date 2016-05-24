@@ -34,9 +34,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	}
 	
 	
-	var testMode = false
-	var testDelegate:TestTableViewDataSourceDelegate!
-	
     var parentGroup:LibraryGrouping?
 	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
 	var isBaseLevel:Bool = true
@@ -60,15 +57,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
 		tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
-         
-		if testMode {
-			configureTestDelegates()
-		} else {
-            KyoozUtils.doInMainQueueAsync() {
-                self.applyDataSourceAndDelegate()
-                self.reloadAllData()
-            }
-		}
+        
+        KyoozUtils.doInMainQueueAsync() {
+            self.applyDataSourceAndDelegate()
+            self.reloadAllData()
+        }
     }
 	
 	
@@ -131,14 +124,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 			datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
 		}
         tableView.layer.addAnimation(self.dynamicType.fadeInAnimation, forKey: nil)
-	}
-	
-	private func configureTestDelegates() {
-		testDelegate = TestTableViewDataSourceDelegate()
-		tableView.dataSource = testDelegate
-		tableView.delegate = testDelegate
-		tableView.sectionHeaderHeight = 40
-		tableView.rowHeight = 60
 	}
     
     override func registerForNotifications() {

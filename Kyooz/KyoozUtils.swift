@@ -37,7 +37,7 @@ struct KyoozUtils {
     }()
     	
 	static var internetConnectionAvailable:Bool {
-		return Reachability.reachabilityForInternetConnection().currentReachabilityStatus() != NetworkStatus.NotReachable
+		return KYReachability.reachabilityForInternetConnection().currentReachabilityStatus() != NetworkStatus.NotReachable
 	}
     
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {

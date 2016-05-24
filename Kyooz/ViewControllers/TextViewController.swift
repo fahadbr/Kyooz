@@ -18,7 +18,8 @@ class TextViewController: UIViewController {
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         
         ConstraintUtils.applyStandardConstraintsToView(subView: textView, parentView: view)
-
+        
+        textView.editable = false
         textView.backgroundColor = ThemeHelper.defaultTableCellColor
         textView.textColor = ThemeHelper.defaultFontColor
         

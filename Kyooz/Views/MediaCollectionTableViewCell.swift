@@ -16,7 +16,7 @@ final class MediaCollectionTableViewCell: MediaLibraryTableViewCell, Configurabl
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
         titleLabel.text =  entity.titleForGrouping(libraryGrouping)
-        if let mediaItem = entity as? MPMediaItem {
+        if let mediaItem = entity as? AudioTrack {
             let artist:String = mediaItem.artist ?? ""
             let album:String = mediaItem.albumTitle ?? ""
             detailsLabel.text = "\(artist) - \(album)"
