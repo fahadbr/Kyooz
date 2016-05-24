@@ -45,7 +45,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
 	
     
     //MARK: - Properties
-    private let searchExecutionControllers:[SearchExecutionController] = {
+    lazy var searchExecutionControllers:[SearchExecutionController] = {
         let artistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Artists,
             searchKeys: [MPMediaItemPropertyAlbumArtist])
         let albumSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Albums,
@@ -97,32 +97,8 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         activityIndicator.widthAnchor.constraintEqualToConstant(30).active = true
         activityIndicator.heightAnchor.constraintEqualToAnchor(activityIndicator.widthAnchor).active = true
         activityIndicator.leftAnchor.constraintEqualToAnchor(searchBar.rightAnchor).active = true
-        
-        var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
-        for searchExecutionController in searchExecutionControllers {
-            searchExecutionController.delegate = self
-            let libraryGroup = searchExecutionController.libraryGroup
-            let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController)
-            let datasourceDelegate:AudioEntityDSD
-            let reuseIdentifier = libraryGroup.usesArtwork ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
-            
-            switch libraryGroup {
-            case LibraryGrouping.Songs:
-                let audioTrackDSD = AudioTrackDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
-                audioTrackDSD.playAllTracksOnSelection = false
-                datasourceDelegate = audioTrackDSD
-            default:
-                datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
-            }
-            datasourceDelegate.useSmallFont = true
-            datasourceDelegate.shouldAnimateCell = false
-            datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
-        }
-        let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
-		sectionDelegator.delegate = self
-        sourceData = sectionDelegator
-		datasourceDelegate = sectionDelegator
-    
+        applyDatasourceDelegate()
+
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -153,6 +129,34 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     func getSourceData() -> AudioEntitySourceData? {
         searchBar.resignFirstResponder()
         return sourceData
+    }
+    
+    func applyDatasourceDelegate() {
+        var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
+        for searchExecutionController in searchExecutionControllers {
+            searchExecutionController.delegate = self
+            let libraryGroup = searchExecutionController.libraryGroup
+            let sourceData = SearchResultsSourceData(searchExecutionController: searchExecutionController)
+            let datasourceDelegate:AudioEntityDSD
+            let reuseIdentifier = libraryGroup.usesArtwork ? ImageTableViewCell.reuseIdentifier : MediaCollectionTableViewCell.reuseIdentifier
+            
+            switch libraryGroup {
+            case LibraryGrouping.Songs:
+                let audioTrackDSD = AudioTrackDSD(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+                audioTrackDSD.playAllTracksOnSelection = false
+                datasourceDelegate = audioTrackDSD
+            default:
+                datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
+            }
+            datasourceDelegate.useSmallFont = true
+            datasourceDelegate.shouldAnimateCell = false
+            datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
+        }
+        let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
+        sectionDelegator.delegate = self
+        sourceData = sectionDelegator
+        datasourceDelegate = sectionDelegator
+
     }
     
     

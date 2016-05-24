@@ -19,6 +19,10 @@ final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
         return object.hashValue
     }
     
+    override var description: String {
+        return "primaryKey: \(primaryKey), values:\(normalizedKeyValues.description)\n"
+    }
+    
     init(object:T, primaryKeyValue:(String, String)) {
         self.object = object
         self.primaryKey = primaryKeyValue.1

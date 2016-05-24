@@ -15,13 +15,17 @@ let indexQueue:NSOperationQueue = {
     return queue
 }()
 
-final class SearchIndex<T:SearchIndexValue> {
+final class SearchIndex<T:SearchIndexValue> : CustomStringConvertible {
     
     let name:String
     
     private var subIndex:[String:SearchIndex<T>]?
     private var sameLevelValues:Set<SearchIndexEntry<T>>?
     private let indexLevel:Int
+    
+    var description: String {
+        return "name: \(name), \n\t indexLevel: \(indexLevel), \n\t subIndex: \(subIndex?.description), \n\t sameLevelValues: \(sameLevelValues?.description)"
+    }
     
     convenience init(name:String, sameLevelValues:Set<SearchIndexEntry<T>>?, subIndex:[String:SearchIndex<T>]?) {
         self.init(name:name, indexLevel:0, sameLevelValues:sameLevelValues, subIndex:subIndex)

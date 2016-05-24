@@ -7,12 +7,14 @@
 //
 
 import UIKit
-
+import MessageUI
 
 final class SettingsViewController: UITableViewController {
 
     @IBOutlet var enableAppleMusicSwitch: UISwitch!
     @IBOutlet var reduceAnimationSwitch: UISwitch!
+    
+    private static let emailAddress = "kyoozapp@gmail.com"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,22 +54,39 @@ final class SettingsViewController: UITableViewController {
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) else {
 			return
 		}
-		switch cell.tag {
-		case 1:
-			KyoozUtils.confirmAction("Are you sure you want to reset all tutorials?", presentingVC: self) {
-				TutorialManager.instance.resetAllTutorials()
-			}
-		case 2:
-            do {
+        do {
+            switch cell.tag {
+            case 1:
+                KyoozUtils.confirmAction("Are you sure you want to reset all tutorials?", presentingVC: self) {
+                    TutorialManager.instance.resetAllTutorials()
+                }
+            case 2:
+                try showMailComposeVC()
+            case 3:
                 try showPrivacyPolicy()
-            } catch let error {
-                KyoozUtils.showPopupError(withTitle: "Could not find Privacy Policy File", withThrownError: error, presentationVC: self)
+            case 4:
+                try showAcknowledgements()
+            default:
+                break
             }
-		default:
-			break
-		}
+        } catch let error {
+            KyoozUtils.showPopupError(withTitle: "Could not complete action", withThrownError: error, presentationVC: self)
+        }
 
 	}
+    
+    private func showMailComposeVC() throws {
+        guard MFMailComposeViewController.canSendMail() else {
+            throw KyoozError(errorDescription: "The current device is not set up for sending mail")
+        }
+        let mfvc = MFMailComposeViewController()
+        mfvc.mailComposeDelegate = self
+        mfvc.setToRecipients([self.dynamicType.emailAddress])
+        mfvc.setSubject("Kyooz Feedback")
+        
+        presentViewController(mfvc, animated: true, completion: nil)
+        
+    }
 	
 	private func showPrivacyPolicy() throws {
         let textVC = TextViewController()
@@ -75,5 +94,19 @@ final class SettingsViewController: UITableViewController {
         try textVC.loadHtmlFile(withName: "PrivacyPolicy")
         navigationController?.pushViewController(textVC, animated: true)
 	}
+    
+    private func showAcknowledgements() throws {
+        let textVC = TextViewController()
+        textVC.showDimissButton = false
+        try textVC.loadHtmlFile(withName: "Acknowledgments")
+        navigationController?.pushViewController(textVC, animated: true)
+    }
 
+}
+
+extension SettingsViewController : MFMailComposeViewControllerDelegate {
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
+    }
 }

@@ -28,14 +28,14 @@ class SearchExecutionController : NSObject {
     var searchInProgress:Bool = false
     
     private (set) var searchResults:[AudioEntity] = [AudioEntity]()
-    private var searchIndex:SearchIndex<AudioEntity>? {
+    private (set) var searchIndex:SearchIndex<AudioEntity>? {
         didSet {
             if let previousSearchParams = self.previousSearchParams {
                 executeSearchForStringComponents(previousSearchParams.searchString, stringComponents: previousSearchParams.stringComponents)
             }
         }
     }
-    private let searchKeys:[String]
+    let searchKeys:[String]
     private let defaultSearchQueue:NSOperationQueue
     
     private var previousSearchParams:(searchString:String, stringComponents:[String])?
@@ -73,7 +73,14 @@ class SearchExecutionController : NSObject {
             return NSCompoundPredicate(orPredicateWithSubpredicates: searchPredicates)
         })
         
-        let searchOperation:AbstractResultOperation<[AudioEntity]> = self.createSearchOperation(finalPredicate, searchString: searchString)
+        let searchOperation:AbstractResultOperation<[AudioEntity]>
+        if let searchIndex = self.searchIndex {
+            searchOperation = IndexSearchOperation(searchIndex: searchIndex, searchPredicate: finalPredicate, searchString: searchString)
+        } else if let adHocSearchOp = createAdHocSearchOperation(finalPredicate, searchString: searchString) {
+            searchOperation = adHocSearchOp
+        } else {
+            return
+        }
         
         searchOperation.inThreadCompletionBlock = { [weak self](results) -> Void in
             KyoozUtils.doInMainQueue() {
@@ -107,47 +114,52 @@ class SearchExecutionController : NSObject {
         defaultSearchQueue.addOperationWithBlock(block)
     }
     
-    func rebuildSearchIndex() {
+    final func rebuildSearchIndex() {
+        guard let indexBuildingOp = createIndexBuildingOperation() else {
+            Logger.error("failed to create index building operation")
+            return
+        }
+        
+        indexBuildingOp.inThreadCompletionBlock = { (result) -> Void in
+            KyoozUtils.doInMainQueue() {
+                self.searchIndex = result
+                Logger.debug("finished building \(result.name) index")
+            }
+        }
+        
+        indexQueue.addOperation(indexBuildingOp)
+    }
+    
+    func createIndexBuildingOperation() -> IndexBuildingOperation<AudioEntity>? {
         fatalError(fatalErrorAbstractClassMessage)
     }
     
-    private func createSearchOperation(searchPredicate:NSPredicate, searchString:String) -> AbstractResultOperation<[AudioEntity]> {
-        fatalError(fatalErrorAbstractClassMessage)
+    func createAdHocSearchOperation(searchPredicate:NSPredicate, searchString:String) -> AbstractResultOperation<[AudioEntity]>? {
+        return nil
     }
     
 }
 
 final class IPodLibrarySearchExecutionController : SearchExecutionController {
-    
-    
-    override func rebuildSearchIndex() {
+    override func createIndexBuildingOperation() -> IndexBuildingOperation<AudioEntity>? {
         let query = libraryGroup.baseQuery
-        if let values:[AudioEntity] = libraryGroup == LibraryGrouping.Songs ? query.items : query.collections {
-            let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
-            let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
-                if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
-                    return (titlePropertyName, primaryKey)
-                }
-                return (titlePropertyName,"null")
-            })
-            
-            indexBuildingOp.inThreadCompletionBlock = { (result) -> Void in
-                KyoozUtils.doInMainQueue() {
-                    self.searchIndex = result
-                    Logger.debug("finished building \(result.name) index")
-                }
-            }
-            
-            indexQueue.addOperation(indexBuildingOp)
+        guard let values:[AudioEntity] = libraryGroup == LibraryGrouping.Songs ? query.items : query.collections else {
+            return nil
         }
+        
+        let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
+        let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
+            if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
+                return (titlePropertyName, primaryKey)
+            }
+            return (titlePropertyName,"null")
+        })
+        return indexBuildingOp
+
     }
     
-    private override func createSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
-        if let searchIndex = self.searchIndex {
-            return IndexSearchOperation(searchIndex: searchIndex, searchPredicate: searchPredicate, searchString: searchString)
-        } else {
-            return AdHocIPodLibrarySearchOperation(group: libraryGroup, searchString: searchString, searchPredicate: searchPredicate)
-        }
+    override func createAdHocSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]>? {
+        return AdHocIPodLibrarySearchOperation(group: libraryGroup, searchString: searchString, searchPredicate: searchPredicate)
     }
 }
 
@@ -155,7 +167,7 @@ final class KyoozPlaylistSearchExecutionController : SearchExecutionController {
     
     init() {
         super.init(libraryGroup: LibraryGrouping.Playlists, searchKeys: ["name"])
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.rebuildSearchIndex), name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(super.rebuildSearchIndex), name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
     }
     
     deinit {
@@ -166,32 +178,22 @@ final class KyoozPlaylistSearchExecutionController : SearchExecutionController {
         return "KYOOZ PLAYLIST"
     }
     
-    override func rebuildSearchIndex() {
-        if let values:[AudioEntity] = KyoozPlaylistManager.instance.playlists.array as? [AudioEntity] {
-            let titlePropertyName = searchKeys.first!
-            let indexBuildingOp = IndexBuildingOperation(parentIndexName: "KYOOZ " + libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
-                if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
-                    return (titlePropertyName, primaryKey)
-                }
-                return (titlePropertyName,"null")
-            })
-            
-            indexBuildingOp.inThreadCompletionBlock = { (result) -> Void in
-                KyoozUtils.doInMainQueue() {
-                    self.searchIndex = result
-                    Logger.debug("finished building \(result.name) index")
-                }
-            }
-            
-            indexQueue.addOperation(indexBuildingOp)
+    override func createIndexBuildingOperation() -> IndexBuildingOperation<AudioEntity>? {
+        guard let values:[AudioEntity] = KyoozPlaylistManager.instance.playlists.array as? [AudioEntity] else {
+            return nil
         }
+        let titlePropertyName = searchKeys.first!
+        let indexBuildingOp = IndexBuildingOperation(parentIndexName: "KYOOZ " + libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
+            if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
+                return (titlePropertyName, primaryKey)
+            }
+            return (titlePropertyName,"null")
+        })
+        
+        return indexBuildingOp
     }
     
-    private override func createSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
-        if let searchIndex = self.searchIndex {
-            return IndexSearchOperation(searchIndex: searchIndex, searchPredicate: searchPredicate, searchString: searchString)
-        } else {
-            return AdHocKyoozPlaylistSearchOperation(primaryKeyName: searchKeys.first!, searchPredicate: searchPredicate, searchString: searchString)
-        }
+    override func createAdHocSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
+        return AdHocKyoozPlaylistSearchOperation(primaryKeyName: searchKeys.first!, searchPredicate: searchPredicate, searchString: searchString)
     }
 }
