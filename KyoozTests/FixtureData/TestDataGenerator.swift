@@ -25,7 +25,7 @@ class TestDataGenerator: XCTestCase {
         super.tearDown()
     }
     
-    func testSourceData() {
+    func tesSourceData() {
         let bundle = NSBundle(forClass: self.dynamicType)
         let testDataDict = NSDictionary(contentsOfURL: bundle.URLForResource("TestData", withExtension: "plist")!)!
         
