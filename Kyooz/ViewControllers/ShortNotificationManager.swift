@@ -39,7 +39,7 @@ final class ShortNotificationManager {
         vc.message = message
         let frameSize:CGSize = vc.estimatedSize
         
-        let origin = CGPoint(x: (presentationController.view.frame.width - frameSize.width)/2, y: presentationController.view.frame.height * 0.80)
+        let origin = CGPoint(x: (presentationController.view.frame.width - frameSize.width)/2, y: (presentationController.view.frame.height * 0.90) - frameSize.height)
         vc.view.frame = CGRect(origin: origin, size: frameSize)
         self.shortNotificationVC = vc
         

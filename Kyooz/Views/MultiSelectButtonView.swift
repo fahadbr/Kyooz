@@ -47,6 +47,12 @@ final class MultiSelectButtonView : UIButton {
         }
     }
     
+    var pathTransform:CGAffineTransform = CGAffineTransformIdentity {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     
     override func drawRect(rect: CGRect) {
         let colorToUse:UIColor
@@ -70,7 +76,7 @@ final class MultiSelectButtonView : UIButton {
         
         let path = UIBezierPath(ovalInRect: rectToUse)
         
-        
+        path.applyTransform(pathTransform)
         if isActive {
             path.fill()
         }
@@ -86,6 +92,7 @@ final class MultiSelectButtonView : UIButton {
         checkPath.addLineToPoint(CGPoint(x: checkRect.maxX, y: checkRect.minY + checkInset/2))
  
         checkPath.lineWidth = 1.5
+        checkPath.applyTransform(pathTransform)
         if isActive {
             checkPath.strokeWithBlendMode(.Clear, alpha: 1.0)
         } else {

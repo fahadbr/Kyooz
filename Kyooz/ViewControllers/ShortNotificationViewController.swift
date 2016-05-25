@@ -52,7 +52,7 @@ final class ShortNotificationViewController : FadeOutViewController {
         view.layer.shadowColor = UIColor.whiteColor().CGColor
 
 		//fade away after 4 seconds
-		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(4), dispatch_get_main_queue()) { [weak self] in
+		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(3), dispatch_get_main_queue()) { [weak self] in
 			self?.transitionOut()
 		}
     }

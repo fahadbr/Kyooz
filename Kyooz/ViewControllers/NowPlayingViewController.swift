@@ -104,6 +104,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
         let buttonSize:CGFloat = 44
         multiSelectButton.color = ThemeHelper.defaultTintColor
         multiSelectButton.frame.size = CGSize(width: buttonSize, height: buttonSize)
+        multiSelectButton.pathTransform = CGAffineTransformMakeTranslation(-10, 0)
         multiSelectButton.addTarget(self, action: #selector(self.toggleEditing), forControlEvents: .TouchUpInside)
         let editButton = UIBarButtonItem(customView: multiSelectButton)
         let deleteButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.confirmDelete(_:)))
