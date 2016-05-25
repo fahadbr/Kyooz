@@ -26,19 +26,25 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
         titleLabel.text = entity.titleForGrouping(libraryGrouping)
         
         let pluralText = entity.count > 1 ? "s" : ""
-        var text = "\(entity.count) Track\(pluralText)"
-		if let mediaItem = entity.representativeTrack as? MPMediaItem {
+        var strings = [String]()
+        
+        let count = "\(entity.count) Track\(pluralText)"
+		if let track = entity.representativeTrack {
 			if libraryGrouping === LibraryGrouping.Albums || libraryGrouping === LibraryGrouping.Compilations {
-				if let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
-					text = text + " • \(releaseDate)"
+                if let albumArtist = track.albumArtist {
+                    strings.append(albumArtist)
+                }
+                strings.append(count)
+				if let releaseDate = track.releaseYear {
+					strings.append(releaseDate)
 				}
 			}
-			configureDRMAndCloudLabels(mediaItem)
+			configureDRMAndCloudLabels(track)
 		} else {
 			accessoryStack.hidden = true
 		}
 		
-        detailsLabel.text = text
+        detailsLabel.text = strings.isEmpty ? count : strings.joinWithSeparator(" • ")
         if shouldAnimate {
             albumArtwork.alpha = 0
         }

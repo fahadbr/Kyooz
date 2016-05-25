@@ -110,6 +110,12 @@ extension MPMediaItem : AudioTrack {
     var albumId:UInt64 { return albumPersistentID }
     var audioTrackSource:AudioTrackSource { return AudioTrackSource.iPodLibrary }
     var isCloudTrack:Bool { return cloudItem }
+    var releaseYear:String? {
+        if let releaseDate = valueForKey("year") as? NSNumber where !releaseDate.isEqualToNumber(NSNumber(integer: 0)) {
+            return "\(releaseDate)"
+        }
+        return nil
+    }
     
     override func titleForGrouping(libraryGrouping: LibraryGrouping) -> String? {
         let titleProperty = MPMediaItem.titlePropertyForGroupingType(libraryGrouping.groupingType)

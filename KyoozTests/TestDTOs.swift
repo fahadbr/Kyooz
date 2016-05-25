@@ -42,6 +42,7 @@ class AudioTrackDTO : NSObject, AudioTrack {
     var audioTrackSource:AudioTrackSource = .iPodLibrary
     var isCloudTrack:Bool = false
     var genre:String?
+    var releaseYear: String?
     
     var count:Int {
         return 1

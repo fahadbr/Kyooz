@@ -25,6 +25,7 @@ import MediaPlayer
     var audioTrackSource:AudioTrackSource { get }
     var isCloudTrack:Bool { get }
     var genre:String? { get }
+    var releaseYear:String? { get }
     
     func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
     

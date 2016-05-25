@@ -25,7 +25,7 @@ class TestDataGenerator: XCTestCase {
         super.tearDown()
     }
     
-    func sourceData() {
+    func testSourceData() {
         let bundle = NSBundle(forClass: self.dynamicType)
         let testDataDict = NSDictionary(contentsOfURL: bundle.URLForResource("TestData", withExtension: "plist")!)!
         
@@ -36,7 +36,7 @@ class TestDataGenerator: XCTestCase {
         let trackAssetURL = bundle.URLForResource("foreword", withExtension: "mp3")!
         
         var images = [UIImage]()
-        for i in 1...3 {
+        for i in 1...4 {
             images.append(UIImage(named: "Artwork\(i)", inBundle: bundle, compatibleWithTraitCollection: nil)!)
         }
         let artworks = images.map() { MPMediaItemArtwork(image: $0) }
@@ -63,6 +63,7 @@ class TestDataGenerator: XCTestCase {
                     dto.albumArtistId = getRandomId()
                     dto.artwork = artworks[j % artworks.count]
                     dto.assetURL = trackAssetURL
+                    dto.releaseYear = "\(KyoozUtils.randomNumberInRange(1990...2016))"
                     dto.playbackDuration = Double(KyoozUtils.randomNumberInRange(150...360))
                     tracks.append(dto)
                 }
