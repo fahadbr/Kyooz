@@ -46,9 +46,9 @@ final class NowPlayingInfoHelper {
         nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
     }
     
-    private func getDictionaryForMediaItem(mediaItem:AudioTrack) -> Dictionary<String, AnyObject> {
-        var mediaInfoToPublish = Dictionary<String,AnyObject>()
-        mediaItem.enumerateValuesForProperties(mpMediaItemPropertyList) { (property:String, value:AnyObject, UnsafeMutablePointer) -> Void in
+    private func getDictionaryForMediaItem(mediaItem:AudioTrack) -> [String:AnyObject] {
+        var mediaInfoToPublish = [String:AnyObject]()
+        mediaItem.enumerateValuesForProperties(mpMediaItemPropertyList) { (property:String, value:AnyObject?, UnsafeMutablePointer) -> Void in
             mediaInfoToPublish[property] = value
         }
         
