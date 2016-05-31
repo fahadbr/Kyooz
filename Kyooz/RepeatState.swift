@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum RepeatState:Int {
+enum RepeatState:Int, EnumNameDescriptable {
     case Off
     case All
     case One

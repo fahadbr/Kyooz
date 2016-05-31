@@ -13,6 +13,7 @@ import MediaPlayer
 class TestDataGenerator: XCTestCase {
     
     private var randomId:UInt64 = 100100
+	private var runTest = false
     
     override func setUp() {
         super.setUp()
@@ -21,11 +22,12 @@ class TestDataGenerator: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        print("doing teardown")
         super.tearDown()
     }
     
-    func tesSourceData() {
+    func testSourceData() {
+		guard runTest else { return }
+		
         let bundle = NSBundle(forClass: self.dynamicType)
         let testDataDict = NSDictionary(contentsOfURL: bundle.URLForResource("TestData", withExtension: "plist")!)!
         

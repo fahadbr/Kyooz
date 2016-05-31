@@ -88,13 +88,13 @@ enum AudioQueuePlayerUpdate : String {
     case NowPlayingItemChanged = "AudioQueuePlayerNowPlayingItemChanged"
 }
 
-enum ClearDirection : Int {
+enum ClearDirection : Int, EnumNameDescriptable {
     case Above
     case Below
     case All
 }
 
-enum EnqueuePosition : Int {
+enum EnqueuePosition : Int, EnumNameDescriptable {
     case Next
     case Last
     case Random

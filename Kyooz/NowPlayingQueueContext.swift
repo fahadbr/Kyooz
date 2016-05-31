@@ -62,7 +62,7 @@ struct NowPlayingQueueContext {
             currentQueue.appendContentsOf(itemsToEnqueue)
         case .Random:
             var queue = self.currentQueue
-            let index = indexOfNowPlayingItem + 1
+			let index = indexOfNowPlayingItem == 0 ? indexOfNowPlayingItem : indexOfNowPlayingItem + 1
             itemsToEnqueue.forEach() {
                 queue.insert($0, atIndex: KyoozUtils.randomNumberInRange(index..<queue.count))
             }
