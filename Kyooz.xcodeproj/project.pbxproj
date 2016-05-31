@@ -153,6 +153,8 @@
 		100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */; };
 		100A8BDD1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */; };
 		100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */; };
+		102756A61CFE43CB00B1B679 /* EnumNameDescriptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */; };
+		102756A81CFE43F600B1B679 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102756A71CFE43F600B1B679 /* ImageUtils.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		1060F6041CE5399C001DE868 /* TutorialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1060F6031CE5399C001DE868 /* TutorialManager.swift */; };
 		1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */; };
@@ -348,6 +350,8 @@
 		100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackCollectionDSD.swift; sourceTree = "<group>"; };
 		100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDSectionDelegator.swift; sourceTree = "<group>"; };
 		100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDProtocol.swift; sourceTree = "<group>"; };
+		102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumNameDescriptable.swift; sourceTree = "<group>"; };
+		102756A71CFE43F600B1B679 /* ImageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		1060F6031CE5399C001DE868 /* TutorialManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialManager.swift; sourceTree = "<group>"; };
 		1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongPressTutorialViewController.swift; sourceTree = "<group>"; };
@@ -690,20 +694,10 @@
 		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				10FD32721C9B6B4300004CAB /* KYReachability.h */,
-				10FD32731C9B6B4300004CAB /* KYReachability.m */,
+				102756AA1CFE445E00B1B679 /* HelperClasses */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
 				0BBE16001AF6AC80007C6189 /* Logger */,
-				0B778B081B9388BD00004A1B /* CGUtils.swift */,
-				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
-				0BB01A601CCBD91900D4B57F /* KyoozConstants.swift */,
-				100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */,
-				0BF917471BF8F36A001AC802 /* KyoozUtils.swift */,
-				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
-				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
-				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
-				10FD325C1C90E7B200004CAB /* ConstraintUtils.swift */,
-				0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */,
+				102756A91CFE444C00B1B679 /* StaticUtils */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -856,6 +850,34 @@
 				0B1DA0681CB0849F00699D88 /* WrapperViewController.swift */,
 			);
 			name = "Util VCs";
+			sourceTree = "<group>";
+		};
+		102756A91CFE444C00B1B679 /* StaticUtils */ = {
+			isa = PBXGroup;
+			children = (
+				0B778B081B9388BD00004A1B /* CGUtils.swift */,
+				0B13DA651AED584700CC5C01 /* ImageContainer.swift */,
+				102756A71CFE43F600B1B679 /* ImageUtils.swift */,
+				0BB01A601CCBD91900D4B57F /* KyoozConstants.swift */,
+				0BF917471BF8F36A001AC802 /* KyoozUtils.swift */,
+				0B13DA671AED5A3600CC5C01 /* MediaItemUtils.swift */,
+				0B13DA0B1AE6FA9A00CC5C01 /* NibContainer.swift */,
+				0B13DA101AE6FA9A00CC5C01 /* ThemeHelper.swift */,
+				10FD325C1C90E7B200004CAB /* ConstraintUtils.swift */,
+			);
+			name = StaticUtils;
+			sourceTree = "<group>";
+		};
+		102756AA1CFE445E00B1B679 /* HelperClasses */ = {
+			isa = PBXGroup;
+			children = (
+				10FD32721C9B6B4300004CAB /* KYReachability.h */,
+				10FD32731C9B6B4300004CAB /* KYReachability.m */,
+				102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */,
+				100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */,
+				0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */,
+			);
+			name = HelperClasses;
 			sourceTree = "<group>";
 		};
 		108DBA0B1CE536AD0013E990 /* Tutorial */ = {
@@ -1067,6 +1089,7 @@
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
 				100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */,
 				10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */,
+				102756A61CFE43CB00B1B679 /* EnumNameDescriptable.swift in Sources */,
 				10DB79021CBC7026008402BB /* AudioQueuePlayerWrapper.swift in Sources */,
 				108DBA0A1CE4CCA10013E990 /* TutorialViewController.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
@@ -1159,6 +1182,7 @@
 				0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */,
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
 				1060F6041CE5399C001DE868 /* TutorialManager.swift in Sources */,
+				102756A81CFE43F600B1B679 /* ImageUtils.swift in Sources */,
 				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
 				0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */,

@@ -162,7 +162,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         viewForSnapshot.layer.masksToBounds = true
         viewForSnapshot.layer.cornerRadius = cornerRadiusForSnapshot
         
-        snapshot = ImageHelper.customSnapshotFromView(viewForSnapshot)
+        snapshot = ImageUtils.customSnapshotFromView(viewForSnapshot)
         snapshotContainer = UIView(frame: snapshot.frame)
         snapshotContainer.addSubview(snapshot)
 		

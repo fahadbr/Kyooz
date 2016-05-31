@@ -63,7 +63,7 @@ final class PlaybackProgressViewController: UIViewController {
         thumbView.backgroundColor = UIColor.lightGrayColor()
         thumbView.layer.cornerRadius = 2
         thumbView.layer.masksToBounds = true
-        let thumbImage = ImageHelper.imageForView(thumbView, opaque: false)
+        let thumbImage = ImageUtils.imageForView(thumbView, opaque: false)
         progressSlider.setThumbImage(thumbImage, forState: .Normal)
         progressSlider.setThumbImage(thumbImage, forState: .Selected)
         progressSlider.setThumbImage(thumbImage, forState: .Highlighted)

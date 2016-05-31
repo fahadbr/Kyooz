@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum Tutorial : Int {
+enum Tutorial : Int , EnumNameDescriptable {
 	
     case GestureActivatedSearch
     case GestureToViewQueue

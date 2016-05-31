@@ -19,17 +19,8 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
     }
     
     func audioQueuePlayerDidEnqueueItems(items: [AudioTrack], position: EnqueuePosition) {
-		let positionString:String
-		switch position {
-		case .Last:
-			positionString = "Last"
-		case .Next:
-			positionString = "Next"
-		case .Random:
-			positionString = "Randomly"
-		}
 		KyoozUtils.doInMainQueueAsync() {
-			self.shortNotificationManager.presentShortNotificationWithMessage("Queued \(items.count) tracks to play \(positionString)")
+			self.shortNotificationManager.presentShortNotificationWithMessage("Queued \(items.count) tracks to play \(position)")
 		}
     }
 	
