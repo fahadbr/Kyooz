@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import MediaPlayer
 
 @objc protocol AudioTrack : AudioEntity {
     
@@ -21,7 +20,6 @@ import MediaPlayer
     var id:UInt64 { get }
     var playbackDuration:NSTimeInterval { get }
     var trackTitle:String! { get }
-    var artwork:MPMediaItemArtwork! { get }
     var audioTrackSource:AudioTrackSource { get }
     var isCloudTrack:Bool { get }
     var genre:String? { get }

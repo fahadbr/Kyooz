@@ -134,6 +134,10 @@ extension MPMediaItem : AudioTrack {
     var representativeTrack:AudioTrack? {
         return self
     }
+	
+	func artworkImage(forSize size: CGSize) -> UIImage? {
+		return artwork?.imageWithSize(size)
+	}
 
 }
 

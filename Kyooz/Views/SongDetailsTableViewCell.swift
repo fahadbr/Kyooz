@@ -73,7 +73,7 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
         let key = NSNumber(unsignedLongLong: track.albumId)
         if let albumArtImage = SongDetailsTableViewCell.albumImageCache.objectForKey(key) as? UIImage {
             return albumArtImage
-        } else if let albumArtwork = track.artwork?.imageWithSize(imageSize) {
+        } else if let albumArtwork = track.artworkImage(forSize: imageSize) {
             SongDetailsTableViewCell.albumImageCache.setObject(albumArtwork, forKey: key)
             return albumArtwork
         }

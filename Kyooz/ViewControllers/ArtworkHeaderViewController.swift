@@ -155,8 +155,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
         
         //fade in the artwork
         KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation] in
-            if let albumArt = track.artwork, let image = albumArt.imageWithSize(imageView.frame.size) {
-                imageView.image = image
+			if let albumArt = track.artworkImage(forSize:imageView.frame.size) {
+                imageView.image = albumArt
             } else {
                 imageView.image = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: imageView.frame.size)
             }

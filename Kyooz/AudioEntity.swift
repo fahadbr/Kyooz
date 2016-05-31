@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 FAHAD RIAZ. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 @objc protocol AudioEntity : NSSecureCoding, NSObjectProtocol, SearchIndexValue {
     
@@ -16,11 +16,35 @@ import Foundation
     func titleForGrouping(libraryGrouping:LibraryGrouping) -> String?
     
     func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64
-    
+	
+	func artworkImage(forSize size:CGSize) -> UIImage?
+	
 }
 
 @objc protocol AudioTrackCollection : AudioEntity {
     
     var tracks:[AudioTrack] { get }
-    
+
+}
+
+extension AudioTrackCollection {
+	
+	func artworkImage(forSize size:CGSize) -> UIImage? {
+		return representativeTrack?.artworkImage(forSize:size)
+	}
+	
+}
+
+extension AudioEntity {
+	
+	func artworkImage(forSize size:CGSize, completion:(UIImage?)->()) {
+		dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
+			let image = self.artworkImage(forSize: size)
+			KyoozUtils.doInMainQueueAsync() {
+				completion(image)
+			}
+		}
+	}
+	
+	
 }
