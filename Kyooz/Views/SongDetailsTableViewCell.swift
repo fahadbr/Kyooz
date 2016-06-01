@@ -80,7 +80,7 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
         
         let defaultKey = "defaultAlbumArtImage"
         guard let defaultAlbumArtImage = SongDetailsTableViewCell.albumImageCache.objectForKey(defaultKey) as? UIImage else {
-            let noAlbumArtCellImage = ImageContainer.resizeImage(ImageContainer.smallDefaultArtworkImage, toSize: imageSize)
+            let noAlbumArtCellImage = ImageUtils.resizeImage(ImageContainer.smallDefaultArtworkImage, toSize: imageSize)
             SongDetailsTableViewCell.albumImageCache.setObject(noAlbumArtCellImage, forKey: defaultKey)
             return noAlbumArtCellImage
         }

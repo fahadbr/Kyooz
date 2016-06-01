@@ -99,13 +99,13 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
-        guard let vc = parent as? AudioEntityHeaderViewController else { return }
-        configureViewWithCollection(vc.sourceData.entities)
+        guard let vc = parent as? AudioEntityLibraryViewController else { return }
+        configureViewWithCollection(vc.sourceData.entities, parentGroup: vc.parentGroup ?? LibraryGrouping.Albums, parentEntity: vc.parentEntity)
     }
 	
     //MARK: - class functions
     
-    func configureViewWithCollection(entities:[AudioEntity]) {
+    func configureViewWithCollection(entities:[AudioEntity], parentGroup:LibraryGrouping, parentEntity:AudioEntity?) {
         guard let track = entities.first?.representativeTrack else {
             Logger.debug("couldnt get representative item for album collection")
             return
@@ -114,7 +114,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         gradiantLayer.frame = view.bounds
         view.layer.insertSublayer(gradiantLayer, above: imageViewContainer.layer)
         
-        headerTitleLabel.text = track.albumTitle?.uppercaseString
+        headerTitleLabel.text = (parentEntity ?? track).titleForGrouping(parentGroup)?.uppercaseString
         
         detailsLabel1.text = track.albumArtist ?? track.artist
         
@@ -154,12 +154,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
         }
         
         //fade in the artwork
-        KyoozUtils.doInMainQueueAsync() { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation] in
-			if let albumArt = track.artworkImage(forSize:imageView.frame.size) {
-                imageView.image = albumArt
-            } else {
-                imageView.image = ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: imageView.frame.size)
-            }
+        (parentEntity ?? track).artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
+            imageView.image = image
             imageView.layer.addAnimation(fadeInAnimation, forKey: nil)
         }
     }

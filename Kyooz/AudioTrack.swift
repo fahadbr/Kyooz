@@ -24,6 +24,7 @@ import Foundation
     var isCloudTrack:Bool { get }
     var genre:String? { get }
     var releaseYear:String? { get }
+    var hasArtwork:Bool { get }
     
     func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
     

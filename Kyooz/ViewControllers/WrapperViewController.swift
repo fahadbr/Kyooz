@@ -102,9 +102,9 @@ final class ImageWrapperViewController : WrapperViewController {
     }
 	
 	private static func albumArtForTrack(track:AudioTrack?, size:CGSize) -> UIImage {
-        return track?.artwork?.imageWithSize(size) ?? {
+        return track?.artworkImage(forSize:size) ?? {
             let smallerSide = min(size.height, size.width)
-            return ImageContainer.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: CGSize(width: smallerSide, height: smallerSide))
+            return ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: CGSize(width: smallerSide, height: smallerSide))
         }()
 	}
 	

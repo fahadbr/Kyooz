@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 final class KyoozPlaylistManager : NSObject {
 	
@@ -223,6 +224,9 @@ extension KyoozPlaylist : AudioTrackCollection {
         return _tracks
     }
     
+    func artworkImage(forSize size: CGSize) -> UIImage? {
+        return ImageUtils.mergeArtwork(forTracks: tracks, usingSize: size)
+    }
     
 }
 

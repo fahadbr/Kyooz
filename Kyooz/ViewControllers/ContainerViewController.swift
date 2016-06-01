@@ -191,8 +191,9 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		vc.isBaseLevel = false
         vc.sourceData = sourceData
         vc.parentGroup = parentGroup
+        vc.parentEntity = entity
         
-        if parentGroup === LibraryGrouping.Albums || parentGroup === LibraryGrouping.Compilations || parentGroup === LibraryGrouping.Podcasts {
+        if parentGroup.usesArtwork {
 			vc.useCollapsableHeader = true
         } else {
             vc.title = entity.titleForGrouping(parentGroup)?.uppercaseString
