@@ -23,7 +23,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
 	var reuseIdentifier:String {
-		if useCollapsableHeader {
+		if useCollapsableHeader && parentGroup !== LibraryGrouping.Playlists {
 			return AlbumTrackTableViewCell.reuseIdentifier
 		}
 		
@@ -33,7 +33,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		return MediaCollectionTableViewCell.reuseIdentifier
 	}
 	
-	
+    var parentEntity:AudioEntity?
     var parentGroup:LibraryGrouping?
 	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
 	var isBaseLevel:Bool = true
@@ -77,6 +77,12 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		tableFooterView.text = "\(count) \(groupName)"
 		tableView.tableFooterView = tableFooterView
 	}
+    
+    override func reloadTableViewData() {
+        (datasourceDelegate as? AudioEntityDSD)?.shouldAnimateCell = false
+        super.reloadTableViewData()
+        (datasourceDelegate as? AudioEntityDSD)?.shouldAnimateCell = true
+    }
 	
 	override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
 		if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {

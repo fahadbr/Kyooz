@@ -43,6 +43,7 @@ class AudioTrackDTO : NSObject, AudioTrack {
     var isCloudTrack:Bool = false
     var genre:String?
     var releaseYear: String?
+    var hasArtwork:Bool { return true }
     
     var count:Int {
         return 1

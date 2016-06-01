@@ -27,19 +27,12 @@ import UIKit
 
 }
 
-extension AudioTrackCollection {
-	
-	func artworkImage(forSize size:CGSize) -> UIImage? {
-		return representativeTrack?.artworkImage(forSize:size)
-	}
-	
-}
 
 extension AudioEntity {
 	
-	func artworkImage(forSize size:CGSize, completion:(UIImage?)->()) {
+	func artworkImage(forSize size:CGSize, completion:(UIImage)->()) {
 		dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-			let image = self.artworkImage(forSize: size)
+			let image = self.artworkImage(forSize: size) ?? ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: size)
 			KyoozUtils.doInMainQueueAsync() {
 				completion(image)
 			}
