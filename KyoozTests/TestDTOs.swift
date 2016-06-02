@@ -93,6 +93,10 @@ class AudioTrackDTO : NSObject, AudioTrack {
     func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void)) {
         
     }
+	
+	func artworkImage(forSize size: CGSize) -> UIImage? {
+		return artwork?.imageWithSize(size)
+	}
     
     func encodeWithCoder(aCoder: NSCoder) {
         
@@ -135,6 +139,10 @@ class AudioTrackCollectionDTO : NSObject, AudioTrackCollection {
     func encodeWithCoder(aCoder: NSCoder) {
         
     }
+	
+	func artworkImage(forSize size: CGSize) -> UIImage? {
+		return self.representativeTrack?.artworkImage(forSize: size)
+	}
     
     override func valueForKey(key: String) -> AnyObject? {
         return self.representativeTrack?.valueForKey(key)
