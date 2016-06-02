@@ -119,7 +119,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel1.text = track.albumArtist ?? track.artist
         
         var details = [String]()
-        if let mediaItem = track as? MPMediaItem, let releaseDate = MediaItemUtils.getReleaseDateString(mediaItem) {
+        if let releaseDate = track.releaseYear {
             details.append(releaseDate)
         }
         if let genre = track.genre {

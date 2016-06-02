@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -98,16 +98,10 @@
                         </subviews>
                         <color key="backgroundColor" red="0.22242855950000001" green="0.0" blue="0.031013533320000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Cfq-Vj-A5E" firstAttribute="top" secondItem="669-zb-BRj" secondAttribute="bottom" id="7m1-CM-nJh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Cfq-Vj-A5E" secondAttribute="trailing" id="UAX-OT-ms1"/>
                             <constraint firstItem="piV-CY-dPN" firstAttribute="top" secondItem="Cfq-Vj-A5E" secondAttribute="bottom" id="Xz1-4v-Cjk"/>
                             <constraint firstItem="Cfq-Vj-A5E" firstAttribute="leading" secondItem="Ugr-V6-ssK" secondAttribute="leadingMargin" id="ZUR-uP-DQJ"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="7m1-CM-nJh"/>
-                            </mask>
-                        </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -151,16 +145,82 @@
                                     <constraint firstItem="6lE-dh-J8v" firstAttribute="leading" secondItem="hfl-26-ghB" secondAttribute="leading" id="eco-Ga-q4X"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2YK-d3-ldy" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="16" y="331" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="J0q-pF-F1k"/>
-                                    <constraint firstAttribute="width" secondItem="2YK-d3-ldy" secondAttribute="height" multiplier="1:1" id="SaT-K8-wDU"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="shuffleAllItems:" destination="Jbk-XA-SMT" eventType="touchUpInside" id="Gb9-Co-29O"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="uud-LF-qx4">
+                                <rect key="frame" x="12" y="317" width="351" height="54"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2YK-d3-ldy" userLabel="shuffleButton" customClass="ShuffleButtonView" customModule="Kyooz" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="14" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="J0q-pF-F1k"/>
+                                            <constraint firstAttribute="width" secondItem="2YK-d3-ldy" secondAttribute="height" multiplier="1:1" id="SaT-K8-wDU"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="shuffleAllItems:" destination="Jbk-XA-SMT" eventType="touchUpInside" id="Gb9-Co-29O"/>
+                                        </connections>
+                                    </button>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ZdG-Cu-6A0">
+                                        <rect key="frame" x="40" y="0.0" width="271" height="54"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TP5-qk-k9o" userLabel="albumArtistName">
+                                                <rect key="frame" x="0.0" y="0.0" width="271" height="20"/>
+                                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="14"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="blw-tJ-iXh" userLabel="detailsLabel2">
+                                                <rect key="frame" x="0.0" y="20" width="271" height="17"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="17" id="yzb-3V-VZw"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="yzb-3V-VZw"/>
+                                                    </mask>
+                                                </variation>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F9K-9N-dxA" userLabel="detailsLabel3">
+                                                <rect key="frame" x="0.0" y="37" width="271" height="17"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="17" id="Yk1-ZX-A8d"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
+                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="Yk1-ZX-A8d"/>
+                                                    </mask>
+                                                </variation>
+                                            </label>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="37" id="SbH-Kb-Wod"/>
+                                            <constraint firstAttribute="height" constant="54" id="WMX-TE-cZH"/>
+                                            <constraint firstAttribute="height" constant="51" id="Wqy-A1-HHU"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="SbH-Kb-Wod"/>
+                                                <exclude reference="WMX-TE-cZH"/>
+                                                <exclude reference="Wqy-A1-HHU"/>
+                                            </mask>
+                                        </variation>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IfZ-g4-jGC" userLabel="selectModeButton" customClass="MultiSelectButtonView" customModule="Kyooz" customModuleProvider="target">
+                                        <rect key="frame" x="311" y="14" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="IfZ-g4-jGC" secondAttribute="height" multiplier="1:1" id="1a4-o2-JyT"/>
+                                            <constraint firstAttribute="height" constant="40" id="Bre-E8-ZMO"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="toggleSelectMode:" destination="Jbk-XA-SMT" eventType="touchUpInside" id="YxZ-aX-HUM"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aCS-5h-tk7" userLabel="albumTitleLabel">
                                 <rect key="frame" x="50" y="25" width="275" height="42"/>
                                 <constraints>
@@ -176,85 +236,20 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IfZ-g4-jGC" userLabel="selectModeButton" customClass="MultiSelectButtonView" customModule="Kyooz" customModuleProvider="target">
-                                <rect key="frame" x="319" y="331" width="40" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="IfZ-g4-jGC" secondAttribute="height" multiplier="1:1" id="1a4-o2-JyT"/>
-                                    <constraint firstAttribute="height" constant="40" id="Bre-E8-ZMO"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="toggleSelectMode:" destination="Jbk-XA-SMT" eventType="touchUpInside" id="YxZ-aX-HUM"/>
-                                </connections>
-                            </button>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ZdG-Cu-6A0">
-                                <rect key="frame" x="56" y="313" width="263" height="54"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TP5-qk-k9o" userLabel="albumArtistName">
-                                        <rect key="frame" x="0.0" y="0.0" width="263" height="20"/>
-                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="14"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="blw-tJ-iXh" userLabel="detailsLabel2">
-                                        <rect key="frame" x="0.0" y="20" width="263" height="17"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="17" id="yzb-3V-VZw"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
-                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="yzb-3V-VZw"/>
-                                            </mask>
-                                        </variation>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F9K-9N-dxA" userLabel="detailsLabel3">
-                                        <rect key="frame" x="0.0" y="37" width="263" height="17"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="17" id="Yk1-ZX-A8d"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
-                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="Yk1-ZX-A8d"/>
-                                            </mask>
-                                        </variation>
-                                    </label>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="37" id="SbH-Kb-Wod"/>
-                                    <constraint firstAttribute="height" constant="54" id="WMX-TE-cZH"/>
-                                    <constraint firstAttribute="height" constant="51" id="Wqy-A1-HHU"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="SbH-Kb-Wod"/>
-                                        <exclude reference="WMX-TE-cZH"/>
-                                        <exclude reference="Wqy-A1-HHU"/>
-                                    </mask>
-                                </variation>
-                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="IfZ-g4-jGC" firstAttribute="trailing" secondItem="qZv-9b-Tgx" secondAttribute="trailingMargin" id="0np-Kr-mSL"/>
-                            <constraint firstItem="2YK-d3-ldy" firstAttribute="leading" secondItem="qZv-9b-Tgx" secondAttribute="leadingMargin" id="BOA-Lc-EGJ"/>
+                            <constraint firstItem="uud-LF-qx4" firstAttribute="leading" secondItem="qZv-9b-Tgx" secondAttribute="leadingMargin" constant="-4" id="1EP-yy-93r"/>
                             <constraint firstAttribute="trailing" secondItem="hfl-26-ghB" secondAttribute="trailing" id="JO5-Nc-rdE"/>
-                            <constraint firstItem="IfZ-g4-jGC" firstAttribute="leading" secondItem="ZdG-Cu-6A0" secondAttribute="trailing" id="NQ5-TT-Ecc"/>
+                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="uud-LF-qx4" secondAttribute="bottom" constant="4" id="MkN-Qo-DF0"/>
                             <constraint firstItem="hfl-26-ghB" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="top" id="OGs-PQ-A88"/>
                             <constraint firstAttribute="bottom" secondItem="hfl-26-ghB" secondAttribute="bottom" id="W7t-Gh-qMd"/>
-                            <constraint firstItem="ZdG-Cu-6A0" firstAttribute="leading" secondItem="2YK-d3-ldy" secondAttribute="trailing" id="Zx0-UE-w4u"/>
-                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="IfZ-g4-jGC" secondAttribute="bottom" constant="4" id="aPo-VW-blu"/>
-                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="2YK-d3-ldy" secondAttribute="bottom" constant="4" id="dbG-Aq-u4Q"/>
                             <constraint firstItem="aCS-5h-tk7" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="topMargin" constant="25" id="ek1-dw-oHc"/>
                             <constraint firstItem="hfl-26-ghB" firstAttribute="leading" secondItem="qZv-9b-Tgx" secondAttribute="leading" id="hUt-2F-Ejc"/>
                             <constraint firstAttribute="trailing" secondItem="aCS-5h-tk7" secondAttribute="trailing" constant="50" id="mxh-ec-Nmg"/>
-                            <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="ZdG-Cu-6A0" secondAttribute="bottom" constant="8" id="nsk-rS-5WH"/>
                             <constraint firstItem="aCS-5h-tk7" firstAttribute="top" secondItem="nbz-mF-krK" secondAttribute="bottom" id="pAJ-MD-qPK"/>
                             <constraint firstItem="aCS-5h-tk7" firstAttribute="leading" secondItem="qZv-9b-Tgx" secondAttribute="leading" constant="50" id="uTM-oo-dyb"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="uud-LF-qx4" secondAttribute="trailing" constant="-4" id="xHH-6d-job"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
