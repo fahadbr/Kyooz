@@ -33,22 +33,20 @@ class HeaderViewController : UIViewController {
     private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(HeaderViewController.deleteSelectedItems))
     
     private lazy var playButton:UIBarButtonItem = {
-        let playButtonView = PlayPauseButtonView()
-        playButtonView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-        playButtonView.isPlayButton = true
-        playButtonView.hasOuterFrame = false
-        playButtonView.color = ThemeHelper.defaultTintColor
-        playButtonView.addTarget(self, action: #selector(HeaderViewController.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
-        return UIBarButtonItem(customView: playButtonView)
-    }()
+        $0.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+		$0.isPlayButton = true
+        $0.hasOuterFrame = false
+        $0.color = ThemeHelper.defaultTintColor
+        $0.addTarget(self, action: #selector(HeaderViewController.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
+        return UIBarButtonItem(customView: $0)
+    }(PlayPauseButtonView())
     
     private lazy var shuffleToolbarButton:UIBarButtonItem = {
-        let shuffleButtonView = ShuffleButtonView()
-        shuffleButtonView.color = ThemeHelper.defaultTintColor
-        shuffleButtonView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-        shuffleButtonView.addTarget(self, action: #selector(HeaderViewController.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
-        return UIBarButtonItem(customView: shuffleButtonView)
-    }()
+        $0.color = ThemeHelper.defaultTintColor
+        $0.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
+        $0.addTarget(self, action: #selector(HeaderViewController.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
+        return UIBarButtonItem(customView: $0)
+    }(ShuffleButtonView())
     
     //MARK: - FUNCTIONS
     
