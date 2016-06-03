@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class AlbumTrackTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell {
+final class AlbumTrackTableViewCell: MediaLibraryTableViewCell {
 
     static let reuseIdentifier = "albumTrackTableViewCell"
     
@@ -24,7 +24,7 @@ final class AlbumTrackTableViewCell: MediaLibraryTableViewCell, ConfigurableAudi
         shouldHideAccessoryStack = false
     }
     
-    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    override func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         guard let mediaItem = entity as? AudioTrack else {
             return
         }

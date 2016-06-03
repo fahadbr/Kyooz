@@ -82,7 +82,7 @@ class EditableAudioTrackDSD : AudioTrackDSD {
 
 final class NowPlayingQueueDSD : EditableAudioTrackDSD {
     
-    init(reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
+    init(reuseIdentifier:String, audioCellDelegate:AudioTableCellDelegate?) {
         super.init(sourceData: AudioQueuePlayerSourceData(), reuseIdentifier: reuseIdentifier, audioCellDelegate: audioCellDelegate)
     }
     

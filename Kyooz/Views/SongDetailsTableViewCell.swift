@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTableCell {
+final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProtocol {
 
     static let reuseIdentifier = "songDetailsTableViewCell"
     
@@ -25,7 +25,7 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, ConfigurableAudioTa
     @IBOutlet var totalPlaybackTImeLabel: UILabel!
     @IBOutlet var menuButton:UIButton!
     
-    weak var delegate:ConfigurableAudioTableCellDelegate?
+    weak var delegate:AudioTableCellDelegate?
     
     var isNowPlaying:Bool = false {
         didSet {

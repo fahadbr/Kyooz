@@ -9,6 +9,7 @@
 import MediaPlayer
 
 final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
+	
     
     var sectionNamesCanBeUsedAsIndexTitles:Bool {
         return _sections != nil
@@ -29,6 +30,9 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
             filterQuery.groupingType = libraryGrouping.groupingType
         }
     }
+	
+	private (set) var parentGroup: LibraryGrouping?
+	private (set) var parentCollection: AudioTrackCollection?
     
     private var _sections:[MPMediaQuerySection]?
     private var singleSectionArray:[SectionDescription] = [SectionDTO(name: "", count: 0)]
@@ -51,7 +55,7 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
         guard let nextLibraryGroup = parentLibraryGroup.nextGroupLevel else {
             return nil
         }
-        
+		
         let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentLibraryGroup.groupingType)
         let propertyValue = NSNumber(unsignedLongLong: filterEntity.persistentIdForGrouping(parentLibraryGroup))
         
@@ -60,6 +64,8 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
         filterQuery.groupingType = nextLibraryGroup.groupingType
         
         self.init(filterQuery:filterQuery, libraryGrouping:nextLibraryGroup, singleSectionName:nil)
+		self.parentGroup = parentLibraryGroup
+		self.parentCollection = filterEntity as? AudioTrackCollection
     }
     
     func reloadSourceData() {
@@ -80,7 +86,7 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
     func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
         let entity = self[indexPath]
         
-        return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: filterQuery)
+		return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: filterQuery)
     }
     
     func flattenedIndex(indexPath: NSIndexPath) -> Int {

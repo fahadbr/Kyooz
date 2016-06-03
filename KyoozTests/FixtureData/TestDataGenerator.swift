@@ -13,7 +13,7 @@ import MediaPlayer
 class TestDataGenerator: XCTestCase {
     
     private var randomId:UInt64 = 100100
-	private var runTest = false
+	private var runTest = true
     
     override func setUp() {
         super.setUp()

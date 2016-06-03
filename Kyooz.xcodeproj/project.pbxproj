@@ -87,7 +87,7 @@
 		0B650A5F1C39CF2D00C0DC51 /* AudioEntityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B650A5E1C39CF2D00C0DC51 /* AudioEntityViewController.swift */; };
 		0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B70702A1B9767080000673E /* AlbumTrackTableViewCell.swift */; };
 		0B70702D1B9767080000673E /* AlbumTrackTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B70702B1B9767080000673E /* AlbumTrackTableViewCell.xib */; };
-		0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B70702E1B9799030000673E /* ConfigurableAudioTableCell.swift */; };
+		0B70702F1B9799030000673E /* AudioTableCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B70702E1B9799030000673E /* AudioTableCellProtocol.swift */; };
 		0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */; };
 		0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */; };
 		0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */; };
@@ -281,7 +281,7 @@
 		0B650A5E1C39CF2D00C0DC51 /* AudioEntityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityViewController.swift; sourceTree = "<group>"; };
 		0B70702A1B9767080000673E /* AlbumTrackTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTrackTableViewCell.swift; sourceTree = "<group>"; };
 		0B70702B1B9767080000673E /* AlbumTrackTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlbumTrackTableViewCell.xib; sourceTree = "<group>"; };
-		0B70702E1B9799030000673E /* ConfigurableAudioTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurableAudioTableCell.swift; sourceTree = "<group>"; };
+		0B70702E1B9799030000673E /* AudioTableCellProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTableCellProtocol.swift; sourceTree = "<group>"; };
 		0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocIPodLibrarySearchOperation.swift; sourceTree = "<group>"; };
 		0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeaderView.swift; sourceTree = "<group>"; };
@@ -595,7 +595,7 @@
 				0BA242741C251671000170F9 /* AbstractTableViewCell.swift */,
 				0B70702A1B9767080000673E /* AlbumTrackTableViewCell.swift */,
 				0B70702B1B9767080000673E /* AlbumTrackTableViewCell.xib */,
-				0B70702E1B9799030000673E /* ConfigurableAudioTableCell.swift */,
+				0B70702E1B9799030000673E /* AudioTableCellProtocol.swift */,
 				0B13DA061AE6FA9A00CC5C01 /* ImageTableViewCell.swift */,
 				0B13DA071AE6FA9A00CC5C01 /* ImageTableViewCell.xib */,
 				0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */,
@@ -1168,7 +1168,7 @@
 				0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */,
 				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,
 				0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */,
-				0B70702F1B9799030000673E /* ConfigurableAudioTableCell.swift in Sources */,
+				0B70702F1B9799030000673E /* AudioTableCellProtocol.swift in Sources */,
 				10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */,
 				0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */,
 				0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */,

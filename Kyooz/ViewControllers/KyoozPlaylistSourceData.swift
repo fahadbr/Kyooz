@@ -9,6 +9,14 @@
 import Foundation
 
 final class KyoozPlaylistSourceData : MutableAudioEntitySourceData {
+	
+	var parentGroup: LibraryGrouping? {
+		return LibraryGrouping.Playlists
+	}
+	
+	var parentCollection: AudioTrackCollection? {
+		return playlist
+	}
     
     var sections:[SectionDescription] {
         return [SectionDTO(name: playlist.name, count: playlist.count)]

@@ -24,6 +24,14 @@ final class SearchResultsSourceData : AudioEntitySourceData {
     var libraryGrouping:LibraryGrouping {
         return searchExecutionController.libraryGroup
     }
+	
+	var parentCollection: AudioTrackCollection? {
+		return nil
+	}
+	
+	var parentGroup: LibraryGrouping? {
+		return nil
+	}
     
     let searchExecutionController:SearchExecutionController
     

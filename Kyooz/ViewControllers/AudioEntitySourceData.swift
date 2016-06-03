@@ -11,6 +11,8 @@ import MediaPlayer
 
 protocol AudioEntitySourceData : class {
 	
+	var parentGroup:LibraryGrouping? { get }
+	var parentCollection:AudioTrackCollection? { get }
 	var sectionNamesCanBeUsedAsIndexTitles:Bool { get }
 	var sections:[SectionDescription] { get }
     var entities:[AudioEntity] { get }

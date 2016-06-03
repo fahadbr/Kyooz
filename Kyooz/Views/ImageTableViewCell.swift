@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
+class ImageTableViewCell: MediaLibraryTableViewCell{
     
 	class var reuseIdentifier:String {
 		return "imageTableViewCell"
@@ -18,8 +18,12 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
     private static let fadeInAnimation:CAAnimation = KyoozUtils.fadeInAnimationWithDuration(0.35)
     
     @IBOutlet weak var albumArtwork: UIImageView!
+	
+	private var shouldAnimate:Bool {
+		return delegate?.shouldAnimateInArtwork ?? false
+	}
 
-    final func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    override func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
         titleLabel.text = entity.titleForGrouping(libraryGrouping)
         
@@ -46,10 +50,13 @@ class ImageTableViewCell: MediaLibraryTableViewCell, ConfigurableAudioTableCell{
         if shouldAnimate {
             albumArtwork.alpha = 0
         }
-        
-        entity.artworkImage(forSize: albumArtwork.frame.size) { [albumArtwork = self.albumArtwork](image) in
+		
+        entity.artworkImage(forSize: albumArtwork.frame.size) { [
+			albumArtwork = self.albumArtwork,
+			shouldAnimate = self.shouldAnimate
+		](image) in
             albumArtwork.alpha = 1
-            if self.shouldAnimate {
+            if shouldAnimate {
                 albumArtwork.layer.addAnimation(ImageTableViewCell.fadeInAnimation, forKey: nil)
             }
             albumArtwork.image = image

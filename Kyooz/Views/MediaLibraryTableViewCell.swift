@@ -8,7 +8,7 @@
 
 import MediaPlayer
 
-class MediaLibraryTableViewCell : AbstractTableViewCell {
+class MediaLibraryTableViewCell : AbstractTableViewCell, AudioTableCellProtocol {
     
     @IBOutlet var cloudLabel: UILabel!
     @IBOutlet var drmLabel: UILabel!
@@ -20,11 +20,9 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var detailsLabel: UILabel!
     
-    weak var delegate:ConfigurableAudioTableCellDelegate?
+    weak var delegate:AudioTableCellDelegate?
     
     var shouldHideAccessoryStack:Bool = true
-    
-    var shouldAnimate:Bool = true
     var isNowPlaying:Bool = false {
         didSet {
             if isNowPlaying != oldValue {
@@ -56,4 +54,8 @@ class MediaLibraryTableViewCell : AbstractTableViewCell {
         drmLabel.hidden = drmHidden
         accessoryStack.hidden = cloudHidden && drmHidden && shouldHideAccessoryStack
     }
+	
+	func configureCellForItems(entity: AudioEntity, libraryGrouping: LibraryGrouping) {
+		//no op
+	}
 }

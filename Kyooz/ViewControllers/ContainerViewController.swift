@@ -176,7 +176,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func pushNewMediaEntityControllerWithProperties(sourceData:AudioEntitySourceData, parentGroup:LibraryGrouping, entity:AudioEntity) {
         
         if let item = entity as? MPMediaItem {
-            if IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.persistentID)) == nil {
+            guard IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.persistentID)) != nil else {
                 var name = parentGroup.name.capitalizedString
                 name.removeAtIndex(name.endIndex.predecessor())
                 KyoozUtils.showPopupError(withTitle: "Track Not Found In Library",
@@ -185,13 +185,17 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 return
             }
         }
+		
+		guard !sourceData.entities.isEmpty else {
+			KyoozUtils.showPopupError(withTitle: "No music was found in the selected item",
+			                          withMessage: nil,
+			                          presentationVC: self)
+			return
+		}
         
 		let vc = AudioEntityLibraryViewController()
         vc.subGroups = parentGroup.subGroupsForNextLevel
-		vc.isBaseLevel = false
         vc.sourceData = sourceData
-        vc.parentGroup = parentGroup
-        vc.parentEntity = entity
         
         if parentGroup.usesArtwork {
 			vc.useCollapsableHeader = true

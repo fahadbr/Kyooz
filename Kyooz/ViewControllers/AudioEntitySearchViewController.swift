@@ -149,7 +149,6 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
                 datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             }
             datasourceDelegate.useSmallFont = true
-            datasourceDelegate.shouldAnimateCell = false
             datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
         }
         let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
