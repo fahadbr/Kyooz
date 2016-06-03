@@ -10,7 +10,7 @@ import UIKit
 
 class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     
-    weak var audioCellDelegate:ConfigurableAudioTableCellDelegate?
+    weak var audioCellDelegate:AudioTableCellDelegate?
     weak var scrollViewDelegate:UIScrollViewDelegate?
     
 	var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
@@ -23,12 +23,11 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     var rowLimitActive:Bool = false
     
 	var useSmallFont:Bool = false
-    var shouldAnimateCell:Bool = true
 	
 	private let reuseIdentifier:String
 	private lazy var smallFont = ThemeHelper.smallFontForStyle(.Bold)
     
-    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:ConfigurableAudioTableCellDelegate?) {
+    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:AudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
         self.scrollViewDelegate = audioCellDelegate as? UIScrollViewDelegate
@@ -64,10 +63,9 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
         let entity = sourceData[indexPath]
         let libraryGrouping = sourceData.libraryGrouping
         
-        if let audioCell = cell as? ConfigurableAudioTableCell {
+        if let audioCell = cell as? AudioTableCellProtocol {
             audioCell.configureCellForItems(entity, libraryGrouping: libraryGrouping)
             audioCell.delegate = audioCellDelegate
-            audioCell.shouldAnimate = shouldAnimateCell
             audioCell.isNowPlaying = entityIsNowPlaying(entity, libraryGrouping: libraryGrouping, indexPath: indexPath)
         } else {
             cell.textLabel?.text = entity.titleForGrouping(libraryGrouping)

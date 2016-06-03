@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingQueueViewController: UIViewController, DropDestination, ConfigurableAudioTableCellDelegate, GestureHandlerDelegate {
+final class NowPlayingQueueViewController: UIViewController, DropDestination, AudioTableCellDelegate, GestureHandlerDelegate {
 
     static let instance = NowPlayingQueueViewController()
     
@@ -19,7 +19,8 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Co
     
     private (set) var laidOutSubviews:Bool = false
     private var multipleDeleteButton:UIBarButtonItem!
-    
+	
+	var shouldAnimateInArtwork: Bool { return false }
     var menuButtonTouched:Bool = false
     var isExpanded:Bool = false {
         didSet {

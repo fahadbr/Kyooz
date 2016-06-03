@@ -100,21 +100,22 @@ final class ArtworkHeaderViewController : HeaderViewController {
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
         guard let vc = parent as? AudioEntityLibraryViewController else { return }
-        configureViewWithCollection(vc.sourceData.entities, parentGroup: vc.parentGroup ?? LibraryGrouping.Albums, parentEntity: vc.parentEntity)
+        configureViewWithCollection(vc.sourceData.entities, parentGroup: sourceData?.parentGroup ?? LibraryGrouping.Albums, parentCollection: sourceData?.parentCollection)
     }
 	
     //MARK: - class functions
     
-    func configureViewWithCollection(entities:[AudioEntity], parentGroup:LibraryGrouping, parentEntity:AudioEntity?) {
+    func configureViewWithCollection(entities:[AudioEntity], parentGroup:LibraryGrouping, parentCollection:AudioTrackCollection?) {
         guard let track = entities.first?.representativeTrack else {
             Logger.debug("couldnt get representative item for album collection")
             return
         }
-        
+		
+		let presentedEntity:AudioEntity = parentCollection ?? track
         gradiantLayer.frame = view.bounds
         view.layer.insertSublayer(gradiantLayer, above: imageViewContainer.layer)
         
-        headerTitleLabel.text = (parentEntity ?? track).titleForGrouping(parentGroup)?.uppercaseString
+        headerTitleLabel.text = presentedEntity.titleForGrouping(parentGroup)?.uppercaseString
         
         detailsLabel1.text = track.albumArtist ?? track.artist
         
@@ -154,7 +155,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         }
         
         //fade in the artwork
-        (parentEntity ?? track).artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
+        presentedEntity.artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
             imageView.image = image
             imageView.layer.addAnimation(fadeInAnimation, forKey: nil)
         }

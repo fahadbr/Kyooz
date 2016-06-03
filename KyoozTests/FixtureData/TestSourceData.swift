@@ -1,8 +1,8 @@
 //
-//  TestTableViewDataSource.swift
+//  TestSourceData.swift
 //  Kyooz
 //
-//  Created by FAHAD RIAZ on 1/1/16.
+//  Created by FAHAD RIAZ on 5/24/16.
 //  Copyright © 2016 FAHAD RIAZ. All rights reserved.
 //
 
@@ -22,6 +22,9 @@ class TestSourceData: NSObject, GroupMutableAudioEntitySourceData {
             }
         }
     }
+	
+	var parentGroup: LibraryGrouping?
+	var parentCollection: AudioTrackCollection?
     
     init(tracks:[AudioTrack], grouping:LibraryGrouping) {
         self.entities = TestSourceData.getGroupedEntities(tracks, libraryGrouping: grouping)
@@ -63,7 +66,10 @@ class TestSourceData: NSObject, GroupMutableAudioEntitySourceData {
             return nil
         }
         let tracks = getTracksAtIndex(indexPath)
-        return TestSourceData(tracks: tracks, grouping: nextGrouping)
+        let sourceData = TestSourceData(tracks: tracks, grouping: nextGrouping)
+		sourceData.parentCollection = self[indexPath] as? AudioTrackCollection
+		sourceData.parentGroup = libraryGrouping
+		return sourceData
     }
     
 

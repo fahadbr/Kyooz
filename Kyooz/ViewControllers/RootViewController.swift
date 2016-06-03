@@ -54,6 +54,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         super.viewDidLoad()
 
         let aelvc = AudioEntityLibraryViewController()
+		aelvc.isBaseLevel = true
         let baseGroupIndex = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AllMusicBaseGroup)
         let selectedGroup = LibraryGrouping.allMusicGroupings[baseGroupIndex]
         aelvc.title = "ALL MUSIC"

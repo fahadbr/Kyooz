@@ -110,6 +110,14 @@ extension AudioEntityDSDSectionDelegator : AudioEntitySourceData {
     var libraryGrouping:LibraryGrouping {
 		return dsdSections.first?.sourceData.libraryGrouping ?? LibraryGrouping.Artists
     }
+	
+	var parentGroup:LibraryGrouping? {
+		return nil
+	}
+	
+	var parentCollection:AudioTrackCollection? {
+		return nil
+	}
     
     func reloadSourceData() {
         dsdSections.forEach() { $0.sourceData.reloadSourceData() }

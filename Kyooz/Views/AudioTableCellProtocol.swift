@@ -9,18 +9,20 @@
 import Foundation
 import MediaPlayer
 
-protocol ConfigurableAudioTableCell : class {
+protocol AudioTableCellProtocol : class {
     
-    weak var delegate:ConfigurableAudioTableCellDelegate? { get set }
+    weak var delegate:AudioTableCellDelegate? { get set }
     
     var isNowPlaying:Bool { get set }
-    
-    var shouldAnimate:Bool { get set }
     
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping)
 
 }
 
-protocol ConfigurableAudioTableCellDelegate : class {
+protocol AudioTableCellDelegate : class {
+	
+	var shouldAnimateInArtwork:Bool { get }
+	
 	func presentActionsForCell(cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint)
+	
 }

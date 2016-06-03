@@ -22,8 +22,17 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
     static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
-	var reuseIdentifier:String {
-		if useCollapsableHeader && parentGroup !== LibraryGrouping.Playlists {
+	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
+	var isBaseLevel:Bool = false
+	
+	override var shouldAnimateInArtwork: Bool {
+		return _shouldAnimateInArtwork
+	}
+	
+	private var _shouldAnimateInArtwork:Bool = false
+	
+	private var reuseIdentifier:String {
+		if useCollapsableHeader && sourceData.parentGroup !== LibraryGrouping.Playlists {
 			return AlbumTrackTableViewCell.reuseIdentifier
 		}
 		
@@ -32,11 +41,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		}
 		return MediaCollectionTableViewCell.reuseIdentifier
 	}
-	
-    var parentEntity:AudioEntity?
-    var parentGroup:LibraryGrouping?
-	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
-	var isBaseLevel:Bool = true
 	
 	private let tableFooterView = KyoozTableFooterView()
 	
@@ -79,9 +83,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	}
     
     override func reloadTableViewData() {
-        (datasourceDelegate as? AudioEntityDSD)?.shouldAnimateCell = false
+		_shouldAnimateInArtwork = false
         super.reloadTableViewData()
-        (datasourceDelegate as? AudioEntityDSD)?.shouldAnimateCell = true
+		KyoozUtils.doInMainQueueAsync() {
+			self._shouldAnimateInArtwork = true
+		}
     }
 	
 	override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {

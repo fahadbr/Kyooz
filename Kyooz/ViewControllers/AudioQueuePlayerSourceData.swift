@@ -9,6 +9,14 @@
 import Foundation
 
 final class AudioQueuePlayerSourceData : MutableAudioEntitySourceData {
+	
+	var parentGroup: LibraryGrouping? {
+		return nil
+	}
+	
+	var parentCollection: AudioTrackCollection? {
+		return nil
+	}
     
     var sectionNamesCanBeUsedAsIndexTitles:Bool {
         return false

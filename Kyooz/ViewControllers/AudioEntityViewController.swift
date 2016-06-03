@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class AudioEntityViewController : CustomPopableViewController, AudioEntityViewControllerProtocol, ConfigurableAudioTableCellDelegate {
+class AudioEntityViewController : CustomPopableViewController, AudioEntityViewControllerProtocol, AudioTableCellDelegate {
     
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -22,6 +22,10 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 			tableView.dataSource = datasourceDelegate
 			tableView.delegate = datasourceDelegate
 		}
+	}
+	
+	var shouldAnimateInArtwork:Bool {
+		return false
 	}
     
     override func viewDidLoad() {
