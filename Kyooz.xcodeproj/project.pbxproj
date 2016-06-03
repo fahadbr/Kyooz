@@ -834,18 +834,16 @@
 		100A8BCD1C56EBEB009FAB17 /* Util VCs */ = {
 			isa = PBXGroup;
 			children = (
+				102756AB1D01192500B1B679 /* HeaderVCs */,
 				108DBA0B1CE536AD0013E990 /* Tutorial */,
 				0B63061A1CD505C4006CD211 /* AddToPlaylistViewController.swift */,
-				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
 				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
 				0B2937581C92690B00374A3C /* FadeOutViewController.swift */,
-				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
 				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
 				104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */,
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
 				0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */,
-				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
 				10C7B9DA1C45C16E00ADAAB6 /* WarningViewController.swift */,
 				0B1DA0681CB0849F00699D88 /* WrapperViewController.swift */,
 			);
@@ -878,6 +876,16 @@
 				0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */,
 			);
 			name = HelperClasses;
+			sourceTree = "<group>";
+		};
+		102756AB1D01192500B1B679 /* HeaderVCs */ = {
+			isa = PBXGroup;
+			children = (
+				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
+				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
+				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
+			);
+			name = HeaderVCs;
 			sourceTree = "<group>";
 		};
 		108DBA0B1CE536AD0013E990 /* Tutorial */ = {
