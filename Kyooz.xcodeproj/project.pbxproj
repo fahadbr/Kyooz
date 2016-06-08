@@ -177,6 +177,7 @@
 		10DB79001CBAF53E008402BB /* NowPlayingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */; };
 		10DB79021CBC7026008402BB /* AudioQueuePlayerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB79011CBC7026008402BB /* AudioQueuePlayerWrapper.swift */; };
 		10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */; };
+		10E0FBDF1D08DAF700B247FD /* SubGroupButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */; };
 		10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */; };
 		10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */; };
 		10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */; };
@@ -374,6 +375,7 @@
 		10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingPageViewController.swift; sourceTree = "<group>"; };
 		10DB79011CBC7026008402BB /* AudioQueuePlayerWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayerWrapper.swift; sourceTree = "<group>"; };
 		10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozNavigationViewController.swift; sourceTree = "<group>"; };
+		10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubGroupButtonController.swift; sourceTree = "<group>"; };
 		10E92FA41C52EFD70048B5BC /* ShortNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationManager.swift; sourceTree = "<group>"; };
 		10FD32521C6E75E500004CAB /* RowLimitedSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowLimitedSectionDelegator.swift; sourceTree = "<group>"; };
 		10FD32541C8900AB00004CAB /* AudioEntityHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityHeaderViewController.swift; sourceTree = "<group>"; };
@@ -881,6 +883,7 @@
 		102756AB1D01192500B1B679 /* HeaderVCs */ = {
 			isa = PBXGroup;
 			children = (
+				10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */,
 				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
 				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
@@ -1126,6 +1129,7 @@
 				108DBA061CE295480013E990 /* CrossButtonView.swift in Sources */,
 				0B0FB0AF1CE16A390062AB4E /* MultiSelectButtonView.swift in Sources */,
 				0BB01A611CCBD91900D4B57F /* KyoozConstants.swift in Sources */,
+				10E0FBDF1D08DAF700B247FD /* SubGroupButtonController.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
 				0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */,
 				10DB53CF1CB5C28F0041B179 /* AbstractPlaybackViewController.swift in Sources */,

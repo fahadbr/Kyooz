@@ -12,5 +12,5 @@ protocol AudioEntityViewControllerProtocol {
     
     var tableView:UITableView { get }
     
-    func getSourceData() -> AudioEntitySourceData
+	var sourceData:AudioEntitySourceData { get }
 }
