@@ -22,7 +22,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
     static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
-	var subGroups:[LibraryGrouping] = LibraryGrouping.allMusicGroupings
 	var isBaseLevel:Bool = false
 	
 	override var shouldAnimateInArtwork: Bool {
@@ -102,6 +101,8 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	
 	func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
+		let subGroups = sourceData.parentGroup?.subGroupsForNextLevel ?? LibraryGrouping.allMusicGroupings
+		
 		if isBaseLevel {
 			sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
             NSUserDefaults.standardUserDefaults().setInteger(subGroups.indexOf(selectedGroup) ?? 0, forKey: UserDefaultKeys.AllMusicBaseGroup)

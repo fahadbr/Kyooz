@@ -27,7 +27,9 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 	var shouldAnimateInArtwork:Bool {
 		return false
 	}
-    
+	
+	//MARK: - View Lifecycle functions
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: tableView, parentView: view)
@@ -59,7 +61,6 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
     deinit {
         unregisterForNotifications()
     }
-
     
     //MARK: - Class functions
     func reloadAllData() {
@@ -75,13 +76,8 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
         sourceData.reloadSourceData()
     }
     
-    //MARK: - Overriding MediaItemTableViewController methods
-    
-    func getSourceData() -> AudioEntitySourceData {
-        return sourceData
-    }
-    
-    //MARK: - MediaLibraryTableViewCellDelegate
+
+    //MARK: - AudioCellDelegate
     
     func presentActionsForCell(cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint) {
         guard !tableView.editing  else { return }

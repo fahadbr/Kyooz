@@ -100,7 +100,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
         guard let vc = parent as? AudioEntityLibraryViewController else { return }
-        configureViewWithCollection(vc.sourceData.entities, parentGroup: sourceData?.parentGroup ?? LibraryGrouping.Albums, parentCollection: sourceData?.parentCollection)
+        configureViewWithCollection(vc.sourceData.entities, parentGroup: vc.sourceData.parentGroup ?? LibraryGrouping.Albums, parentCollection: vc.sourceData.parentCollection)
     }
 	
     //MARK: - class functions
@@ -186,8 +186,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
 			let overexpandedFraction = (expandedFraction - 1) * 5.0/2.0
 			let invertedOverexpandedFraction = 1 - overexpandedFraction
 			labelStackView.alpha = invertedOverexpandedFraction
-			shuffleButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
-			selectModeButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+			leftButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+			selectButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
 			headerTitleLabel.alpha = invertedOverexpandedFraction
 			gradiantLayer.opacity = Float(invertedOverexpandedFraction)
 			adjustGradientLocation(expandedFraction: invertedOverexpandedFraction, invertedFraction: overexpandedFraction)
