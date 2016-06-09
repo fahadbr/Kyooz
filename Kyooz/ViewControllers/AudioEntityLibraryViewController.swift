@@ -25,7 +25,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	var isBaseLevel:Bool = false
     
     var subGroups:[LibraryGrouping] {
-        return sourceData.parentGroup?.subGroupsForNextLevel ?? LibraryGrouping.allMusicGroupingss
+        return sourceData.parentGroup?.subGroupsForNextLevel ?? LibraryGrouping.allMusicGroupings
     }
 	
 	override var shouldAnimateInArtwork: Bool {
@@ -77,10 +77,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	override func reloadSourceData() {
 		super.reloadSourceData()
 		let count = sourceData.entities.count
-		var groupName = sourceData.libraryGrouping.name
-		if count == 1 {
-			groupName.removeAtIndex(groupName.endIndex.predecessor())
-		}
+		let groupName = count == 1 ? sourceData.libraryGrouping.name.withoutLast() : sourceData.libraryGrouping.name
 		tableFooterView.text = "\(count) \(groupName)"
 		tableView.tableFooterView = tableFooterView
 	}

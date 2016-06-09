@@ -177,8 +177,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         if let item = entity as? MPMediaItem {
             guard IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.persistentID)) != nil else {
-                var name = parentGroup.name.capitalizedString
-                name.removeAtIndex(name.endIndex.predecessor())
+                let name = parentGroup.name.capitalizedString.withoutLast()
                 KyoozUtils.showPopupError(withTitle: "Track Not Found In Library",
                     withMessage: "Kyooz can't show details about this track's \(name) because it's not in your music library.",
                     presentationVC: self)

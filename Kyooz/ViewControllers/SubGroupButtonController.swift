@@ -18,20 +18,19 @@ class SubGroupButtonController: UIViewController {
 		$0.addTarget(self, action: #selector(self.showSubGroupings(_:)), forControlEvents: .TouchUpInside)
 		
 		$0.alpha = ThemeHelper.defaultButtonTextAlpha
-		$0.hidden = self.subGroups == nil
 		return $0
 	}(UIButton())
 	
-	var subGroups:[LibraryGrouping]? {
+	var subGroups:[LibraryGrouping] {
 		didSet {
-			if let group = subGroups?.first {
+			if let group = subGroups.first {
 				libraryGroupingButton.hidden = false
 				setActiveGroup(group)
 			}
 		}
 	}
     
-    init(subGroups:[LibraryGrouping]?) {
+    init(subGroups:[LibraryGrouping]) {
         self.subGroups = subGroups
         super.init(nibName: nil, bundle: nil)
     }
@@ -45,12 +44,11 @@ class SubGroupButtonController: UIViewController {
 	}
 	
 	func showSubGroupings(sender: AnyObject) {
-		guard let groups = subGroups else { return }
 		
 		let kmvc = KyoozMenuViewController()
 		kmvc.menuTitle = "Change Grouping Type"
 		var actions = [KyoozMenuActionProtocol]()
-		for group in groups {
+		for group in subGroups {
 			actions.append(KyoozMenuAction(title: group.name, image: nil, action: {
 				self.setActiveGroup(group)
 				(self.parentViewController as? AudioEntityLibraryViewController)?.groupingTypeDidChange(group)
