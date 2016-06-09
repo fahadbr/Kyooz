@@ -106,6 +106,7 @@
 		0B9D79CC1CE8DF7F0035E162 /* TutorialManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */; };
 		0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */; };
 		0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242741C251671000170F9 /* AbstractTableViewCell.swift */; };
+		0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */; };
 		0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */; };
 		0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */; };
 		0BB01A5D1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */; };
@@ -301,6 +302,7 @@
 		0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TutorialManagerTest.swift; path = KyoozTests/ViewControllers/Util_VCs/Tutorial/TutorialManagerTest.swift; sourceTree = SOURCE_ROOT; };
 		0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewControllerFactory.swift; sourceTree = "<group>"; };
 		0BA242741C251671000170F9 /* AbstractTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractTableViewCell.swift; sourceTree = "<group>"; };
+		0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderLabelStackController.swift; sourceTree = "<group>"; };
 		0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemQueueResyncWorkflowController.swift; sourceTree = "<group>"; };
 		0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIteratorOperation.swift; sourceTree = "<group>"; };
 		0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocKyoozPlaylistSearchOperation.swift; sourceTree = "<group>"; };
@@ -883,10 +885,11 @@
 		102756AB1D01192500B1B679 /* HeaderVCs */ = {
 			isa = PBXGroup;
 			children = (
-				10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */,
 				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
+				0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */,
 				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
+				10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */,
 			);
 			name = HeaderVCs;
 			sourceTree = "<group>";
@@ -1138,6 +1141,7 @@
 				0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */,
 				10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
+				0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */,
 				0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */,
 				0B849AE81B44DE7C00206512 /* DRMAudioQueuePlayer.swift in Sources */,
 				0B5F13501C714F83009A1FDD /* SearchResultsSourceData.swift in Sources */,
