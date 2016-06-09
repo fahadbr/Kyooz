@@ -30,11 +30,19 @@ class SubGroupButtonController: UIViewController {
 			}
 		}
 	}
+    
+    init(subGroups:[LibraryGrouping]?) {
+        self.subGroups = subGroups
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
 	override func loadView() {
 		view = libraryGroupingButton
 	}
-	
 	
 	func showSubGroupings(sender: AnyObject) {
 		guard let groups = subGroups else { return }

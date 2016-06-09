@@ -16,7 +16,6 @@ class HeaderViewController : UIViewController {
 	
     var defaultHeight:CGFloat { return HeaderViewController.fixedHeight }
     var minimumHeight:CGFloat { return HeaderViewController.fixedHeight }
-	var stackViewHeight:CGFloat { return buttonHeight }
     
     lazy var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -24,6 +23,17 @@ class HeaderViewController : UIViewController {
 	private (set) lazy var selectButton:MultiSelectButtonView = self.createSelectButton()
 	
 	
+    let centerViewController:UIViewController
+    
+    init(centerViewController:UIViewController) {
+        self.centerViewController = centerViewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: - FUNCTIONS
     
     override func viewDidLoad() {
@@ -36,23 +46,20 @@ class HeaderViewController : UIViewController {
 		
 		let stackView = UIStackView(arrangedSubviews: [leftButton, createCenterView(), selectButton])
 		stackView.axis = .Horizontal
-		stackView.distribution = .EqualCentering
+        
+        var stackViewHeight:CGFloat = buttonHeight
+        if centerViewController is SubGroupButtonController {
+            stackView.distribution = .EqualCentering
+        } else if centerViewController is HeaderLabelStackController {
+            stackView.distribution = .Fill
+            stackViewHeight = centerViewController.view.intrinsicContentSize().height
+        }
+        
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
 		stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
 		stackView.heightAnchor.constraintEqualToConstant(stackViewHeight).active = true
     }
-	
-	func setUpBackgroundViews() {
-		view.backgroundColor = UIColor.clearColor()
-		
-		let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
-		ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
-		view.sendSubviewToBack(blurView)
-		
-		accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
-		accentLayer.lineWidth = 0.75
-		view.layer.addSublayer(accentLayer)
-	}
+
 	
 	func createLeftButton() -> UIButton {
 		let leftButton = ShuffleButtonView()

@@ -33,10 +33,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     //MARK: - IBOutlets
     
     @IBOutlet var headerTitleLabel: UILabel!
-	@IBOutlet var labelStackView: UIStackView!
-    @IBOutlet var detailsLabel1: UILabel!
-    @IBOutlet var detailsLabel2: UILabel!
-    @IBOutlet var detailsLabel3: UILabel!
+
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var imageViewContainer: UIView!
     
@@ -116,8 +113,23 @@ final class ArtworkHeaderViewController : HeaderViewController {
         view.layer.insertSublayer(gradiantLayer, above: imageViewContainer.layer)
         
         headerTitleLabel.text = presentedEntity.titleForGrouping(parentGroup)?.uppercaseString
+        headerTitleLabel.layer.shouldRasterize = true
+        headerTitleLabel.layer.rasterizationScale = UIScreen.mainScreen().scale
         
-        detailsLabel1.text = track.albumArtist ?? track.artist
+        //fade in the artwork
+        presentedEntity.artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
+            imageView.image = image
+            imageView.layer.addAnimation(fadeInAnimation, forKey: nil)
+        }
+        
+        guard let detailLabels = (centerViewController as? HeaderLabelStackController)?.labels where !detailLabels.isEmpty else { return }
+        
+        detailLabels[0].text = track.albumArtist ?? track.artist
+        
+        guard detailLabels.count == 3 else { return }
+        
+        let detailsLabel2 = detailLabels[1]
+        let detailsLabel3 = detailLabels[2]
         
         var details = [String]()
         if let releaseDate = track.releaseYear {
@@ -133,8 +145,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel2.textColor = UIColor.lightGrayColor()
         
         
-        headerTitleLabel.layer.shouldRasterize = true
-        headerTitleLabel.layer.rasterizationScale = UIScreen.mainScreen().scale
+
         detailsLabel2.layer.shouldRasterize = true
         detailsLabel2.layer.rasterizationScale = UIScreen.mainScreen().scale
         detailsLabel3.layer.shouldRasterize = true
@@ -154,11 +165,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
             detailsLabel2.hidden = true
         }
         
-        //fade in the artwork
-        presentedEntity.artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
-            imageView.image = image
-            imageView.layer.addAnimation(fadeInAnimation, forKey: nil)
-        }
+
     }
     
     

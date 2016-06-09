@@ -9,15 +9,21 @@
 import UIKit
 
 final class UtilHeaderViewController: HeaderViewController {
-    
 
-	
 	private var path:UIBezierPath!
 	private var accentLayer:CAShapeLayer = CAShapeLayer()
 	
     override func viewDidLoad() {
-        		
         super.viewDidLoad()
+        view.backgroundColor = UIColor.clearColor()
+        
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
+        view.sendSubviewToBack(blurView)
+        
+        accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
+        accentLayer.lineWidth = 0.75
+        view.layer.addSublayer(accentLayer)
     }
     
     override func viewDidLayoutSubviews() {
@@ -27,21 +33,5 @@ final class UtilHeaderViewController: HeaderViewController {
 		path.addLineToPoint(CGPoint(x: view.bounds.width, y: view.bounds.height))
 		accentLayer.path = path.CGPath
     }
-	
-    override func didMoveToParentViewController(parent: UIViewController?) {
-        super.didMoveToParentViewController(parent)
-        guard let vc = parent as? AudioEntityLibraryViewController else { return }
-        if vc.sourceData is GroupMutableAudioEntitySourceData {
-            subGroups = vc.subGroups
-        }
-        setActiveGroup(vc.sourceData.libraryGrouping)
-    }
-
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     
 }
