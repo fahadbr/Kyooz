@@ -166,11 +166,8 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         }
         let items:String
         if rowLimitedDSD.dsdSections.count == 1 {
-            var groupName = rowLimitedDSD.dsdSections[0].sourceData.libraryGrouping.name
-            if count == 1 {
-                groupName.removeAtIndex(groupName.endIndex.predecessor())
-            }
-            items = groupName
+            let groupName = rowLimitedDSD.dsdSections[0].sourceData.libraryGrouping.name
+			items = count == 1 ? groupName.withoutLast() : groupName
         } else {
             items = count == 1 ? "RESULT" : "RESULTS"
         }

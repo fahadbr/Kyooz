@@ -68,4 +68,10 @@ extension String {
             removeRange(range)
         }
     }
+	
+	func withoutLast() -> String {
+		var s = self
+		s.removeAtIndex(s.endIndex.predecessor())
+		return s
+	}
 }

@@ -130,17 +130,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         
         let detailsLabel2 = detailLabels[1]
         let detailsLabel3 = detailLabels[2]
-        
-        var details = [String]()
-        if let releaseDate = track.releaseYear {
-            details.append(releaseDate)
-        }
-        if let genre = track.genre {
-            details.append(genre)
-        }
-        details.append("\(entities.count) Tracks")
-        
-        detailsLabel3.text = details.joinWithSeparator(" • ")
+		
         detailsLabel3.textColor = UIColor.lightGrayColor()
         detailsLabel2.textColor = UIColor.lightGrayColor()
         
@@ -151,19 +141,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         detailsLabel3.layer.shouldRasterize = true
         detailsLabel3.layer.rasterizationScale = UIScreen.mainScreen().scale
 		
-        if let tracks = entities as? [AudioTrack] {
-            var duration:NSTimeInterval = 0
-            for item in tracks {
-                duration += item.playbackDuration
-            }
-            if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
-                detailsLabel2.text = "\(albumDurationString)"
-            } else {
-                detailsLabel2.hidden = true
-            }
-        } else {
-            detailsLabel2.hidden = true
-        }
+
         
 
     }
