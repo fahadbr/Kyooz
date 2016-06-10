@@ -44,7 +44,7 @@ class HeaderViewController : UIViewController {
         selectButton.alpha = ThemeHelper.defaultButtonTextAlpha
         selectButton.scale = 0.5
 		
-		let stackView = UIStackView(arrangedSubviews: [leftButton, createCenterView(), selectButton])
+		let stackView = UIStackView(arrangedSubviews: [leftButton, centerViewController.view, selectButton])
 		stackView.axis = .Horizontal
         
         var stackViewHeight:CGFloat = buttonHeight
@@ -54,7 +54,11 @@ class HeaderViewController : UIViewController {
             stackView.distribution = .Fill
             stackViewHeight = centerViewController.view.intrinsicContentSize().height
         }
-        
+		
+//		let size = centerViewController.view.intrinsicContentSize()
+//		centerViewController.view.heightAnchor.constraintEqualToConstant(40).active = true
+//		centerViewController.view.widthAnchor.constraintEqualToConstant(60).active = true
+		
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
 		stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
 		stackView.heightAnchor.constraintEqualToConstant(stackViewHeight).active = true
@@ -73,10 +77,6 @@ class HeaderViewController : UIViewController {
 		selectButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
 		selectButton.widthAnchor.constraintEqualToAnchor(selectButton.heightAnchor).active = true
 		return selectButton
-	}
-	
-	func createCenterView() -> UIView {
-		return UIView()
 	}
 	
 }

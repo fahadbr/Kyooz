@@ -87,7 +87,7 @@ class TestDataGenerator: XCTestCase {
         
         
         let rootVC = RootViewController.instance.libraryNavigationController.topViewController as! AudioEntityLibraryViewController
-        rootVC.isBaseLevel = false
+        rootVC.isBaseLevel = true
         rootVC.sourceData = testSourceData
         rootVC.applyDataSourceAndDelegate()
         rootVC.reloadAllData()

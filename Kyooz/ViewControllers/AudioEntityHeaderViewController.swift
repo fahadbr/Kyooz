@@ -20,12 +20,16 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 	private var headerCollapsed:Bool = false
 	
     private lazy var headerVC:HeaderViewController = {
-        switch (self.useCollapsableHeader, self.sourceData.parentGroup) {
-        case (true, LibraryGrouping.Playlists?): break
-        default: break
-        }
-        return HeaderViewController(centerViewController:SubGroupButtonController(subGroups:self.subGroups))
-    }()
+		let centerVC:UIViewController
+		if let subGroups = self.subGroups, let aelvc = self as? AudioEntityLibraryViewController  where self.sourceData is GroupMutableAudioEntitySourceData {
+			centerVC = SubGroupButtonController(subGroups:subGroups, aelvc:aelvc)
+		} else {
+			centerVC = HeaderLabelStackController(sourceData: self.sourceData)
+		}
+		
+		return self.useCollapsableHeader ? ArtworkHeaderViewController(centerViewController:centerVC) : UtilHeaderViewController(centerViewController:centerVC)
+		
+	}()
 	
 	//MARK: - Multi Select Toolbar Buttons
 	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.showAddToOptions(_:)))

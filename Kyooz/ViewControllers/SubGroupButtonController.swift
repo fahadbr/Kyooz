@@ -21,18 +21,18 @@ class SubGroupButtonController: UIViewController {
 		return $0
 	}(UIButton())
 	
-	var subGroups:[LibraryGrouping] {
-		didSet {
-			if let group = subGroups.first {
-				libraryGroupingButton.hidden = false
-				setActiveGroup(group)
-			}
-		}
-	}
+	var subGroups:[LibraryGrouping]
+	weak var audioEntityLibraryViewController:AudioEntityLibraryViewController?
     
-    init(subGroups:[LibraryGrouping]) {
+	init(subGroups:[LibraryGrouping], aelvc:AudioEntityLibraryViewController) {
         self.subGroups = subGroups
+		self.audioEntityLibraryViewController = aelvc
         super.init(nibName: nil, bundle: nil)
+		
+		if let group = subGroups.first {
+			libraryGroupingButton.hidden = false
+			setActiveGroup(group)
+		}
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -51,7 +51,9 @@ class SubGroupButtonController: UIViewController {
 		for group in subGroups {
 			actions.append(KyoozMenuAction(title: group.name, image: nil, action: {
 				self.setActiveGroup(group)
-				(self.parentViewController as? AudioEntityLibraryViewController)?.groupingTypeDidChange(group)
+				if self.audioEntityLibraryViewController?.groupingTypeDidChange(group) == nil {
+					fatalError("failed to change grouping type")
+				}
 			}))
 		}
 		kmvc.addActions(actions)

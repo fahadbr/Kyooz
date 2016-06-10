@@ -11,7 +11,18 @@ import UIKit
 
 struct ThemeHelper {
 	
-	enum FontStyle : Int { case Normal, Medium, Bold }
+	enum FontStyle : Int { case Normal, Medium, Bold
+		var fontName:String {
+			switch self {
+			case .Bold:
+				return defaultFontNameBold
+			case .Medium:
+				return defaultFontNameMedium
+			case .Normal:
+				return defaultFontName
+			}
+		}
+	}
     
     static let plainHeaderHight:CGFloat = 65
     
@@ -76,16 +87,11 @@ struct ThemeHelper {
     static let barsAreTranslucent = true
 	
 	static func smallFontForStyle(style:FontStyle) -> UIFont? {
-		let fontName:String
-		switch style {
-		case .Bold:
-			fontName = defaultFontNameBold
-		case .Medium:
-			fontName = defaultFontNameMedium
-		case .Normal:
-			fontName = defaultFontName
-		}
-		return UIFont(name: fontName, size: smallFontSize)
+		return UIFont(name: style.fontName, size: smallFontSize)
+	}
+	
+	static func defaultFont(forStyle style:FontStyle) -> UIFont? {
+		return UIFont(name: style.fontName, size: defaultFontSize)
 	}
     
     static func configureNavigationBar(navigationBar:UINavigationBar) {
