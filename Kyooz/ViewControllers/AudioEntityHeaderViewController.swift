@@ -19,7 +19,13 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 	var useCollapsableHeader:Bool = false
 	private var headerCollapsed:Bool = false
 	
-    private lazy var headerVC:HeaderViewController = self.useCollapsableHeader ? UIStoryboard.artworkHeaderViewController() : UtilHeaderViewController()
+    private lazy var headerVC:HeaderViewController = {
+        switch (self.useCollapsableHeader, self.sourceData.parentGroup) {
+        case (true, LibraryGrouping.Playlists?): break
+        default: break
+        }
+        return HeaderViewController(centerViewController:SubGroupButtonController(subGroups:self.subGroups))
+    }()
 	
 	//MARK: - Multi Select Toolbar Buttons
 	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.showAddToOptions(_:)))
@@ -57,7 +63,7 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
         headerVC.didMoveToParentViewController(self)
 		
 		headerVC.leftButton.addTarget(self, action: #selector(self.shuffleAllItems(_:)), forControlEvents: .TouchUpInside)
-		headerVC.rightButton.addTarget(self, action: #selector(self.toggleSelectMode(_:)), forControlEvents: .TouchUpInside)
+		headerVC.selectButton.addTarget(self, action: #selector(self.toggleSelectMode(_:)), forControlEvents: .TouchUpInside)
 		
 		minHeight = headerVC.minimumHeight
 		maxHeight = headerVC.defaultHeight
