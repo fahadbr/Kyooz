@@ -38,6 +38,8 @@ class HeaderLabelStackController: UIViewController {
             label.font = textStyle.font
             label.textColor = textStyle.color
             label.textAlignment = .Center
+            label.layer.shouldRasterize = true
+            label.layer.rasterizationScale = UIScreen.mainScreen().scale
             return label
         }
 		

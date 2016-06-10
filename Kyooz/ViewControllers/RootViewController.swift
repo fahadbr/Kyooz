@@ -223,7 +223,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     func getSourceData() -> AudioEntitySourceData? {
         if let mediaItemViewController = libraryNavigationController.viewControllers.last as? AudioEntityViewControllerProtocol {
-            return mediaItemViewController.getSourceData()
+            return mediaItemViewController.sourceData
         }
         Logger.debug("Couldnt get a view controller with media items, returning nil")
         return nil
