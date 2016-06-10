@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -244,7 +244,7 @@
                             <constraint firstItem="Bio-AK-FXu" firstAttribute="top" secondItem="uud-LF-qx4" secondAttribute="bottom" constant="4" id="MkN-Qo-DF0"/>
                             <constraint firstItem="hfl-26-ghB" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="top" id="OGs-PQ-A88"/>
                             <constraint firstAttribute="bottom" secondItem="hfl-26-ghB" secondAttribute="bottom" id="W7t-Gh-qMd"/>
-                            <constraint firstItem="aCS-5h-tk7" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="topMargin" constant="25" id="ek1-dw-oHc"/>
+                            <constraint firstItem="aCS-5h-tk7" firstAttribute="top" secondItem="qZv-9b-Tgx" secondAttribute="top" constant="25" id="ek1-dw-oHc"/>
                             <constraint firstItem="hfl-26-ghB" firstAttribute="leading" secondItem="qZv-9b-Tgx" secondAttribute="leading" id="hUt-2F-Ejc"/>
                             <constraint firstAttribute="trailing" secondItem="aCS-5h-tk7" secondAttribute="trailing" constant="50" id="mxh-ec-Nmg"/>
                             <constraint firstItem="aCS-5h-tk7" firstAttribute="top" secondItem="nbz-mF-krK" secondAttribute="bottom" id="pAJ-MD-qPK"/>

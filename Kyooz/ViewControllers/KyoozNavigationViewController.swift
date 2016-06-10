@@ -83,7 +83,6 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 			let action = {
 				let vc = AudioEntityLibraryViewController()
 				vc.sourceData = MediaQuerySourceData(filterQuery: libraryGrouping.baseQuery, libraryGrouping: libraryGrouping)
-				vc.subGroups = [LibraryGrouping]()
 				vc.title = title
 				ContainerViewController.instance.pushViewController(vc)
 			}

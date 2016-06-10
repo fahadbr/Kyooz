@@ -32,10 +32,16 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     //MARK: - IBOutlets
     
-    @IBOutlet var headerTitleLabel: UILabel!
+	lazy var headerTitleLabel: UILabel = {
+		$0.textColor = ThemeHelper.defaultFontColor
+		$0.font = ThemeHelper.defaultFont(forStyle: .Bold)
+		$0.textAlignment = .Center
+		$0.numberOfLines = 3
+		return $0
+	}(UILabel())
 
-    @IBOutlet var imageView: UIImageView!
-    @IBOutlet var imageViewContainer: UIView!
+    lazy var imageView: UIImageView = UIImageView()
+    lazy var imageViewContainer: UIView = UIView()
     
     //MARK: - properties
 	
@@ -67,6 +73,14 @@ final class ArtworkHeaderViewController : HeaderViewController {
     //MARK: - vc life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+		ConstraintUtils.applyStandardConstraintsToView(subView: imageViewContainer, parentView: view)
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: imageView, parentView: imageViewContainer)
+		imageView.widthAnchor.constraintEqualToAnchor(imageView.heightAnchor).active = true
+		
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Width], subView: headerTitleLabel, parentView: view)[.Width]!.constant = -100
+		headerTitleLabel.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 25).active = true
+		headerTitleLabel.heightAnchor.constraintEqualToConstant(42).active = true
+		
 
         blurViewController = BlurViewController()
 		addChildViewController(blurViewController)
