@@ -28,8 +28,8 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		return _shouldAnimateInArtwork
 	}
 	
-	override var subGroups:[LibraryGrouping]? {
-		return isBaseLevel ? LibraryGrouping.allMusicGroupings : sourceData.parentGroup?.subGroupsForNextLevel
+	override var subGroups:[LibraryGrouping] {
+		return isBaseLevel ? LibraryGrouping.allMusicGroupings : sourceData.parentGroup?.subGroupsForNextLevel ?? []
 	}
 	
 	private var _shouldAnimateInArtwork:Bool = false
@@ -102,7 +102,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	
 	func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
-		guard let subGroups = self.subGroups else { return }
+		guard !subGroups.isEmpty else { return }
 		
 		if isBaseLevel {
             NSUserDefaults.standardUserDefaults().setInteger(subGroups.indexOf(selectedGroup) ?? 0, forKey: UserDefaultKeys.AllMusicBaseGroup)

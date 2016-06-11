@@ -71,20 +71,30 @@ final class ArtworkHeaderViewController : HeaderViewController {
     }
     
     //MARK: - vc life cycle
+    override func loadView() {
+        super.loadView()
+        imageView.clipsToBounds = true
+        imageViewContainer.clipsToBounds = true
+        ConstraintUtils.applyStandardConstraintsToView(subView: imageViewContainer, parentView: view)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: imageView, parentView: imageViewContainer)
+        imageView.widthAnchor.constraintEqualToAnchor(imageView.heightAnchor).active = true
+        
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Width], subView: headerTitleLabel, parentView: view)[.Width]!.constant = -100
+        headerTitleLabel.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 25).active = true
+        headerTitleLabel.heightAnchor.constraintEqualToConstant(42).active = true
+    }
+    
     override func viewDidLoad() {
+
+        
+        //calling viewDidLoad at the end so that the views added by the parent class
+        //can be placed on top of the image view container
         super.viewDidLoad()
-		ConstraintUtils.applyStandardConstraintsToView(subView: imageViewContainer, parentView: view)
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: imageView, parentView: imageViewContainer)
-		imageView.widthAnchor.constraintEqualToAnchor(imageView.heightAnchor).active = true
-		
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Width], subView: headerTitleLabel, parentView: view)[.Width]!.constant = -100
-		headerTitleLabel.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 25).active = true
-		headerTitleLabel.heightAnchor.constraintEqualToConstant(42).active = true
-		
 
         blurViewController = BlurViewController()
 		addChildViewController(blurViewController)
 		blurViewController.didMoveToParentViewController(self)
+        
 		
 		let blurView = blurViewController.view
         imageViewContainer.insertSubview(blurView, aboveSubview: imageView)
@@ -93,13 +103,14 @@ final class ArtworkHeaderViewController : HeaderViewController {
         blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
         blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
         blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
-		blurViewController.blurRadius = 0
+//		blurViewController.blurRadius = 0
 		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
         observingViewBounds = true //this is to ensure we dont remove the observer before adding one
 		
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
+        
 
     }
 	

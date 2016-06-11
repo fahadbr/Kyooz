@@ -74,7 +74,7 @@ class HeaderLabelStackController: UIViewController {
 		guard let tracks = sourceData.entities as? [AudioTrack], let track = tracks.first else { return }
 		
 		
-		let trackString = " Tracks"
+		let trackString = "Tracks"
 		let trackCountString = "\(tracks.count) \(tracks.count == 1 ? trackString.withoutLast() : trackString)"
 		
 		for (labelNumber, labelConfig) in labelConfigurations.enumerate() {

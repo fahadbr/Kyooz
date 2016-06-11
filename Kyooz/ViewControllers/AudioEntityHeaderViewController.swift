@@ -21,8 +21,8 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 	
     private lazy var headerVC:HeaderViewController = {
 		let centerVC:UIViewController
-		if let subGroups = self.subGroups, let aelvc = self as? AudioEntityLibraryViewController  where self.sourceData is GroupMutableAudioEntitySourceData {
-			centerVC = SubGroupButtonController(subGroups:subGroups, aelvc:aelvc)
+		if let aelvc = self as? AudioEntityLibraryViewController  where !self.subGroups.isEmpty && self.sourceData is GroupMutableAudioEntitySourceData{
+			centerVC = SubGroupButtonController(subGroups:self.subGroups, aelvc:aelvc)
 		} else {
 			centerVC = HeaderLabelStackController(sourceData: self.sourceData)
 		}
@@ -67,7 +67,7 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
         headerVC.didMoveToParentViewController(self)
 		
 		headerVC.leftButton.addTarget(self, action: #selector(self.shuffleAllItems(_:)), forControlEvents: .TouchUpInside)
-		headerVC.selectButton.addTarget(self, action: #selector(self.toggleSelectMode(_:)), forControlEvents: .TouchUpInside)
+		headerVC.selectButton.addTarget(self, action: #selector(self.toggleSelectMode), forControlEvents: .TouchUpInside)
 		
 		minHeight = headerVC.minimumHeight
 		maxHeight = headerVC.defaultHeight
@@ -108,8 +108,8 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 extension AudioEntityHeaderViewController {
 	
 	
-	func toggleSelectMode(sender:UIButton?) {
-		let willEdit = editing
+	func toggleSelectMode() {
+		let willEdit = !tableView.editing
 		
 		tableView.setEditing(willEdit, animated: true)
 		RootViewController.instance.setToolbarHidden(!willEdit)
@@ -138,6 +138,7 @@ extension AudioEntityHeaderViewController {
 			                                                 object: tableView)
 			self.toolbarItems = toolbarItems
 		}
+        headerVC.selectButton.isActive = willEdit
 		
 		refreshButtonStates()
 	}
@@ -147,7 +148,8 @@ extension AudioEntityHeaderViewController {
 	}
 	
 	private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {
-		if let items = (sourceData as? MediaQuerySourceData)?.filterQuery.items where !items.isEmpty {
+        let items = sourceData.tracks
+		if !items.isEmpty {
 			self.playTracks(items, shouldShuffle: shouldShuffle)
 		}
 	}
@@ -207,7 +209,7 @@ extension AudioEntityHeaderViewController {
 		playTracks(tracks, shouldShuffle: (sender != nil && sender is ShuffleButtonView))
 		
 		selectOrDeselectAll()
-		self.setEditing(false, animated: true)
+		toggleSelectMode()
 	}
 	
 	func showAddToOptions(sender:UIBarButtonItem!) {
@@ -216,7 +218,7 @@ extension AudioEntityHeaderViewController {
 		kmvc.menuTitle = "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items"
 		KyoozUtils.addDefaultQueueingActions(items, menuController: kmvc) {
 			self.selectOrDeselectAll()
-			self.setEditing(false, animated: true)
+			self.toggleSelectMode()
 		}
 		
 		KyoozUtils.showMenuViewController(kmvc)
