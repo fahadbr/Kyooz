@@ -47,21 +47,16 @@ class HeaderViewController : UIViewController {
 		let stackView = UIStackView(arrangedSubviews: [leftButton, centerViewController.view, selectButton])
 		stackView.axis = .Horizontal
         
-        var stackViewHeight:CGFloat = buttonHeight
+        let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
+        stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
+        
         if centerViewController is SubGroupButtonController {
             stackView.distribution = .EqualCentering
         } else if centerViewController is HeaderLabelStackController {
             stackView.distribution = .Fill
-            stackViewHeight = centerViewController.view.intrinsicContentSize().height
+            stackView.alignment = UIStackViewAlignment.Bottom
+            constraints[.Bottom]!.constant = -4
         }
-		
-//		let size = centerViewController.view.intrinsicContentSize()
-//		centerViewController.view.heightAnchor.constraintEqualToConstant(40).active = true
-//		centerViewController.view.widthAnchor.constraintEqualToConstant(60).active = true
-		
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
-		stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
-		stackView.heightAnchor.constraintEqualToConstant(stackViewHeight).active = true
     }
 
 	

@@ -16,6 +16,7 @@ protocol AudioEntitySourceData : class {
 	var sectionNamesCanBeUsedAsIndexTitles:Bool { get }
 	var sections:[SectionDescription] { get }
     var entities:[AudioEntity] { get }
+    var tracks:[AudioTrack] { get }
 	
     var libraryGrouping:LibraryGrouping { get }
 	
@@ -44,6 +45,16 @@ extension AudioEntitySourceData {
     
     var sectionNamesCanBeUsedAsIndexTitles:Bool {
         return false
+    }
+    
+    var tracks:[AudioTrack] {
+        if let allTracks = entities as? [AudioTrack] {
+            return allTracks
+        } else if let collections = entities as? [AudioTrackCollection] {
+            return collections.flatMap() { return $0.tracks }
+        }
+        Logger.error("couldn't get all tracks from entities of source data with type \(self.dynamicType)")
+        return []
     }
     
     func getTracksAtIndex(indexPath:NSIndexPath) -> [AudioTrack] {

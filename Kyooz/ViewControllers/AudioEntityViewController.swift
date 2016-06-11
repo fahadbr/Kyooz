@@ -24,8 +24,8 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 		}
 	}
 	
-	var subGroups:[LibraryGrouping]? {
-		return nil
+	var subGroups:[LibraryGrouping] {
+		return []
 	}
 	
 	var shouldAnimateInArtwork:Bool {
