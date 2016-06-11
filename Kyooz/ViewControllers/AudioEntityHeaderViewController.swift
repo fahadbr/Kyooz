@@ -28,7 +28,6 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 		}
 		
 		return self.useCollapsableHeader ? ArtworkHeaderViewController(centerViewController:centerVC) : UtilHeaderViewController(centerViewController:centerVC)
-		
 	}()
 	
 	//MARK: - Multi Select Toolbar Buttons

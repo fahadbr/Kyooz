@@ -32,7 +32,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     //MARK: - IBOutlets
     
-	lazy var headerTitleLabel: UILabel = {
+	private lazy var headerTitleLabel: UILabel = {
 		$0.textColor = ThemeHelper.defaultFontColor
 		$0.font = ThemeHelper.defaultFont(forStyle: .Bold)
 		$0.textAlignment = .Center
@@ -40,12 +40,13 @@ final class ArtworkHeaderViewController : HeaderViewController {
 		return $0
 	}(UILabel())
 
-    lazy var imageView: UIImageView = UIImageView()
-    lazy var imageViewContainer: UIView = UIView()
+    private lazy var imageView: UIImageView = UIImageView()
+    private lazy var imageViewContainer: UIView = UIView()
     
     //MARK: - properties
 	
-	private var blurViewController:BlurViewController!
+    private lazy var blurViewController:BlurViewController = BlurViewController()
+
     private var observingViewBounds = false
     private var kvoContext:UInt8 = 123
 	
@@ -67,31 +68,21 @@ final class ArtworkHeaderViewController : HeaderViewController {
         if observingViewBounds {
             view.removeObserver(self, forKeyPath: observationKey)
         }
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     //MARK: - vc life cycle
-    override func loadView() {
-        super.loadView()
+    override func viewDidLoad() {
         imageView.clipsToBounds = true
         imageViewContainer.clipsToBounds = true
         ConstraintUtils.applyStandardConstraintsToView(subView: imageViewContainer, parentView: view)
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: imageView, parentView: imageViewContainer)
-        imageView.widthAnchor.constraintEqualToAnchor(imageView.heightAnchor).active = true
+        imageView.heightAnchor.constraintEqualToAnchor(imageView.widthAnchor).active = true
         
         ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Width], subView: headerTitleLabel, parentView: view)[.Width]!.constant = -100
         headerTitleLabel.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 25).active = true
         headerTitleLabel.heightAnchor.constraintEqualToConstant(42).active = true
-    }
-    
-    override func viewDidLoad() {
-
         
-        //calling viewDidLoad at the end so that the views added by the parent class
-        //can be placed on top of the image view container
-        super.viewDidLoad()
 
-        blurViewController = BlurViewController()
 		addChildViewController(blurViewController)
 		blurViewController.didMoveToParentViewController(self)
         
@@ -103,7 +94,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
         blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
         blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
-//		blurViewController.blurRadius = 0
+		blurViewController.blurRadius = 0
 		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
         view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
@@ -111,18 +102,22 @@ final class ArtworkHeaderViewController : HeaderViewController {
 		
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
         
-
+        //calling viewDidLoad at the end so that the views added by the parent class
+        //can be placed on top of the image view container
+        super.viewDidLoad()
     }
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
-		centerViewController.view.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
+		(centerViewController as? HeaderLabelStackController)?.labelStackView.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
 	}
     
     override func didMoveToParentViewController(parent: UIViewController?) {
         super.didMoveToParentViewController(parent)
         guard let vc = parent as? AudioEntityLibraryViewController else { return }
-        configureViewWithCollection(vc.sourceData)
+        KyoozUtils.doInMainQueueAsync() {
+            self.configureViewWithCollection(vc.sourceData)
+        }
     }
 	
     //MARK: - class functions
@@ -190,7 +185,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         
         blurViewController.blurRadius = expandedFraction <= 0.75 ? Double(1.0 - (expandedFraction * 4.0/3.0)) : 0
         
-		centerViewController.view.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
+		labelStackView?.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
         imageView.layer.transform = CATransform3DMakeTranslation(0, invertedFraction * 0.2 * imageView.frame.height * -1, 0)
 
 		adjustGradientLocation(expandedFraction: expandedFraction, invertedFraction: invertedFraction)

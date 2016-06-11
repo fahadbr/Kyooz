@@ -31,7 +31,8 @@ class HeaderViewController : UIViewController {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        centerViewController = UIViewController()
+        super.init(coder: aDecoder)
     }
     
     //MARK: - FUNCTIONS
