@@ -13,12 +13,10 @@ class HeaderLabelStackController: UIViewController {
 	enum LabelConfiguration:Int { case AlbumArtist, TotalCollectionDuration, AlbumDetails, CollectionCount }
 	
 	static let labelConfigsMap:[LibraryGrouping:[LabelConfiguration]] = [
-		LibraryGrouping.Albums : [.AlbumArtist, .TotalCollectionDuration, .AlbumDetails],
-		LibraryGrouping.Compilations : [.AlbumArtist, .TotalCollectionDuration, .AlbumDetails],
-		LibraryGrouping.Podcasts : [.AlbumArtist, .TotalCollectionDuration, .AlbumDetails],
+		LibraryGrouping.Playlists : [.CollectionCount, .TotalCollectionDuration]
 	]
 	
-	static let defaultLabelConfigurations:[LabelConfiguration] = [.TotalCollectionDuration, .CollectionCount]
+	static let defaultLabelConfigurations:[LabelConfiguration] = [.AlbumArtist, .TotalCollectionDuration, .AlbumDetails]
     
     typealias TextStyle = (font:UIFont?, color:UIColor)
     
@@ -32,8 +30,8 @@ class HeaderLabelStackController: UIViewController {
         var labels = [UILabel]()
         let mainDetailLabelStyle:TextStyle = (UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize - 1), ThemeHelper.defaultFontColor)
         let subDetailLabelStyle:TextStyle = (ThemeHelper.smallFontForStyle(.Normal), UIColor.lightGrayColor())
-        func createLabel(labelNumber:Int) -> UILabel {
-            let textStyle = labelNumber == 0 ? mainDetailLabelStyle : subDetailLabelStyle
+        func createLabel(labelNumber:Int, config:LabelConfiguration) -> UILabel {
+            let textStyle = config == .AlbumArtist ? mainDetailLabelStyle : subDetailLabelStyle
             let label = UILabel()
             label.font = textStyle.font
             label.textColor = textStyle.color
@@ -50,8 +48,8 @@ class HeaderLabelStackController: UIViewController {
 			labelConfigs = HeaderLabelStackController.defaultLabelConfigurations
 		}
         
-        for i in 0..<labelConfigs.count {
-            labels.append(createLabel(i))
+        for (i, config) in labelConfigs.enumerate() {
+            labels.append(createLabel(i, config:config))
         }
 		
 		self.labelConfigurations = labelConfigs

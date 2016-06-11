@@ -76,7 +76,6 @@
 		0B533AC01BC1878900EA71B7 /* LibraryGrouping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */; };
 		0B58794B1C729ABF009E713F /* DragToInsertDSDWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794A1C729ABF009E713F /* DragToInsertDSDWrapper.swift */; };
 		0B58794D1C74140C009E713F /* UtilHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */; };
-		0B5879511C756097009E713F /* ArtworkHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */; };
 		0B5F134E1C714F56009A1FDD /* MediaQuerySourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */; };
 		0B5F13501C714F83009A1FDD /* SearchResultsSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */; };
 		0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */; };
@@ -107,6 +106,7 @@
 		0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */; };
 		0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242741C251671000170F9 /* AbstractTableViewCell.swift */; };
 		0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */; };
+		0BA6E7CC1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6E7CB1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift */; };
 		0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */; };
 		0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */; };
 		0BB01A5D1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */; };
@@ -272,7 +272,6 @@
 		0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryGrouping.swift; sourceTree = "<group>"; };
 		0B58794A1C729ABF009E713F /* DragToInsertDSDWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DragToInsertDSDWrapper.swift; sourceTree = "<group>"; };
 		0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilHeaderViewController.swift; sourceTree = "<group>"; };
-		0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtworkHeaderViewController.swift; sourceTree = "<group>"; };
 		0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQuerySourceData.swift; sourceTree = "<group>"; };
 		0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsSourceData.swift; sourceTree = "<group>"; };
 		0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozPlaylistSourceData.swift; sourceTree = "<group>"; };
@@ -303,6 +302,7 @@
 		0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewControllerFactory.swift; sourceTree = "<group>"; };
 		0BA242741C251671000170F9 /* AbstractTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractTableViewCell.swift; sourceTree = "<group>"; };
 		0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderLabelStackController.swift; sourceTree = "<group>"; };
+		0BA6E7CB1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtworkHeaderViewController.swift; sourceTree = "<group>"; };
 		0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemQueueResyncWorkflowController.swift; sourceTree = "<group>"; };
 		0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayCountIteratorOperation.swift; sourceTree = "<group>"; };
 		0BB01A5C1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocKyoozPlaylistSearchOperation.swift; sourceTree = "<group>"; };
@@ -885,7 +885,7 @@
 		102756AB1D01192500B1B679 /* HeaderVCs */ = {
 			isa = PBXGroup;
 			children = (
-				0B5879501C756097009E713F /* ArtworkHeaderViewController.swift */,
+				0BA6E7CB1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift */,
 				0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */,
 				0B2937561C87E96200374A3C /* HeaderViewController.swift */,
 				0B58794C1C74140C009E713F /* UtilHeaderViewController.swift */,
@@ -1092,6 +1092,7 @@
 				10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */,
 				0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */,
 				0BB01A5F1CC87A5C00D4B57F /* PlainHeaderView.swift in Sources */,
+				0BA6E7CC1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift in Sources */,
 				0BCA19501BC73F05008CD0FF /* RemoteCommandHandler.swift in Sources */,
 				10DB79001CBAF53E008402BB /* NowPlayingPageViewController.swift in Sources */,
 				10FD32591C8F986800004CAB /* BlurViewController.swift in Sources */,
@@ -1108,7 +1109,6 @@
 				108DBA0A1CE4CCA10013E990 /* TutorialViewController.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
 				10FD32571C8F948100004CAB /* AudioEntityLibraryViewController.swift in Sources */,
-				0B5879511C756097009E713F /* ArtworkHeaderViewController.swift in Sources */,
 				10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */,
 				0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */,
 				1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */,
