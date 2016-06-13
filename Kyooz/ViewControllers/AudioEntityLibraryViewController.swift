@@ -11,14 +11,13 @@ import UIKit
 final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
     static let navigationMenuButton:UIButton = {
-        let button = ListButtonView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        button.showBullets = false
-        button.pathTransform = CGAffineTransformMakeTranslation(10, 0)
-        button.color = ThemeHelper.defaultFontColor
-        button.alignRight = true
-        button.addTarget(ContainerViewController.instance, action: #selector(ContainerViewController.presentKyoozNavigationController), forControlEvents: .TouchUpInside)
-        return button
-    }()
+        $0.showBullets = false
+        $0.pathTransform = CGAffineTransformMakeTranslation(10, 0)
+        $0.color = ThemeHelper.defaultFontColor
+        $0.alignRight = true
+        $0.addTarget(ContainerViewController.instance, action: #selector(ContainerViewController.presentKyoozNavigationController), forControlEvents: .TouchUpInside)
+        return $0
+    }(ListButtonView(frame: CGRect(x: 0, y: 0, width: 40, height: 40)))
     
     static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
@@ -28,7 +27,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		return _shouldAnimateInArtwork
 	}
 	
-	override var subGroups:[LibraryGrouping] {
+	var subGroups:[LibraryGrouping] {
 		return isBaseLevel ? LibraryGrouping.allMusicGroupings : sourceData.parentGroup?.subGroupsForNextLevel ?? []
 	}
 	
@@ -60,10 +59,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.dynamicType.navigationMenuButton)
         
-		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
-		tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
 		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
-		tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
         
         KyoozUtils.doInMainQueueAsync() {
             self.applyDataSourceAndDelegate()
@@ -99,6 +95,17 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 			})])
 		}
 	}
+    
+    override func createHeaderView() -> HeaderViewController {
+        let centerVC:UIViewController
+        if !subGroups.isEmpty && sourceData is GroupMutableAudioEntitySourceData {
+            centerVC = SubGroupButtonController(subGroups:subGroups, aelvc:self)
+        } else {
+            centerVC = HeaderLabelStackController(sourceData: sourceData)
+        }
+        
+        return self.useCollapsableHeader ? ArtworkHeaderViewController(centerViewController:centerVC) : UtilHeaderViewController(centerViewController:centerVC)
+    }
 	
 	
 	func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
@@ -111,6 +118,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		if let groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
 			groupMutableSourceData.libraryGrouping = selectedGroup
 		}
+        
+        if tableView.editing {
+            toggleSelectMode()
+        }
+        
 		tableView.contentOffset.y = -tableView.contentInset.top
 		applyDataSourceAndDelegate()
 		reloadAllData()

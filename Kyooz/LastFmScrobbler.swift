@@ -206,7 +206,7 @@ final class LastFmScrobbler {
             self.buildApiSigAndCallWS(params, successHandler: { [weak self](info:[String:String]) in
 				let message = "Successfully scrobbled track \(mediaItem.trackTitle) to last.fm"
                 Logger.debug(message)
-				self?.shortNotificationManager.presentShortNotificationWithMessage(message)
+				self?.shortNotificationManager.presentShortNotification(withMessage:message)
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[error_key])")
                 if(info[error_key] != nil && info[error_key]! == httpFailure) {
@@ -237,7 +237,7 @@ final class LastFmScrobbler {
             buildApiSigAndCallWS(params, successHandler: { [weak self](info:[String : String]) -> Void in
 					let message = "Successfully scrobbled \(scrobbleBatch.count) tracks to last.fm"
                     Logger.debug(message)
-					self?.shortNotificationManager.presentShortNotificationWithMessage(message)
+					self?.shortNotificationManager.presentShortNotification(withMessage:message)
                     completionHandler?(shouldRemove:true)
                 }, failureHandler: { (info:[String : String]) -> () in
                     Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[error_key])")

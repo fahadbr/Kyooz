@@ -20,7 +20,7 @@ final class ShortNotificationManager {
 	private weak var shortNotificationVC:ShortNotificationViewController?
 	
 	
-    func presentShortNotificationWithMessage(message:String) {
+    func presentShortNotification(withMessage message:String) {
         KyoozUtils.doInMainQueue() {
             self.presentShortNotification(message)
         }

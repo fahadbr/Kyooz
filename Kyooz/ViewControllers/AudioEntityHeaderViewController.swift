@@ -19,16 +19,7 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 	var useCollapsableHeader:Bool = false
 	private var headerCollapsed:Bool = false
 	
-    private lazy var headerVC:HeaderViewController = {
-		let centerVC:UIViewController
-		if let aelvc = self as? AudioEntityLibraryViewController  where !self.subGroups.isEmpty && self.sourceData is GroupMutableAudioEntitySourceData{
-			centerVC = SubGroupButtonController(subGroups:self.subGroups, aelvc:aelvc)
-		} else {
-			centerVC = HeaderLabelStackController(sourceData: self.sourceData)
-		}
-		
-		return self.useCollapsableHeader ? ArtworkHeaderViewController(centerViewController:centerVC) : UtilHeaderViewController(centerViewController:centerVC)
-	}()
+    private lazy var headerVC:HeaderViewController = self.createHeaderView()
 	
 	//MARK: - Multi Select Toolbar Buttons
 	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.showAddToOptions(_:)))
@@ -83,6 +74,11 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 			view.addGestureRecognizer(tableView.panGestureRecognizer)
 		}
 	}
+    
+    func createHeaderView() -> HeaderViewController {
+        let centerVC:UIViewController = HeaderLabelStackController(sourceData: sourceData)
+        return self.useCollapsableHeader ? ArtworkHeaderViewController(centerViewController:centerVC) : UtilHeaderViewController(centerViewController:centerVC)
+    }
 	
 	//MARK: - Scroll View Delegate
 	final func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -111,7 +107,7 @@ extension AudioEntityHeaderViewController {
 		let willEdit = !tableView.editing
 		
 		tableView.setEditing(willEdit, animated: true)
-		RootViewController.instance.setToolbarHidden(!willEdit)
+        navigationController?.setToolbarHidden(!willEdit, animated: true)
 		
 		if willEdit && toolbarItems == nil {
 			func createFlexibleSpace() -> UIBarButtonItem {
