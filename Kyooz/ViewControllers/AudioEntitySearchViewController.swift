@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController : AudioEntityHeaderViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
     static let instance = AudioEntitySearchViewController()
     
@@ -20,6 +20,9 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
                 textField?.selectAll(nil)
             } else {
                 searchBar.resignFirstResponder()
+                if tableView.editing {
+                    toggleSelectMode()
+                }
                 KyoozUtils.doInMainQueueAfterDelay(0.4) {
                     (self.datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
                     self.reloadTableViewData()
@@ -43,6 +46,7 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         return nil
     }()
 	
+    lazy var shortNotificationManager = ShortNotificationManager.instance
     
     //MARK: - Properties
     lazy var searchExecutionControllers:[SearchExecutionController] = {
@@ -74,31 +78,22 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        headerView.userInteractionEnabled = true
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
-        searchBar.delegate = self
         searchBar.barStyle = UIBarStyle.Black
         searchBar.translucent = false
+        searchBar.delegate = self
         searchBar.placeholder = "Search"
         searchBar.tintColor = ThemeHelper.defaultVividColor
-        searchBar.searchFieldBackgroundPositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
-		searchBar.backgroundColor = UIColor.clearColor()
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Bottom], subView: searchBar, parentView: headerView.contentView)
+        searchBar.backgroundColor = UIColor.clearColor()
+        navigationItem.titleView = searchBar
         
 		
         tableView.scrollsToTop = isExpanded
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Bottom, .Right], subView: activityIndicator, parentView: headerView.contentView).forEach() {
-            $1.constant = -8
-        }
         activityIndicator.color = ThemeHelper.defaultVividColor
-        activityIndicator.widthAnchor.constraintEqualToConstant(30).active = true
-        activityIndicator.heightAnchor.constraintEqualToAnchor(activityIndicator.widthAnchor).active = true
-        activityIndicator.leftAnchor.constraintEqualToAnchor(searchBar.rightAnchor).active = true
         applyDatasourceDelegate()
-
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -164,19 +159,19 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         rowLimitedDSD.dsdSections.forEach() {
             count += $0.sourceData.entities.count
         }
-        let items:String
-        if rowLimitedDSD.dsdSections.count == 1 {
-            let groupName = rowLimitedDSD.dsdSections[0].sourceData.libraryGrouping.name
-			items = count == 1 ? groupName.withoutLast() : groupName
-        } else {
-            items = count == 1 ? "RESULT" : "RESULTS"
-        }
         
-        self.tableFooterView.text = "\(count) \(items)"
+        var groupName = rowLimitedDSD.dsdSections.count != 1 ? "RESULTS" : rowLimitedDSD.dsdSections[0].sourceData.libraryGrouping.name
+        groupName = count == 1 ? groupName.withoutLast() : groupName
+        
+        self.tableFooterView.text = "\(count) \(groupName)"
         self.tableView.tableFooterView = self.tableFooterView
 
     }
 
+    override func createHeaderView() -> HeaderViewController {
+        let vc = GenericWrapperViewController(viewToWrap: activityIndicator)
+        return UtilHeaderViewController(centerViewController:vc)
+    }
     
     override func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
         searchBar.resignFirstResponder()
@@ -228,6 +223,9 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
     
     //MARK: - SearchExecutionController Delegate
     func searchResultsDidGetUpdated() {
+        if tableView.editing {
+            toggleSelectMode()
+        }
         reloadTableViewData()
     }
     
@@ -264,6 +262,24 @@ final class AudioEntitySearchViewController : AudioEntityPlainHeaderViewControll
         if let rowLimitedDSD = datasourceDelegate as? RowLimitedSectionDelegator {
             reloadTableFooter(rowLimitedDSD)
         }
+    }
+    
+}
+
+//MARK: - MultiSelect overrides
+extension AudioEntitySearchViewController {
+    override func toggleSelectMode() {
+        super.toggleSelectMode()
+        searchBar.resignFirstResponder()
+    }
+    
+    override func selectOrDeselectAll() {
+        let willSelectAll = tableView.indexPathsForSelectedRows == nil
+        if let rowLimitedDSD = datasourceDelegate as? RowLimitedSectionDelegator
+            where rowLimitedDSD.sections.count > 1 && willSelectAll {
+            shortNotificationManager.presentShortNotification(withMessage: "Tip: Expand a search results section to select all the results for that particular section")
+        }
+        super.selectOrDeselectAll()
     }
     
 }

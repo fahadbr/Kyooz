@@ -9,7 +9,11 @@
 import UIKit
 import MediaPlayer
 
+
+//TODO: Rename this class
 //view controller primarily used for wrapping a view in a view controller object
+//to be used in a paging controller. the internal views are ones that need to be refreshed upon audio queue player
+//changes or notifications
 class WrapperViewController : UIViewController {
 	
 	private (set) var representingIndex:Int

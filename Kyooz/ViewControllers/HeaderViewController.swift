@@ -51,15 +51,17 @@ class HeaderViewController : UIViewController {
         let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
         stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
         
-        if centerViewController is SubGroupButtonController {
-            stackView.distribution = .EqualCentering
-        } else if centerViewController is HeaderLabelStackController {
+        switch centerViewController.dynamicType {
+        case is HeaderLabelStackController.Type:
             stackView.distribution = .Fill
             stackView.alignment = UIStackViewAlignment.Bottom
             constraints[.Bottom]!.constant = -4
+        case is SubGroupButtonController.Type:
+            stackView.distribution = .Fill
+        default:
+            stackView.distribution = .EqualCentering
         }
     }
-
 	
 	func createLeftButton() -> UIButton {
 		let leftButton = ShuffleButtonView()

@@ -27,9 +27,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     lazy var rootViewController:RootViewController = RootViewController.instance
     
-    private var nowPlayingNavigationController:UINavigationController!
+    private let nowPlayingNavigationController = UINavigationController()
     private let nowPlayingQueueViewController = NowPlayingQueueViewController.instance
     private let searchViewController = AudioEntitySearchViewController.instance
+    private let searchNavigationController = UINavigationController()
     private let kyoozNavigationViewController = KyoozNavigationViewController()
     
     var centerPanelPosition:Position = .Center {
@@ -94,25 +95,30 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		//NOW PLAYING VC
         
 		
-		nowPlayingNavigationController = UINavigationController(rootViewController: nowPlayingQueueViewController)
-		
-		nowPlayingNavigationController!.toolbarHidden = false
-		let npView = nowPlayingNavigationController!.view
-		addChildViewController(nowPlayingNavigationController!)
+		nowPlayingNavigationController.setViewControllers([nowPlayingQueueViewController], animated: false)
+		ThemeHelper.configureNavigationBar(nowPlayingNavigationController.navigationBar)
+		nowPlayingNavigationController.toolbarHidden = false
+		let npView = nowPlayingQueueView
+		addChildViewController(nowPlayingNavigationController)
 		nowPlayingNavigationController.didMoveToParentViewController(self)
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Right, .Width], subView: npView, parentView: view)[.Width]!.constant = -sideVCOffset
 		view.sendSubviewToBack(npView)
-        nowPlayingNavigationController.navigationBar.backgroundColor = UIColor.clearColor()
-        nowPlayingNavigationController.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
-        nowPlayingNavigationController.navigationBar.shadowImage = UIImage()
+        ThemeHelper.configureNavigationBar(nowPlayingNavigationController.navigationBar)
 		
-		nowPlayingQueueViewController.view.layer.rasterizationScale = UIScreen.mainScreen().scale
+		npView.layer.rasterizationScale = UIScreen.mainScreen().scale
         
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Width], subView: searchViewController.view, parentView: view)[.Width]!.constant = -sideVCOffset
-        addChildViewController(searchViewController)
-        view.sendSubviewToBack(searchViewController.view)
-        searchViewController.didMoveToParentViewController(self)
+        searchNavigationController.setViewControllers([searchViewController], animated: false)
+        ThemeHelper.configureNavigationBar(searchNavigationController.navigationBar)
+        
+        let searchControllerView = self.searchControllerView
+        searchControllerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Width],
+                                               subView: searchControllerView,
+                                               parentView: view)[.Width]!.constant = -sideVCOffset
+        addChildViewController(searchNavigationController)
+        view.sendSubviewToBack(searchControllerView)
+        searchNavigationController.didMoveToParentViewController(self)
     }
 	
     func dismissTutorials(targetPosition:Position) {
@@ -329,11 +335,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             CATransaction.commit()
             
             if centerViewRightConstraint.constant > 0 {
-                nowPlayingNavigationController!.view.hidden = true
-                searchViewController.view.hidden = false
+                nowPlayingQueueView.hidden = true
+                searchControllerView.hidden = false
             } else if centerViewRightConstraint.constant < 0 {
-                nowPlayingNavigationController!.view.hidden = false
-                searchViewController.view.hidden = true
+                nowPlayingQueueView.hidden = false
+                searchControllerView.hidden = true
             }
 		}
 	}
@@ -374,4 +380,18 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         return false
     }
    
+}
+
+//MARK: - convenience variables
+extension ContainerViewController {
+    var nowPlayingQueueView : UIView {
+        return nowPlayingNavigationController.view
+    }
+    
+    var searchControllerView : UIView {
+        return searchNavigationController.view
+    }
+    
+    
+    
 }

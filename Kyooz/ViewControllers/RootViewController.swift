@@ -174,10 +174,6 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         })
     }
     
-    func setToolbarHidden(hidden:Bool) {
-        libraryNavigationController.setToolbarHidden(hidden, animated: true)
-    }
-    
     func pushViewController(vc:UIViewController) {
         if(pullableViewExpanded) {
             animatePullablePanel(shouldExpand: false)

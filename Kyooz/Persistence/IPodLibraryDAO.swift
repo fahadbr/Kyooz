@@ -43,7 +43,7 @@ class IPodLibraryDAO {
                     KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)", withThrownError: e, presentationVC: nil)
                 } else {
                     KyoozUtils.doInMainQueueAfterDelay(0.5) {
-                        ShortNotificationManager.instance.presentShortNotificationWithMessage(message)
+                        ShortNotificationManager.instance.presentShortNotification(withMessage:message)
                     }
                 }
             })

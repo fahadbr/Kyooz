@@ -57,6 +57,7 @@
 		0B476C741B2273E500626810 /* AudioEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C731B2273E500626810 /* AudioEntity.swift */; };
 		0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C791B22921800626810 /* SpotifySettingsViewController.swift */; };
 		0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C7E1B2350FE00626810 /* SpotifyController.swift */; };
+		0B4B2D661D0DC89A0036F358 /* GenericWrapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4B2D651D0DC89A0036F358 /* GenericWrapperViewController.swift */; };
 		0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */; };
 		0B4E60061C2CBB7700BB9D77 /* ShuffleButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */; };
 		0B4E60081C2CD99C00BB9D77 /* RepeatButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B4E60071C2CD99C00BB9D77 /* RepeatButtonView.xib */; };
@@ -253,6 +254,7 @@
 		0B476C731B2273E500626810 /* AudioEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntity.swift; sourceTree = "<group>"; };
 		0B476C791B22921800626810 /* SpotifySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifySettingsViewController.swift; sourceTree = "<group>"; };
 		0B476C7E1B2350FE00626810 /* SpotifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
+		0B4B2D651D0DC89A0036F358 /* GenericWrapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericWrapperViewController.swift; sourceTree = "<group>"; };
 		0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShuffleButtonView.swift; sourceTree = "<group>"; };
 		0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShuffleButtonView.xib; sourceTree = "<group>"; };
 		0B4E60071C2CD99C00BB9D77 /* RepeatButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RepeatButtonView.xib; sourceTree = "<group>"; };
@@ -844,6 +846,7 @@
 				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
 				0B2937581C92690B00374A3C /* FadeOutViewController.swift */,
+				0B4B2D651D0DC89A0036F358 /* GenericWrapperViewController.swift */,
 				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
 				104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */,
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
@@ -1112,6 +1115,7 @@
 				10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */,
 				0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */,
 				1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */,
+				0B4B2D661D0DC89A0036F358 /* GenericWrapperViewController.swift in Sources */,
 				0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,

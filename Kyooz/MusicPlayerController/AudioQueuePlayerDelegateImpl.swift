@@ -20,7 +20,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
     
     func audioQueuePlayerDidEnqueueItems(items: [AudioTrack], position: EnqueuePosition) {
 		KyoozUtils.doInMainQueueAsync() {
-			self.shortNotificationManager.presentShortNotificationWithMessage("Queued \(items.count) tracks to play \(position)")
+			self.shortNotificationManager.presentShortNotification(withMessage:"Queued \(items.count) tracks to play \(position)")
 		}
     }
 	
@@ -37,7 +37,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
             }
 		}
 		
-		shortNotificationManager.presentShortNotificationWithMessage(message)
+        shortNotificationManager.presentShortNotification(withMessage:message)
 	}
 	
 	func restorePlaybackState(stateToRestore:PlaybackStatePersistableSnapshot) {

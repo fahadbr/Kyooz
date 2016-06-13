@@ -24,10 +24,6 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 		}
 	}
 	
-	var subGroups:[LibraryGrouping] {
-		return []
-	}
-	
 	var shouldAnimateInArtwork:Bool {
 		return false
 	}
@@ -36,6 +32,11 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
+        tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+        tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
+        
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: tableView, parentView: view)
 		tableView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
 		
