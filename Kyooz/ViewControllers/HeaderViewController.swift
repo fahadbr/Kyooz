@@ -40,6 +40,10 @@ class HeaderViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		leftButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
+		leftButton.widthAnchor.constraintEqualToAnchor(leftButton.heightAnchor).active = true
+		selectButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
+		selectButton.widthAnchor.constraintEqualToAnchor(selectButton.heightAnchor).active = true
 		
         leftButton.alpha = ThemeHelper.defaultButtonTextAlpha
         selectButton.alpha = ThemeHelper.defaultButtonTextAlpha
@@ -64,17 +68,11 @@ class HeaderViewController : UIViewController {
     }
 	
 	func createLeftButton() -> UIButton {
-		let leftButton = ShuffleButtonView()
-		leftButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
-		leftButton.widthAnchor.constraintEqualToAnchor(leftButton.heightAnchor).active = true
-		return leftButton
+		return ShuffleButtonView()
 	}
 	
 	func createSelectButton() -> MultiSelectButtonView {
-		let selectButton = MultiSelectButtonView()
-		selectButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
-		selectButton.widthAnchor.constraintEqualToAnchor(selectButton.heightAnchor).active = true
-		return selectButton
+		return MultiSelectButtonView()
 	}
 	
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class UtilHeaderViewController: HeaderViewController {
+class UtilHeaderViewController: HeaderViewController {
 
 	private var path:UIBezierPath!
 	private var accentLayer:CAShapeLayer = CAShapeLayer()
@@ -34,4 +34,14 @@ final class UtilHeaderViewController: HeaderViewController {
 		accentLayer.path = path.CGPath
     }
     
+}
+
+
+final class NowPlayingHeaderViewController : UtilHeaderViewController {
+	
+	override func createLeftButton() -> UIButton {
+		return CrossButtonView()
+	}
+	
+	
 }

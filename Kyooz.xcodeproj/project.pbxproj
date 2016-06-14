@@ -23,7 +23,7 @@
 		0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */; };
 		0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */; };
 		0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */; };
-		0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */; };
+		0B13DA191AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */; };
 		0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */; };
 		0B13DA1B1AE6FA9A00CC5C01 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA061AE6FA9A00CC5C01 /* ImageTableViewCell.swift */; };
 		0B13DA1C1AE6FA9A00CC5C01 /* ImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13DA071AE6FA9A00CC5C01 /* ImageTableViewCell.xib */; };
@@ -220,7 +220,7 @@
 		0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioQueuePlayerImpl.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TempDataDAO.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingSummaryViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingQueueViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0B13DA061AE6FA9A00CC5C01 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ImageTableViewCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA071AE6FA9A00CC5C01 /* ImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -518,7 +518,7 @@
 				0B0FE16E1C40B8F7001E4ABE /* VC Helpers */,
 				0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */,
 				10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */,
-				0B13DA031AE6FA9A00CC5C01 /* NowPlayingViewController.swift */,
+				0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
 			);
 			path = ViewControllers;
@@ -1196,7 +1196,7 @@
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
 				108DBA0D1CE537990013E990 /* Tutorial.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
-				0B13DA191AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,
+				0B13DA191AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift in Sources */,
 				0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */,
 				0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */,
 				0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */,
