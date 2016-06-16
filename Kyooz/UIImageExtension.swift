@@ -19,5 +19,9 @@ extension UIImage {
     convenience init(instance:ImageInstance) {
         self.init(named:instance.rawValue)!
     }
+	
+	convenience init(highlightedInstance:ImageInstance) {
+		self.init(named:highlightedInstance.rawValue + "Highlighted")!
+	}
     
 }
