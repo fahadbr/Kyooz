@@ -97,7 +97,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		
 		nowPlayingNavigationController.setViewControllers([nowPlayingQueueViewController], animated: false)
 		ThemeHelper.configureNavigationBar(nowPlayingNavigationController.navigationBar)
-		nowPlayingNavigationController.toolbarHidden = false
 		let npView = nowPlayingQueueView
 		addChildViewController(nowPlayingNavigationController)
 		nowPlayingNavigationController.didMoveToParentViewController(self)

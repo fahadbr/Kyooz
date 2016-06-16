@@ -29,8 +29,10 @@ final class NowPlayingSummaryViewController: UIViewController {
     private lazy var labelWrapperVC:LabelStackWrapperViewController = {
         let track = self.audioQueuePlayer.nowPlayingItem
         let index = self.audioQueuePlayer.indexOfNowPlayingItem
-		Logger.debug("heightScale = \(self.dynamicType.heightScale)")
-        let vc = LabelStackWrapperViewController(track: track, isPresentedVC: true, representingIndex: index, useSmallFont: self.dynamicType.heightScale < 0.8)
+        let vc = LabelStackWrapperViewController(track: track,
+                                                 isPresentedVC: true,
+                                                 representingIndex: index,
+                                                 useSmallFont: self.dynamicType.heightScale < 0.8)
         return vc
     }()
     
@@ -203,7 +205,8 @@ final class NowPlayingSummaryViewController: UIViewController {
 		
         let goToAlbumButton = createAndConfigureButton("ALBUM", selector: #selector(self.goToAlbum(_:)))
         let goToArtistButton = createAndConfigureButton("ARTIST", selector: #selector(self.goToArtist(_:)))
-        let addToPlaylistButton = createAndConfigureButton(" ＋  ", selector: #selector(self.addToPlaylist(_:)))
+        let addToPlaylistButton = createAndConfigureButton("＋  ", selector: #selector(self.addToPlaylist(_:)))
+		addToPlaylistButton.titleLabel?.font = UIFont.systemFontOfSize(20)
 		let hideButton = createAndConfigureButton("HIDE", selector: #selector(self.collapseViewController(_:)))
 		
 		let goToStack = stackViewWrapperForViews([goToAlbumButton, goToArtistButton, addToPlaylistButton])

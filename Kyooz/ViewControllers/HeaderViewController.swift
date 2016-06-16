@@ -62,6 +62,8 @@ class HeaderViewController : UIViewController {
             constraints[.Bottom]!.constant = -4
         case is SubGroupButtonController.Type:
             stackView.distribution = .Fill
+		case is GenericWrapperViewController<UIToolbar>.Type:
+			stackView.distribution = .Fill
         default:
             stackView.distribution = .EqualCentering
         }
