@@ -12,10 +12,12 @@ import MediaPlayer
 class AddToPlaylistViewController: UIViewController {
     
     private let tracksToAdd:[AudioTrack]
+    private let vcTitle:String
     let completionAction:(()->())?
     
-    init(tracksToAdd:[AudioTrack], completionAction:(()->())?) {
+    init(tracksToAdd:[AudioTrack], title:String, completionAction:(()->())?) {
         self.tracksToAdd = tracksToAdd
+        self.vcTitle = title
         self.completionAction = completionAction
         super.init(nibName: nil, bundle: nil)
     }
@@ -71,8 +73,7 @@ class AddToPlaylistViewController: UIViewController {
         
         let sectionDelegator = AudioEntityDSDSectionDelegator(datasources: datasourceDelegates, showEmptySections: true)
         
-        vc.title = "ADD TO PLAYLIST"
-        
+        vc.title = vcTitle
         vc.sourceData = sectionDelegator
         vc.datasourceDelegate = sectionDelegator
         

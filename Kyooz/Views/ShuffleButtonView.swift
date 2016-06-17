@@ -49,7 +49,7 @@ final class ShuffleButtonView : UIButton {
     override func drawRect(rect: CGRect) {
         let colorToUse:UIColor
         if !enabled {
-            colorToUse = UIColor.darkGrayColor()
+            colorToUse = isActive ? ThemeHelper.defaultVividColor.colorWithAlphaComponent(0.4) : UIColor.darkGrayColor()
         } else if highlighted {
             colorToUse = UIColor.redColor()
         } else if isActive {
