@@ -64,6 +64,8 @@ class HeaderViewController : UIViewController {
             stackView.distribution = .Fill
 		case is GenericWrapperViewController<UIToolbar>.Type:
 			stackView.distribution = .Fill
+            stackView.alignment = .Center
+            centerViewController.view.heightAnchor.constraintEqualToConstant(44).active = true
         default:
             stackView.distribution = .EqualCentering
         }

@@ -79,7 +79,7 @@ final class AudioEngineController : AudioController {
         }
         
         playerNode.play()
-        return audioEngine.running && playerNode.playing
+        return true
     }
     
     func pause() -> Bool {
@@ -87,7 +87,7 @@ final class AudioEngineController : AudioController {
             playerNode.pause()
             audioEngine.pause()
         }
-        return !playerNode.playing && !audioEngine.running
+        return true
     }
     
     func loadItem(url:NSURL) throws {

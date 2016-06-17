@@ -49,12 +49,26 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     }
     
     let tableView = UITableView()
+    
 	
 	//MARK: - Multi Select Toolbar Buttons
 	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Add, target: self, action: #selector(self.addSelectedToPlaylist))
 	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString, style: .Plain, target: self, action: #selector(self.selectOrDeselectAll))
 	private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.deleteSelectedIndexPaths))
-	private var headerViewController:HeaderViewController!
+    
+    //MARK: - Header Buttons
+    private lazy var headerDeleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.deleteWholeQueue))
+    private lazy var headerAddToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.addWholeQueueToPlaylist))
+    private lazy var headerViewController:HeaderViewController = {
+        let hToolbar = UIToolbar()
+        hToolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
+        hToolbar.setShadowImage(UIImage(), forToolbarPosition: .Any)
+        hToolbar.userInteractionEnabled = true
+        let space = { return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil) }
+        hToolbar.items = [space(), self.headerAddToButton, space(), self.headerDeleteButton, space()]
+        
+        return UtilHeaderViewController(centerViewController: GenericWrapperViewController(viewToWrap: hToolbar))
+    }()
     
     //MARK: GESTURE PROPERTIES
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
@@ -84,9 +98,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        func createFlexibleSpace() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        }
         
         title = "QUEUE"
         
@@ -102,16 +113,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 		tableView.contentInset.bottom = 44
         tableView.scrollIndicatorInsets.bottom = 44
 		
-		let hToolbar = UIToolbar()
-		hToolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
-		hToolbar.setShadowImage(UIImage(), forToolbarPosition: .Any)
-		hToolbar.userInteractionEnabled = true
-		let item1 = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.addWholeQueueToPlaylist))
-		let space = { return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil) }
-		let item2 = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.deleteWholeQueue))
-		hToolbar.items = [space(), item1, space(), item2, space()]
-		
-        headerViewController = UtilHeaderViewController(centerViewController: GenericWrapperViewController(viewToWrap: hToolbar))
 		let headerView = headerViewController.view
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
         headerView.heightAnchor.constraintEqualToConstant(headerViewController.defaultHeight).active = true
@@ -127,7 +128,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         dragToRearrangeGestureHandler.delegate = self
 		longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragToRearrangeGestureHandler,
 		                                                          action: #selector(LongPressToDragGestureHandler.handleGesture(_:)))
-
         tableView.addGestureRecognizer(longPressGestureRecognizer)
         
         resetDSD()
@@ -160,6 +160,11 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     func reloadTableData() {
         tableView.reloadData()
 		(headerViewController.leftButton as? ShuffleButtonView)?.isActive = audioQueuePlayer.shuffleActive
+        let queueNotEmpty = !audioQueuePlayer.nowPlayingQueue.isEmpty
+        headerDeleteButton.enabled = queueNotEmpty
+        headerAddToButton.enabled = queueNotEmpty
+        headerViewController.leftButton.enabled = queueNotEmpty
+        headerViewController.selectButton.enabled = queueNotEmpty
 		if isExpanded {
 			refreshTableFooter()
 		}
@@ -229,7 +234,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 	func addWholeQueueToPlaylist() {
 		let queue = audioQueuePlayer.nowPlayingQueue
 		guard !queue.isEmpty else { return }
-		KyoozUtils.showAvailablePlaylistsForAddingTracks(queue)
+		KyoozUtils.showAvailablePlaylists(forAddingTracks: queue, usingTitle: "ADD QUEUE TO PLAYLIST")
 	}
 	
 	func deleteWholeQueue() {
@@ -326,7 +331,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         }
         menuVC.addActions(removeActions)
         menuVC.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
-            KyoozUtils.showAvailablePlaylistsForAddingTracks([mediaItem])
+            KyoozUtils.showAvailablePlaylists(forAddingTracks: [mediaItem])
         }])
 		menuVC.originatingCenter = originatingCenter
 		
@@ -363,7 +368,10 @@ extension NowPlayingQueueViewController {
 			self.toolbarItems = toolbarItems
 		}
 		headerViewController.selectButton.isActive = willEdit
-		
+		headerViewController.leftButton.enabled = !willEdit
+        headerDeleteButton.enabled = !willEdit
+        headerAddToButton.enabled = !willEdit
+        
 		refreshButtonStates()
 	}
 	
@@ -378,7 +386,7 @@ extension NowPlayingQueueViewController {
 		for i in indicies {
 			tracks.append(queue[i])
 		}
-		KyoozUtils.showAvailablePlaylistsForAddingTracks(tracks)
+        KyoozUtils.showAvailablePlaylists(forAddingTracks:tracks, usingTitle: "ADD \(indicies.count) TRACKS TO PLAYLIST")
 	}
 	
 	

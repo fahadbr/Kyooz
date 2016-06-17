@@ -107,6 +107,10 @@ extension AudioEntityDSDSectionDelegator : AudioEntitySourceData {
         return dsdSections.flatMap() { return $0.sourceData.entities }
     }
     
+    var tracks:[AudioTrack] {
+        return dsdSections.flatMap() { return $0.sourceData.tracks }
+    }
+    
     var libraryGrouping:LibraryGrouping {
 		return dsdSections.first?.sourceData.libraryGrouping ?? LibraryGrouping.Artists
     }

@@ -73,7 +73,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     
     func addToPlaylist(sender: AnyObject) {
         guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else { return }
-        KyoozUtils.showAvailablePlaylistsForAddingTracks([nowPlayingItem])
+        KyoozUtils.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
     }
 	
     private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
