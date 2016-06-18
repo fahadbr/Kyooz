@@ -199,7 +199,7 @@ struct KyoozUtils {
         let saveAction = { (text:String) in
 
             do {
-                try KyoozPlaylistManager.instance.createOrUpdatePlaylist(KyoozPlaylist(name: text), withTracks: tracks)
+				try KyoozPlaylistManager.instance.create(playlist:KyoozPlaylist(name: text), withTracks: tracks)
                 completionAction?()
             } catch let error {
                 showPopupError(withTitle: "Failed to save playlist with name \(text)", withThrownError: error, presentationVC: nil)

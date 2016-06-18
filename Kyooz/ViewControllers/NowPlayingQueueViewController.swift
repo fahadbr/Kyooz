@@ -110,9 +110,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         tableView.showsVerticalScrollIndicator = true
         tableView.indicatorStyle = .White
 		
-		tableView.contentInset.bottom = 44
-        tableView.scrollIndicatorInsets.bottom = 44
-		
 		let headerView = headerViewController.view
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
         headerView.heightAnchor.constraintEqualToConstant(headerViewController.defaultHeight).active = true

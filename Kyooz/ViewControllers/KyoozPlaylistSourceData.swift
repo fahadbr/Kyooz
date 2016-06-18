@@ -47,7 +47,7 @@ final class KyoozPlaylistSourceData : MutableAudioEntitySourceData {
             
             tracks.removeAtIndex(indexPath.row)
         }
-        try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: tracks)
+		try KyoozPlaylistManager.instance.update(playlist:playlist, withTracks: tracks)
     }
     
     func moveEntity(fromIndexPath originalIndexPath:NSIndexPath, toIndexPath destinationIndexPath:NSIndexPath) throws {
@@ -58,7 +58,7 @@ final class KyoozPlaylistSourceData : MutableAudioEntitySourceData {
         
         let temp = tracks.removeAtIndex(originalIndexPath.row)
         tracks.insert(temp, atIndex: destinationIndexPath.row)
-        try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: tracks)
+        try KyoozPlaylistManager.instance.update(playlist:playlist, withTracks: tracks)
     }
     
     func insertEntities(entities: [AudioEntity], atIndexPath indexPathToInsert: NSIndexPath) throws -> Int {
@@ -72,7 +72,7 @@ final class KyoozPlaylistSourceData : MutableAudioEntitySourceData {
         
         var tracks = playlist.tracks
         tracks.insertContentsOf(audioTracks, at: indexPathToInsert.row)
-        try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: tracks)
+        try KyoozPlaylistManager.instance.update(playlist:playlist, withTracks: tracks)
         return entities.count
     }
 }

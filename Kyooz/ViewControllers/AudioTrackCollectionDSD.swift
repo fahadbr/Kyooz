@@ -121,7 +121,7 @@ final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
 		var playlistTracks = playlist.tracks
 		playlistTracks.appendContentsOf(tracksToAdd)
 		do {
-			try KyoozPlaylistManager.instance.createOrUpdatePlaylist(playlist, withTracks: playlistTracks)
+			try KyoozPlaylistManager.instance.update(playlist:playlist, withTracks: playlistTracks)
 		} catch let error {
 			KyoozUtils.showPopupError(withTitle: "Failed to add \(tracksToAdd.count) tracks to playlist: \(playlist.name)", withThrownError: error, presentationVC: nil)
 		}
