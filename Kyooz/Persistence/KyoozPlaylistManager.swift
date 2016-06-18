@@ -27,16 +27,28 @@ final class KyoozPlaylistManager : NSObject {
         reloadSourceData()
     }
 	
-	func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
-		playlist.count = tracks.count
-        
-        let oldCount = playlistsSet.count
-		
-        try playlist.setTracks(tracks)
-		try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: false)
-        
-        let newCount = playlistsSet.count
-        ShortNotificationManager.instance.presentShortNotification(withMessage:"Saved \(oldCount < newCount ? "" : "changes to ")playlist: \(playlist.name)")
+	func create(playlist playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
+		if playlistsSet.containsObject(playlist) {
+			let kmvc = KyoozMenuViewController()
+			kmvc.menuTitle = "There's already a playlist with the name \(playlist.name). Would you like to overwrite?"
+			let overwriteAction = KyoozMenuAction(title: "Overwrite", image: nil, action: {
+				do {
+					try self.createOrUpdatePlaylist(playlist, withTracks: tracks)
+				} catch let error {
+					KyoozUtils.showPopupError(withTitle: "Error occurred while saving playlist \(playlist.name)", withThrownError: error, presentationVC: nil)
+				}
+			})
+			kmvc.addActions([overwriteAction])
+		} else {
+			try createOrUpdatePlaylist(playlist, withTracks: tracks)
+		}
+	}
+	
+	func update(playlist playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
+		guard playlistsSet.containsObject(playlist) else {
+			throw DataPersistenceError(errorDescription:"Playlist with name \(playlist.name) does not exist")
+		}
+		try createOrUpdatePlaylist(playlist, withTracks: tracks)
 	}
 	
     func deletePlaylist(playlist:KyoozPlaylist) throws {
@@ -44,6 +56,18 @@ final class KyoozPlaylistManager : NSObject {
         try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: true)
 		ShortNotificationManager.instance.presentShortNotification(withMessage:"Deleted playlist \(playlist.name)")
     }
+	
+	private func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
+		playlist.count = tracks.count
+		
+		let oldCount = playlistsSet.count
+		
+		try playlist.setTracks(tracks)
+		try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: false)
+		
+		let newCount = playlistsSet.count
+		ShortNotificationManager.instance.presentShortNotification(withMessage:"Saved \(oldCount < newCount ? "" : "changes to ")playlist: \(playlist.name)")
+	}
 	
 	private func updatePlaylistSet(withPlaylist playlist:KyoozPlaylist, actionIsDelete:Bool) throws {
 		func addOrRemove(remove:Bool) {
