@@ -31,7 +31,7 @@ final class KyoozPlaylistManager : NSObject {
 		if playlistsSet.containsObject(playlist) {
 			let kmvc = KyoozMenuViewController()
 			kmvc.menuTitle = "There's already a playlist with the name \(playlist.name). Would you like to overwrite?"
-			let overwriteAction = KyoozMenuAction(title: "Overwrite", image: nil, action: {
+			let overwriteAction = KyoozMenuAction(title: "OVERWRITE,", image: nil, action: {
 				do {
 					try self.createOrUpdatePlaylist(playlist, withTracks: tracks)
 				} catch let error {
@@ -39,6 +39,7 @@ final class KyoozPlaylistManager : NSObject {
 				}
 			})
 			kmvc.addActions([overwriteAction])
+            KyoozUtils.showMenuViewController(kmvc)
 		} else {
 			try createOrUpdatePlaylist(playlist, withTracks: tracks)
 		}

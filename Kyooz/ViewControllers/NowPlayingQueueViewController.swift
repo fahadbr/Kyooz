@@ -101,7 +101,10 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         
         title = "QUEUE"
         
-        ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right],
+                                               subView: tableView,
+                                               parentView: view)
+        tableView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
         automaticallyAdjustsScrollViewInsets = false
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
