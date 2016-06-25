@@ -35,6 +35,7 @@ struct ApplicationDefaults {
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
     }
+	
 }
 
 

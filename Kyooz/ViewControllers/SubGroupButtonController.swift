@@ -29,7 +29,8 @@ class SubGroupButtonController: UIViewController {
 		self.audioEntityLibraryViewController = aelvc
         super.init(nibName: nil, bundle: nil)
 		
-		if let group = subGroups.first {
+		let group = aelvc.sourceData.libraryGrouping
+		if !subGroups.isEmpty && subGroups.contains(group) {
 			libraryGroupingButton.hidden = false
 			setActiveGroup(group)
 		}
