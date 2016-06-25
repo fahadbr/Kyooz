@@ -61,8 +61,8 @@ class AddToPlaylistDSD : AudioTrackCollectionDSD {
 	
 	private let tracksToAdd:[AudioTrack]
     private weak var callbackVC:AddToPlaylistViewController?
-    private var playlistTypeName:String {
-        return ""
+    private var playlistType:PlaylistType {
+        return .kyooz
     }
 	
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, tracksToAdd:[AudioTrack], callbackVC:AddToPlaylistViewController) {
@@ -89,7 +89,7 @@ class AddToPlaylistDSD : AudioTrackCollectionDSD {
         button.layer.borderColor = UIColor.darkGrayColor().CGColor
         button.layer.borderWidth = 0.5
         if let label = button.titleLabel {
-            button.setTitle("NEW \(playlistTypeName)..", forState: .Normal)
+            button.setTitle("NEW \(playlistType.description)..", forState: .Normal)
             button.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
             button.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
             button.backgroundColor = ThemeHelper.defaultTableCellColor
@@ -112,9 +112,9 @@ class AddToPlaylistDSD : AudioTrackCollectionDSD {
 
 final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
     
-    private override var playlistTypeName:String {
-        return "KYOOZ PLAYLIST"
-    }
+	private override var playlistType:PlaylistType {
+		return .kyooz
+	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		guard let playlist = sourceData[indexPath] as? KyoozPlaylist else { return }
@@ -138,10 +138,10 @@ final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
 @available(iOS 9.3, *)
 final class AddToAppleMusicPlaylistDSD : AddToPlaylistDSD {
 	
-    private override var playlistTypeName:String {
-        return "ITUNES PLAYLIST"
-    }
-    
+	private override var playlistType:PlaylistType {
+		return .iTunes
+	}
+	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard let playlist = sourceData[indexPath] as? MPMediaPlaylist, items = tracksToAdd as? [MPMediaItem] else { return }
         

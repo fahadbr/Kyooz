@@ -48,7 +48,7 @@ class SearchExecutionController : NSObject {
         super.init()
         
         defaultSearchQueue.name = "Kyooz.SearchQueue.\(description)"
-        defaultSearchQueue.qualityOfService = NSQualityOfService.UserInteractive
+        defaultSearchQueue.qualityOfService = NSQualityOfService.Background
         defaultSearchQueue.maxConcurrentOperationCount = 1
         rebuildSearchIndex()
     }
