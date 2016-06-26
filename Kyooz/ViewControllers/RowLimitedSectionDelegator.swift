@@ -29,17 +29,10 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
         return false
     }
 	
-    init(datasourcesWithRowLimits: [(AudioEntityDSDProtocol, Int)], tableView:UITableView) {
-
-        let datasources = datasourcesWithRowLimits.map() { (entry) -> AudioEntityDSDProtocol in
-            let dataSource = entry.0
-            dataSource.rowLimit = entry.1
-            dataSource.rowLimitActive = true
-            return dataSource
-        }
+    init(datasourceDelegates: [AudioEntityDSDProtocol], tableView:UITableView) {
         tableView.sectionHeaderHeight = ThemeHelper.tableViewSectionHeaderHeight
         self.tableView = tableView
-		super.init(datasources: datasources)
+		super.init(datasources: datasourceDelegates)
 	}
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

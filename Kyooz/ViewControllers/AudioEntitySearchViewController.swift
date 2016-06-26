@@ -9,9 +9,10 @@
 import UIKit
 import MediaPlayer
 
-final class AudioEntitySearchViewController : AudioEntityHeaderViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController : AudioEntityHeaderViewController<RowLimitedSectionDelegator>, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
     static let instance = AudioEntitySearchViewController()
+
     
     var isExpanded = false {
         didSet {
@@ -24,7 +25,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
                     toggleSelectMode()
                 }
                 KyoozUtils.doInMainQueueAfterDelay(0.4) {
-                    (self.datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
+                    self.datasourceDelegate.collapseAllSections()
                     self.reloadTableViewData()
                 }
             }
@@ -51,18 +52,28 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     //MARK: - Properties
     lazy var searchExecutionControllers:[SearchExecutionController] = {
         let artistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Artists,
-            searchKeys: [MPMediaItemPropertyAlbumArtist])
+                                                                        searchKeys: [MPMediaItemPropertyAlbumArtist])
+        
         let albumSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Albums,
-            searchKeys: [MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
+                                                                       searchKeys: [MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
+        
         let songSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Songs,
-            searchKeys: [MPMediaItemPropertyTitle, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
+                                                                      searchKeys: [MPMediaItemPropertyTitle, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist])
+        
         let playlistSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Playlists,
-            searchKeys: [MPMediaPlaylistPropertyName])
-        let audioBooksSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.AudioBooks, searchKeys: [MPMediaItemPropertyTitle])
-        let compilationsSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Compilations, searchKeys: [MPMediaItemPropertyAlbumTitle])
+                                                                          searchKeys: [MPMediaPlaylistPropertyName])
+        
+        let audioBooksSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.AudioBooks,
+                                                                            searchKeys: [MPMediaItemPropertyTitle])
+        
+        let compilationsSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Compilations,
+                                                                              searchKeys: [MPMediaItemPropertyAlbumTitle])
+        
         let podcastSearchExecutor = IPodLibrarySearchExecutionController(libraryGroup: LibraryGrouping.Podcasts,
                                                                          searchKeys: [MPMediaItemPropertyPodcastTitle, MPMediaItemPropertyAlbumArtist])
+        
         let kyoozPlaylistSearchExecutor = KyoozPlaylistSearchExecutionController()
+        
         return [artistSearchExecutor, albumSearchExecutor, kyoozPlaylistSearchExecutor, playlistSearchExecutor, compilationsSearchExecutor, songSearchExecutor, podcastSearchExecutor, audioBooksSearchExecutor]
     }()
     
@@ -72,8 +83,9 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     private (set) var searchText:String!
     
     private let searchBar = UISearchBar()
-    private let activityIndicator = UIActivityIndicatorView()
     private let tableFooterView = KyoozTableFooterView()
+    
+    private let searchProgressView = UIProgressView()
 	
     //MARK: - View life cycle
     override func viewDidLoad() {
@@ -86,14 +98,25 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         searchBar.placeholder = "Search"
         searchBar.tintColor = ThemeHelper.defaultVividColor
         searchBar.backgroundColor = UIColor.clearColor()
-        navigationItem.titleView = searchBar
         
+        headerHeightConstraint.constant = ThemeHelper.plainHeaderHight
+        tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight
+        tableView.contentInset.top = ThemeHelper.plainHeaderHight
+        navigationController?.navigationBar.userInteractionEnabled = false
 		
         tableView.scrollsToTop = isExpanded
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         
-        activityIndicator.color = ThemeHelper.defaultVividColor
+        searchProgressView.progressTintColor = ThemeHelper.defaultVividColor
+        searchProgressView.trackTintColor = ThemeHelper.defaultTableCellColor
+        
         applyDatasourceDelegate()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        searchProgressView.frame.size.width = tableView.frame.width
+        tableView.tableHeaderView = searchProgressView
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -127,7 +150,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     }
     
     func applyDatasourceDelegate() {
-        var datasourceDelegatesWithRowLimit = [(AudioEntityDSDProtocol, Int)]()
+        var dsds = [AnyAudioEntityDSD<SearchResultsSourceData>]()
         for searchExecutionController in searchExecutionControllers {
             searchExecutionController.delegate = self
             let libraryGroup = searchExecutionController.libraryGroup
@@ -144,9 +167,11 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
                 datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: self)
             }
             datasourceDelegate.useSmallFont = true
-            datasourceDelegatesWithRowLimit.append((datasourceDelegate, rowLimitPerSection[libraryGroup] ?? defaultRowLimit))
+            datasourceDelegate.rowLimit = rowLimitPerSection[libraryGroup] ?? defaultRowLimit
+            datasourceDelegate.rowLimitActive = true
+            dsds.append(AnyAudioEntityDSD(base:datasourceDelegate))
         }
-        let sectionDelegator = RowLimitedSectionDelegator(datasourcesWithRowLimits: datasourceDelegatesWithRowLimit, tableView: tableView)
+        let sectionDelegator = RowLimitedSectionDelegator(datasourceDelegates: dsds, tableView: tableView)
         sectionDelegator.delegate = self
         sourceData = sectionDelegator
         datasourceDelegate = sectionDelegator
@@ -155,9 +180,8 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
     
     private func reloadTableFooter(rowLimitedDSD:RowLimitedSectionDelegator) {
-        var count = 0
-        rowLimitedDSD.dsdSections.forEach() {
-            count += $0.sourceData.entities.count
+        let count = rowLimitedDSD.dsdSections.reduce(0) {
+            return $0 + $1.sourceData.entities.count
         }
         
         var groupName = rowLimitedDSD.dsdSections.count != 1 ? "RESULTS" : rowLimitedDSD.dsdSections[0].sourceData.libraryGrouping.name
@@ -169,7 +193,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     }
 
     override func createHeaderView() -> HeaderViewController {
-        let vc = GenericWrapperViewController(viewToWrap: activityIndicator)
+        let vc = GenericWrapperViewController(viewToWrap: searchBar)
         return UtilHeaderViewController(centerViewController:vc)
     }
     
@@ -203,7 +227,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         defer {
-            refreshActivityView()
+            refreshProgressView()
         }
 		guard !searchText.isEmpty else { return }
 		
@@ -230,22 +254,15 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     }
     
     func searchDidComplete() {
-        KyoozUtils.doInMainQueue(refreshActivityView)
+        KyoozUtils.doInMainQueue(refreshProgressView)
     }
     
-    func refreshActivityView() {
-        var searchInProgress = false
-        for se in searchExecutionControllers {
-            if se.searchInProgress {
-                searchInProgress = true
-                break
-            }
+    
+    func refreshProgressView() {
+        let searchesInProgress:Float = searchExecutionControllers.reduce(0) {
+            return !$1.searchInProgress ? $0 + 1 : $0
         }
-        if searchInProgress && !activityIndicator.isAnimating() {
-            activityIndicator.startAnimating()
-        } else if !searchInProgress && activityIndicator.isAnimating() {
-            activityIndicator.stopAnimating()
-        }
+        searchProgressView.progress = searchesInProgress/Float(searchExecutionControllers.count)
     }
     
     func initializeIndicies() {
@@ -264,10 +281,10 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         }
     }
     
-}
-
-//MARK: - MultiSelect overrides
-extension AudioEntitySearchViewController {
+//}
+//
+////MARK: - MultiSelect overrides
+//extension AudioEntitySearchViewController {
     override func toggleSelectMode() {
         super.toggleSelectMode()
         searchBar.resignFirstResponder()

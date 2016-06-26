@@ -45,10 +45,12 @@ final class SearchResultsSourceData : AudioEntitySourceData {
     
     func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
         let entity = self[indexPath]
-        if let playlist = entity as? KyoozPlaylist {
+        switch entity {
+        case let playlist as KyoozPlaylist:
             return KyoozPlaylistSourceData(playlist: playlist)
+        default:
+            return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: nil)
         }
-        return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: nil)
     }
     
     

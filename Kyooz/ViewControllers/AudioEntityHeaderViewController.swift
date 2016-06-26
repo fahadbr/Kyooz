@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewDelegate {
+class AudioEntityHeaderViewController<DSD: AudioEntityDSDProtocol> : AudioEntityViewController<DSD>, UIScrollViewDelegate {
 
 	
 	var headerHeightConstraint: NSLayoutConstraint!
@@ -22,27 +22,33 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
     private lazy var headerVC:HeaderViewController = self.createHeaderView()
 	
 	//MARK: - Multi Select Toolbar Buttons
-	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.showAddToOptions(_:)))
-	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString, style: .Plain, target: self, action: #selector(self.selectOrDeselectAll))
-	private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.deleteSelectedItems))
-	
-	private lazy var playButton:UIBarButtonItem = {
-		$0.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-		$0.isPlayButton = true
-		$0.hasOuterFrame = false
-		$0.color = ThemeHelper.defaultTintColor
-		$0.addTarget(self, action: #selector(self.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
-		return UIBarButtonItem(customView: $0)
-	}(PlayPauseButtonView())
-	
-	private lazy var shuffleToolbarButton:UIBarButtonItem = {
-		$0.color = ThemeHelper.defaultTintColor
-		$0.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40))
-		$0.addTarget(self, action: #selector(self.playSelectedTracks(_:)), forControlEvents: .TouchUpInside)
-		return UIBarButtonItem(customView: $0)
-	}(ShuffleButtonView())
-	
-	//MARK: - View Lifecycle Functions
+    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO..",
+                                                                   style: .Plain,
+	                                                               target: self,
+	                                                               action: #selector(self.showAddToOptions(_:)))
+    
+    
+	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString,
+	                                                                   style: .Plain,
+	                                                                   target: self,
+	                                                                   action: #selector(self.selectOrDeselectAll))
+    
+    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
+                                                                    style: .Plain,
+	                                                                target: self,
+	                                                                action: #selector(self.deleteSelectedItems))
+    
+    private lazy var playButton:UIBarButtonItem = UIBarButtonItem(title: "PLAY",
+                                                                  style: .Plain,
+                                                                  target: self,
+                                                                  action: #selector(self.playSelectedTracks(_:)))
+    
+    private lazy var shuffleToolbarButton:UIBarButtonItem = UIBarButtonItem(title: "SHUFFLE",
+                                                                            style: .Plain,
+                                                                            target: self,
+                                                                            action: #selector(self.playSelectedTracks(_:)))
+    
+    //MARK: - View Lifecycle Functions
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,12 +101,26 @@ class AudioEntityHeaderViewController : AudioEntityViewController, UIScrollViewD
 			headerCollapsed = true
 		}
 	}
+    
+    override func reloadTableViewData() {
+        if !tableView.editing {
+            super.reloadTableViewData()
+        }
+    }
+    
+    override func registerForNotifications() {
+        super.registerForNotifications()
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(self.refreshButtonStates),
+                                                         name: UITableViewSelectionDidChangeNotification,
+                                                         object: tableView)
+    }
 	
-	
-}
-
-//MARK: - Multi Select Functions
-extension AudioEntityHeaderViewController {
+//	
+//}
+//
+////MARK: - Multi Select Functions
+//extension AudioEntityHeaderViewController {
 	
 	
 	func toggleSelectMode() {
@@ -110,29 +130,23 @@ extension AudioEntityHeaderViewController {
         navigationController?.setToolbarHidden(!willEdit, animated: true)
 		
 		if willEdit && toolbarItems == nil {
-			func createFlexibleSpace() -> UIBarButtonItem {
-				return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-			}
 			
-			var toolbarItems = [playButton, createFlexibleSpace(), shuffleToolbarButton, createFlexibleSpace(), addToButton]
-			
-			if sourceData is MutableAudioEntitySourceData {
-				toolbarItems.append(createFlexibleSpace())
-				toolbarItems.append(deleteButton)
-			}
-			toolbarItems.append(createFlexibleSpace())
-			toolbarItems.append(selectAllButton)
-			
-			let tintColor = ThemeHelper.defaultTintColor
-			toolbarItems.forEach() {
-				$0.tintColor = tintColor
-			}
-			NSNotificationCenter.defaultCenter().addObserver(self,
-			                                                 selector: #selector(self.refreshButtonStates),
-			                                                 name: UITableViewSelectionDidChangeNotification,
-			                                                 object: tableView)
+			var toolbarItems = [playButton,
+			                    UIBarButtonItem.flexibleSpace(),
+			                    shuffleToolbarButton,
+			                    UIBarButtonItem.flexibleSpace(),
+			                    addToButton,
+			                    UIBarButtonItem.flexibleSpace(),
+			                    selectAllButton]
+
+            
+            if sourceData is MutableAudioEntitySourceData {
+                toolbarItems.insertContentsOf([UIBarButtonItem.flexibleSpace(), deleteButton], at: 5)
+            }
+
 			self.toolbarItems = toolbarItems
 		}
+        
         headerVC.selectButton.isActive = willEdit
 		
 		refreshButtonStates()
@@ -150,52 +164,31 @@ extension AudioEntityHeaderViewController {
 	}
 	
 	private func playTracks(tracks:[AudioTrack], shouldShuffle:Bool) {
-		audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: tracks.count):0, shouldShuffleIfOff: shouldShuffle)
+		audioQueuePlayer.playNow(withTracks: tracks,
+		                         startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: tracks.count):0,
+		                         shouldShuffleIfOff: shouldShuffle)
 	}
 	
 	
 	func refreshButtonStates() {
+        guard tableView.editing else { return }
+        
 		let isNotEmpty = tableView.indexPathsForSelectedRows != nil
 		
 		playButton.enabled = isNotEmpty
-		deleteButton.enabled = isNotEmpty
+        deleteButton.enabled = isNotEmpty
 		addToButton.enabled = isNotEmpty
 		shuffleToolbarButton.enabled = isNotEmpty
 		selectAllButton.title = isNotEmpty ? KyoozConstants.deselectAllString : KyoozConstants.selectAllString
 	}
 	
 	func selectOrDeselectAll() {
-		if let selectedIndicies = tableView.indexPathsForSelectedRows {
-			for indexPath in selectedIndicies {
-				tableView.deselectRowAtIndexPath(indexPath, animated: false)
-			}
-		} else {
-			for section in 0 ..< tableView.numberOfSections {
-				for row in 0 ..< tableView.numberOfRowsInSection(section) {
-					let indexPath = NSIndexPath(forRow: row, inSection: section)
-					tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
-				}
-			}
-		}
-		
+		tableView.selectOrDeselectAll()
 		refreshButtonStates()
 	}
 	
 	private func getOrderedTracks() -> [AudioTrack]? {
-		guard var selectedIndicies = tableView.indexPathsForSelectedRows else { return nil }
-		
-		selectedIndicies.sortInPlace { (first, second) -> Bool in
-			if first.section != second.section {
-				return first.section < second.section
-			}
-			return first.row < second.row
-		}
-		
-		var items = [AudioTrack]()
-		for indexPath in selectedIndicies {
-			items.appendContentsOf(sourceData.getTracksAtIndex(indexPath))
-		}
-		return items
+        return tableView.indexPathsForSelectedRows?.sort(<).flatMap() { self.sourceData.getTracksAtIndex($0) }
 	}
 	
 	func playSelectedTracks(sender:AnyObject!) {
@@ -212,7 +205,6 @@ extension AudioEntityHeaderViewController {
 		let kmvc = KyoozMenuViewController()
 		kmvc.menuTitle = "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items"
 		KyoozUtils.addDefaultQueueingActions(items, menuController: kmvc) {
-			self.selectOrDeselectAll()
 			self.toggleSelectMode()
 		}
 		
@@ -223,7 +215,8 @@ extension AudioEntityHeaderViewController {
 	func deleteSelectedItems() {
 		
 		func deleteInternal() {
-			guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData, let selectedIndicies = tableView.indexPathsForSelectedRows else {
+			guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData,
+                let selectedIndicies = tableView.indexPathsForSelectedRows else {
 				return
 			}
 			do {
@@ -235,13 +228,7 @@ extension AudioEntityHeaderViewController {
 			}
 		}
 		
-		let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = "Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?"
-		kmvc.addActions([KyoozMenuAction(title:"YES", image: nil) {
-			deleteInternal()
-			}])
-		KyoozUtils.showMenuViewController(kmvc)
-		
+        KyoozUtils.confirmAction("Delete \(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items?", action: deleteInternal)
 	}
 	
 }

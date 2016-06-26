@@ -24,7 +24,6 @@ final class KyoozTableFooterView: UIView {
 	}
 	
 	private let label = UILabel()
-//	private let separatorLayer = CAShapeLayer()
 	
 	init() {
 		super.init(frame: CGRect.zero)
@@ -35,19 +34,10 @@ final class KyoozTableFooterView: UIView {
 		label.lineBreakMode = .ByWordWrapping
 		label.font = self.dynamicType.font
 		
-//		separatorLayer.strokeColor = UIColor.darkGrayColor().CGColor
-//		separatorLayer.lineWidth = 0.5
-//		layer.addSublayer(separatorLayer)
 	}
 	
 	override func layoutSubviews() {
-		let path = UIBezierPath()
-		path.moveToPoint(bounds.origin)
-		path.addLineToPoint(CGPoint(x: bounds.maxX, y: bounds.origin.y))
-		path.applyTransform(CGAffineTransformMakeTranslation(0, 10))
-//		separatorLayer.frame = bounds
-//		separatorLayer.path = path.CGPath
-		
+        super.layoutSubviews()
 		label.center = CGPoint(x:bounds.midX, y: bounds.midY)
 	}
 	

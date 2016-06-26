@@ -28,7 +28,7 @@ class TextViewController: UIViewController {
         func flexibleSpace() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         }
-        let dismissButton = UIBarButtonItem(title: "Dismiss", style: .Done, target: self, action: #selector(self.dismiss))
+        let dismissButton = UIBarButtonItem(title: "DISMISS", style: .Done, target: self, action: #selector(self.dismiss))
         dismissButton.tintColor = ThemeHelper.defaultTintColor
         toolbarItems = [flexibleSpace(), dismissButton, flexibleSpace()]
         navigationController?.toolbarHidden = false

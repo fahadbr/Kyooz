@@ -156,15 +156,16 @@ struct KyoozUtils {
         
         menuController.addActions([queueNextAction, queueLastAction, queueRandomlyAction])
         menuController.addActions([KyoozMenuAction(title: "ADD TO PLAYLIST..", image: nil) {
-            if tracks.count == 1 {
-                KyoozUtils.showAvailablePlaylists(forAddingTracks: tracks)
-            } else {
-                KyoozUtils.showAvailablePlaylists(forAddingTracks: tracks, usingTitle: "ADD \(tracks.count) TRACKS TO PLAYLIST")
-            }
+            let title:String? = tracks.count == 1 ? nil : "ADD \(tracks.count) TRACKS TO PLAYLIST"
+            KyoozUtils.showAvailablePlaylists(forAddingTracks: tracks,
+                usingTitle: title,
+                completionAction:completionAction)
         }])
     }
     
-    static func showAvailablePlaylists(forAddingTracks tracks:[AudioTrack], usingTitle title:String = "ADD TO PLAYLIST", completionAction:(()->Void)? = nil) {
+    static func showAvailablePlaylists(forAddingTracks tracks:[AudioTrack],
+                                                       usingTitle title:String? = nil,
+                                                                  completionAction:(()->Void)? = nil) {
         let presentingVC = ContainerViewController.instance
         let addToPlaylistVC = AddToPlaylistViewController(tracksToAdd: tracks, title: title, completionAction: completionAction)
         addToPlaylistVC.modalTransitionStyle = .CrossDissolve

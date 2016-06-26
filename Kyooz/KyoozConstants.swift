@@ -16,7 +16,7 @@ struct KyoozConstants {
     
     static let ONE_DAY_IN_SECONDS:Double = 86400 //60 * 60 * 24
 	
-	static let selectAllString = "Select All"
-	static let deselectAllString = "Deselect All"
+	static let selectAllString = "SELECT ALL"
+	static let deselectAllString = "DESELECT ALL"
 	
 }
