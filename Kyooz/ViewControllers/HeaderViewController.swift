@@ -53,7 +53,8 @@ class HeaderViewController : UIViewController {
 		stackView.axis = .Horizontal
         
         let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
-        stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.9).active = true
+        var multiplier:CGFloat = 0.9
+        
         
         switch centerViewController.dynamicType {
         case is HeaderLabelStackController.Type:
@@ -62,13 +63,13 @@ class HeaderViewController : UIViewController {
             constraints[.Bottom]!.constant = -4
         case is SubGroupButtonController.Type:
             stackView.distribution = .Fill
-		case is GenericWrapperViewController<UIToolbar>.Type:
+		case is GenericWrapperViewController<UISearchBar>.Type:
 			stackView.distribution = .Fill
-            stackView.alignment = .Center
-            centerViewController.view.heightAnchor.constraintEqualToConstant(44).active = true
+            multiplier = 1.0
         default:
             stackView.distribution = .EqualCentering
         }
+        stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: multiplier).active = true
     }
 	
 	func createLeftButton() -> UIButton {

@@ -36,16 +36,3 @@ class UtilHeaderViewController: HeaderViewController {
     
 }
 
-
-final class NowPlayingHeaderViewController : UtilHeaderViewController {
-	
-	override func createLeftButton() -> UIButton {
-		let b = UIButton()
-		b.contentMode = .ScaleAspectFit
-		b.setImage(UIImage(instance:.Trash), forState: .Normal)
-		b.setImage(UIImage(highlightedInstance:.Trash), forState: .Highlighted)
-		return b
-	}
-	
-	
-}

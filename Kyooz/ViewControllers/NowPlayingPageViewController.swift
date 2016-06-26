@@ -11,7 +11,7 @@ import UIKit
 class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 	
 	var refreshNeeded:Bool = false
-	private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+	private lazy var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()

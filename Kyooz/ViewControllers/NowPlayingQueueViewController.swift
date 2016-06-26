@@ -52,23 +52,58 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     
 	
 	//MARK: - Multi Select Toolbar Buttons
-	private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Add, target: self, action: #selector(self.addSelectedToPlaylist))
-	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString, style: .Plain, target: self, action: #selector(self.selectOrDeselectAll))
-	private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.deleteSelectedIndexPaths))
+    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO PLAYLIST",
+                                                                   style: .Plain,
+	                                                               target: self,
+	                                                               action: #selector(self.addSelectedToPlaylist))
+    
+	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString.uppercaseString,
+	                                                                   style: .Plain,
+	                                                                   target: self,
+	                                                                   action: #selector(self.selectOrDeselectAll))
+    
+    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
+                                                                    style: .Plain,
+                                                                    target: self,
+                                                                    action: #selector(self.deleteSelectedIndexPaths))
     
     //MARK: - Header Buttons
-    private lazy var headerDeleteButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(self.deleteWholeQueue))
-    private lazy var headerAddToButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(self.addWholeQueueToPlaylist))
-    private lazy var headerViewController:HeaderViewController = {
-        let hToolbar = UIToolbar()
-        hToolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
-        hToolbar.setShadowImage(UIImage(), forToolbarPosition: .Any)
-        hToolbar.userInteractionEnabled = true
-        let space = { return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil) }
-        hToolbar.items = [space(), self.headerAddToButton, space(), self.headerDeleteButton, space()]
-        
-        return UtilHeaderViewController(centerViewController: GenericWrapperViewController(viewToWrap: hToolbar))
+    private lazy var clearQueueButton:UIBarButtonItem = UIBarButtonItem(title: "CLEAR QUEUE",
+                                                                        style: .Plain,
+                                                                        target: self,
+                                                                        action: #selector(self.deleteWholeQueue))
+    
+    private lazy var addQueueToPlaylistButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO PLAYLIST",
+                                                                                style: .Plain,
+                                                                                target: self,
+                                                                                action: #selector(self.addWholeQueueToPlaylist))
+    
+    private lazy var selectButton:MultiSelectButtonView = {
+        let s = MultiSelectButtonView(frame:CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40)))
+        s.addTarget(self, action: #selector(self.toggleSelectMode), forControlEvents: .TouchUpInside)
+        return s
     }()
+    
+    private lazy var standardToolbarItems:[UIBarButtonItem] = [UIBarButtonItem.flexibleSpace(),
+                                                               self.addQueueToPlaylistButton,
+                                                               UIBarButtonItem.flexibleSpace(),
+                                                               self.clearQueueButton,
+                                                               UIBarButtonItem.flexibleSpace()]
+    private lazy var editingToolbarItems:[UIBarButtonItem] = {
+        let items = [self.addToButton,
+                     UIBarButtonItem.flexibleSpace(),
+                     self.deleteButton,
+                     UIBarButtonItem.flexibleSpace(),
+                     self.selectAllButton]
+        
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(self.refreshButtonStates),
+                                                         name: UITableViewSelectionDidChangeNotification,
+                                                         object: self.tableView)
+        return items
+    }()
+    
+    private let headerView = PlainHeaderView()
     
     //MARK: GESTURE PROPERTIES
     private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
@@ -101,11 +136,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         
         title = "QUEUE"
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right],
-                                               subView: tableView,
-                                               parentView: view)
-        tableView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
-        automaticallyAdjustsScrollViewInsets = false
+        ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: view)
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: "songDetailsTableViewCell")
         tableView.scrollsToTop = isExpanded
@@ -113,22 +144,20 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         tableView.showsVerticalScrollIndicator = true
         tableView.indicatorStyle = .White
 		
-		let headerView = headerViewController.view
+		let headerView = self.headerView
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
-        headerView.heightAnchor.constraintEqualToConstant(headerViewController.defaultHeight).active = true
-		tableView.contentInset.top = headerViewController.defaultHeight
-		tableView.scrollIndicatorInsets.top = headerViewController.defaultHeight
+        headerView.bottomAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
 		tableView.contentOffset.y = -tableView.contentInset.top
 
-		
-		headerViewController.selectButton.addTarget(self, action: #selector(self.toggleSelectMode), forControlEvents: .TouchUpInside)
-		headerViewController.leftButton.addTarget(self, action: #selector(self.toggleShuffle), forControlEvents: .TouchUpInside)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView:selectButton)
 		
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         dragToRearrangeGestureHandler.delegate = self
 		longPressGestureRecognizer = UILongPressGestureRecognizer(target: dragToRearrangeGestureHandler,
 		                                                          action: #selector(LongPressToDragGestureHandler.handleGesture(_:)))
         tableView.addGestureRecognizer(longPressGestureRecognizer)
+        navigationController?.toolbarHidden = false
+        toolbarItems = standardToolbarItems
         
         resetDSD()
         registerForNotifications()
@@ -159,12 +188,15 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     //MARK: CLASS Functions
     func reloadTableData() {
         tableView.reloadData()
-		(headerViewController.leftButton as? ShuffleButtonView)?.isActive = audioQueuePlayer.shuffleActive
+        
         let queueNotEmpty = !audioQueuePlayer.nowPlayingQueue.isEmpty
-        headerDeleteButton.enabled = queueNotEmpty
-        headerAddToButton.enabled = queueNotEmpty
-        headerViewController.leftButton.enabled = queueNotEmpty
-        headerViewController.selectButton.enabled = queueNotEmpty
+        clearQueueButton.enabled = queueNotEmpty
+        addQueueToPlaylistButton.enabled = queueNotEmpty
+        selectButton.enabled = queueNotEmpty
+        
+        if !queueNotEmpty && tableView.editing {
+            toggleSelectMode()
+        }
 		if isExpanded {
 			refreshTableFooter()
 		}
@@ -173,10 +205,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 	func refreshTableFooter() {
 		let queue = audioQueuePlayer.nowPlayingQueue
 		let count = queue.count
-		var duration:NSTimeInterval = 0
-		for item in queue {
-			duration += item.playbackDuration
-		}
+        
+        let duration:NSTimeInterval = queue.reduce(0) { return $0 + $1.playbackDuration }
+        
 		let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration)?.uppercaseString
 		tableFooterView.text = "\(count) TRACK\(count == 1 ? "" : "S")\n\(albumDurationString ?? "")"
 		tableView.tableFooterView = tableFooterView
@@ -225,11 +256,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     }
 	
 	//MARK: - Header view functions
-	func toggleShuffle() {
-		let shuffleActive = !audioQueuePlayer.shuffleActive
-		audioQueuePlayer.shuffleActive = shuffleActive
-		(headerViewController.leftButton as? ShuffleButtonView)?.isActive = shuffleActive
-	}
 	
 	func addWholeQueueToPlaylist() {
 		let queue = audioQueuePlayer.nowPlayingQueue
@@ -239,23 +265,15 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 	
 	func deleteWholeQueue() {
 		func delete() {
-			var indexPaths = [NSIndexPath]()
 			let count = audioQueuePlayer.nowPlayingQueue.count
-			
-			indexPaths.reserveCapacity(count)
-			
 			let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
-			for i in 0 ..< count {
-				if i != indexOfNowPlayingItem {
-					indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
-				}
-			}
+            let indexPaths = (0..<count).lazy.filter({ $0 != indexOfNowPlayingItem }).map({ return NSIndexPath(forRow: $0, inSection: 0) })
 			audioQueuePlayer.clearItems(towardsDirection: .All, atIndex: audioQueuePlayer.indexOfNowPlayingItem)
-			deleteIndexPaths(indexPaths)
+			deleteIndexPaths(Array(indexPaths))
 		}
 		
 		guard !audioQueuePlayer.nowPlayingQueue.isEmpty else { return }
-		KyoozUtils.confirmAction("Remove the entire queue?", action: delete)
+		KyoozUtils.confirmAction("Clear the entire queue?", action: delete)
 	}
 		
     func presentActionsForCell(cell:UITableViewCell, title: String?, details: String?, originatingCenter:CGPoint) {
@@ -347,47 +365,21 @@ extension NowPlayingQueueViewController {
 		let willEdit = !tableView.editing
 		
 		tableView.setEditing(willEdit, animated: true)
-		navigationController?.setToolbarHidden(!willEdit, animated: true)
 		longPressGestureRecognizer.enabled = !willEdit
 		
-		if willEdit && toolbarItems == nil {
-			func createFlexibleSpace() -> UIBarButtonItem {
-				return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-			}
-			
-			let toolbarItems = [addToButton, createFlexibleSpace(), deleteButton, createFlexibleSpace(), selectAllButton]
-			
-			let tintColor = ThemeHelper.defaultTintColor
-			toolbarItems.forEach() {
-				$0.tintColor = tintColor
-			}
-			NSNotificationCenter.defaultCenter().addObserver(self,
-			                                                 selector: #selector(self.refreshButtonStates),
-			                                                 name: UITableViewSelectionDidChangeNotification,
-			                                                 object: tableView)
-			self.toolbarItems = toolbarItems
-		}
-		headerViewController.selectButton.isActive = willEdit
-		headerViewController.leftButton.enabled = !willEdit
-        headerDeleteButton.enabled = !willEdit
-        headerAddToButton.enabled = !willEdit
+        setToolbarItems(willEdit ? editingToolbarItems : standardToolbarItems, animated: true)
+		selectButton.isActive = willEdit
         
 		refreshButtonStates()
 	}
 	
 	func addSelectedToPlaylist() {
-		var tracks:[AudioTrack] = [AudioTrack]()
-		let queue = audioQueuePlayer.nowPlayingQueue
-		guard let indexPaths = tableView.indexPathsForSelectedRows where tableView.editing else { return }
-		
-		let indicies = indexPaths.map({$0.row}).sort(<)
-		
-		tracks.reserveCapacity(indicies.count)
-		for i in indicies {
-			tracks.append(queue[i])
-		}
-        KyoozUtils.showAvailablePlaylists(forAddingTracks:tracks, usingTitle: "ADD \(indicies.count) TRACKS TO PLAYLIST")
-	}
+		guard let tracks = getOrderedTracks() where tableView.editing else { return }
+
+        KyoozUtils.showAvailablePlaylists(forAddingTracks:tracks,
+                                          usingTitle: "ADD \(tracks.count) TRACKS TO PLAYLIST",
+                                          completionAction:toggleSelectMode)
+    }
 	
 	
 	func refreshButtonStates() {
@@ -399,44 +391,18 @@ extension NowPlayingQueueViewController {
 	}
 	
 	func selectOrDeselectAll() {
-		if let selectedIndicies = tableView.indexPathsForSelectedRows {
-			for indexPath in selectedIndicies {
-				tableView.deselectRowAtIndexPath(indexPath, animated: false)
-			}
-		} else {
-			for section in 0 ..< tableView.numberOfSections {
-				for row in 0 ..< tableView.numberOfRowsInSection(section) {
-					let indexPath = NSIndexPath(forRow: row, inSection: section)
-					tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None)
-				}
-			}
-		}
-		
+		tableView.selectOrDeselectAll()
 		refreshButtonStates()
 	}
 	
 	private func getOrderedTracks() -> [AudioTrack]? {
-		guard var selectedIndicies = tableView.indexPathsForSelectedRows else { return nil }
-		
-		selectedIndicies.sortInPlace { (first, second) -> Bool in
-			if first.section != second.section {
-				return first.section < second.section
-			}
-			return first.row < second.row
-		}
-		
-		let queue = audioQueuePlayer.nowPlayingQueue
-		var items = [AudioTrack]()
-		for indexPath in selectedIndicies {
-			items.append(queue[indexPath.row])
-		}
-		return items
+        let queue = audioQueuePlayer.nowPlayingQueue
+		return tableView.indexPathsForSelectedRows?.sort(<).map() { return queue[$0.row] }
 	}
 	
 	func deleteSelectedIndexPaths() {
 		func delete(indexPathsToDelete:[NSIndexPath]) {
-			let indicies = indexPathsToDelete.map() { $0.row }
-			audioQueuePlayer.deleteItemsAtIndices(indicies)
+			audioQueuePlayer.deleteItemsAtIndices(indexPathsToDelete.map() { $0.row })
 			deleteIndexPaths(indexPathsToDelete)
 		}
 		guard let indexPathsToDelete = tableView.indexPathsForSelectedRows where tableView.editing else {

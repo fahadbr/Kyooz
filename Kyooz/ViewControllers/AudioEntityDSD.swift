@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
+class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, UITableViewDelegate {
     
     weak var audioCellDelegate:AudioTableCellDelegate?
     weak var scrollViewDelegate:UIScrollViewDelegate?
@@ -21,8 +21,13 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
 	
     var rowLimit:Int = 0
     var rowLimitActive:Bool = false
+    var sourceData:AudioEntitySourceData
     
 	var useSmallFont:Bool = false
+    
+    var tableViewDSD: TableViewDSD {
+        return self
+    }
 	
 	private let reuseIdentifier:String
 	private lazy var smallFont = ThemeHelper.smallFontForStyle(.Bold)
@@ -31,7 +36,8 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
         self.reuseIdentifier = reuseIdentifier
         self.audioCellDelegate = audioCellDelegate
         self.scrollViewDelegate = audioCellDelegate as? UIScrollViewDelegate
-        super.init(sourceData: sourceData)
+        self.sourceData = sourceData
+        super.init()
     }
     
     //MARK: - TableView Datasource Methods
@@ -80,10 +86,24 @@ class AudioEntityDSD : AudioEntityTableViewDelegate, AudioEntityDSDProtocol {
     }
     
     func entityIsNowPlaying(entity:AudioEntity, libraryGrouping:LibraryGrouping, indexPath:NSIndexPath) -> Bool {
-        if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping), let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping) where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
+        if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping),
+            let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping)
+            where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
+            
             return true
         }
         return false
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
+            return nil
+        }
+        
+        let headerView = view.headerView
+        headerView.headerTitleLabel.text = sourceData.sections[section].name
+        headerView.disclosureContainerView.hidden = true
+        return view
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {

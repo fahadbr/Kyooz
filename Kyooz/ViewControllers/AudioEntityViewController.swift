@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class AudioEntityViewController : CustomPopableViewController, AudioEntityViewControllerProtocol, AudioTableCellDelegate {
+class AudioEntityViewController<DSD: AudioEntityDSDProtocol> : CustomPopableViewController, AudioEntityViewControllerProtocol, AudioTableCellDelegate {
     
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -17,16 +17,20 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
 	
-	var datasourceDelegate:AudioEntityDSDProtocol! {
+	var datasourceDelegate:DSD! {
 		didSet {
-			tableView.dataSource = datasourceDelegate
-			tableView.delegate = datasourceDelegate
+			tableView.dataSource = datasourceDelegate.tableViewDSD
+			tableView.delegate = datasourceDelegate.tableViewDSD
 		}
 	}
 	
 	var shouldAnimateInArtwork:Bool {
 		return false
 	}
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
 	
 	//MARK: - View Lifecycle functions
 	
@@ -119,12 +123,20 @@ class AudioEntityViewController : CustomPopableViewController, AudioEntityViewCo
     
     func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(AudioEntityViewController.reloadTableViewData),
-            name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(AudioEntityViewController.reloadTableViewData),
-            name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(AudioEntityViewController.reloadAllData),
-            name: MPMediaLibraryDidChangeNotification, object: MPMediaLibrary.defaultMediaLibrary())
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadTableViewData),
+                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue,
+                                       object: audioQueuePlayer)
+        //TODO: Why does this class need to know about playback state updates?
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadTableViewData),
+                                       name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue,
+                                       object: audioQueuePlayer)
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadAllData),
+                                       name: MPMediaLibraryDidChangeNotification,
+                                       object: MPMediaLibrary.defaultMediaLibrary())
     }
     
     private func unregisterForNotifications() {

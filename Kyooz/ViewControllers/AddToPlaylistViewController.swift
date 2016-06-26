@@ -15,9 +15,9 @@ class AddToPlaylistViewController: UIViewController {
     private let vcTitle:String
     let completionAction:(()->())?
     
-    init(tracksToAdd:[AudioTrack], title:String, completionAction:(()->())?) {
+    init(tracksToAdd:[AudioTrack], title:String?, completionAction:(()->())?) {
         self.tracksToAdd = tracksToAdd
-        self.vcTitle = title
+        self.vcTitle = title ?? "ADD TO PLAYLIST"
         self.completionAction = completionAction
         super.init(nibName: nil, bundle: nil)
     }
@@ -41,9 +41,6 @@ class AddToPlaylistViewController: UIViewController {
             return playlistQuery
         }
         
-        func createFlexibleSpace() -> UIBarButtonItem {
-            return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        }
 
         let vc = AudioEntityPlainHeaderViewController()
         vc.automaticallyAdjustsScrollViewInsets = false
@@ -53,7 +50,7 @@ class AddToPlaylistViewController: UIViewController {
         var datasourceDelegates:[AudioEntityDSDProtocol] = [kyoozPlaylistDSD]
         
         
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dismissOnly))
+        let cancelButton = UIBarButtonItem(title:"CANCEL", style: .Plain, target: self, action: #selector(self.dismissOnly))
         cancelButton.tintColor = ThemeHelper.defaultTintColor
         
         if #available(iOS 9.3, *) {
@@ -65,10 +62,10 @@ class AddToPlaylistViewController: UIViewController {
             
             let infoButton = UIBarButtonItem(title: "??", style: .Plain, target: self, action: #selector(self.showInfo))
             infoButton.tintColor = ThemeHelper.defaultTintColor
-            vc.toolbarItems = [createFlexibleSpace(), cancelButton, createFlexibleSpace(), infoButton]
+            vc.toolbarItems = [UIBarButtonItem.flexibleSpace(), cancelButton, UIBarButtonItem.flexibleSpace(), infoButton]
             
         } else {
-            vc.toolbarItems = [createFlexibleSpace(), cancelButton, createFlexibleSpace()]
+            vc.toolbarItems = [UIBarButtonItem.flexibleSpace(), cancelButton, UIBarButtonItem.flexibleSpace()]
         }
         
         let sectionDelegator = AudioEntityDSDSectionDelegator(datasources: datasourceDelegates, showEmptySections: true)

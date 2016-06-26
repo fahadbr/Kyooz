@@ -112,10 +112,12 @@ struct ThemeHelper {
         UINavigationBar.appearance().backgroundColor = UIColor.clearColor()
 
         
-        var uiBarButtonTextAttributes = [String : AnyObject]()
-        uiBarButtonTextAttributes[NSFontAttributeName] = defaultFont
-        UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: UIControlState.Normal)
-        UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: UIControlState.Highlighted)
+        let font = UIScreen.widthClass == .iPhone345 ? UIFont(name:defaultFontName, size:smallFontSize - 2) : smallFontForStyle(.Normal)
+        let uiBarButtonTextAttributes:[String:AnyObject] = [NSFontAttributeName:font ?? UIFont.systemFontOfSize(smallFontSize)]
+        UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: .Normal)
+        var highlightedAttributes = uiBarButtonTextAttributes
+        highlightedAttributes[NSForegroundColorAttributeName] = ThemeHelper.defaultVividColor
+        UIBarButtonItem.appearance().setTitleTextAttributes(highlightedAttributes, forState: .Highlighted)
         UIBarButtonItem.appearance().tintColor = defaultTintColor
         
         UITableViewCell.appearance().backgroundColor = defaultTableCellColor

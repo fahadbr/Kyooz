@@ -17,11 +17,9 @@ final class NowPlayingSummaryViewController: UIViewController {
 	static let CollapsedHeight:CGFloat = 45
 	static let heightScale:CGFloat = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)/667
     
-    private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    private lazy var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-//    private let labelPageVC:NowPlayingPageViewController = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
     private let albumArtPageVC: NowPlayingPageViewController = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-    private var collapseButton:UIButton!
     
     private let playbackProgressVC = PlaybackProgressViewController.instance
 	private let nowPlayingBarVC = NowPlayingBarViewController()
@@ -117,8 +115,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
         //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
 		
-//        mainStackView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 35 * self.dynamicType.heightScale).active = true
-//        mainStackView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -5).active = true
         mainStackView.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.95).active = true
 		
         albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
@@ -205,8 +201,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 		
         let goToAlbumButton = createAndConfigureButton("ALBUM", selector: #selector(self.goToAlbum(_:)))
         let goToArtistButton = createAndConfigureButton("ARTIST", selector: #selector(self.goToArtist(_:)))
-        let addToPlaylistButton = createAndConfigureButton("＋  ", selector: #selector(self.addToPlaylist(_:)))
-		addToPlaylistButton.titleLabel?.font = UIFont.systemFontOfSize(20)
+        let addToPlaylistButton = createAndConfigureButton("ADD TO PLAYLIST", selector: #selector(self.addToPlaylist(_:)))
 		let hideButton = createAndConfigureButton("HIDE", selector: #selector(self.collapseViewController(_:)))
 		
 		let goToStack = stackViewWrapperForViews([goToAlbumButton, goToArtistButton, addToPlaylistButton])
@@ -242,7 +237,10 @@ final class NowPlayingSummaryViewController: UIViewController {
         let nowPlayingItem = audioQueuePlayer.nowPlayingItem
 		let index = audioQueuePlayer.indexOfNowPlayingItem
 		
-		let imageWrapper = { return ImageWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index, size: self.albumArtPageVC.view.frame.size) }
+		let imageWrapper = { return ImageWrapperViewController(track: nowPlayingItem,
+		                                                       isPresentedVC: true,
+		                                                       representingIndex: index,
+		                                                       size: self.albumArtPageVC.view.frame.size) }
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
         
         KyoozUtils.doInMainQueueAsync() {
@@ -277,7 +275,6 @@ final class NowPlayingSummaryViewController: UIViewController {
         
         let collapsedFraction = 1 - expandedFraction
         
-        collapseButton?.alpha = expandedFraction
         albumArtPageVC.view.alpha = expandedFraction
         
         func updateAlphaForView(view:UIView, fraction:CGFloat) {
@@ -300,17 +297,26 @@ final class NowPlayingSummaryViewController: UIViewController {
 	
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
-            name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
-            name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
-		//this is for refreshing the page views
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
-            name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadData(_:)),
+                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue,
+                                       object: audioQueuePlayer)
         
-        notificationCenter.addObserver(self, selector: #selector(NowPlayingSummaryViewController.reloadData(_:)),
-            name: UIApplicationDidBecomeActiveNotification, object: application)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadData(_:)),
+                                       name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue,
+                                       object: audioQueuePlayer)
+        
+		//this is for refreshing the page views
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadData(_:)),
+                                       name: AudioQueuePlayerUpdate.QueueUpdate.rawValue,
+                                       object: audioQueuePlayer)
+        
+        notificationCenter.addObserver(self,
+                                       selector: #selector(self.reloadData(_:)),
+                                       name: UIApplicationDidBecomeActiveNotification,
+                                       object: UIApplication.sharedApplication())
     }
     
     private func unregisterForNotifications() {
