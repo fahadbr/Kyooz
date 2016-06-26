@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-final class AudioEntitySearchViewController : AudioEntityHeaderViewController<RowLimitedSectionDelegator>, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
+final class AudioEntitySearchViewController : AudioEntityHeaderViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
     static let instance = AudioEntitySearchViewController()
 
@@ -25,7 +25,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController<Ro
                     toggleSelectMode()
                 }
                 KyoozUtils.doInMainQueueAfterDelay(0.4) {
-                    self.datasourceDelegate.collapseAllSections()
+                    (self.datasourceDelegate as? RowLimitedSectionDelegator)?.collapseAllSections()
                     self.reloadTableViewData()
                 }
             }
@@ -150,7 +150,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController<Ro
     }
     
     func applyDatasourceDelegate() {
-        var dsds = [AnyAudioEntityDSD<SearchResultsSourceData>]()
+        var dsds = [AudioEntityDSDProtocol]()
         for searchExecutionController in searchExecutionControllers {
             searchExecutionController.delegate = self
             let libraryGroup = searchExecutionController.libraryGroup
@@ -169,7 +169,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController<Ro
             datasourceDelegate.useSmallFont = true
             datasourceDelegate.rowLimit = rowLimitPerSection[libraryGroup] ?? defaultRowLimit
             datasourceDelegate.rowLimitActive = true
-            dsds.append(AnyAudioEntityDSD(base:datasourceDelegate))
+            dsds.append(datasourceDelegate)
         }
         let sectionDelegator = RowLimitedSectionDelegator(datasourceDelegates: dsds, tableView: tableView)
         sectionDelegator.delegate = self

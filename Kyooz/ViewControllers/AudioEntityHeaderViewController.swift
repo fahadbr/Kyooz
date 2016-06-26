@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AudioEntityHeaderViewController<DSD: AudioEntityDSDProtocol> : AudioEntityViewController<DSD>, UIScrollViewDelegate {
+class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDelegate {
 
 	
 	var headerHeightConstraint: NSLayoutConstraint!

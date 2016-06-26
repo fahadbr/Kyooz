@@ -25,9 +25,6 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
     
 	var useSmallFont:Bool = false
     
-    var tableViewDSD: TableViewDSD {
-        return self
-    }
 	
 	private let reuseIdentifier:String
 	private lazy var smallFont = ThemeHelper.smallFontForStyle(.Bold)

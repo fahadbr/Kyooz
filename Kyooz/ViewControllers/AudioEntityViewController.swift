@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class AudioEntityViewController<DSD: AudioEntityDSDProtocol> : CustomPopableViewController, AudioEntityViewControllerProtocol, AudioTableCellDelegate {
+class AudioEntityViewController: CustomPopableViewController, AudioEntityViewControllerProtocol, AudioTableCellDelegate {
     
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
@@ -17,10 +17,10 @@ class AudioEntityViewController<DSD: AudioEntityDSDProtocol> : CustomPopableView
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
 	
-	var datasourceDelegate:DSD! {
+	var datasourceDelegate:AudioEntityDSDProtocol! {
 		didSet {
-			tableView.dataSource = datasourceDelegate.tableViewDSD
-			tableView.delegate = datasourceDelegate.tableViewDSD
+			tableView.dataSource = datasourceDelegate
+			tableView.delegate = datasourceDelegate
 		}
 	}
 	
@@ -28,9 +28,6 @@ class AudioEntityViewController<DSD: AudioEntityDSDProtocol> : CustomPopableView
 		return false
 	}
     
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
 	
 	//MARK: - View Lifecycle functions
 	
