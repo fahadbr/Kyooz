@@ -59,8 +59,12 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         nowPlayingItem = item
         
         tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: SongDetailsTableViewCell.reuseIdentifier)
+        tableView.registerClass(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SystemQueueResyncWorkflowController.handleNowPlayingItemChanged(_:)), name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(self.handleNowPlayingItemChanged(_:)),
+                                                         name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue,
+                                                         object: audioQueuePlayer)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -120,12 +124,12 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let view = NSBundle.mainBundle().loadNibNamed("SearchResultsHeaderView", owner: self, options: nil)?.first as? SearchResultsHeaderView else {
+        guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(KyoozSectionHeaderView.reuseIdentifier) as? KyoozSectionHeaderView else {
             return nil
         }
-        view.headerTitleLabel.text = indexOfNewItem == nil ? "CURRENT QUEUE" : "PREVIEW QUEUE"
-        view.disclosureContainerView.hidden = true
-        return view
+        
+        headerView.headerTitleLabel.text = indexOfNewItem == nil ? "CURRENT QUEUE" : "PREVIEW QUEUE"
+        return headerView
     }
     
     //MARK: - Class functions

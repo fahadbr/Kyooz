@@ -21,10 +21,6 @@ class AudioEntityPlainHeaderViewController: AudioEntityViewController {
         tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight
         tableView.contentOffset.y = -tableView.contentInset.top
         
-		tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
-		tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
-		tableView.registerClass(SearchHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SearchResultsHeaderView.reuseIdentifier)
-        
         
 	}
 

@@ -248,10 +248,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         if indiciesToDelete.count < 250 {
             tableView.deleteRowsAtIndexPaths(indiciesToDelete, withRowAnimation: .Automatic)
         } else {
-            tableView.beginUpdates()
-            tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-            tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-            tableView.endUpdates()
+            tableView.reloadSections(NSIndexSet(index:0), withRowAnimation: .Automatic)
         }
     }
 	
@@ -265,11 +262,8 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 	
 	func deleteWholeQueue() {
 		func delete() {
-			let count = audioQueuePlayer.nowPlayingQueue.count
-			let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
-            let indexPaths = (0..<count).lazy.filter({ $0 != indexOfNowPlayingItem }).map({ return NSIndexPath(forRow: $0, inSection: 0) })
 			audioQueuePlayer.clearItems(towardsDirection: .All, atIndex: audioQueuePlayer.indexOfNowPlayingItem)
-			deleteIndexPaths(Array(indexPaths))
+            tableView.reloadSections(NSIndexSet(index:0), withRowAnimation: .Automatic)
 		}
 		
 		guard !audioQueuePlayer.nowPlayingQueue.isEmpty else { return }
@@ -294,7 +288,6 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
         
-        
         var jumpToActions = [KyoozMenuActionProtocol]()
         if mediaItem.albumId != 0 {
 			let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
@@ -315,11 +308,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         var removeActions = [KyoozMenuActionProtocol]()
         if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
             let clearPrecedingItemsAction = KyoozMenuAction(title: "REMOVE ABOVE", image: nil) {
-                var indiciesToDelete = [NSIndexPath]()
-                indiciesToDelete.reserveCapacity(index)
-                for i in 0..<index {
-                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
-                }
+                
+                let indiciesToDelete = (0..<index).map { NSIndexPath(forRow: $0, inSection: 0) }
+                
                 KyoozUtils.confirmAction("Remove the \(indiciesToDelete.count) tracks Above?", actionDetails: "Selected Track: \(title ?? "" )\n\(details ?? "")") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)
@@ -336,10 +327,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         
         if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
 			let clearUpcomingItemsAction = KyoozMenuAction(title: "REMOVE BELOW", image:nil) {
-                var indiciesToDelete = [NSIndexPath]()
-                for i in (index + 1)...lastIndex {
-                    indiciesToDelete.append(NSIndexPath(forRow: i, inSection: 0))
-                }
+                
+                let indiciesToDelete = ((index + 1)...lastIndex).map { NSIndexPath(forRow: $0, inSection: 0) }
+                
                 KyoozUtils.confirmAction("Remove the \(indiciesToDelete.count) tracks Below?", actionDetails: "Selected Track: \(title ?? "")\n\(details ?? "")") {
                     self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
                     self.deleteIndexPaths(indiciesToDelete)

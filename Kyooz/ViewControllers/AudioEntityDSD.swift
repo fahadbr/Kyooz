@@ -93,18 +93,23 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
+        guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(KyoozSectionHeaderView.reuseIdentifier) as? KyoozSectionHeaderView else {
             return nil
         }
         
-        let headerView = view.headerView
         headerView.headerTitleLabel.text = sourceData.sections[section].name
-        headerView.disclosureContainerView.hidden = true
-        return view
+        return headerView
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         scrollViewDelegate?.scrollViewDidScroll?(scrollView)
+    }
+    
+    override func isEqual(object: AnyObject?) -> Bool {
+        guard object == nil else {
+            return false
+        }
+        return self === object!
     }
 
 }

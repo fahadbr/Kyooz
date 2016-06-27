@@ -11,6 +11,13 @@ import SystemConfiguration
 import MediaPlayer
 import StoreKit
 
+private let mainQueueKey = UnsafeMutablePointer<Void>.alloc(1)
+private let mainQueueValue = UnsafeMutablePointer<Void>.alloc(1)
+
+func initMainQueueChecking() {
+    dispatch_queue_set_specific(dispatch_get_main_queue(), mainQueueKey, mainQueueValue, nil)
+}
+
 struct KyoozUtils {
 	
 	static let documentsDirectory:NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).first!
@@ -75,7 +82,7 @@ struct KyoozUtils {
     //most performant because if not in main queue then an async dispatch will not hold up the thread.  and if already in main queue
     //then it will be executed immediately
     static func doInMainQueue(block:()->()) {
-        if NSThread.isMainThread() {
+        if dispatch_get_specific(mainQueueKey) == mainQueueValue {
             block()
         } else {
             doInMainQueueAsync(block)

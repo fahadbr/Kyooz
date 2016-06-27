@@ -10,8 +10,6 @@ import UIKit
 
 struct ConstraintUtils {
 	
-	enum Anchor:Int { case Top, Bottom, Left, Right, CenterX, CenterY, Width, Height }
-	
 	static func applyStandardConstraintsToView(subView subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
 		return applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
 	}

@@ -43,4 +43,26 @@ extension Array {
         
         self = newArray
     }
+
+
+    func diffed(with array: [Element], predicate:(Element, Element) -> Bool) -> ArrayDiff<Element> {
+        return ArrayDiff(lhs: self, rhs: array, predicate: predicate)
+    }
+}
+
+enum ValueResult { case Added, Removed }
+
+struct ArrayDiffValue<T> { let index:Int, value:T, result:ValueResult }
+
+struct ArrayDiff<T> {
+    
+    let diffValues:[ArrayDiffValue<T>]
+    
+    init(lhs:[T], rhs:[T], predicate:(T, T) -> Bool ) {
+        var diffValues = [ArrayDiffValue<T>]()
+        diffValues.appendContentsOf(lhs.filter { i in !rhs.contains({ predicate($0, i) }) }.enumerate().map { ArrayDiffValue(index: $0, value: $1, result: .Removed) })
+        diffValues.appendContentsOf(rhs.filter { i in !lhs.contains({ predicate($0, i) }) }.enumerate().map { ArrayDiffValue(index: $0, value: $1, result: .Added) })
+        self.diffValues = diffValues
+    }
+    
 }

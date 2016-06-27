@@ -86,7 +86,7 @@ private class IndexBuilder<BASE:SearchIndexValue,INPUT> {
         
         for value in valuesToIndex {
             
-            if let cancelled = originatingOperation?.cancelled where cancelled == true {
+            if originatingOperation?.cancelled ?? true {
                 throw IndexBuildError.Cancelled
             }
             
@@ -111,7 +111,10 @@ private class IndexBuilder<BASE:SearchIndexValue,INPUT> {
                     throw IndexBuildError.Cancelled
                 }
                 
-                subIndex![characterIndex] = try nextIndexBuilder.buildIndex("\(title)[\(characterIndex)]", valuesToIndex: values, indexLevel: nextIndexLevel, nextIndexBuilder:nextIndexBuilder)
+                subIndex![characterIndex] = try nextIndexBuilder.buildIndex("\(title)[\(characterIndex)]",
+                                                                            valuesToIndex: values,
+                                                                            indexLevel: nextIndexLevel,
+                                                                            nextIndexBuilder:nextIndexBuilder)
             }
         }
         if !sameLevelValues.isEmpty {
@@ -122,7 +125,10 @@ private class IndexBuilder<BASE:SearchIndexValue,INPUT> {
             throw IndexBuildError.Cancelled
         }
         
-        return SearchIndex(name: title, indexLevel: indexLevel, sameLevelValues: sameLevelValuesSet, subIndex: subIndex)
+        return SearchIndex(name: title,
+                           indexLevel: indexLevel,
+                           sameLevelValues: sameLevelValuesSet,
+                           subIndex: subIndex)
     }
     
     private func getSearchIndexEntry(value:INPUT) -> SearchIndexEntry<BASE> {
