@@ -17,7 +17,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 	
     weak var delegate:RowLimitedSectionDelegatorDelegate?
     
-    private unowned var tableView:UITableView
+    private weak var tableView:UITableView!
 
     private var tapGestureRecognizers = [UITapGestureRecognizer]()
 	private var expandedSection:AudioEntityDSDProtocol?
@@ -40,18 +40,16 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
     }
 	
 	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		guard let view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SearchResultsHeaderView.reuseIdentifier) as? SearchHeaderFooterView else {
+		guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(RowLimitedSectionHeaderView.reuseIdentifier) as? RowLimitedSectionHeaderView else {
 			return nil
 		}
-		
-		let headerView = view.headerView
 		
 		
         let datasourceDelegate = dsdSections[section]
 		if dsdSections.count > 1 || (expandedSection != nil && otherSectionsHaveData){
 			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTapHeaderView(_:)))
 			headerView.addGestureRecognizer(tapGestureRecognizer)
-			headerView.disclosureContainerView.hidden = false
+			headerView.disclosureView.hidden = false
             headerView.userInteractionEnabled = true
             if tapGestureRecognizers.count - 1 < section {
                 tapGestureRecognizers.append(tapGestureRecognizer)
@@ -60,17 +58,29 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
             }
             
 		} else {
-			headerView.disclosureContainerView.hidden = true
+			headerView.disclosureView.hidden = true
             headerView.userInteractionEnabled = false
 		}
+        
+        if let sourceData = datasourceDelegate.sourceData as? SearchResultsSourceData
+            where sourceData.searchExecutionController.searchInProgress {
+            
+            if !headerView.activityIndicator.isAnimating() {
+                headerView.activityIndicator.startAnimating()
+            }
+        } else {
+            if headerView.activityIndicator.isAnimating() {
+                headerView.activityIndicator.stopAnimating()
+            }
+        }
 		
 		let headerViewText = sourceData.sections[section].name
 		let subText = "\(datasourceDelegate.sourceData.entities.count) TOTAL"
 		headerView.setLabelText(headerViewText, subText: subText)
 		
-		headerView.applyRotation(shouldExpand: expandedSection != nil && datasourceDelegate === expandedSection!)
+		headerView.expanded = datasourceDelegate === expandedSection
 
-		return view
+		return headerView
 	}
 	
 	override func reloadSections() {
@@ -86,8 +96,9 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
                 newSections.first?.rowLimitActive = false
             }
 		}
-		dsdSections = newSections
+        dsdSections = newSections
 	}
+    
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         delegate?.willExpandOrCollapseSection()
@@ -111,7 +122,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 	}
     
     private func collapseSection(sender:UITapGestureRecognizer, dsdToCollapse:AudioEntityDSDProtocol) {
-        (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:false)
+        (sender.view as? RowLimitedSectionHeaderView)?.setExpanded(expanded: false, animated: true)
         expandedSection = nil
         
         let maxRows = dsdToCollapse.rowLimit
@@ -152,7 +163,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
     }
 	
     private func expandSection(sender:UITapGestureRecognizer, dsdToExpand:AudioEntityDSDProtocol) {
-        (sender.view as? SearchResultsHeaderView)?.animateDisclosureIndicator(shouldExpand:true)
+        (sender.view as? RowLimitedSectionHeaderView)?.setExpanded(expanded: true, animated: true)
         tableView.setContentOffset(CGPoint(x: tableView.contentOffset.x, y: 0 - tableView.contentInset.top), animated: true)
         tableView.beginUpdates()
         

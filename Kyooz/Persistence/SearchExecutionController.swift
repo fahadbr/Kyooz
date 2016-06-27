@@ -12,8 +12,8 @@ import MediaPlayer
 private let fatalErrorAbstractClassMessage = "this is an abstract class, subclass must override and implement this method"
 
 protocol SearchExecutionControllerDelegate: class {
-    func searchResultsDidGetUpdated()
-    func searchDidComplete()
+    func searchResultsDidGetUpdated(searchExecutionController:SearchExecutionController)
+    func searchDidComplete(searchExecutionController:SearchExecutionController)
 }
 
 class SearchExecutionController : NSObject {
@@ -48,7 +48,7 @@ class SearchExecutionController : NSObject {
         super.init()
         
         defaultSearchQueue.name = "Kyooz.SearchQueue.\(description)"
-        defaultSearchQueue.qualityOfService = NSQualityOfService.Background
+        defaultSearchQueue.qualityOfService = NSQualityOfService.UserInitiated
         defaultSearchQueue.maxConcurrentOperationCount = 1
         rebuildSearchIndex()
     }
@@ -82,25 +82,25 @@ class SearchExecutionController : NSObject {
             return
         }
         
-        searchOperation.inThreadCompletionBlock = { [weak self](results) -> Void in
+        searchOperation.inThreadCompletionBlock = { (results) -> Void in
             KyoozUtils.doInMainQueue() {
                 //we're updating the search results in the main queue because updating them in the background could conflict with when
                 //the table view using this data gets updated
-                if results.isEmpty {
-                    if let oldResults = self?.searchResults where oldResults.isEmpty{
-                        return
-                    }
+                guard !results.isEmpty || !self.searchResults.isEmpty else {
+                    return
                 }
-                self?.searchResults = results
-                self?.delegate?.searchResultsDidGetUpdated()
+                self.searchResults = results
+                self.delegate?.searchResultsDidGetUpdated(self)
             }
         }
         
         defaultSearchQueue.addOperation(searchOperation)
         searchInProgress = true
         defaultSearchQueue.addOperationWithBlock() {
-            self.searchInProgress = false
-            self.delegate?.searchDidComplete()
+            KyoozUtils.doInMainQueue() {
+                self.searchInProgress = false
+                self.delegate?.searchDidComplete(self)
+            }
         }
         
         previousSearchParams = (searchString, stringComponents)

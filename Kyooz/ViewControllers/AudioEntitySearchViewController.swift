@@ -84,12 +84,12 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
     private let searchBar = UISearchBar()
     private let tableFooterView = KyoozTableFooterView()
-    
-    private let searchProgressView = UIProgressView()
 	
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.registerClass(RowLimitedSectionHeaderView.self,
+                                forHeaderFooterViewReuseIdentifier: RowLimitedSectionHeaderView.reuseIdentifier)
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
         searchBar.barStyle = UIBarStyle.Black
@@ -107,16 +107,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         tableView.scrollsToTop = isExpanded
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
         
-        searchProgressView.progressTintColor = ThemeHelper.defaultVividColor
-        searchProgressView.trackTintColor = ThemeHelper.defaultTableCellColor
-        
         applyDatasourceDelegate()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        searchProgressView.frame.size.width = tableView.frame.width
-        tableView.tableHeaderView = searchProgressView
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -226,9 +217,6 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        defer {
-            refreshProgressView()
-        }
 		guard !searchText.isEmpty else { return }
 		
 		let normalizedSearchText = searchText.normalizedString
@@ -246,23 +234,17 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
     
     //MARK: - SearchExecutionController Delegate
-    func searchResultsDidGetUpdated() {
+    func searchResultsDidGetUpdated(searchExecutionController:SearchExecutionController) {
         if tableView.editing {
             toggleSelectMode()
         }
         reloadTableViewData()
     }
     
-    func searchDidComplete() {
-        KyoozUtils.doInMainQueue(refreshProgressView)
-    }
-    
-    
-    func refreshProgressView() {
-        let searchesInProgress:Float = searchExecutionControllers.reduce(0) {
-            return !$1.searchInProgress ? $0 + 1 : $0
+    func searchDidComplete(searchExecutionController:SearchExecutionController) {
+        if !searchExecutionControllers.contains({ $0.searchInProgress }){
+            reloadTableViewData()
         }
-        searchProgressView.progress = searchesInProgress/Float(searchExecutionControllers.count)
     }
     
     func initializeIndicies() {
@@ -281,10 +263,10 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         }
     }
     
-//}
-//
-////MARK: - MultiSelect overrides
-//extension AudioEntitySearchViewController {
+}
+
+//MARK: - MultiSelect overrides
+extension AudioEntitySearchViewController {
     override func toggleSelectMode() {
         super.toggleSelectMode()
         searchBar.resignFirstResponder()

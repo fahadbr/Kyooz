@@ -59,12 +59,11 @@ final class SearchIndex<T:SearchIndexValue> : CustomStringConvertible {
         if let values = self.sameLevelValues {
             if indexLevel >= searchString.characters.count && !searchAllValues {
                 filteredValues.appendContentsOf(values.map({ $0.object } ))
-            } else {   
-                for value in values {
-                    if searchPredicate.evaluateWithObject(value) {
-                        filteredValues.append(value.object)
-                    }
-                }
+            } else {
+                filteredValues.reserveCapacity(values.count)
+                values.lazy.filter( { searchPredicate.evaluateWithObject($0) } ).map({$0.object }).forEach({
+                    filteredValues.append($0)
+                })
             }
         }
         

@@ -116,11 +116,11 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
                                                          object: tableView)
     }
 	
-//	
-//}
-//
-////MARK: - Multi Select Functions
-//extension AudioEntityHeaderViewController {
+	
+}
+
+//MARK: - Multi Select Functions
+extension AudioEntityHeaderViewController {
 	
 	
 	func toggleSelectMode() {

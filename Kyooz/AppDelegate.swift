@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
+        initMainQueueChecking()
         return true
     }
 

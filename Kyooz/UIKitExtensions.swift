@@ -8,6 +8,58 @@
 
 import UIKit
 
+enum Anchor:Int {
+    static let standardAnchors:[Anchor] = [.Top, .Bottom, .Left, .Right]
+    
+    case Top, Bottom, Left, Right, CenterX, CenterY, Width, Height
+    
+}
+
+extension UIView {
+    
+    func add(subView subView:UIView, with anchors:[Anchor]) -> [Anchor : NSLayoutConstraint] {
+        return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
+    }
+    
+    func constrainWidthToHeight(multiplier:CGFloat) {
+        translatesAutoresizingMaskIntoConstraints = false
+        widthAnchor.constraintEqualToAnchor(heightAnchor, multiplier: multiplier).active = true
+    }
+    
+    func constrain(heightTo height:CGFloat, widthRatio multiplier:CGFloat) -> [Anchor : NSLayoutConstraint]{
+        translatesAutoresizingMaskIntoConstraints = false
+        return [
+            .Height : heightAnchor.constraintEqualToConstant(height).activate(),
+            .Width : widthAnchor.constraintEqualToAnchor(heightAnchor, multiplier: multiplier)
+        ]
+    }
+    
+    func constrain(widthTo width:CGFloat, heightRatio multiplier:CGFloat) -> [Anchor : NSLayoutConstraint]{
+        translatesAutoresizingMaskIntoConstraints = false
+        return [
+            .Width : widthAnchor.constraintEqualToConstant(width).activate(),
+            .Height : heightAnchor.constraintEqualToAnchor(widthAnchor, multiplier: multiplier).activate()
+        ]
+    }
+    
+    func constrain(heightTo height:CGFloat, widthTo width:CGFloat) -> [Anchor : NSLayoutConstraint] {
+        translatesAutoresizingMaskIntoConstraints = false
+        return [
+            .Height : heightAnchor.constraintEqualToConstant(height).activate(),
+            .Width : widthAnchor.constraintEqualToConstant(width).activate()
+        ]
+    }
+    
+}
+
+extension NSLayoutConstraint {
+    
+    func activate() -> NSLayoutConstraint {
+        active = true
+        return self
+    }
+}
+
 extension UIScreen {
     
     enum HeightClass {

@@ -90,8 +90,6 @@
 		0B70702F1B9799030000673E /* AudioTableCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B70702E1B9799030000673E /* AudioTableCellProtocol.swift */; };
 		0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */; };
 		0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */; };
-		0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */; };
-		0B77768B1C001EC200B9A088 /* SearchResultsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B77768A1C001EC200B9A088 /* SearchResultsHeaderView.xib */; };
 		0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B081B9388BD00004A1B /* CGUtils.swift */; };
 		0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */; };
 		0B778B0D1B938E2500004A1B /* SkipTrackButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */; };
@@ -138,6 +136,7 @@
 		0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */; };
 		0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */; };
 		0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */; };
+		0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */; };
 		0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE21C541BAF8915000509FD /* ApplicationIconView.swift */; };
 		0BE21C571BAF8925000509FD /* ApplicationIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BE21C561BAF8925000509FD /* ApplicationIconView.xib */; };
 		0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */; };
@@ -289,8 +288,6 @@
 		0B70702E1B9799030000673E /* AudioTableCellProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTableCellProtocol.swift; sourceTree = "<group>"; };
 		0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdHocIPodLibrarySearchOperation.swift; sourceTree = "<group>"; };
-		0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsHeaderView.swift; sourceTree = "<group>"; };
-		0B77768A1C001EC200B9A088 /* SearchResultsHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchResultsHeaderView.xib; sourceTree = "<group>"; };
 		0B778B081B9388BD00004A1B /* CGUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGUtils.swift; sourceTree = "<group>"; };
 		0B778B0A1B938E1200004A1B /* SkipTrackButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkipTrackButtonView.swift; sourceTree = "<group>"; };
 		0B778B0C1B938E2500004A1B /* SkipTrackButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SkipTrackButtonView.xib; sourceTree = "<group>"; };
@@ -338,6 +335,7 @@
 		0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressToDragGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressDragAndDropGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = IPodLibraryDAO.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozSectionHeaderView.swift; sourceTree = "<group>"; };
 		0BE21C541BAF8915000509FD /* ApplicationIconView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationIconView.swift; sourceTree = "<group>"; };
 		0BE21C561BAF8925000509FD /* ApplicationIconView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplicationIconView.xib; sourceTree = "<group>"; };
 		0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanTutorialViewController.swift; sourceTree = "<group>"; };
@@ -593,11 +591,10 @@
 			isa = PBXGroup;
 			children = (
 				0B476C6E1B1BFE5700626810 /* CancelView.swift */,
+				0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */,
 				10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */,
 				0B1DA0661CADDF2F00699D88 /* MarqueeLabel.swift */,
 				0BB01A5E1CC87A5C00D4B57F /* PlainHeaderView.swift */,
-				0B7776881C001E0500B9A088 /* SearchResultsHeaderView.swift */,
-				0B77768A1C001EC200B9A088 /* SearchResultsHeaderView.xib */,
 			);
 			name = "Custom Programatic Views";
 			sourceTree = "<group>";
@@ -1034,7 +1031,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B055A211C4C6537007CB60A /* MediaCollectionTableViewCell.xib in Resources */,
-				0B77768B1C001EC200B9A088 /* SearchResultsHeaderView.xib in Resources */,
 				0BE21C571BAF8925000509FD /* ApplicationIconView.xib in Resources */,
 				0B70702D1B9767080000673E /* AlbumTrackTableViewCell.xib in Resources */,
 				0B13DA631AED49AF00CC5C01 /* SongDetailsTableViewCell.xib in Resources */,
@@ -1098,6 +1094,7 @@
 				0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */,
 				0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */,
 				0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */,
+				0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */,
 				10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */,
 				0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */,
 				0BB01A5F1CC87A5C00D4B57F /* PlainHeaderView.swift in Sources */,
@@ -1199,7 +1196,6 @@
 				0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */,
 				0B70702F1B9799030000673E /* AudioTableCellProtocol.swift in Sources */,
 				10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */,
-				0B7776891C001E0500B9A088 /* SearchResultsHeaderView.swift in Sources */,
 				0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */,
 				0B4E600A1C2CD9AD00BB9D77 /* RepeatButtonView.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
