@@ -257,7 +257,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 	func addWholeQueueToPlaylist() {
 		let queue = audioQueuePlayer.nowPlayingQueue
 		guard !queue.isEmpty else { return }
-		KyoozUtils.showAvailablePlaylists(forAddingTracks: queue, usingTitle: "ADD QUEUE TO PLAYLIST")
+		Playlists.showAvailablePlaylists(forAddingTracks: queue, usingTitle: "ADD QUEUE TO PLAYLIST")
 	}
 	
 	func deleteWholeQueue() {
@@ -339,7 +339,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         }
         menuVC.addActions(removeActions)
         menuVC.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
-            KyoozUtils.showAvailablePlaylists(forAddingTracks: [mediaItem])
+            Playlists.showAvailablePlaylists(forAddingTracks: [mediaItem])
         }])
 		menuVC.originatingCenter = originatingCenter
 		
@@ -366,7 +366,7 @@ extension NowPlayingQueueViewController {
 	func addSelectedToPlaylist() {
 		guard let tracks = getOrderedTracks() where tableView.editing else { return }
 
-        KyoozUtils.showAvailablePlaylists(forAddingTracks:tracks,
+        Playlists.showAvailablePlaylists(forAddingTracks:tracks,
                                           usingTitle: "ADD \(tracks.count) TRACKS TO PLAYLIST",
                                           completionAction:toggleSelectMode)
     }

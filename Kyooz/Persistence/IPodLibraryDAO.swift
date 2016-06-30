@@ -40,9 +40,13 @@ class IPodLibraryDAO {
             let message = playlist.items.count != 0 ? "Saved changes to playlist \(playlist.name ?? "")" : "Created playlist \(playlist.name ?? "")"
             playlist.addMediaItems(tracks, completionHandler: { (error) in
                 if let e = error {
-                    KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)", withThrownError: e, presentationVC: nil)
+                    KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)",
+						withThrownError: e,
+						presentationVC: nil)
+					
                 } else {
                     KyoozUtils.doInMainQueueAfterDelay(0.5) {
+						Playlists.setMostRecentlyModified(playlist: playlist)
                         ShortNotificationManager.instance.presentShortNotification(withMessage:message)
                     }
                 }
@@ -56,11 +60,17 @@ class IPodLibraryDAO {
             let metaData = MPMediaPlaylistCreationMetadata(name: name)
             MPMediaLibrary.defaultMediaLibrary().getPlaylistWithUUID(NSUUID(), creationMetadata: metaData, completionHandler: { (createdPlaylist, error) in
                 guard error == nil else {
-                    KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)", withThrownError: error!, presentationVC: nil)
+                    KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)",
+						withThrownError: error!,
+						presentationVC: nil)
+					
                     return
                 }
                 guard let playlist = createdPlaylist else {
-                    KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)", withMessage: "iTunes Media Library did not create the playlist", presentationVC: nil)
+                    KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)",
+						withMessage: "iTunes Media Library did not create the playlist",
+						presentationVC: nil)
+					
                     return
                 }
                 addTracksToPlaylist(playlist, tracks: tracks)

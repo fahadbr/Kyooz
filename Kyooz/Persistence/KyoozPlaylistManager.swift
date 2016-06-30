@@ -83,7 +83,8 @@ final class KyoozPlaylistManager : NSObject {
 			addOrRemove(!actionIsDelete)
 			throw DataPersistenceError(errorDescription: "Failed update playlist master file for playlist \(playlist.name)")
 		}
-        //
+		
+		Playlists.setMostRecentlyModified(playlist: playlist)
         dispatch_after(KyoozUtils.getDispatchTimeForSeconds(1.0), dispatch_get_main_queue()) {
             NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: KyoozPlaylistManager.PlaylistSetUpdate, object: self))
         }

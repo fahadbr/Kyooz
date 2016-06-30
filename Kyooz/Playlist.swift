@@ -7,10 +7,13 @@
 //
 
 import Foundation
+import MediaPlayer
 
 enum PlaylistType : EnumNameDescriptable, CustomStringConvertible {
 	
 	case kyooz
+	
+	@available(iOS 9.3, *)
 	case iTunes
 	
 	var description: String {
@@ -24,4 +27,124 @@ enum PlaylistType : EnumNameDescriptable, CustomStringConvertible {
 	}
 	
 }
+
+struct Playlists {
+
+	typealias PlaylistReference = (playlist:AudioTrackCollection, type:PlaylistType)
+
+	private (set) static var mostRecentlyModifiedPlaylist:PlaylistReference?
+	
+	static func setMostRecentlyModified(playlist playlist:AudioTrackCollection) {
+		let type:PlaylistType
+		switch playlist {
+		case is MPMediaPlaylist:
+			if #available(iOS 9.3, *) {
+				type = .iTunes
+			} else {
+				fatalError("itunes playlist modification is not supported prior to iOS 9.3")
+			}
+		case is KyoozPlaylist:
+			type = .kyooz
+		default:
+			fatalError("unknown audio track collection type is being set as playlist")
+		}
+		
+		mostRecentlyModifiedPlaylist = (playlist, type)
+	}
+	
+	static func showAvailablePlaylists(forAddingTracks tracks:[AudioTrack],
+	                                                   usingTitle title:String? = nil,
+	                                                              completionAction:(()->Void)? = nil) {
+		let presentingVC = ContainerViewController.instance
+		let addToPlaylistVC = AddToPlaylistViewController(tracksToAdd: tracks, title: title, completionAction: completionAction)
+		addToPlaylistVC.modalTransitionStyle = .CrossDissolve
+		
+		presentingVC.presentViewController(addToPlaylistVC, animated: true, completion: nil)
+		
+	}
+	
+	static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+		if #available(iOS 9.3, *) {
+			let kmvc = KyoozMenuViewController()
+			kmvc.menuTitle = "Select which type of playlist to create"
+			let createKyoozPlaylistAction = KyoozMenuAction(title: "KYOOZ PLAYLIST", image: nil) {
+				showKyoozPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+			}
+			let createItunesPlaylistAction = KyoozMenuAction(title: "ITUNES PLAYLIST", image: nil) {
+				showITunesPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+			}
+			kmvc.addActions([createKyoozPlaylistAction, createItunesPlaylistAction])
+			
+			let infoAction = KyoozMenuAction(title: "What's the difference?", image: nil) {
+				showPlaylistTypeInfoView()
+			}
+			kmvc.addActions([infoAction])
+			KyoozUtils.showMenuViewController(kmvc)
+		} else {
+			showKyoozPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
+		}
+	}
+	
+	static func showKyoozPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+		let saveAction = { (text:String) in
+			
+			do {
+				try KyoozPlaylistManager.instance.create(playlist:KyoozPlaylist(name: text), withTracks: tracks)
+				completionAction?()
+			} catch let error {
+				KyoozUtils.showPopupError(withTitle: "Failed to save playlist with name \(text)", withThrownError: error, presentationVC: nil)
+			}
+		}
+		showPlaylistCreationControllerForTracks(tracks, playlistTypeName: "Kyooz", saveAction: saveAction, completionAction: completionAction)
+		
+	}
+	
+	
+	@available(iOS 9.3, *)
+	static func showITunesPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
+		let saveAction = { (text:String) in
+			guard let mediaItems = tracks as? [MPMediaItem] else {
+				KyoozUtils.showPopupError(withTitle: "Couldn't save playlist with name \(text)", withMessage: "In compatible tracks in current queue", presentationVC: nil)
+				return
+			}
+			IPodLibraryDAO.createPlaylistWithName(text, tracks: mediaItems)
+		}
+		showPlaylistCreationControllerForTracks(tracks, playlistTypeName: "iTunes", saveAction: saveAction, completionAction: completionAction)
+		
+	}
+	
+	@available(iOS 9.3, *)
+	static func showPlaylistTypeInfoView(presentationController:UIViewController = ContainerViewController.instance) {
+		
+		let textVC = TextViewController()
+		_ = try? textVC.loadHtmlFile(withName: "PlaylistTypeDescriptions")
+		
+		presentationController.presentViewController(UINavigationController(rootViewController:textVC), animated: true, completion: nil)
+	}
+	
+	
+	private static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], playlistTypeName:String, saveAction:(nameToSaveAs:String)->(), completionAction:(()->Void)? = nil) {
+		let ac = UIAlertController(title: "Save as \(playlistTypeName) Playlist", message: "Enter the name you would like to save the playlist as", preferredStyle: .Alert)
+		ac.view.tintColor = ThemeHelper.defaultVividColor
+		ac.addTextFieldWithConfigurationHandler(nil)
+		let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action) -> Void in
+			guard let text = ac.textFields?.first?.text else {
+				Logger.error("No name found")
+				return
+			}
+			saveAction(nameToSaveAs: text)
+		})
+		ac.addAction(saveAction)
+		ac.preferredAction = saveAction
+		ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+		ContainerViewController.instance.presentViewController(ac, animated: true, completion: {
+			ac.view.tintColor = ThemeHelper.defaultVividColor
+		})
+		
+	}
+	
+}
+
+
+
 

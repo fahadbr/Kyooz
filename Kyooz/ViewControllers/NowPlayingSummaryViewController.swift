@@ -39,7 +39,12 @@ final class NowPlayingSummaryViewController: UIViewController {
         let gradiant = CAGradientLayer()
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
-        gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
+        gradiant.colors = [
+			ThemeHelper.defaultTableCellColor.CGColor,
+			UIColor.clearColor().CGColor,
+			UIColor.clearColor().CGColor,
+			ThemeHelper.defaultTableCellColor.CGColor
+		]
         gradiant.locations = [0.0,0.25,0.75,1.0]
         return gradiant
     }()
@@ -71,19 +76,25 @@ final class NowPlayingSummaryViewController: UIViewController {
     
     func addToPlaylist(sender: AnyObject) {
         guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else { return }
-        KyoozUtils.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
+        Playlists.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
     }
 	
     private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
-        if let nowPlayingItem = audioQueuePlayer.nowPlayingItem, let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {
-            ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: libraryGrouping, entity: nowPlayingItem)
-        }
+		if let nowPlayingItem = audioQueuePlayer.nowPlayingItem,
+			let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem,
+			                                      parentLibraryGroup: libraryGrouping,
+			                                      baseQuery: nil) {
+			
+			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData,
+			                                                                            parentGroup: libraryGrouping,
+			                                                                            entity: nowPlayingItem)
+		}
     }
-    
+	
     func collapseViewController(sender: AnyObject) {
         RootViewController.instance.animatePullablePanel(shouldExpand: false)
     }
-    
+	
     //MARK: - FUNCTIONS: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,54 +103,63 @@ final class NowPlayingSummaryViewController: UIViewController {
         registerForNotifications()
         
         let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
-        ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
+		view.add(subView: blurView, with: Anchor.standardAnchors)
         blurView.contentView.layer.addSublayer(gradiantLayer)
 		
-		let nowPlayingBar = nowPlayingBarVC.view
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: nowPlayingBar, parentView: view)
-		nowPlayingBar.heightAnchor.constraintEqualToConstant(self.dynamicType.CollapsedHeight).active = true
-        addChildViewController(nowPlayingBarVC)
-        nowPlayingBarVC.didMoveToParentViewController(self)
+		func configure(vc vc:UIViewController, withHeight height:CGFloat, widthAnchor:NSLayoutDimension, multiplier:CGFloat) {
+			vc.view.heightAnchor.constraintEqualToConstant(height).active = true
+			vc.view.widthAnchor.constraintEqualToAnchor(widthAnchor, multiplier: multiplier).active = true
+			addChildViewController(vc)
+			vc.didMoveToParentViewController(self)
+		}
+		
+		view.add(subView: nowPlayingBarVC.view, with: [.Top, .CenterX])
+		configure(vc: nowPlayingBarVC,
+		          withHeight: self.dynamicType.CollapsedHeight,
+		          widthAnchor: view.widthAnchor,
+		          multiplier: 1)
 
         let bottomButtonView = createBottomButtonView()
 
-        
-        let mainStackView = UIStackView(arrangedSubviews: [labelWrapperVC.view, albumArtPageVC.view, playbackProgressVC.view, playbackControlsVC.view, bottomButtonView])
+		let mainStackView = UIStackView(arrangedSubviews: [
+			labelWrapperVC.view,
+			albumArtPageVC.view,
+			playbackProgressVC.view,
+			playbackControlsVC.view,
+			bottomButtonView
+		])
+		
         mainStackView.axis = .Vertical
         mainStackView.distribution = .EqualSpacing
         mainStackView.alignment = .Center
         
-        
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .CenterY], subView: mainStackView, parentView: view)
-        //the calculation of this constant is based off of how tall the screen is.  for an iPhone 6 with a portrait height of 667
-        //the distance from the top of the stack view to the top of the main view should be about the height of the collapsed bar
-        //plus the height of the labelPageVC plus a certain margin 45 + (45 + 25) 
-		
+        view.add(subView: mainStackView, with: [.Left, .Right, .CenterY])
         mainStackView.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.95).active = true
 		
-        albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
-        if (UIScreen.mainScreen().bounds.width * 0.9) > (UIScreen.mainScreen().bounds.height * 0.55) {
-            albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.55).active = true
-        } else {
-            albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(albumArtPageVC.view.widthAnchor, multiplier: 0.9).active = true
-        }
+		let anchor_mult:(NSLayoutDimension, CGFloat) = UIScreen.heightClass == .iPhone4 ?
+			(view.heightAnchor, 0.55) :
+			(albumArtPageVC.view.widthAnchor, 0.9)
+		
+		albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(anchor_mult.0, multiplier: anchor_mult.1)
+		albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
         addChildViewController(albumArtPageVC)
         albumArtPageVC.didMoveToParentViewController(self)
-        
-        labelWrapperVC.view.heightAnchor.constraintEqualToAnchor(nowPlayingBar.heightAnchor).active = true
-        labelWrapperVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.95).active = true
-        addChildViewController(labelWrapperVC)
-        labelWrapperVC.didMoveToParentViewController(self)
+		
+		configure(vc: labelWrapperVC,
+		          withHeight: self.dynamicType.CollapsedHeight,
+		          widthAnchor: mainStackView.widthAnchor,
+		          multiplier: 0.95)
+		
+		configure(vc: playbackProgressVC,
+		          withHeight: 25,
+		          widthAnchor: view.widthAnchor,
+		          multiplier: 0.95)
 
-        playbackProgressVC.view.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: 0.95).active = true
-        playbackProgressVC.view.heightAnchor.constraintEqualToConstant(25).active = true
-        addChildViewController(playbackProgressVC)
-        playbackProgressVC.didMoveToParentViewController(self)
-        
-        playbackControlsVC.view.heightAnchor.constraintEqualToConstant(50).active = true
-        playbackControlsVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.9).active = true
-        addChildViewController(playbackControlsVC)
-        playbackControlsVC.didMoveToParentViewController(self)
+        configure(vc: playbackControlsVC,
+                  withHeight: 50,
+                  widthAnchor: mainStackView.widthAnchor,
+                  multiplier: 0.9)
+		
         
         bottomButtonView.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.9).active = true
         bottomButtonView.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
@@ -160,6 +180,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     
     private func createBottomButtonView() -> UIView {
         let font = ThemeHelper.smallFontForStyle(.Medium)
+		
         func createAndConfigureButton(title:String, selector:Selector) -> UIButton {
             let button = UIButton()
             button.setTitle(title, forState: .Normal)
@@ -170,6 +191,7 @@ final class NowPlayingSummaryViewController: UIViewController {
                 label.alpha = ThemeHelper.defaultButtonTextAlpha
                 label.font = font
                 label.textAlignment = .Center
+				label.lineBreakMode = .ByTruncatingTail
 				button.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
 				button.widthAnchor.constraintEqualToConstant(label.intrinsicContentSize().width + 20).active = true
             }

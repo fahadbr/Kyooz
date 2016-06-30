@@ -8,7 +8,7 @@
 
 import UIKit
 import MediaPlayer
-import StoreKit
+
 
 class AudioTrackCollectionDSD : AudioEntityDSD {
 	
@@ -55,19 +55,16 @@ final class KyoozPlaylistManagerDSD : AudioTrackCollectionDSD {
 }
 
 /**
-This is an abstract class and will crash the system if used directly
+* This is an abstract class and will crash the system if used directly
 */
 class AddToPlaylistDSD : AudioTrackCollectionDSD {
 	
 	private let tracksToAdd:[AudioTrack]
-    private weak var callbackVC:AddToPlaylistViewController?
-    private var playlistType:PlaylistType {
-        return .kyooz
-    }
+	private let completion: ( () -> Void )?
 	
-    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, tracksToAdd:[AudioTrack], callbackVC:AddToPlaylistViewController) {
+    init(sourceData:AudioEntitySourceData, reuseIdentifier:String, tracksToAdd:[AudioTrack], completion: ( () -> Void )?) {
 		self.tracksToAdd = tracksToAdd
-        self.callbackVC = callbackVC
+        self.completion = completion
 		super.init(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: nil)
 	}
     
@@ -79,42 +76,11 @@ class AddToPlaylistDSD : AudioTrackCollectionDSD {
         }
         return cell
     }
-	
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		fatalError("this is a parent class, must use a subclass")
-	}
-    
-    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: tableView.rowHeight))
-        button.layer.borderColor = UIColor.darkGrayColor().CGColor
-        button.layer.borderWidth = 0.5
-        if let label = button.titleLabel {
-            button.setTitle("NEW \(playlistType.description)..", forState: .Normal)
-            button.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
-            button.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
-            button.backgroundColor = ThemeHelper.defaultTableCellColor
-            label.font = ThemeHelper.defaultFont
-            label.textAlignment = .Center
-        }
-        button.addTarget(self, action: #selector(self.showNewPlaylistController), forControlEvents: .TouchUpInside)
-        return button
-    }
-    
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return ThemeHelper.sidePanelTableViewRowHeight
-    }
-    
-    func showNewPlaylistController() {
-		fatalError("this is a parent class, must use a subclass")
-    }
+
 	
 }
 
 final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
-    
-	private override var playlistType:PlaylistType {
-		return .kyooz
-	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		guard let playlist = sourceData[indexPath] as? KyoozPlaylist else { return }
@@ -125,33 +91,19 @@ final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
 		} catch let error {
 			KyoozUtils.showPopupError(withTitle: "Failed to add \(tracksToAdd.count) tracks to playlist: \(playlist.name)", withThrownError: error, presentationVC: nil)
 		}
-        callbackVC?.dismissAddToPlaylistController()
+        completion?()
 	}
-    
-    override func showNewPlaylistController() {
-        callbackVC?.dismissViewControllerAnimated(true, completion: nil)
-        KyoozUtils.showKyoozPlaylistCreationControllerForTracks(tracksToAdd, completionAction: callbackVC?.completionAction)
-    }
 	
 }
 
 @available(iOS 9.3, *)
 final class AddToAppleMusicPlaylistDSD : AddToPlaylistDSD {
 	
-	private override var playlistType:PlaylistType {
-		return .iTunes
-	}
-	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard let playlist = sourceData[indexPath] as? MPMediaPlaylist, items = tracksToAdd as? [MPMediaItem] else { return }
         
         IPodLibraryDAO.addTracksToPlaylist(playlist, tracks: items)
-        callbackVC?.dismissAddToPlaylistController()
+        completion?()
 	}
-    
-    override func showNewPlaylistController() {
-        callbackVC?.dismissViewControllerAnimated(true, completion: nil)
-        KyoozUtils.showITunesPlaylistCreationControllerForTracks(tracksToAdd, completionAction: callbackVC?.completionAction)
-    }
 
 }
