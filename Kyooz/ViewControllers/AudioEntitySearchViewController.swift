@@ -276,9 +276,30 @@ extension AudioEntitySearchViewController {
         let willSelectAll = tableView.indexPathsForSelectedRows == nil
         if let rowLimitedDSD = datasourceDelegate as? RowLimitedSectionDelegator
             where rowLimitedDSD.sections.count > 1 && willSelectAll {
-            shortNotificationManager.presentShortNotification(withMessage: "Tip: Expand a search results section to select all the results for that particular section")
+            
+            let strokeAnimation = CABasicAnimation(keyPath: "strokeColor")
+            strokeAnimation.duration = 0.2
+            strokeAnimation.toValue = UIColor.whiteColor().CGColor
+
+            
+            let widthAnimation = CABasicAnimation(keyPath: "lineWidth")
+            widthAnimation.duration = 0.2
+            widthAnimation.toValue = 1.5
+            
+            let animationGroup = CAAnimationGroup()
+            animationGroup.animations = [strokeAnimation, widthAnimation]
+            animationGroup.repeatCount = 1
+            animationGroup.autoreverses = true
+            
+            (0..<tableView.numberOfSections).forEach { section in
+                (tableView.headerViewForSection(section) as? KyoozSectionHeaderView)?
+                    .strokeLayer
+                    .addAnimation(animationGroup, forKey: nil)
+            }
+            
+        } else {
+            super.selectOrDeselectAll()
         }
-        super.selectOrDeselectAll()
     }
     
 }

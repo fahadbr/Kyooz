@@ -106,7 +106,7 @@ struct ThemeHelper {
         UINavigationBar.appearance().backgroundColor = UIColor.clearColor()
 
         
-        let font = UIScreen.widthClass == .iPhone345 ? UIFont(name:defaultFontName, size:smallFontSize - 2) : smallFontForStyle(.Normal)
+        let font = UIFont(name:defaultFontName, size: UIScreen.widthClass == .iPhone345 ? smallFontSize - 2 : smallFontSize + 1)
         let uiBarButtonTextAttributes:[String:AnyObject] = [NSFontAttributeName:font ?? UIFont.systemFontOfSize(smallFontSize)]
         UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, forState: .Normal)
         var highlightedAttributes = uiBarButtonTextAttributes
