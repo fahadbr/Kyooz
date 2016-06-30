@@ -94,12 +94,6 @@ struct ThemeHelper {
 		return UIFont(name: style.fontName, size: defaultFontSize)
 	}
     
-    static func configureNavigationBar(navigationBar:UINavigationBar) {
-        let image = UIImage()
-        navigationBar.setBackgroundImage(image, forBarMetrics: .Default)
-        navigationBar.shadowImage = image
-    }
-    
     
     static func applyGlobalAppearanceSettings() {
         var titleTextAttributes = [String : AnyObject]()

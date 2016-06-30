@@ -88,7 +88,7 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 			})
         kmvc.addActions(jumpToActions)
         kmvc.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
-            KyoozUtils.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
+            Playlists.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
         }])
 
 		KyoozUtils.showMenuViewController(kmvc)

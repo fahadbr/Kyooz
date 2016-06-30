@@ -71,24 +71,26 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         rootView.layer.shadowRadius = 6
         rootView.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &kvoContext)
 		
-		centerViewRightConstraint = ConstraintUtils.applyConstraintsToView(
-			withAnchors: [.Top, .Bottom, .Width, .Right],
-			subView: rootView,
-			parentView: view)[.Right]!
+		centerViewRightConstraint = view.add(subView: rootView,
+		                                     with: [.Top, .Bottom, .Width, .Right])[.Right]!
 		
-        centerPanelPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ContainerViewController.handlePanGesture(_:)))
+        centerPanelPanGestureRecognizer = UIPanGestureRecognizer(target: self,
+                                                                 action: #selector(self.handlePanGesture(_:)))
         centerPanelPanGestureRecognizer.delegate = self
         rootViewController.view.addGestureRecognizer(centerPanelPanGestureRecognizer)
-        if let popGR = rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
-            ContainerViewController.instance.centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGR)
+		
+		if let popGR = rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
+            centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGR)
         }
 
         //keep a reference of this gesture recogizer to enable/disable it
-        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ContainerViewController.handleTouchGesture(_:)))
+        tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                      action: #selector(self.handleTouchGesture(_:)))
         tapGestureRecognizer.enabled = false
         rootViewController.view.addGestureRecognizer(tapGestureRecognizer)
 
-        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(ContainerViewController.handleLongPressGesture(_:)))
+        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                  action: #selector(self.handleLongPressGesture(_:)))
         longPressGestureRecognizer.delegate = self
         view.addGestureRecognizer(longPressGestureRecognizer)
 		
@@ -96,26 +98,29 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
 		
 		nowPlayingNavigationController.setViewControllers([nowPlayingQueueViewController], animated: false)
-		ThemeHelper.configureNavigationBar(nowPlayingNavigationController.navigationBar)
+		nowPlayingNavigationController.navigationBar.clearBackgroundImage()
+		
 		let npView = nowPlayingQueueView
 		addChildViewController(nowPlayingNavigationController)
 		nowPlayingNavigationController.didMoveToParentViewController(self)
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Right, .Width], subView: npView, parentView: view)[.Width]!.constant = -sideVCOffset
-		view.sendSubviewToBack(npView)
-        ThemeHelper.configureNavigationBar(nowPlayingNavigationController.navigationBar)
 		
+		view.add(subView: npView,
+		         with: [.Top, .Bottom, .Right, .Width])[.Width]!.constant = -sideVCOffset
+		
+		view.sendSubviewToBack(npView)
 		npView.layer.rasterizationScale = UIScreen.mainScreen().scale
         
         
         searchNavigationController.setViewControllers([searchViewController], animated: false)
-        ThemeHelper.configureNavigationBar(searchNavigationController.navigationBar)
+        searchNavigationController.navigationBar.clearBackgroundImage()
         
         let searchControllerView = self.searchControllerView
         searchControllerView.layer.rasterizationScale = UIScreen.mainScreen().scale
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Width],
-                                               subView: searchControllerView,
-                                               parentView: view)[.Width]!.constant = -sideVCOffset
-        addChildViewController(searchNavigationController)
+		
+		view.add(subView: searchControllerView,
+		         with: [.Top, .Bottom, .Left, .Width])[.Width]!.constant = -sideVCOffset
+		
+		addChildViewController(searchNavigationController)
         view.sendSubviewToBack(searchControllerView)
         searchNavigationController.didMoveToParentViewController(self)
     }

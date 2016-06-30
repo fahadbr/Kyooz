@@ -145,3 +145,12 @@ extension UIBarButtonItem {
     
 }
 
+extension UINavigationBar {
+	
+	func clearBackgroundImage() {
+		let image = UIImage()
+		setBackgroundImage(image, forBarMetrics: .Default)
+		shadowImage = image
+	}
+}
+
