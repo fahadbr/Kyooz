@@ -136,6 +136,8 @@
 		0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */; };
 		0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */; };
 		0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */; };
+		0BDA6CF61D249C65007D964F /* BasicAudioEntitySourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDA6CF51D249C65007D964F /* BasicAudioEntitySourceData.swift */; };
+		0BDA6CF81D249F1C007D964F /* AudioTrackCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDA6CF71D249F1C007D964F /* AudioTrackCollection.swift */; };
 		0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */; };
 		0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE21C541BAF8915000509FD /* ApplicationIconView.swift */; };
 		0BE21C571BAF8925000509FD /* ApplicationIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BE21C561BAF8925000509FD /* ApplicationIconView.xib */; };
@@ -335,6 +337,8 @@
 		0BD11B6E1B0926BE00565471 /* LongPressToDragGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressToDragGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD11B701B09710000565471 /* LongPressDragAndDropGestureHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LongPressDragAndDropGestureHandler.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0BD43F661AF7108700D5B2D4 /* IPodLibraryDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = IPodLibraryDAO.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0BDA6CF51D249C65007D964F /* BasicAudioEntitySourceData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAudioEntitySourceData.swift; sourceTree = "<group>"; };
+		0BDA6CF71D249F1C007D964F /* AudioTrackCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackCollection.swift; sourceTree = "<group>"; };
 		0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozSectionHeaderView.swift; sourceTree = "<group>"; };
 		0BE21C541BAF8915000509FD /* ApplicationIconView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationIconView.swift; sourceTree = "<group>"; };
 		0BE21C561BAF8925000509FD /* ApplicationIconView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplicationIconView.xib; sourceTree = "<group>"; };
@@ -567,8 +571,9 @@
 		0B476C701B21FA1F00626810 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0B476C711B21FA5400626810 /* AudioTrack.swift */,
 				0B476C731B2273E500626810 /* AudioEntity.swift */,
+				0B476C711B21FA5400626810 /* AudioTrack.swift */,
+				0BDA6CF71D249F1C007D964F /* AudioTrackCollection.swift */,
 				0B533ABF1BC1878900EA71B7 /* LibraryGrouping.swift */,
 				0B4E600D1C322C4800BB9D77 /* NowPlayingQueueContext.swift */,
 				0B4E60111C34561600BB9D77 /* PlaybackStateSnapshot.swift */,
@@ -667,6 +672,7 @@
 			children = (
 				0BC3179A1C5D7AEA002BF431 /* AudioEntitySourceData.swift */,
 				0B5F13551C71682F009A1FDD /* AudioQueuePlayerSourceData.swift */,
+				0BDA6CF51D249C65007D964F /* BasicAudioEntitySourceData.swift */,
 				0B5F13511C714F9D009A1FDD /* KyoozPlaylistSourceData.swift */,
 				0B5F134D1C714F56009A1FDD /* MediaQuerySourceData.swift */,
 				0B5F134F1C714F83009A1FDD /* SearchResultsSourceData.swift */,
@@ -1092,6 +1098,7 @@
 				0B13D9C11AE6F80E00CC5C01 /* AppDelegate.swift in Sources */,
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
 				0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */,
+				0BDA6CF61D249C65007D964F /* BasicAudioEntitySourceData.swift in Sources */,
 				0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */,
 				0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */,
 				0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */,
@@ -1200,6 +1207,7 @@
 				0B4E600A1C2CD9AD00BB9D77 /* RepeatButtonView.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
 				108DBA0D1CE537990013E990 /* Tutorial.swift in Sources */,
+				0BDA6CF81D249F1C007D964F /* AudioTrackCollection.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift in Sources */,
 				0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */,

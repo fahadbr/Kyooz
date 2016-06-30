@@ -140,7 +140,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 			(view.heightAnchor, 0.55) :
 			(albumArtPageVC.view.widthAnchor, 0.9)
 		
-		albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(anchor_mult.0, multiplier: anchor_mult.1)
+		albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(anchor_mult.0, multiplier: anchor_mult.1).active = true
 		albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
         addChildViewController(albumArtPageVC)
         albumArtPageVC.didMoveToParentViewController(self)

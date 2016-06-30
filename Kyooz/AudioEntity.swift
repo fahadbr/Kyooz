@@ -21,12 +21,6 @@ import UIKit
 	
 }
 
-@objc protocol AudioTrackCollection : AudioEntity {
-    
-    var tracks:[AudioTrack] { get }
-
-}
-
 
 extension AudioEntity {
 	

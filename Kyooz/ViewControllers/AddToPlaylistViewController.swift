@@ -40,17 +40,33 @@ class AddToPlaylistViewController: UINavigationController {
 	
         var datasourceDelegates = [AudioEntityDSDProtocol]()
 		
-		if let mostRecentlyModifiedPlaylist = Playlists.mostRecentlyModifiedPlaylist {
-			switch mostRecentlyModifiedPlaylist.type {
+		if let recentPlaylist = Playlists.mostRecentlyModifiedPlaylist {
+            let recentSourceData = BasicAudioEntitySourceData(collection: recentPlaylist.playlist,
+                                                        grouping: LibraryGrouping.Playlists,
+                                                        sourceDataName: "RECENT - \(recentPlaylist.type.description)")
+            
+            
+            let recentDSD:AudioEntityDSDProtocol
+			switch recentPlaylist.type {
 			case .kyooz:
-				break
+				recentDSD = AddToKyoozPlaylistDSD(sourceData: recentSourceData,
+				                                  reuseIdentifier: ImageTableViewCell.reuseIdentifier,
+				                                  tracksToAdd: tracksToAdd,
+				                                  completion: dismissAddToPlaylistController)
+                
 			case .iTunes:
 				if #available(iOS 9.3, *) {
+                    recentDSD = AddToAppleMusicPlaylistDSD(sourceData: recentSourceData,
+                                                           reuseIdentifier: ImageTableViewCell.reuseIdentifier,
+                                                           tracksToAdd: tracksToAdd,
+                                                           completion: dismissAddToPlaylistController)
 					
 				} else {
 					fatalError("itunes playlist modification is not supported prior to iOS 9.3")
 				}
 			}
+            
+            datasourceDelegates.append(recentDSD)
 		}
 		
 		
@@ -92,9 +108,7 @@ class AddToPlaylistViewController: UINavigationController {
 				tracksToAdd: tracksToAdd,
 				completion: dismissAddToPlaylistController))
 			
-            let infoButton = UIBarButtonItem(title: "??", style: .Plain, target: self, action: #selector(self.showInfo))
-            infoButton.tintColor = ThemeHelper.defaultTintColor
-            vc.toolbarItems = [UIBarButtonItem.flexibleSpace(), cancelButton, UIBarButtonItem.flexibleSpace(), infoButton]
+            vc.toolbarItems = [UIBarButtonItem.flexibleSpace(), cancelButton, UIBarButtonItem.flexibleSpace()]
             
         } else {
             vc.toolbarItems = [UIBarButtonItem.flexibleSpace(), cancelButton, UIBarButtonItem.flexibleSpace()]
@@ -111,11 +125,6 @@ class AddToPlaylistViewController: UINavigationController {
 		
         setViewControllers([vc], animated: false)
 		
-    }
-    
-    @available(iOS 9.3, *)
-    func showInfo() {
-        Playlists.showPlaylistTypeInfoView(self)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {

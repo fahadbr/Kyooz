@@ -17,7 +17,8 @@ class KyoozSectionHeaderView : UITableViewHeaderFooterView {
     let headerTitleLabel = UILabel()
     
     private let stackView = UIStackView()
-    private let strokeLayer = CAShapeLayer()
+    
+    let strokeLayer = CAShapeLayer()
     
 
     override init(reuseIdentifier: String?) {
