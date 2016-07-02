@@ -115,11 +115,17 @@ struct Playlists {
 	
 	@available(iOS 9.3, *)
 	static func showPlaylistTypeInfoView(presentationController:UIViewController = ContainerViewController.instance) {
-		
-		let textVC = TextViewController()
-		_ = try? textVC.loadHtmlFile(withName: "PlaylistTypeDescriptions")
-		
-		presentationController.presentViewController(UINavigationController(rootViewController:textVC), animated: true, completion: nil)
+		do {
+			let textVC = try TextViewController(fileName: "PlaylistTypeDescriptions",
+			                                    documentType: .html,
+			                                    showDismissButton: true)
+			
+			presentationController.presentViewController(UINavigationController(rootViewController:textVC),
+			                                             animated: true,
+			                                             completion: nil)
+		} catch let error {
+			Logger.error("Error with loading playlist type description file: \(error.description)")
+		}
 	}
 	
 	

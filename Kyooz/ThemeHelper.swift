@@ -128,6 +128,8 @@ struct ThemeHelper {
         UIToolbar.appearance().translucent = barsAreTranslucent
         
         UILabel.appearance().textColor = defaultFontColor
+		
+		UITextView.appearance().backgroundColor = defaultTableCellColor
     }
     
 }

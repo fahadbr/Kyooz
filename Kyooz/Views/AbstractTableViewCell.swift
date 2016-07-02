@@ -20,20 +20,20 @@ class AbstractTableViewCell : UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setSelectedBackgroundView()
+        initialize()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setSelectedBackgroundView()
+        initialize()
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        setSelectedBackgroundView()
+        initialize()
     }
     
-    private func setSelectedBackgroundView() {
+	func initialize() {
         selectedBackgroundView = cellBackgroundView
     }
     

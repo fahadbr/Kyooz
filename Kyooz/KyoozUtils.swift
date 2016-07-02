@@ -123,7 +123,7 @@ struct KyoozUtils {
 	}
     
     static func showPopupError(withTitle title:String, withThrownError error:ErrorType, presentationVC:UIViewController?) {
-        let message = "Error Description: \((error as? KyoozErrorProtocol)?.errorDescription ?? "\(error.dynamicType)")"
+        let message = "Error Description: \(error.description)"
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
 	

@@ -293,7 +293,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
         let currentY = maxY - frame.origin.y
         
-        let expandedFraction = KyoozUtils.cap((currentY/maxY), min: 0, max: 1)
+        let expandedFraction = (currentY/maxY).cap(min: 0, max: 1)
         
         let collapsedFraction = 1 - expandedFraction
         

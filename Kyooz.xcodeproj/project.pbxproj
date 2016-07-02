@@ -150,22 +150,29 @@
 		0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */; };
 		0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917471BF8F36A001AC802 /* KyoozUtils.swift */; };
 		10088C981D1C9B2800AAC16F /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C971D1C9B2800AAC16F /* Playlist.swift */; };
+		10088C9A1D25D54100AAC16F /* KyoozOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */; };
+		10088C9C1D25D5C000AAC16F /* KyoozOptionsHeaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C9B1D25D5C000AAC16F /* KyoozOptionsHeaderProvider.swift */; };
 		100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BC41C54423B009FAB17 /* KyoozTests.swift */; };
 		100A8BD31C56F8DE009FAB17 /* KyoozPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD21C56F8DE009FAB17 /* KyoozPlaylistManager.swift */; };
 		100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD41C583695009FAB17 /* DataPersistenceError.swift */; };
 		100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */; };
-		100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */; };
 		100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */; };
 		100A8BDD1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */; };
 		100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */; };
 		102756A61CFE43CB00B1B679 /* EnumNameDescriptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */; };
 		102756A81CFE43F600B1B679 /* ImageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102756A71CFE43F600B1B679 /* ImageUtils.swift */; };
+		102F6C0E1D27020600DEC44F /* DocumentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 102F6C0D1D27020600DEC44F /* DocumentType.swift */; };
 		104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */; };
 		1060F6041CE5399C001DE868 /* TutorialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1060F6031CE5399C001DE868 /* TutorialManager.swift */; };
 		1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */; };
 		108DBA061CE295480013E990 /* CrossButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA051CE295480013E990 /* CrossButtonView.swift */; };
 		108DBA0A1CE4CCA10013E990 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA091CE4CCA10013E990 /* TutorialViewController.swift */; };
 		108DBA0D1CE537990013E990 /* Tutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA0C1CE537990013E990 /* Tutorial.swift */; };
+		10B068FA1D270FDA00CCDCA6 /* ComparableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B068F91D270FDA00CCDCA6 /* ComparableExtension.swift */; };
+		10B068FC1D27185600CCDCA6 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B068FB1D27185600CCDCA6 /* UIViewExtension.swift */; };
+		10B069001D271E5300CCDCA6 /* UITextViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B068FF1D271E5300CCDCA6 /* UITextViewExtension.swift */; };
+		10B069021D2722B200CCDCA6 /* ErrorTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B069011D2722B200CCDCA6 /* ErrorTypeExtension.swift */; };
+		10B069041D272C8400CCDCA6 /* SizeConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B069031D272C8400CCDCA6 /* SizeConstraints.swift */; };
 		10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1011CC987B60058F44E /* HomeButtonView.swift */; };
 		10B9E1041CC987CF0058F44E /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10B9E1031CC987CF0058F44E /* TempView.xib */; };
 		10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */; };
@@ -351,24 +358,31 @@
 		0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndexEntry.swift; sourceTree = "<group>"; };
 		0BF917471BF8F36A001AC802 /* KyoozUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozUtils.swift; sourceTree = "<group>"; };
 		10088C971D1C9B2800AAC16F /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
+		10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsViewController.swift; sourceTree = "<group>"; };
+		10088C9B1D25D5C000AAC16F /* KyoozOptionsHeaderProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsHeaderProvider.swift; sourceTree = "<group>"; };
 		100A8BC21C54423B009FAB17 /* KyoozTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		100A8BC41C54423B009FAB17 /* KyoozTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyoozTests.swift; sourceTree = "<group>"; };
 		100A8BC61C54423B009FAB17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		100A8BD21C56F8DE009FAB17 /* KyoozPlaylistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozPlaylistManager.swift; sourceTree = "<group>"; };
 		100A8BD41C583695009FAB17 /* DataPersistenceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPersistenceError.swift; sourceTree = "<group>"; };
 		100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozErrorProtocol.swift; sourceTree = "<group>"; };
-		100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSErrorExtension.swift; sourceTree = "<group>"; };
 		100A8BDA1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioTrackCollectionDSD.swift; sourceTree = "<group>"; };
 		100A8BDC1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDSectionDelegator.swift; sourceTree = "<group>"; };
 		100A8BDE1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityDSDProtocol.swift; sourceTree = "<group>"; };
 		102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumNameDescriptable.swift; sourceTree = "<group>"; };
 		102756A71CFE43F600B1B679 /* ImageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageUtils.swift; sourceTree = "<group>"; };
+		102F6C0D1D27020600DEC44F /* DocumentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentType.swift; sourceTree = "<group>"; };
 		104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortNotificationViewController.swift; sourceTree = "<group>"; };
 		1060F6031CE5399C001DE868 /* TutorialManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialManager.swift; sourceTree = "<group>"; };
 		1060F6051CEA95AA001DE868 /* LongPressTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongPressTutorialViewController.swift; sourceTree = "<group>"; };
 		108DBA051CE295480013E990 /* CrossButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrossButtonView.swift; sourceTree = "<group>"; };
 		108DBA091CE4CCA10013E990 /* TutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
 		108DBA0C1CE537990013E990 /* Tutorial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tutorial.swift; sourceTree = "<group>"; };
+		10B068F91D270FDA00CCDCA6 /* ComparableExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComparableExtension.swift; sourceTree = "<group>"; };
+		10B068FB1D27185600CCDCA6 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		10B068FF1D271E5300CCDCA6 /* UITextViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextViewExtension.swift; sourceTree = "<group>"; };
+		10B069011D2722B200CCDCA6 /* ErrorTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorTypeExtension.swift; sourceTree = "<group>"; };
+		10B069031D272C8400CCDCA6 /* SizeConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizeConstraints.swift; sourceTree = "<group>"; };
 		10B9E1011CC987B60058F44E /* HomeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
 		10B9E1031CC987CF0058F44E /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
 		10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozTableFooterView.swift; sourceTree = "<group>"; };
@@ -557,13 +571,10 @@
 		0B1BFDAA1AF535DB009838A5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				0BD11B671B08FB2B00565471 /* ArrayExtension.swift */,
+				10B068FE1D271DBF00CCDCA6 /* SwiftCore */,
+				10B068FD1D271DB200CCDCA6 /* UIKit */,
 				0BF7C5B01D1E3E3B00D1EE37 /* FoundationExtensions.swift */,
 				0BC3179E1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift */,
-				100A8BD81C5C32C6009FAB17 /* NSErrorExtension.swift */,
-				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
-				0BBE15F91AF5BE20007C6189 /* StringExtension.swift */,
-				0BF7C5B21D1E4D2B00D1EE37 /* UIKitExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -710,20 +721,20 @@
 		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				102756AA1CFE445E00B1B679 /* HelperClasses */,
+				102756AA1CFE445E00B1B679 /* HelperTypes */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
-				0BBE16001AF6AC80007C6189 /* Logger */,
+				0BBE16001AF6AC80007C6189 /* Logging */,
 				102756A91CFE444C00B1B679 /* StaticUtils */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
 		};
-		0BBE16001AF6AC80007C6189 /* Logger */ = {
+		0BBE16001AF6AC80007C6189 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
 				0BBE16011AF6AC9B007C6189 /* Logger.swift */,
 			);
-			name = Logger;
+			name = Logging;
 			sourceTree = "<group>";
 		};
 		0BC2D7B11CDE5EFC001BEC9B /* AudioPlayer */ = {
@@ -818,6 +829,16 @@
 			name = Search;
 			sourceTree = "<group>";
 		};
+		10088C9D1D25EC1A00AAC16F /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
+				10088C9B1D25D5C000AAC16F /* KyoozOptionsHeaderProvider.swift */,
+				10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */,
+			);
+			name = Options;
+			sourceTree = "<group>";
+		};
 		100A8BC31C54423B009FAB17 /* KyoozTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -850,13 +871,13 @@
 			isa = PBXGroup;
 			children = (
 				102756AB1D01192500B1B679 /* HeaderVCs */,
+				10088C9D1D25EC1A00AAC16F /* Options */,
 				108DBA0B1CE536AD0013E990 /* Tutorial */,
 				0B63061A1CD505C4006CD211 /* AddToPlaylistViewController.swift */,
 				10FD32581C8F986800004CAB /* BlurViewController.swift */,
 				0BCA4DE71C41BC2E004EE698 /* CustomPopableViewController.swift */,
 				0B2937581C92690B00374A3C /* FadeOutViewController.swift */,
 				0B4B2D651D0DC89A0036F358 /* GenericWrapperViewController.swift */,
-				10FD325A1C90E43800004CAB /* KyoozMenuViewController.swift */,
 				104F15E71C4F026F00477ECD /* ShortNotificationViewController.swift */,
 				0BA7F6E61C45E5960062A201 /* SystemQueueResyncWorkflowController.swift */,
 				0B0FB0AC1CDFEE010062AB4E /* TextViewController.swift */,
@@ -882,16 +903,18 @@
 			name = StaticUtils;
 			sourceTree = "<group>";
 		};
-		102756AA1CFE445E00B1B679 /* HelperClasses */ = {
+		102756AA1CFE445E00B1B679 /* HelperTypes */ = {
 			isa = PBXGroup;
 			children = (
+				102F6C0D1D27020600DEC44F /* DocumentType.swift */,
+				102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */,
+				0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */,
+				100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */,
 				10FD32721C9B6B4300004CAB /* KYReachability.h */,
 				10FD32731C9B6B4300004CAB /* KYReachability.m */,
-				102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */,
-				100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */,
-				0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */,
+				10B069031D272C8400CCDCA6 /* SizeConstraints.swift */,
 			);
-			name = HelperClasses;
+			name = HelperTypes;
 			sourceTree = "<group>";
 		};
 		102756AB1D01192500B1B679 /* HeaderVCs */ = {
@@ -919,6 +942,28 @@
 			);
 			name = Tutorial;
 			path = Util_VCs/Tutorial;
+			sourceTree = "<group>";
+		};
+		10B068FD1D271DB200CCDCA6 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				0B13DA5A1AEB1CB700CC5C01 /* StoryboardExtension.swift */,
+				0BF7C5B21D1E4D2B00D1EE37 /* UIKitExtensions.swift */,
+				10B068FF1D271E5300CCDCA6 /* UITextViewExtension.swift */,
+				10B068FB1D27185600CCDCA6 /* UIViewExtension.swift */,
+			);
+			name = UIKit;
+			sourceTree = "<group>";
+		};
+		10B068FE1D271DBF00CCDCA6 /* SwiftCore */ = {
+			isa = PBXGroup;
+			children = (
+				0BD11B671B08FB2B00565471 /* ArrayExtension.swift */,
+				10B068F91D270FDA00CCDCA6 /* ComparableExtension.swift */,
+				0BBE15F91AF5BE20007C6189 /* StringExtension.swift */,
+				10B069011D2722B200CCDCA6 /* ErrorTypeExtension.swift */,
+			);
+			name = SwiftCore;
 			sourceTree = "<group>";
 		};
 		10BECBF11C4EFB04009D8B41 /* DefaultAudioQueuePlayer */ = {
@@ -1083,11 +1128,13 @@
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
+				10B069001D271E5300CCDCA6 /* UITextViewExtension.swift in Sources */,
 				0BCA4DE81C41BC2E004EE698 /* CustomPopableViewController.swift in Sources */,
 				0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */,
 				0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
 				0B0FB0AD1CDFEE010062AB4E /* TextViewController.swift in Sources */,
+				10088C9A1D25D54100AAC16F /* KyoozOptionsViewController.swift in Sources */,
 				0B63061B1CD505C4006CD211 /* AddToPlaylistViewController.swift in Sources */,
 				10DB78FC1CB87770008402BB /* PlaybackControlsViewController.swift in Sources */,
 				10FD32741C9B6B4300004CAB /* KYReachability.m in Sources */,
@@ -1099,6 +1146,7 @@
 				0BBE16021AF6AC9B007C6189 /* Logger.swift in Sources */,
 				0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */,
 				0BDA6CF61D249C65007D964F /* BasicAudioEntitySourceData.swift in Sources */,
+				10B069021D2722B200CCDCA6 /* ErrorTypeExtension.swift in Sources */,
 				0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */,
 				0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */,
 				0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */,
@@ -1116,11 +1164,11 @@
 				0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
 				0BF7C5B11D1E3E3B00D1EE37 /* FoundationExtensions.swift in Sources */,
-				100A8BD91C5C32C6009FAB17 /* NSErrorExtension.swift in Sources */,
 				10088C981D1C9B2800AAC16F /* Playlist.swift in Sources */,
 				10FD32531C6E75E500004CAB /* RowLimitedSectionDelegator.swift in Sources */,
 				102756A61CFE43CB00B1B679 /* EnumNameDescriptable.swift in Sources */,
 				10DB79021CBC7026008402BB /* AudioQueuePlayerWrapper.swift in Sources */,
+				10B068FC1D27185600CCDCA6 /* UIViewExtension.swift in Sources */,
 				108DBA0A1CE4CCA10013E990 /* TutorialViewController.swift in Sources */,
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
 				10FD32571C8F948100004CAB /* AudioEntityLibraryViewController.swift in Sources */,
@@ -1135,6 +1183,7 @@
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
 				10B9E10C1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift in Sources */,
 				0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */,
+				10088C9C1D25D5C000AAC16F /* KyoozOptionsHeaderProvider.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
@@ -1155,6 +1204,7 @@
 				0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
 				0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */,
+				10B068FA1D270FDA00CCDCA6 /* ComparableExtension.swift in Sources */,
 				10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
 				0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */,
@@ -1168,6 +1218,7 @@
 				0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */,
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
+				102F6C0E1D27020600DEC44F /* DocumentType.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
 				0B5F13541C714FBD009A1FDD /* SectionDescription.swift in Sources */,
 				100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */,
@@ -1197,6 +1248,7 @@
 				0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */,
 				0B13DA681AED5A3600CC5C01 /* MediaItemUtils.swift in Sources */,
 				10C7B9DB1C45C16E00ADAAB6 /* WarningViewController.swift in Sources */,
+				10B069041D272C8400CCDCA6 /* SizeConstraints.swift in Sources */,
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */,
 				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,

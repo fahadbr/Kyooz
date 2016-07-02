@@ -1,5 +1,5 @@
 //
-//  KyoozMenuViewController.swift
+//  KyoozOptionsViewController.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 3/9/16.
@@ -10,9 +10,9 @@ import UIKit
 
 
 
-final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
+final class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
-	private typealias This = KyoozMenuViewController
+	private typealias This = KyoozOptionsViewController
 	
     private static let cellHeight:CGFloat = 50
     private static let sectionHeight:CGFloat = 5
@@ -21,56 +21,48 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 	
 	private let maxWidth:CGFloat = min(375 * 0.70, This.absoluteMax)
 	private let minWidth:CGFloat = min(UIScreen.mainScreen().bounds.width * 0.55 * ThemeHelper.contentSizeRatio, This.absoluteMax)
-	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.9
+	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.95
     
 	private let tableView = UITableView()
     
     private lazy var dividerPath:UIBezierPath = {
         let path = UIBezierPath()
         let inset:CGFloat = 12
-        let containerWidth = self.tableView.frame.width
         let midLine = This.sectionHeight/2
         path.moveToPoint(CGPoint(x: inset, y: midLine))
-        path.addLineToPoint(CGPoint(x: containerWidth - inset, y: midLine))
+        path.addLineToPoint(CGPoint(x: self.tableView.frame.width - inset, y: midLine))
         return path
     }()
     
     private var menuActions = [[KyoozMenuActionProtocol]]()
-	private var estimatedLabelContainerSize:CGSize {
-		let titleSize = titleLabel?.frame.size ?? CGSize.zero
-		let detailsSize = detailsLabel?.frame.size ?? CGSize.zero
-		
-		let assumedLabelHeight = titleSize.height + detailsSize.height
-		let assumedLabelWidth = max(titleSize.width, detailsSize.width)
-		return CGSize(width: max(min(maxWidth, assumedLabelWidth), minWidth), height: assumedLabelHeight)
+
+	let headerProvider:KyoozOptionsHeaderProvider
+	let originatingCenter:CGPoint?
+	
+	init(headerProvider:KyoozOptionsHeaderProvider, originatingCenter:CGPoint? = nil) {
+		self.headerProvider = headerProvider
+		self.originatingCenter = originatingCenter
+		super.init(nibName: nil, bundle: nil)
 	}
 	
-	private var labelContainerView:UIView!
-	private var titleLabel:UILabel!
-	private var detailsLabel:UILabel!
-	
-	var originatingCenter:CGPoint?
-	var menuTitle:String? {
-        didSet {
-			configureLabelSizes()
-        }
-    }
-	
-	var menuDetails:String? {
-		didSet {
-			configureLabelSizes()
-		}
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
 	}
     
     override func viewDidLoad() {
         super.viewDidLoad()
         fadeOutAnimation.duration = 0.2
         menuActions.append([CancelAction()])
-        initializeLabelContainerView()
 		
-		let labelContainerSize = labelContainerView?.frame.size ?? CGSize.zero
-		let height = This.cellHeight * CGFloat(menuActions.flatten().count) + labelContainerSize.height + This.sectionHeight * CGFloat(menuActions.count)
-		let width = labelContainerSize.width
+		let tableHeaderView = headerProvider.headerView(withMaxSize: CGSize(width: maxWidth, height: maxHeight))
+		let tableHeaderSize = tableHeaderView.frame.size ?? CGSize.zero
+		let height = This.cellHeight
+			* CGFloat(menuActions.reduce(0) { $0 + $1.count })
+			+ tableHeaderSize.height
+			+ This.sectionHeight
+			* CGFloat(menuActions.count)
+		
+		let width = tableHeaderSize.width
 		let estimatedSize = CGSize(width: width, height: height)
 
         
@@ -79,12 +71,12 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         }
 		
         let tableContainerView = UIView()
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .CenterY], subView: tableContainerView, parentView: view)
-        tableContainerView.heightAnchor.constraintEqualToConstant(estimatedSize.height).active = true
-        tableContainerView.widthAnchor.constraintEqualToConstant(estimatedSize.width).active = true
+		view.add(subView: tableContainerView, with: [.CenterX, .CenterY])
+		tableContainerView.constrain(height: min(estimatedSize.height, maxHeight),
+		                             width: min(estimatedSize.width, maxWidth))
 
-        
-        ConstraintUtils.applyStandardConstraintsToView(subView: tableView, parentView: tableContainerView)
+		
+		tableContainerView.add(subView: tableView, with: Anchor.standardAnchors)
         tableView.scrollsToTop = false
 		tableView.rowHeight = This.cellHeight
         tableView.sectionHeaderHeight = This.sectionHeight
@@ -93,7 +85,7 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
 		tableView.layer.cornerRadius = 10
 		tableView.registerClass(KyoozMenuCell.self, forCellReuseIdentifier: KyoozMenuCell.reuseIdentifier)
         tableView.separatorStyle = .None
-        tableView.tableHeaderView = labelContainerView
+        tableView.tableHeaderView = tableHeaderView
         
         tableContainerView.layer.shadowOpacity = 0.8
         tableContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -116,61 +108,6 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
         
         tableContainerView.layer.addAnimation(transformAnimation, forKey: nil)
     }
-	
-	private func initializeLabelContainerView() {
-		func configureCommonLabelAttributes(label:UILabel, text:String?, font:UIFont!) {
-			label.textAlignment = .Center
-			label.numberOfLines = 0
-			label.lineBreakMode = .ByWordWrapping
-			label.textColor = ThemeHelper.defaultVividColor
-			label.text = text
-			label.font = font ?? ThemeHelper.defaultFont
-		}
-		
-		titleLabel = UILabel()
-		configureCommonLabelAttributes(titleLabel, text: menuTitle, font:ThemeHelper.defaultFont?.fontWithSize(ThemeHelper.defaultFontSize + 1))
-		
-		detailsLabel = UILabel()
-		configureCommonLabelAttributes(detailsLabel, text: menuDetails, font:ThemeHelper.smallFontForStyle(.Normal))
-		
-		configureLabelSizes()
-		
-		let stackView = UIStackView(arrangedSubviews: [titleLabel, detailsLabel])
-		stackView.axis = UILayoutConstraintAxis.Vertical
-		let labelSize = estimatedLabelContainerSize
-        stackView.frame.size = labelSize
-
-		let offset:CGFloat = 16
-		let containerSize = CGSize(width: labelSize.width + offset, height: labelSize.height + offset)
-		labelContainerView = UIView()
-        labelContainerView.frame.size = containerSize
-		
-        stackView.center = labelContainerView.center
-        labelContainerView.addSubview(stackView)
-
-	}
-	
-	private func configureLabelSizes() {
-		func configureBoundsForLabel(label:UILabel!) {
-			guard label != nil else { return }
-			
-			let rect = label.textRectForBounds(
-				CGRect(
-					x: 0,
-					y: 0,
-					width: maxWidth,
-					height: UIScreen.mainScreen().bounds.height),
-				limitedToNumberOfLines: 0)
-			
-			label.frame.size = CGSize(
-				width: KyoozUtils.cap(rect.size.width,
-					min: maxWidth,
-					max: minWidth),
-				height: rect.size.height)
-		}
-		configureBoundsForLabel(titleLabel)
-		configureBoundsForLabel(detailsLabel)
-	}
 	
 	
     func addActions(menuActions:[KyoozMenuActionProtocol]) {
@@ -217,19 +154,6 @@ final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSourc
     }
     
 
-}
-
-protocol KyoozMenuActionProtocol {
-    var title:String { get }
-    var image:UIImage? { get }
-    var action:(()->())? { get }
-}
-
-struct KyoozMenuAction : KyoozMenuActionProtocol {
-    
-    let title:String
-    let image:UIImage?
-    let action:(()->())?
 }
 
 private struct CancelAction : KyoozMenuActionProtocol {
