@@ -89,16 +89,12 @@ final class SettingsViewController: UITableViewController {
     }
 	
 	private func showPrivacyPolicy() throws {
-        let textVC = TextViewController()
-        textVC.showDimissButton = false
-        try textVC.loadHtmlFile(withName: "PrivacyPolicy")
+		let textVC = try TextViewController(fileName: "PrivacyPolicy", documentType: .html)
         navigationController?.pushViewController(textVC, animated: true)
 	}
     
     private func showAcknowledgements() throws {
-        let textVC = TextViewController()
-        textVC.showDimissButton = false
-        try textVC.loadHtmlFile(withName: "Acknowledgments")
+		let textVC = try TextViewController(fileName: "Acknowledgments", documentType: .html)
         navigationController?.pushViewController(textVC, animated: true)
     }
 
