@@ -188,11 +188,11 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         return UtilHeaderViewController(centerViewController:vc)
     }
     
-    override func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
+	override func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
         searchBar.resignFirstResponder()
         super.addCustomMenuActions(indexPath, tracks:tracks, menuController: menuController)
         guard let mediaItem = tracks.first where tracks.count == 1 else { return }
-        var actions = [KyoozMenuActionProtocol]()
+        var actions = [KyoozOption]()
         if mediaItem.albumId != 0 {
             let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!, parentGroup: LibraryGrouping.Albums, entity: mediaItem)
@@ -206,7 +206,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
             }
             actions.append(goToArtistAction)
         }
-        menuController.addActions(actions)
+		menuBuilder.with(options: actions)
     }
 
     

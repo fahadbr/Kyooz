@@ -37,7 +37,8 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
         tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
         tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
         tableView.registerClass(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
-        
+		
+		view.add(subView: tableView, with: <#T##[Anchor]#>)
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: tableView, parentView: view)
 		tableView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
 		
@@ -93,27 +94,26 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
         }
         
         let tracks = sourceData.getTracksAtIndex(indexPath)
-        let kmvc = KyoozMenuViewController()
-        kmvc.menuTitle = title
-		kmvc.menuDetails = details
-		kmvc.originatingCenter = originatingCenter
-        
+		let b = MenuBuilder().with(title: title)
+			.with(details: details)
+			.with(originatingCenter: originatingCenter)
+		
         if tracks.count == 1 {
-            kmvc.addActions([KyoozMenuAction(title: "PLAY ONLY THIS", image: nil) {
+			b.with(options:KyoozMenuAction(title: "PLAY ONLY THIS") {
                 self.audioQueuePlayer.playNow(withTracks: tracks, startingAtIndex: 0, shouldShuffleIfOff: false)
-            }])
+            })
         }
-        KyoozUtils.addDefaultQueueingActions(tracks, menuController: kmvc)
+        KyoozUtils.addDefaultQueueingActions(tracks, menuBuilder: b)
         
         
-        addCustomMenuActions(indexPath, tracks: tracks, menuController:kmvc)
+        addCustomMenuActions(indexPath, tracks: tracks, menuBuilder: b)
         
-        KyoozUtils.showMenuViewController(kmvc)
+        KyoozUtils.showMenuViewController(b.viewController)
 
     }
 
     
-    func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
+	func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuBuilder: MenuBuilder) {
         //empty implementation
     }
     
@@ -122,12 +122,12 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadTableViewData),
-                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue,
+                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
                                        object: audioQueuePlayer)
         //TODO: Why does this class need to know about playback state updates?
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadTableViewData),
-                                       name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue,
+                                       name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue,
                                        object: audioQueuePlayer)
         
         notificationCenter.addObserver(self,

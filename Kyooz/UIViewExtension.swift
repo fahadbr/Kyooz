@@ -17,7 +17,7 @@ enum Anchor:Int {
 
 extension UIView {
 	
-	func add(subView subView:UIView, with anchors:[Anchor]) -> [Anchor : NSLayoutConstraint] {
+	func add(subView subView:UIView, with anchors: Anchor...) -> [Anchor : NSLayoutConstraint] {
 		return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
 	}
 	

@@ -176,6 +176,7 @@
 		10B069001D271E5300CCDCA6 /* UITextViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B068FF1D271E5300CCDCA6 /* UITextViewExtension.swift */; };
 		10B069021D2722B200CCDCA6 /* ErrorTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B069011D2722B200CCDCA6 /* ErrorTypeExtension.swift */; };
 		10B069041D272C8400CCDCA6 /* SizeConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B069031D272C8400CCDCA6 /* SizeConstraint.swift */; };
+		10B069061D2989F200CCDCA6 /* MenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B069051D2989F200CCDCA6 /* MenuBuilder.swift */; };
 		10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1011CC987B60058F44E /* HomeButtonView.swift */; };
 		10B9E1041CC987CF0058F44E /* TempView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 10B9E1031CC987CF0058F44E /* TempView.xib */; };
 		10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */; };
@@ -388,6 +389,7 @@
 		10B068FF1D271E5300CCDCA6 /* UITextViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextViewExtension.swift; sourceTree = "<group>"; };
 		10B069011D2722B200CCDCA6 /* ErrorTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorTypeExtension.swift; sourceTree = "<group>"; };
 		10B069031D272C8400CCDCA6 /* SizeConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizeConstraint.swift; sourceTree = "<group>"; };
+		10B069051D2989F200CCDCA6 /* MenuBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBuilder.swift; sourceTree = "<group>"; };
 		10B9E1011CC987B60058F44E /* HomeButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeButtonView.swift; sourceTree = "<group>"; };
 		10B9E1031CC987CF0058F44E /* TempView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TempView.xib; sourceTree = "<group>"; };
 		10B9E1051CD2A5880058F44E /* KyoozTableFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozTableFooterView.swift; sourceTree = "<group>"; };
@@ -839,6 +841,7 @@
 				10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */,
 				0B2064C21D27414F00725CB7 /* KyoozOption.swift */,
 				0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */,
+				10B069051D2989F200CCDCA6 /* MenuBuilder.swift */,
 				10FD325A1C90E43800004CAB /* MenuOptionsDelegate.swift */,
 				10088C9B1D25D5C000AAC16F /* WhatsNewDelegate.swift */,
 			);
@@ -1225,6 +1228,7 @@
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				102F6C0E1D27020600DEC44F /* DocumentType.swift in Sources */,
+				10B069061D2989F200CCDCA6 /* MenuBuilder.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
 				0B5F13541C714FBD009A1FDD /* SectionDescription.swift in Sources */,
 				100A8BDF1C62C1DF009FAB17 /* AudioEntityDSDProtocol.swift in Sources */,
