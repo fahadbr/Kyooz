@@ -99,7 +99,7 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 		super.registerForNotifications()
 		NSNotificationCenter.defaultCenter()
 			.addObserver(self, selector: #selector(self.updateButtonStates),
-			             name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
+			             name: AudioQueuePlayerUpdate.systematicQueueUpdate.rawValue, object: audioQueuePlayer)
 	}
 	
 }

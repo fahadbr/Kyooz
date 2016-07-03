@@ -1,5 +1,5 @@
 //
-//  KyoozOptionsHeaderProvider.swift
+//  WhatsNewDelegate.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 6/30/16.
@@ -8,13 +8,9 @@
 
 import UIKit
 
-protocol KyoozOptionsHeaderProvider {
-	
-	func headerView(withMaxSize maxSize:CGSize) -> UIView
-	
-}
 
-struct KyoozOptionsTextViewHeaderProvider : KyoozOptionsHeaderProvider {
+
+struct KyoozOptionsTextViewHeaderProvider  {
 	
 	let textView:UITextView
 	
@@ -22,9 +18,10 @@ struct KyoozOptionsTextViewHeaderProvider : KyoozOptionsHeaderProvider {
 		self.textView = try UITextView(fileName: fileName, documentType: documentType)
 	}
 	
-	func headerView(withMaxSize maxSize: CGSize) -> UIView {
-		textView.frame.size = maxSize
+	func headerView(with sizeConstraint: SizeConstraint) -> UIView {
+		textView.frame.size = sizeConstraint.maxSize
 		return textView
 	}
 
 }
+

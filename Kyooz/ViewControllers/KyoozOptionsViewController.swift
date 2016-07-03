@@ -8,20 +8,20 @@
 
 import UIKit
 
+protocol KyoozOptionsViewControllerDelegate {
+    
+    var sizeConstraint: SizeConstraint { get }
+    var headerView: UIView { get }
+    func animation(forView view: UIView) -> CAAnimation
+    
+}
 
-
-final class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
+class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
 	private typealias This = KyoozOptionsViewController
 	
     private static let cellHeight:CGFloat = 50
     private static let sectionHeight:CGFloat = 5
-    
-    private static let absoluteMax:CGFloat = UIScreen.mainScreen().bounds.width * 95
-	
-	private let maxWidth:CGFloat = min(375 * 0.70, This.absoluteMax)
-	private let minWidth:CGFloat = min(UIScreen.mainScreen().bounds.width * 0.55 * ThemeHelper.contentSizeRatio, This.absoluteMax)
-	private let maxHeight:CGFloat = UIScreen.mainScreen().bounds.height * 0.95
     
 	private let tableView = UITableView()
     
@@ -34,14 +34,14 @@ final class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSo
         return path
     }()
     
-    private var menuActions = [[KyoozMenuActionProtocol]]()
-
-	let headerProvider:KyoozOptionsHeaderProvider
-	let originatingCenter:CGPoint?
+    private var optionsProviders: [KyoozOptionsProvider]
+    private let delegate: KyoozOptionsViewControllerDelegate
 	
-	init(headerProvider:KyoozOptionsHeaderProvider, originatingCenter:CGPoint? = nil) {
-		self.headerProvider = headerProvider
-		self.originatingCenter = originatingCenter
+    init(optionsProviders:[KyoozOptionsProvider],
+         delegate:KyoozOptionsViewControllerDelegate) {
+        
+        self.optionsProviders = optionsProviders
+        self.delegate = delegate
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -52,20 +52,23 @@ final class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         fadeOutAnimation.duration = 0.2
-        menuActions.append([CancelAction()])
+        optionsProviders.append(BasicKyoozOptionsProvider(options:KyoozMenuAction(title:"CANCEL")))
+        
+        let sizeConstraint = delegate.sizeConstraint
+        let maxWidth = sizeConstraint.maxWidth
+        let maxHeight = sizeConstraint.maxHeight
 		
-		let tableHeaderView = headerProvider.headerView(withMaxSize: CGSize(width: maxWidth, height: maxHeight))
+		let tableHeaderView = delegate.headerView
 		let tableHeaderSize = tableHeaderView.frame.size ?? CGSize.zero
 		let height = This.cellHeight
-			* CGFloat(menuActions.reduce(0) { $0 + $1.count })
+			* CGFloat(optionsProviders.reduce(0) { $0 + $1.options.count })
 			+ tableHeaderSize.height
 			+ This.sectionHeight
-			* CGFloat(menuActions.count)
+			* CGFloat(optionsProviders.count)
 		
 		let width = tableHeaderSize.width
 		let estimatedSize = CGSize(width: width, height: height)
 
-        
 		if estimatedSize.height < maxHeight {
             tableView.scrollEnabled = false
         }
@@ -93,50 +96,33 @@ final class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSo
         tableContainerView.layer.shadowColor = UIColor.whiteColor().CGColor
         
         view.backgroundColor = UIColor(white: 0, alpha: 0.40)
-		
-        //animate the menu from the originating center to the screens center
-        let center = originatingCenter ?? view.center
-        let transformAnimation = CABasicAnimation(keyPath: "transform")
-        let scaleTransform = CATransform3DMakeScale(0.1, 0.1, 0)
-        let translationTransform = CATransform3DMakeTranslation(abs(center.x) - view.center.x, abs(center.y) - view.center.y, 0)
         
-        transformAnimation.fromValue = NSValue(CATransform3D: CATransform3DConcat(scaleTransform, translationTransform))
-        transformAnimation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
-        transformAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        transformAnimation.duration = 0.2
-        transformAnimation.fillMode = kCAFillModeBackwards
-        
-        tableContainerView.layer.addAnimation(transformAnimation, forKey: nil)
+        tableContainerView.layer.addAnimation(delegate.animation(forView: view), forKey: nil)
     }
 	
-	
-    func addActions(menuActions:[KyoozMenuActionProtocol]) {
-        self.menuActions.append(menuActions)
-    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return menuActions.count
+        return optionsProviders.count
     }
 	
 	
 	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return menuActions[section].count
+		return optionsProviders[section].options.count
 	}
 	
 	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCellWithIdentifier(KyoozMenuCell.reuseIdentifier) as? KyoozMenuCell else {
             return UITableViewCell()
         }
-		let action = menuActions[indexPath.section][indexPath.row]
+		let action = optionsProviders[indexPath.section].options[indexPath.row]
 			
         cell.textLabel?.text = action.title
-        cell.imageView?.image = action.image
         return cell
 	}
 	
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
-		menuActions[indexPath.section][indexPath.row].action?()
+		optionsProviders[indexPath.section].options[indexPath.row].action?()
         transitionOut()
     }
     
@@ -154,12 +140,6 @@ final class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSo
     }
     
 
-}
-
-private struct CancelAction : KyoozMenuActionProtocol {
-    var title: String { return "CANCEL" }
-    var image: UIImage? { return nil }
-    var action: (() -> ())? { return nil }
 }
 
 private final class KyoozMenuCell : AbstractTableViewCell {

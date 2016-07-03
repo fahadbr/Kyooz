@@ -93,7 +93,7 @@ final class NowPlayingQueueDSD : EditableAudioTrackDSD {
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
         
-        audioQueuePlayer.playItemWithIndexInCurrentQueue(index: indexPath.row)
+        audioQueuePlayer.playTrack(at: indexPath.row)
     }
     
     override func entityIsNowPlaying(entity: AudioEntity, libraryGrouping: LibraryGrouping, indexPath: NSIndexPath) -> Bool {

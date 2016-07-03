@@ -39,7 +39,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private var nowPlayingQueueContext:NowPlayingQueueContext {
         didSet {
-            publishNotification(updateType: .QueueUpdate, sender: self)
+            publishNotification(for: .queueUpdate)
         }
     }
     
@@ -115,7 +115,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 } else {
                     musicPlayer.currentPlaybackTime = NSTimeInterval(newValue)
                 }
-                publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+                publishNotification(for: .playbackStateUpdate)
             }
         }
     }
@@ -134,7 +134,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         } set {
             nowPlayingQueueContext.setShuffleActive(newValue)
             persistToSystemQueue(nowPlayingQueueContext)
-            publishNotification(updateType: .SystematicQueueUpdate, sender: self)
+            publishNotification(for: .systematicQueueUpdate)
         }
     }
     
@@ -164,7 +164,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 musicPlayer.repeatMode = .All
                 persistToSystemQueue(nowPlayingQueueContext)
             }
-            publishNotification(updateType: .SystematicQueueUpdate, sender: self)
+            publishNotification(for: .systematicQueueUpdate)
         }
     }
     
@@ -219,7 +219,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         
     }
     
-    func playItemWithIndexInCurrentQueue(index index:Int) {
+    func playTrack(at index: Int) {
         if nowPlayingItem == nil || lowestIndexPersisted > 0 || queueStateInconsistent {
             playNowInternal(nowPlayingQueue as! [MPMediaItem], index: index)
             return
@@ -232,23 +232,23 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
-    func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition) {
+    func enqueue(tracks tracksToEnqueue: [AudioTrack], at enqueueAction: EnqueueAction) {
         let oldContext = nowPlayingQueueContext
-        nowPlayingQueueContext.enqueue(items: itemsToEnqueue, atPosition: position)
+        nowPlayingQueueContext.enqueue(items: tracksToEnqueue, at: enqueueAction)
         persistToSystemQueue(oldContext)
-		delegate?.audioQueuePlayerDidEnqueueItems(itemsToEnqueue, position: position)
+		delegate?.audioQueuePlayerDidEnqueueItems(tracks: tracksToEnqueue, at: enqueueAction)
     }
     
-    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int {
+    func insert(tracks tracksToInsert: [AudioTrack], at index: Int) -> Int {
         let oldContext = nowPlayingQueueContext
-        nowPlayingQueueContext.insertItemsAtIndex(itemsToInsert, index: index)
+        nowPlayingQueueContext.insertItemsAtIndex(tracksToInsert, index: index)
         persistToSystemQueue(oldContext)
-        return itemsToInsert.count
+        return tracksToInsert.count
     }
     
-    func deleteItemsAtIndices(indiciesToRemove:[Int]) {
+    func delete(at indicies: [Int]) {
         let oldContext = nowPlayingQueueContext
-        let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indiciesToRemove)
+        let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indicies)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
@@ -256,13 +256,13 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
-    func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
+    func move(from sourceIndex: Int, to destinationIndex: Int) {
         let oldContext = nowPlayingQueueContext
-        nowPlayingQueueContext.moveMediaItem(fromIndexPath: fromIndexPath, toIndexPath: toIndexPath)
+        nowPlayingQueueContext.moveMediaItem(fromIndexPath: sourceIndex, toIndexPath: destinationIndex)
         persistToSystemQueue(oldContext)
     }
     
-    func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int) {
+    func clear(from direction: ClearDirection, at index: Int) {
         let oldContext = nowPlayingQueueContext
         let nowPlayingItemRemoved = nowPlayingQueueContext.clearItems(towardsDirection: direction, atIndex: index)
         if nowPlayingItemRemoved {
@@ -388,11 +388,11 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     func handleNowPlayingItemChanged(notification:NSNotification) {
         refreshIndexOfNowPlayingItem()
-        publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+        publishNotification(for: .nowPlayingItemChanged)
     }
     
     func handlePlaybackStateChanged(notification:NSNotification) {
-        publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+        publishNotification(for: .playbackStateUpdate)
     }
     
     func handleApplicationDidResignActive(notification:NSNotification) {

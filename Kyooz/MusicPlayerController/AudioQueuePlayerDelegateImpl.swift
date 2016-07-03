@@ -18,9 +18,9 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
 		}
     }
     
-    func audioQueuePlayerDidEnqueueItems(items: [AudioTrack], position: EnqueuePosition) {
+    func audioQueuePlayerDidEnqueueItems(tracks tracksToEnqueue: [AudioTrack], at enqueueAction: EnqueueAction) {
 		KyoozUtils.doInMainQueueAsync() {
-			self.shortNotificationManager.presentShortNotification(withMessage:"Queued \(items.count) tracks to play \(position)")
+			self.shortNotificationManager.presentShortNotification(withMessage:"Queued \(tracksToEnqueue.count) tracks to play \(enqueueAction)")
 		}
     }
 	
