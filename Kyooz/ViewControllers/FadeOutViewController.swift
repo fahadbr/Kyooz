@@ -8,30 +8,27 @@
 
 import UIKit
 
-class FadeOutViewController: UIViewController {
+protocol FadeOutViewController: class {
+    
+    var animationDuration: Double { get }
+    
+    func transitionOut()
+}
 
-    let fadeOutAnimation:CABasicAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.4)
-    
-    
-    private var startedTransitioningOut = false
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        fadeOutAnimation.delegate = self
-    }
+extension FadeOutViewController where Self : UIViewController {
     
     func transitionOut() {
-        guard !startedTransitioningOut else { return }
+        CATransaction.begin()
         
-        startedTransitioningOut = true
+        CATransaction.setCompletionBlock() {
+            self.view.layer.removeAllAnimations()
+            self.view.removeFromSuperview()
+            self.removeFromParentViewController()
+        }
         
-        view.layer.addAnimation(fadeOutAnimation, forKey: nil)
+        view.layer.addAnimation(KyoozUtils.fadeOutAnimationWithDuration(animationDuration), forKey: nil)
         
+        CATransaction.commit()
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        view.layer.removeAllAnimations()
-        view.removeFromSuperview()
-        removeFromParentViewController()
-    }
 }

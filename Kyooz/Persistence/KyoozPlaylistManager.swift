@@ -29,17 +29,17 @@ final class KyoozPlaylistManager : NSObject {
 	
 	func create(playlist playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
 		if playlistsSet.containsObject(playlist) {
-			let kmvc = KyoozMenuViewController()
-			kmvc.menuTitle = "There's already a playlist with the name \(playlist.name). Would you like to overwrite?"
-			let overwriteAction = KyoozMenuAction(title: "OVERWRITE,", image: nil, action: {
+			let b = MenuBuilder()
+                .with(title: "There's already a playlist with the name \(playlist.name). Would you like to overwrite?")
+            b.with(options:KyoozMenuAction(title: "OVERWRITE,") {
 				do {
 					try self.createOrUpdatePlaylist(playlist, withTracks: tracks)
 				} catch let error {
 					KyoozUtils.showPopupError(withTitle: "Error occurred while saving playlist \(playlist.name)", withThrownError: error, presentationVC: nil)
 				}
 			})
-			kmvc.addActions([overwriteAction])
-            KyoozUtils.showMenuViewController(kmvc)
+			
+            KyoozUtils.showMenuViewController(b.viewController)
 		} else {
 			try createOrUpdatePlaylist(playlist, withTracks: tracks)
 		}

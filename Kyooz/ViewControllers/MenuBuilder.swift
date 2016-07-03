@@ -10,8 +10,6 @@ import UIKit
 
 final class MenuBuilder {
 	
-	lazy var presentationController = ContainerViewController.instance
-	
 	private var title: String?
 	private var details: String?
 	private var originatingCenter: CGPoint?
@@ -50,6 +48,11 @@ final class MenuBuilder {
 		optionsProviders.append(BasicKyoozOptionsProvider(options: options))
 		return self
 	}
+    
+    func with(options options:[KyoozOption]) -> MenuBuilder {
+        optionsProviders.append(BasicKyoozOptionsProvider(options: options))
+        return self
+    }
 	
 	
 }

@@ -13,7 +13,7 @@ final class ShortNotificationManager {
 	
 	static let instance = ShortNotificationManager()
 	
-	private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.5)
+	private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
 	
 	private lazy var presentationController:UIViewController = ContainerViewController.instance
 	
@@ -29,10 +29,9 @@ final class ShortNotificationManager {
     private func presentShortNotification(message:String) {
         guard UIApplication.sharedApplication().applicationState == .Active else { return }
         
-        if let previousVC = self.shortNotificationVC {
-            previousVC.transitionOut()
+        if shortNotificationVC?.transitionOut() != nil {
+            shortNotificationVC = nil
         }
-        
         
         let vc = ShortNotificationViewController()
         

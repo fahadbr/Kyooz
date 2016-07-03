@@ -40,18 +40,17 @@ final class AudioQueuePlayerSourceData : MutableAudioEntitySourceData {
     
     func deleteEntitiesAtIndexPaths(indexPaths:[NSIndexPath]) throws {
         guard !indexPaths.isEmpty else { return }
-        audioQueuePlayer.deleteItemsAtIndices(indexPaths.map({ $0.row }))
+        audioQueuePlayer.delete(at: indexPaths.map { $0.row })
     }
     
     func moveEntity(fromIndexPath originalIndexPath:NSIndexPath, toIndexPath destinationIndexPath:NSIndexPath) throws {
-        audioQueuePlayer.moveMediaItem(fromIndexPath: originalIndexPath.row, toIndexPath: destinationIndexPath.row)
+        audioQueuePlayer.move(from: originalIndexPath.row, to: destinationIndexPath.row)
     }
     
     func insertEntities(entities: [AudioEntity], atIndexPath indexPathToInsert: NSIndexPath) throws -> Int {
         guard let audioTracks = (entities as? [AudioTrack]) ?? (entities as? [AudioTrackCollection])?.flatMap({ return $0.tracks })  else {
             throw KyoozError(errorDescription: "entities passed in to insert are not instances of AudioTrack or AudioTrackCollection")
         }
-        
-        return audioQueuePlayer.insertItemsAtIndex(audioTracks, index: indexPathToInsert.row)
+        return audioQueuePlayer.insert(tracks: audioTracks, at: indexPathToInsert.row)
     }
 }

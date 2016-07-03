@@ -92,10 +92,10 @@ class TestDataGenerator: XCTestCase {
         rootVC.applyDataSourceAndDelegate()
         rootVC.reloadAllData()
         
-        expectationForNotification(AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: ApplicationDefaults.audioQueuePlayer) { _ -> Bool in
+        expectationForNotification(AudioQueuePlayerUpdate.queueUpdate.rawValue, object: ApplicationDefaults.audioQueuePlayer) { _ -> Bool in
             return ApplicationDefaults.audioQueuePlayer.nowPlayingItem is AudioTrackDTO
         }
-        expectationForNotification(AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: ApplicationDefaults.audioQueuePlayer) { _ -> Bool in
+        expectationForNotification(AudioQueuePlayerUpdate.queueUpdate.rawValue, object: ApplicationDefaults.audioQueuePlayer) { _ -> Bool in
             return ApplicationDefaults.audioQueuePlayer.nowPlayingQueue.isEmpty
         }
         

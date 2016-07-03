@@ -190,18 +190,18 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
 	override func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
         searchBar.resignFirstResponder()
-        super.addCustomMenuActions(indexPath, tracks:tracks, menuController: menuController)
+        super.addCustomMenuActions(indexPath, tracks:tracks, menuBuilder: menuBuilder)
         guard let mediaItem = tracks.first where tracks.count == 1 else { return }
         var actions = [KyoozOption]()
         if mediaItem.albumId != 0 {
-            let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
+            let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!, parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
             actions.append(goToAlbumAction)
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST, image: nil) {
+            let goToArtistAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
             actions.append(goToArtistAction)

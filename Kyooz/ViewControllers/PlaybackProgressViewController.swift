@@ -177,9 +177,9 @@ final class PlaybackProgressViewController: UIViewController {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         let application = UIApplication.sharedApplication()
         notificationCenter.addObserver(self, selector: #selector(self.resetProgressBar),
-                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(self.resetProgressBar),
-                                       name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
+                                       name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue, object: audioQueuePlayer)
         
         notificationCenter.addObserver(self, selector: #selector(self.invalidateTimer),
                                        name: UIApplicationDidEnterBackgroundNotification, object: application)

@@ -61,8 +61,8 @@ final class Logger {
         }
     }
 	
-	static func error(message:String, error:ErrorType) {
-		error("\(message) - error: \((error as? KyoozErrorProtocol)?.errorDescription)")
-	}
+//	static func error(message:String, error:ErrorType) {
+//		error("\(message) - error: \(error.description)")
+//	}
 	
 }

@@ -202,13 +202,14 @@ extension AudioEntityHeaderViewController {
 	
 	func showAddToOptions(sender:UIBarButtonItem!) {
 		guard let items = getOrderedTracks() else { return }
-		let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items"
-		KyoozUtils.addDefaultQueueingActions(items, menuController: kmvc) {
+		let b = MenuBuilder()
+            .with(title: "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items")
+		
+		KyoozUtils.addDefaultQueueingActions(items, menuBuilder: b) {
 			self.toggleSelectMode()
 		}
 		
-		KyoozUtils.showMenuViewController(kmvc)
+		KyoozUtils.showMenuViewController(b.viewController)
 	}
 	
 	

@@ -46,21 +46,21 @@ class SubGroupButtonController: UIViewController {
 	
 	func showSubGroupings(sender: AnyObject) {
 		
-		let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = "Change Grouping Type"
-		var actions = [KyoozMenuActionProtocol]()
+		let b = MenuBuilder().with(title: "Change Grouping Type")
+    
+		var actions = [KyoozOption]()
 		for group in subGroups {
-			actions.append(KyoozMenuAction(title: group.name, image: nil, action: {
+			actions.append(KyoozMenuAction(title: group.name) {
 				self.setActiveGroup(group)
 				if self.audioEntityLibraryViewController?.groupingTypeDidChange(group) == nil {
 					fatalError("failed to change grouping type")
 				}
-			}))
+			})
 		}
-		kmvc.addActions(actions)
+		b.with(options: actions)
 		let center = libraryGroupingButton.convertPoint(CGPoint(x:libraryGroupingButton.bounds.midX, y: libraryGroupingButton.bounds.midY), toCoordinateSpace: UIScreen.mainScreen().fixedCoordinateSpace)
-		kmvc.originatingCenter = center
-		KyoozUtils.showMenuViewController(kmvc)
+		b.with(originatingCenter: center)
+		KyoozUtils.showMenuViewController(b.viewController)
 	}
 	
 	private func setActiveGroup(group:LibraryGrouping) {
