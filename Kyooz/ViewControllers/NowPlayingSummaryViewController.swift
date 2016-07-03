@@ -321,18 +321,18 @@ final class NowPlayingSummaryViewController: UIViewController {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue,
+                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
                                        object: audioQueuePlayer)
         
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue,
+                                       name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue,
                                        object: audioQueuePlayer)
         
 		//this is for refreshing the page views
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: AudioQueuePlayerUpdate.QueueUpdate.rawValue,
+                                       name: AudioQueuePlayerUpdate.queueUpdate.rawValue,
                                        object: audioQueuePlayer)
         
         notificationCenter.addObserver(self,

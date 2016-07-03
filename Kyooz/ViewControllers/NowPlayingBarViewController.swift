@@ -74,24 +74,25 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 			return
 		}
 		
-		let kmvc = KyoozMenuViewController()
-		kmvc.menuTitle = nowPlayingItem.trackTitle
-		kmvc.menuDetails = "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")"
-		let center = menuButton.superview?.convertPoint(menuButton.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace)
-		kmvc.originatingCenter = center
-		var jumpToActions = [KyoozOption]()
-		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
-			self.goToVCWithGrouping(LibraryGrouping.Albums, nowPlayingItem: nowPlayingItem)
-			})
-		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST) {
-			self.goToVCWithGrouping(LibraryGrouping.Artists, nowPlayingItem: nowPlayingItem)
-			})
-        kmvc.addActions(jumpToActions)
-        kmvc.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
+		let b = MenuBuilder()
+            .with(title: nowPlayingItem.trackTitle)
+            .with(details: "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")")
+            .with(originatingCenter: menuButton.superview?.convertPoint(menuButton.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace))
+		
+        b.with(options:
+            KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
+                self.goToVCWithGrouping(LibraryGrouping.Albums, nowPlayingItem: nowPlayingItem)
+            },
+               KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST) {
+                self.goToVCWithGrouping(LibraryGrouping.Artists, nowPlayingItem: nowPlayingItem)
+            }
+        )
+        
+        b.with(options: KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST) {
             Playlists.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
-        }])
+            })
 
-		KyoozUtils.showMenuViewController(kmvc)
+		KyoozUtils.showMenuViewController(b.viewController)
 	}
 	
 	private func goToVCWithGrouping(libraryGrouping:LibraryGrouping, nowPlayingItem:AudioTrack) {

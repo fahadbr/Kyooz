@@ -20,6 +20,10 @@ extension UIView {
 	func add(subView subView:UIView, with anchors: Anchor...) -> [Anchor : NSLayoutConstraint] {
 		return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
 	}
+    
+    func add(subView subView:UIView, with anchors: [Anchor]) -> [Anchor : NSLayoutConstraint] {
+        return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
+    }
 	
 	func constrainWidthToHeight(multiplier:CGFloat = 1) {
 		translatesAutoresizingMaskIntoConstraints = false

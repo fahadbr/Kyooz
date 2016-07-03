@@ -91,18 +91,18 @@ class IPodLibraryDAO {
         case .Authorized:
             block()
         default:
-			let kmvc = KyoozMenuViewController()
-            kmvc.menuTitle = "Access to modify the iTunes Library is not available.  Please grant access to the media library in the system settings"
+			let b = MenuBuilder()
+                .with(title: "Access to modify the iTunes Library is not available.  Please grant access to the media library in the system settings")
             
-            let goToSettingsAction = KyoozMenuAction(title: "Jump To Settings", image: nil) {
+            let goToSettingsAction = KyoozMenuAction(title: "Jump To Settings") {
                 if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
                     UIApplication.sharedApplication().openURL(url)
                 } else {
                     KyoozUtils.showPopupError(withTitle: "Error with opening URL to settings", withMessage: nil, presentationVC: nil)
                 }
             }
-            kmvc.addActions([goToSettingsAction])
-            KyoozUtils.showMenuViewController(kmvc)
+            b.with(options: goToSettingsAction)
+            KyoozUtils.showMenuViewController(b.viewController)
             break
         }
     }

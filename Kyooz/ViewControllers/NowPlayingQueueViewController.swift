@@ -278,11 +278,10 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         }
         let index = indexPath.row
         let mediaItem = audioQueuePlayer.nowPlayingQueue[index]
-
-        let menuVC = KyoozMenuViewController()
-		menuVC.menuTitle = title
-		menuVC.menuDetails = details
         
+        let menuBuilder = MenuBuilder()
+            .with(title: title)
+            .with(details: details)
 
         
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
@@ -303,7 +302,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
             }
             jumpToActions.append(goToArtistAction)
         }
-        menuVC.addActions(jumpToActions)
+        menuBuilder.with(options: jumpToActions)
         
         var removeActions = [KyoozOption]()
         if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
@@ -337,13 +336,13 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
             }
             removeActions.append(clearUpcomingItemsAction)
         }
-        menuVC.addActions(removeActions)
-        menuVC.addActions([KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST, image: nil) {
+        menuBuilder.with(options: removeActions)
+        menuBuilder.with(options: KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST) {
             Playlists.showAvailablePlaylists(forAddingTracks: [mediaItem])
-        }])
-		menuVC.originatingCenter = originatingCenter
+        })
+		menuBuilder.with(originatingCenter: originatingCenter)
 		
-		KyoozUtils.showMenuViewController(menuVC)
+		KyoozUtils.showMenuViewController(menuBuilder.viewController)
     }
 
 }

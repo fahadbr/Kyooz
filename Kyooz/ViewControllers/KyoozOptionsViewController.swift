@@ -16,11 +16,11 @@ protocol KyoozOptionsViewControllerDelegate {
     
 }
 
-class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
+class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
 	private typealias This = KyoozOptionsViewController
 	
-    private static let cellHeight:CGFloat = 50
+    private static let cellHeight:CGFloat = UIScreen.heightClass == .iPhone4 ? 45 : 50
     private static let sectionHeight:CGFloat = 5
     
 	private let tableView = UITableView()
@@ -36,6 +36,10 @@ class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, 
     
     private var optionsProviders: [KyoozOptionsProvider]
     private let delegate: KyoozOptionsViewControllerDelegate
+    
+    var animationDuration: Double {
+        return 0.2
+    }
 	
     init(optionsProviders:[KyoozOptionsProvider],
          delegate:KyoozOptionsViewControllerDelegate) {
@@ -47,15 +51,13 @@ class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, 
 	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
-	}
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fadeOutAnimation.duration = 0.2
         optionsProviders.append(BasicKyoozOptionsProvider(options:KyoozMenuAction(title:"CANCEL")))
         
         let sizeConstraint = delegate.sizeConstraint
-        let maxWidth = sizeConstraint.maxWidth
         let maxHeight = sizeConstraint.maxHeight
 		
 		let tableHeaderView = delegate.headerView
@@ -68,15 +70,11 @@ class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, 
 		
 		let width = tableHeaderSize.width
 		let estimatedSize = CGSize(width: width, height: height)
-
-		if estimatedSize.height < maxHeight {
-            tableView.scrollEnabled = false
-        }
 		
         let tableContainerView = UIView()
 		view.add(subView: tableContainerView, with: [.CenterX, .CenterY])
 		tableContainerView.constrain(height: min(estimatedSize.height, maxHeight),
-		                             width: min(estimatedSize.width, maxWidth))
+		                             width: estimatedSize.width)
 
 		
 		tableContainerView.add(subView: tableView, with: Anchor.standardAnchors)
@@ -89,6 +87,8 @@ class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, 
 		tableView.registerClass(KyoozMenuCell.self, forCellReuseIdentifier: KyoozMenuCell.reuseIdentifier)
         tableView.separatorStyle = .None
         tableView.tableHeaderView = tableHeaderView
+        tableView.indicatorStyle = .White
+        tableView.scrollEnabled = estimatedSize.height > maxHeight
         
         tableContainerView.layer.shadowOpacity = 0.8
         tableContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -97,7 +97,14 @@ class KyoozOptionsViewController: FadeOutViewController, UITableViewDataSource, 
         
         view.backgroundColor = UIColor(white: 0, alpha: 0.40)
         
+        CATransaction.begin()
+        CATransaction.setCompletionBlock() { [tableView = self.tableView] in
+            if tableView.scrollEnabled {
+                tableView.flashScrollIndicators()
+            }
+        }
         tableContainerView.layer.addAnimation(delegate.animation(forView: view), forKey: nil)
+        CATransaction.commit()
     }
 	
     

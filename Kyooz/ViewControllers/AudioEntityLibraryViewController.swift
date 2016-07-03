@@ -86,13 +86,13 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		}
     }
 	
-	override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuController:KyoozMenuViewController) {
+    override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
 		if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
-			menuController.addActions([KyoozMenuAction(title: "DELETE", image: nil, action: {[sourceData = self.sourceData] in
+			menuBuilder.with(options: KyoozMenuAction(title: "DELETE"){[sourceData = self.sourceData] in
 				KyoozUtils.confirmAction("Are you sure you want to delete \(sourceData[indexPath].titleForGrouping(sourceData.libraryGrouping) ?? "this item")?") {
 					self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
 				}
-			})])
+			})
 		}
 	}
     

@@ -55,14 +55,14 @@ struct NowPlayingQueueContext {
     }
     
     mutating func enqueue(items itemsToEnqueue:[AudioTrack], at position:EnqueueAction) {
+        let index = currentQueue.isEmpty ? 0 : indexOfNowPlayingItem + 1
         switch(position) {
         case .next:
-            currentQueue.insertContentsOf(itemsToEnqueue, at: indexOfNowPlayingItem + 1)
+            currentQueue.insertContentsOf(itemsToEnqueue, at: index)
         case .last:
             currentQueue.appendContentsOf(itemsToEnqueue)
         case .random:
             var queue = self.currentQueue
-			let index = indexOfNowPlayingItem + 1
             itemsToEnqueue.forEach() {
                 queue.insert($0, atIndex: KyoozUtils.randomNumberInRange(index..<queue.count))
             }

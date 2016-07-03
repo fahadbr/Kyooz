@@ -65,21 +65,20 @@ struct Playlists {
 	
 	static func showPlaylistCreationControllerForTracks(tracks:[AudioTrack], completionAction:(()->Void)? = nil) {
 		if #available(iOS 9.3, *) {
-			let kmvc = KyoozMenuViewController()
-			kmvc.menuTitle = "Select which type of playlist to create"
-			let createKyoozPlaylistAction = KyoozMenuAction(title: "KYOOZ PLAYLIST", image: nil) {
+			let menuBuilder = MenuBuilder()
+                .with(title: "Select which type of playlist to create")
+			let createKyoozPlaylistAction = KyoozMenuAction(title: "KYOOZ PLAYLIST") {
 				showKyoozPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
 			}
-			let createItunesPlaylistAction = KyoozMenuAction(title: "ITUNES PLAYLIST", image: nil) {
+			let createItunesPlaylistAction = KyoozMenuAction(title: "ITUNES PLAYLIST") {
 				showITunesPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
 			}
-			kmvc.addActions([createKyoozPlaylistAction, createItunesPlaylistAction])
+			menuBuilder.with(options: createKyoozPlaylistAction, createItunesPlaylistAction)
 			
-			let infoAction = KyoozMenuAction(title: "What's the difference?", image: nil) {
-				showPlaylistTypeInfoView()
-			}
-			kmvc.addActions([infoAction])
-			KyoozUtils.showMenuViewController(kmvc)
+            menuBuilder.with(options: KyoozMenuAction(title: "What's the difference?") {
+                showPlaylistTypeInfoView()
+            })
+			KyoozUtils.showMenuViewController(menuBuilder.viewController)
 		} else {
 			showKyoozPlaylistCreationControllerForTracks(tracks, completionAction: completionAction)
 		}

@@ -47,9 +47,7 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
                 limitedToNumberOfLines: 0)
             
             label.frame.size = CGSize(
-                width: KyoozUtils.cap(rect.size.width,
-                    min: maxWidth,
-                    max: minWidth),
+                width: rect.size.width.cap(min: minWidth, max: maxWidth),
                 height: rect.size.height)
             
             

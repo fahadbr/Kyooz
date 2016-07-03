@@ -10,7 +10,7 @@ import UIKit
 
 
 
-final class KyoozMenuViewControllerDep: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
+final class KyoozMenuViewControllerDep: UIViewController, FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
 	private typealias This = KyoozMenuViewControllerDep
 	
@@ -48,6 +48,8 @@ final class KyoozMenuViewControllerDep: FadeOutViewController, UITableViewDataSo
 	private var labelContainerView:UIView!
 	private var titleLabel:UILabel!
 	private var detailsLabel:UILabel!
+    
+    var animationDuration: Double = 0.2
 	
 	var originatingCenter:CGPoint?
 	var menuTitle:String? {
@@ -64,7 +66,6 @@ final class KyoozMenuViewControllerDep: FadeOutViewController, UITableViewDataSo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fadeOutAnimation.duration = 0.2
         menuActions.append([CancelAction()])
         initializeLabelContainerView()
 		

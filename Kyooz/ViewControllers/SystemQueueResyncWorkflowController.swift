@@ -63,7 +63,7 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         
         NSNotificationCenter.defaultCenter().addObserver(self,
                                                          selector: #selector(self.handleNowPlayingItemChanged(_:)),
-                                                         name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue,
+                                                         name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
                                                          object: audioQueuePlayer)
     }
     

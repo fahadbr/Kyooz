@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ShortNotificationViewController : FadeOutViewController {
+final class ShortNotificationViewController : UIViewController, FadeOutViewController {
     
     private let maxWidth = UIScreen.mainScreen().bounds.width * 0.85
     private let maxHeight = UIScreen.mainScreen().bounds.height * 0.50
@@ -22,6 +22,10 @@ final class ShortNotificationViewController : FadeOutViewController {
         label.textColor = ThemeHelper.defaultFontColor
         return label
     }()
+    
+    var animationDuration: Double {
+        return 0.4
+    }
     
 	var message:String! {
 		didSet {
