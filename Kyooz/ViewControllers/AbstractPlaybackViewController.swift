@@ -44,7 +44,7 @@ class AbstractPlaybackViewController : UIViewController {
 		let notificationCenter = NSNotificationCenter.defaultCenter()
 		let application = UIApplication.sharedApplication()
 		notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-		                               name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
+		                               name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue, object: audioQueuePlayer)
 		
 		notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
 		                               name: UIApplicationDidBecomeActiveNotification, object: application)

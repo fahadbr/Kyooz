@@ -10,9 +10,9 @@ import UIKit
 
 
 
-final class KyoozMenuViewController: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
+final class KyoozMenuViewControllerDep: FadeOutViewController, UITableViewDataSource, UITableViewDelegate {
 
-	private typealias This = KyoozMenuViewController
+	private typealias This = KyoozMenuViewControllerDep
 	
     private static let cellHeight:CGFloat = 50
     private static let sectionHeight:CGFloat = 5
@@ -225,12 +225,7 @@ protocol KyoozMenuActionProtocol {
     var action:(()->())? { get }
 }
 
-struct KyoozMenuAction : KyoozMenuActionProtocol {
-    
-    let title:String
-    let image:UIImage?
-    let action:(()->())?
-}
+
 
 private struct CancelAction : KyoozMenuActionProtocol {
     var title: String { return "CANCEL" }

@@ -176,8 +176,8 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     }
 
     //MARK: INSERT MODE FUNCITONS
-    func setDropItems(dropItems: [AudioTrack], atIndex:NSIndexPath) -> Int {
-        return audioQueuePlayer.insertItemsAtIndex(dropItems, index: atIndex.row)
+    func setDropItems(dropItems: [AudioTrack], atIndex index:NSIndexPath) -> Int {
+        return audioQueuePlayer.insert(tracks: dropItems, at: index.row)
     }
     
     func gestureDidEnd(sender: UIGestureRecognizer) {
@@ -227,13 +227,13 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
     private func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
-            name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+            name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
-            name: AudioQueuePlayerUpdate.PlaybackStateUpdate.rawValue, object: audioQueuePlayer)
+            name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
-            name: AudioQueuePlayerUpdate.SystematicQueueUpdate.rawValue, object: audioQueuePlayer)
+            name: AudioQueuePlayerUpdate.systematicQueueUpdate.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(self.reloadIfCollapsed),
-            name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
+            name: AudioQueuePlayerUpdate.queueUpdate.rawValue, object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
             name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
     }
@@ -262,7 +262,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 	
 	func deleteWholeQueue() {
 		func delete() {
-			audioQueuePlayer.clearItems(towardsDirection: .All, atIndex: audioQueuePlayer.indexOfNowPlayingItem)
+			audioQueuePlayer.clear(from: .bothDirections, at: audioQueuePlayer.indexOfNowPlayingItem)
             tableView.reloadSections(NSIndexSet(index:0), withRowAnimation: .Automatic)
 		}
 		
@@ -288,9 +288,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         let indexOfNowPlayingItem = audioQueuePlayer.indexOfNowPlayingItem
         let lastIndex = audioQueuePlayer.nowPlayingQueue.count - 1
         
-        var jumpToActions = [KyoozMenuActionProtocol]()
+        var jumpToActions = [KyoozOption]()
         if mediaItem.albumId != 0 {
-			let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
+			let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Albums, baseQuery: nil)!,
                     parentGroup: LibraryGrouping.Albums, entity: mediaItem)
             }
@@ -298,40 +298,40 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
         }
         
         if mediaItem.albumArtistId != 0 {
-            let goToArtistAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST, image: nil) {
+            let goToArtistAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST) {
                 ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(MediaQuerySourceData(filterEntity: mediaItem, parentLibraryGroup: LibraryGrouping.Artists, baseQuery: nil)!, parentGroup: LibraryGrouping.Artists, entity: mediaItem)
             }
             jumpToActions.append(goToArtistAction)
         }
         menuVC.addActions(jumpToActions)
         
-        var removeActions = [KyoozMenuActionProtocol]()
+        var removeActions = [KyoozOption]()
         if (!audioQueuePlayer.musicIsPlaying || index <= indexOfNowPlayingItem) && index > 0 {
-            let clearPrecedingItemsAction = KyoozMenuAction(title: "REMOVE ABOVE", image: nil) {
+            let clearPrecedingItemsAction = KyoozMenuAction(title: "REMOVE ABOVE") {
                 
                 let indiciesToDelete = (0..<index).map { NSIndexPath(forRow: $0, inSection: 0) }
                 
                 KyoozUtils.confirmAction("Remove the \(indiciesToDelete.count) tracks Above?", actionDetails: "Selected Track: \(title ?? "" )\n\(details ?? "")") {
-                    self.audioQueuePlayer.clearItems(towardsDirection: .Above, atIndex: index)
+                    self.audioQueuePlayer.clear(from: .above, at: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
             }
             removeActions.append(clearPrecedingItemsAction)
         }
         
-		let deleteAction = KyoozMenuAction(title: "REMOVE", image: nil) {
+		let deleteAction = KyoozMenuAction(title: "REMOVE") {
             self.datasourceDelegate.tableView?(self.tableView, commitEditingStyle: .Delete,
                 forRowAtIndexPath: indexPath)
         }
         removeActions.append(deleteAction)
         
         if((!audioQueuePlayer.musicIsPlaying || index >= indexOfNowPlayingItem) && (index < lastIndex)) {
-			let clearUpcomingItemsAction = KyoozMenuAction(title: "REMOVE BELOW", image:nil) {
+			let clearUpcomingItemsAction = KyoozMenuAction(title: "REMOVE BELOW") {
                 
                 let indiciesToDelete = ((index + 1)...lastIndex).map { NSIndexPath(forRow: $0, inSection: 0) }
                 
                 KyoozUtils.confirmAction("Remove the \(indiciesToDelete.count) tracks Below?", actionDetails: "Selected Track: \(title ?? "")\n\(details ?? "")") {
-                    self.audioQueuePlayer.clearItems(towardsDirection: .Below, atIndex: index)
+                    self.audioQueuePlayer.clear(from: .below, at: index)
                     self.deleteIndexPaths(indiciesToDelete)
                 }
             }
@@ -392,7 +392,7 @@ extension NowPlayingQueueViewController {
 	
 	func deleteSelectedIndexPaths() {
 		func delete(indexPathsToDelete:[NSIndexPath]) {
-			audioQueuePlayer.deleteItemsAtIndices(indexPathsToDelete.map() { $0.row })
+            audioQueuePlayer.delete(at: indexPathsToDelete.map { $0.row })
 			deleteIndexPaths(indexPathsToDelete)
 		}
 		guard let indexPathsToDelete = tableView.indexPathsForSelectedRows where tableView.editing else {

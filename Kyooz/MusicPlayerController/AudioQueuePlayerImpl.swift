@@ -29,7 +29,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     private var nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: .Default) {
         didSet {
-            publishNotification(updateType: .QueueUpdate, sender: self)
+            publishNotification(for: .queueUpdate)
         }
     }
     
@@ -90,7 +90,8 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             }
         }
         
-        if let repeatStateRawValue = (TempDataDAO.instance.getPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey) as? NSNumber)?.integerValue, let repeatState = RepeatState(rawValue: repeatStateRawValue) {
+        if let repeatStateRawValue = (TempDataDAO.instance.getPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey) as? NSNumber)?.integerValue,
+            let repeatState = RepeatState(rawValue: repeatStateRawValue) {
             repeatMode = repeatState
         }
 
@@ -140,7 +141,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     var musicIsPlaying:Bool = false {
         didSet {
             shouldPlayAfterLoading = musicIsPlaying
-            publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+            publishNotification(for: .playbackStateUpdate)
             TempDataDAO.instance.persistPlaybackStateSnapshotToTempStorage()
             if nowPlayingItem != nil {
                 nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime: currentPlaybackTime)
@@ -161,7 +162,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 				}
                 audioController.currentPlaybackTime = Double(newValue)
                 nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem, elapsedTime:newValue)
-                publishNotification(updateType: .PlaybackStateUpdate, sender: self)
+                publishNotification(for: .playbackStateUpdate)
             }
         }
     }
@@ -178,7 +179,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             return nowPlayingQueueContext.shuffleActive
         } set {
             nowPlayingQueueContext.setShuffleActive(newValue)
-            publishNotification(updateType: .SystematicQueueUpdate, sender: self)
+            publishNotification(for: .systematicQueueUpdate)
         }
     }
 
@@ -232,7 +233,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 		delegate?.audioQueuePlayerDidChangeContext(self, previousSnapshot:oldSnapshot)
     }
     
-    func playItemWithIndexInCurrentQueue(index index:Int) {
+    func playTrack(at index: Int) {
         if(index == indexOfNowPlayingItem) {
             return
         }
@@ -240,18 +241,18 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         updateNowPlayingStateToIndex(index)
     }
     
-    func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition) {
-        guard let items = filter(itemsToEnqueue) else {
+    func enqueue(tracks tracksToEnqueue: [AudioTrack], at enqueueAction: EnqueueAction) {
+        guard let items = filter(tracksToEnqueue) else {
             return
         }
-        nowPlayingQueueContext.enqueue(items: items, atPosition: position)
+        nowPlayingQueueContext.enqueue(items: items, at: enqueueAction)
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
 		presentNotificationsIfNecessary()
-		delegate?.audioQueuePlayerDidEnqueueItems(items, position: position)
+        delegate?.audioQueuePlayerDidEnqueueItems(tracks: items, at: enqueueAction)
     }
     
-    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int {
-        guard let items = filter(itemsToInsert) else {
+    func insert(tracks tracksToInsert: [AudioTrack], at index: Int) -> Int {
+        guard let items = filter(tracksToInsert) else {
             return 0
         }
         nowPlayingQueueContext.insertItemsAtIndex(items, index: index)
@@ -261,17 +262,17 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         return items.count
     }
     
-    func deleteItemsAtIndices(indiciesToRemove:[Int]) {
-        let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indiciesToRemove)
+    func delete(at indicies: [Int]) {
+        let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indicies)
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: nowPlayingItemRemoved)
     }
     
-    func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
-        nowPlayingQueueContext.moveMediaItem(fromIndexPath: fromIndexPath, toIndexPath: toIndexPath)
+    func move(from sourceIndex: Int, to destinationIndex: Int) {
+        nowPlayingQueueContext.moveMediaItem(fromIndexPath: sourceIndex, toIndexPath: destinationIndex)
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: false)
     }
     
-    func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int) {
+    func clear(from direction: ClearDirection, at index: Int) {
         let nowPlayingItemRemoved = nowPlayingQueueContext.clearItems(towardsDirection: direction, atIndex: index)
         
         updateNowPlayingStateToIndex(nowPlayingQueueContext.indexOfNowPlayingItem, shouldLoadAfterUpdate: nowPlayingItemRemoved)
@@ -342,7 +343,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
                 play()
                 nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
             }
-            publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+            publishNotification(for: .nowPlayingItemChanged)
         } catch let error as NSError {
             Logger.error("Could not load play track because of error [\(error.localizedDescription)] so skipping to next track")
             handleError()
@@ -427,7 +428,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     func audioPlayerDidAdvanceToNextItem(player:AudioController) {
         KyoozUtils.doInMainQueue() {
             self.advanceToNextTrack(false)
-			self.publishNotification(updateType: .NowPlayingItemChanged, sender: self)
+			self.publishNotification(for: .nowPlayingItemChanged)
 			guard let nowPlayingItem = self.nowPlayingItem else {
 				return
 			}

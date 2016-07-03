@@ -1,5 +1,5 @@
 //
-//  SizeConstraints.swift
+//  SizeConstraint.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 7/1/16.
@@ -8,12 +8,12 @@
 
 import CoreGraphics
 
-protocol SizeConstraint {
+struct SizeConstraint {
 	
-	var maxHeight: CGFloat { get }
-	var maxWidth: CGFloat { get }
-	var minHeight: CGFloat { get }
-	var minWidth: CGFloat { get }
+	let maxHeight: CGFloat
+	let maxWidth: CGFloat
+	let minHeight: CGFloat
+	let minWidth: CGFloat
 	
 }
 

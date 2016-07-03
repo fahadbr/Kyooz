@@ -79,11 +79,11 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 		kmvc.menuDetails = "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")"
 		let center = menuButton.superview?.convertPoint(menuButton.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace)
 		kmvc.originatingCenter = center
-		var jumpToActions = [KyoozMenuActionProtocol]()
-		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM, image: nil) {
+		var jumpToActions = [KyoozOption]()
+		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
 			self.goToVCWithGrouping(LibraryGrouping.Albums, nowPlayingItem: nowPlayingItem)
 			})
-		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST, image: nil) {
+		jumpToActions.append(KyoozMenuAction(title: KyoozConstants.JUMP_TO_ARTIST) {
 			self.goToVCWithGrouping(LibraryGrouping.Artists, nowPlayingItem: nowPlayingItem)
 			})
         kmvc.addActions(jumpToActions)
@@ -104,10 +104,10 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
         super.registerForNotifications()
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-                                       name: AudioQueuePlayerUpdate.NowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue, object: audioQueuePlayer)
         //this is for refreshing the page views
         notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-                                       name: AudioQueuePlayerUpdate.QueueUpdate.rawValue, object: audioQueuePlayer)
+                                       name: AudioQueuePlayerUpdate.queueUpdate.rawValue, object: audioQueuePlayer)
         
     }
 }

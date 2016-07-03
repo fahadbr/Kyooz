@@ -34,26 +34,26 @@ protocol AudioQueuePlayer:class {
     
     func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool)
     
-    func playItemWithIndexInCurrentQueue(index index:Int)
+    func playTrack(at index:Int)
     
-    func enqueue(items itemsToEnqueue:[AudioTrack], atPosition position:EnqueuePosition)
+    func enqueue(tracks tracksToEnqueue:[AudioTrack], at enqueueAction:EnqueueAction)
     
     //returns the number of items inserted
-    func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) -> Int
+    func insert(tracks tracksToInsert:[AudioTrack], at index:Int) -> Int
     
-    func deleteItemsAtIndices(indicies:[Int])
+    func delete(at indicies:[Int])
     
-    func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int)
+    func move(from sourceIndex:Int, to destinationIndex:Int)
     
-    func clearItems(towardsDirection direction:ClearDirection, atIndex index:Int)
+    func clear(from direction:ClearDirection, at index:Int)
     
     
 }
 
 extension AudioQueuePlayer {
-    func publishNotification(updateType updateType:AudioQueuePlayerUpdate, sender:AudioQueuePlayer) {
+    func publishNotification(for updateType:AudioQueuePlayerUpdate) {
         KyoozUtils.doInMainQueueAsync() {
-            let notification = NSNotification(name: updateType.rawValue, object: sender)
+            let notification = NSNotification(name: updateType.rawValue, object: self)
             NSNotificationCenter.defaultCenter().postNotification(notification)
         }
     }
@@ -77,26 +77,26 @@ protocol AudioQueuePlayerDelegate {
     
 	func audioQueuePlayerDidChangeContext(audioQueuePlayer: AudioQueuePlayer, previousSnapshot:PlaybackStateSnapshot)
     
-    func audioQueuePlayerDidEnqueueItems(items:[AudioTrack], position:EnqueuePosition)
+    func audioQueuePlayerDidEnqueueItems(tracks tracksToEnqueue:[AudioTrack], at enqueueAction:EnqueueAction)
     
 }
 
-enum AudioQueuePlayerUpdate : String {
-    case QueueUpdate = "AudioQueuePlayerQueueUpdate"
-    case SystematicQueueUpdate = "AudioQueuePlayerSystematicQueueUpdate"
-    case PlaybackStateUpdate = "AudioQueuePlayerPlaybackStatusUpdate"
-    case NowPlayingItemChanged = "AudioQueuePlayerNowPlayingItemChanged"
+enum AudioQueuePlayerUpdate : String, EnumNameDescriptable {
+    case queueUpdate
+    case systematicQueueUpdate
+    case playbackStateUpdate
+    case nowPlayingItemChanged
 }
 
 enum ClearDirection : Int, EnumNameDescriptable {
-    case Above
-    case Below
-    case All
+    case above
+    case below
+    case bothDirections
 }
 
-enum EnqueuePosition : Int, EnumNameDescriptable {
-    case Next
-    case Last
-    case Random
+enum EnqueueAction : Int, EnumNameDescriptable {
+    case next
+    case last
+    case random
 }
 
