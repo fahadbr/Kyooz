@@ -46,9 +46,14 @@ class AddToPlaylistViewController: UINavigationController {
                                                         sourceDataName: "RECENT - \(recentPlaylist.type.description)")
             
             
-            let recentDSD:AudioEntityDSDProtocol
+            let recentDSD:AudioEntityDSDProtocol?
 			switch recentPlaylist.type {
 			case .kyooz:
+                guard KyoozPlaylistManager.instance.playlists.containsObject(recentPlaylist.playlist) else {
+                    recentDSD = nil
+                    Playlists.setMostRecentlyModified(playlist: nil)
+                    break
+                }
 				recentDSD = AddToKyoozPlaylistDSD(sourceData: recentSourceData,
 				                                  reuseIdentifier: ImageTableViewCell.reuseIdentifier,
 				                                  tracksToAdd: tracksToAdd,
@@ -56,6 +61,16 @@ class AddToPlaylistViewController: UINavigationController {
                 
 			case .iTunes:
 				if #available(iOS 9.3, *) {
+                    let query = MPMediaQuery.playlistsQuery()
+                    query.addFilterPredicate(MPMediaPropertyPredicate(
+                        value: NSNumber(unsignedLongLong:recentPlaylist.playlist.persistentIdForGrouping(LibraryGrouping.Playlists)),
+                        forProperty: MPMediaPlaylistPropertyPersistentID))
+                    guard query.collections?.first != nil else {
+                        recentDSD = nil
+                        Playlists.setMostRecentlyModified(playlist: nil)
+                        break
+                    }
+                    
                     recentDSD = AddToAppleMusicPlaylistDSD(sourceData: recentSourceData,
                                                            reuseIdentifier: ImageTableViewCell.reuseIdentifier,
                                                            tracksToAdd: tracksToAdd,
@@ -66,7 +81,9 @@ class AddToPlaylistViewController: UINavigationController {
 				}
 			}
             
-            datasourceDelegates.append(recentDSD)
+            if recentDSD != nil {
+                datasourceDelegates.append(recentDSD!)
+            }
 		}
 		
 		
@@ -132,10 +149,9 @@ class AddToPlaylistViewController: UINavigationController {
     }
 	
 	func showNewPlaylistMenu() {
-		dismissViewControllerAnimated(true) { [tracksToAdd = self.tracksToAdd] in
-			Playlists.showPlaylistCreationControllerForTracks(tracksToAdd)
-		}
-		completionAction?()
+        Playlists.showPlaylistCreationController(for: tracksToAdd,
+                                                 presentationController: self,
+                                                 completionAction: dismissAddToPlaylistController)
 	}
     
     func dismissAddToPlaylistController() {

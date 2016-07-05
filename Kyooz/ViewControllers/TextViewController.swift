@@ -12,10 +12,15 @@ class TextViewController: UIViewController {
     
     let textView:UITextView
 	let showDismissButton:Bool
+    let completionAction:(()->Void)?
 	
-	init(fileName:String, documentType:DocumentType, showDismissButton:Bool = false) throws {
+	init(fileName:String,
+	     documentType:DocumentType,
+	     showDismissButton:Bool = false,
+	     completionAction:(()->Void)? = nil) throws {
 		self.textView = try UITextView(fileName: fileName, documentType: documentType)
 		self.showDismissButton = showDismissButton
+        self.completionAction = completionAction
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -45,7 +50,7 @@ class TextViewController: UIViewController {
     }
     
     func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: completionAction)
     }
 	
 }
