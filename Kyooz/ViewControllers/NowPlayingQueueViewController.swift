@@ -34,7 +34,9 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
             } else {
                 TutorialManager.instance.dismissTutorial(.DragToRearrange, action: .DismissUnfulfilled)
                 tableView.tableFooterView = nil
-                editing = false
+                if tableView.editing {
+                    toggleSelectMode()
+                }
                 insertMode = false
                 if !(tableView.dataSource is NowPlayingQueueDSD) || !(tableView.delegate is NowPlayingQueueDSD){
                     resetDSD()

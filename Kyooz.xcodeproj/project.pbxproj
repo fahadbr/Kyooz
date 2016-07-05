@@ -48,6 +48,7 @@
 		0B2064C31D27414F00725CB7 /* KyoozOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2064C21D27414F00725CB7 /* KyoozOption.swift */; };
 		0B2064C51D2748D900725CB7 /* KyoozOptionsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */; };
 		0B2064C71D27500300725CB7 /* KyoozMenuViewControllerDep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2064C61D27500300725CB7 /* KyoozMenuViewControllerDep.swift */; };
+		0B2064CB1D29C33900725CB7 /* ChangeLog.html in Resources */ = {isa = PBXBuildFile; fileRef = 0B2064CA1D29C33900725CB7 /* ChangeLog.html */; };
 		0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937561C87E96200374A3C /* HeaderViewController.swift */; };
 		0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937581C92690B00374A3C /* FadeOutViewController.swift */; };
 		0B29375B1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */; };
@@ -258,6 +259,7 @@
 		0B2064C21D27414F00725CB7 /* KyoozOption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOption.swift; sourceTree = "<group>"; };
 		0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsProvider.swift; sourceTree = "<group>"; };
 		0B2064C61D27500300725CB7 /* KyoozMenuViewControllerDep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozMenuViewControllerDep.swift; sourceTree = "<group>"; };
+		0B2064CA1D29C33900725CB7 /* ChangeLog.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ChangeLog.html; path = Kyooz/SupportingFiles/ChangeLog.html; sourceTree = SOURCE_ROOT; };
 		0B2937561C87E96200374A3C /* HeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
 		0B2937581C92690B00374A3C /* FadeOutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeOutViewController.swift; sourceTree = "<group>"; };
 		0B29375A1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntityViewControllerProtocol.swift; sourceTree = "<group>"; };
@@ -497,6 +499,7 @@
 			isa = PBXGroup;
 			children = (
 				0B5179C01CF5113F007C18F8 /* Acknowledgments.html */,
+				0B2064CA1D29C33900725CB7 /* ChangeLog.html */,
 				0B1DE1471CEFE8D100B72ADD /* PlaylistTypeDescriptions.html */,
 				0B1DE1451CEFD6AB00B72ADD /* PrivacyPolicy.html */,
 				0B83FE1D1B24CA1E00746A9E /* log_in-mobile.png */,
@@ -1108,6 +1111,7 @@
 				0B1DE1461CEFD6AB00B72ADD /* PrivacyPolicy.html in Resources */,
 				0B13DA1C1AE6FA9A00CC5C01 /* ImageTableViewCell.xib in Resources */,
 				0B5179C11CF5113F007C18F8 /* Acknowledgments.html in Resources */,
+				0B2064CB1D29C33900725CB7 /* ChangeLog.html in Resources */,
 				0B055A251C4C6AB0007CB60A /* MenuDotsView.xib in Resources */,
 				0B1DE1481CEFE8D100B72ADD /* PlaylistTypeDescriptions.html in Resources */,
 			);

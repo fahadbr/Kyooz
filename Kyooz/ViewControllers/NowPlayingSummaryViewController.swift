@@ -203,17 +203,14 @@ final class NowPlayingSummaryViewController: UIViewController {
 			stackView.axis = .Horizontal
 			stackView.distribution = .EqualSpacing
             
-            var apply = false
-            views.forEach() {
-                if apply {
-                    $0.layer.borderColor = UIColor.darkGrayColor().CGColor
-                    $0.layer.borderWidth = 1
-                }
-                apply = !apply
+            1.stride(to: views.count, by: 2).forEach {
+                let view = views[$0]
+                view.layer.borderColor = UIColor.darkGrayColor().CGColor
+                view.layer.borderWidth = 1
             }
 
 			let wrapperView = UIView()
-			ConstraintUtils.applyStandardConstraintsToView(subView: stackView, parentView: wrapperView)
+            wrapperView.add(subView: stackView, with: Anchor.standardAnchors)
 			wrapperView.layer.cornerRadius = 5
 			wrapperView.layer.borderColor = UIColor.darkGrayColor().CGColor
 			wrapperView.layer.borderWidth = 1

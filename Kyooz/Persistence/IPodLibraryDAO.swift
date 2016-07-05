@@ -55,7 +55,7 @@ class IPodLibraryDAO {
     }
     
     @available(iOS 9.3, *)
-    static func createPlaylistWithName(name:String, tracks:[MPMediaItem]) {
+    static func createPlaylist(named name:String, withTracks tracks:[MPMediaItem]) {
         validateAndExecute() {
             let metaData = MPMediaPlaylistCreationMetadata(name: name)
             MPMediaLibrary.defaultMediaLibrary().getPlaylistWithUUID(NSUUID(), creationMetadata: metaData, completionHandler: { (createdPlaylist, error) in
