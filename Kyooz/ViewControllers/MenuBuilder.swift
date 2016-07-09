@@ -16,7 +16,9 @@ final class MenuBuilder {
 	private var optionsProviders = [KyoozOptionsProvider]()
 	
 	var viewController: UIViewController {
-		return KyoozOptionsViewController(optionsProviders: optionsProviders,
+		var op = optionsProviders
+		op.append(BasicKyoozOptionsProvider(options:KyoozMenuAction(title:"CANCEL")))
+		return KyoozOptionsViewController(optionsProviders: op,
 		                                  delegate: MenuOptionsDelegate(title: title,
 																		details: details,
 																		originatingCenter: originatingCenter))

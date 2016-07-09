@@ -155,7 +155,7 @@
 		0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917471BF8F36A001AC802 /* KyoozUtils.swift */; };
 		10088C981D1C9B2800AAC16F /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C971D1C9B2800AAC16F /* Playlist.swift */; };
 		10088C9A1D25D54100AAC16F /* KyoozOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */; };
-		10088C9C1D25D5C000AAC16F /* WhatsNewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C9B1D25D5C000AAC16F /* WhatsNewDelegate.swift */; };
+		10088C9C1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */; };
 		100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BC41C54423B009FAB17 /* KyoozTests.swift */; };
 		100A8BD31C56F8DE009FAB17 /* KyoozPlaylistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD21C56F8DE009FAB17 /* KyoozPlaylistManager.swift */; };
 		100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100A8BD41C583695009FAB17 /* DataPersistenceError.swift */; };
@@ -367,7 +367,7 @@
 		0BF917471BF8F36A001AC802 /* KyoozUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozUtils.swift; sourceTree = "<group>"; };
 		10088C971D1C9B2800AAC16F /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsViewController.swift; sourceTree = "<group>"; };
-		10088C9B1D25D5C000AAC16F /* WhatsNewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhatsNewDelegate.swift; sourceTree = "<group>"; };
+		10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhatsNewOptionsDelegate.swift; sourceTree = "<group>"; };
 		100A8BC21C54423B009FAB17 /* KyoozTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KyoozTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		100A8BC41C54423B009FAB17 /* KyoozTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KyoozTests.swift; sourceTree = "<group>"; };
 		100A8BC61C54423B009FAB17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -846,7 +846,7 @@
 				0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */,
 				10B069051D2989F200CCDCA6 /* MenuBuilder.swift */,
 				10FD325A1C90E43800004CAB /* MenuOptionsDelegate.swift */,
-				10088C9B1D25D5C000AAC16F /* WhatsNewDelegate.swift */,
+				10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */,
 			);
 			name = Options;
 			sourceTree = "<group>";
@@ -1196,7 +1196,7 @@
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
 				10B9E10C1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift in Sources */,
 				0B4E600E1C322C4800BB9D77 /* NowPlayingQueueContext.swift in Sources */,
-				10088C9C1D25D5C000AAC16F /* WhatsNewDelegate.swift in Sources */,
+				10088C9C1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,

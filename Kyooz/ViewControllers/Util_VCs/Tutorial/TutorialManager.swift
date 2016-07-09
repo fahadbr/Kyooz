@@ -87,12 +87,13 @@ class TutorialManager {
     
     //use this function when the intention is to present one of many
     //unfulfilled tutorials in the same invocation
-    func presentUnfulfilledTutorials(tutorials:[Tutorial]) {
+    func presentUnfulfilledTutorials(tutorials:[Tutorial]) -> Bool {
         for tutorial in tutorials {
             if presentTutorialIfUnfulfilled(tutorial) {
-                break
+				return true
             }
         }
+		return false
     }
 	
 	func presentTutorialIfUnfulfilled(tutorial:Tutorial) -> Bool {
