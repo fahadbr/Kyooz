@@ -142,7 +142,21 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	
 	func showTutorials() {
 		if centerPanelPosition == .Center && !rootViewController.pullableViewExpanded {
-			TutorialManager.instance.presentUnfulfilledTutorials([.GestureActivatedSearch, .GestureToViewQueue, .DragAndDrop])
+			let presentedTutorial = TutorialManager.instance.presentUnfulfilledTutorials([
+				.GestureActivatedSearch,
+				.GestureToViewQueue,
+				.DragAndDrop
+			])
+			
+			if !presentedTutorial {
+				do {
+					let vc = try whatsNewViewController()
+					KyoozUtils.showMenuViewController(vc, presentingVC: self)
+				} catch let error {
+					Logger.error("Couldn't show the whats new controller: \(error.description)")
+				}
+			}
+			
 		}
 	}
 	

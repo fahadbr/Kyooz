@@ -55,7 +55,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        optionsProviders.append(BasicKyoozOptionsProvider(options:KyoozMenuAction(title:"CANCEL")))
+        
         
         let sizeConstraint = delegate.sizeConstraint
         let maxHeight = sizeConstraint.maxHeight
