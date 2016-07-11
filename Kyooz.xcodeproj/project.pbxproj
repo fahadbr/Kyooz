@@ -47,7 +47,6 @@
 		0B1DE1481CEFE8D100B72ADD /* PlaylistTypeDescriptions.html in Resources */ = {isa = PBXBuildFile; fileRef = 0B1DE1471CEFE8D100B72ADD /* PlaylistTypeDescriptions.html */; };
 		0B2064C31D27414F00725CB7 /* KyoozOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2064C21D27414F00725CB7 /* KyoozOption.swift */; };
 		0B2064C51D2748D900725CB7 /* KyoozOptionsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */; };
-		0B2064C71D27500300725CB7 /* KyoozMenuViewControllerDep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2064C61D27500300725CB7 /* KyoozMenuViewControllerDep.swift */; };
 		0B2064CB1D29C33900725CB7 /* ChangeLog.html in Resources */ = {isa = PBXBuildFile; fileRef = 0B2064CA1D29C33900725CB7 /* ChangeLog.html */; };
 		0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937561C87E96200374A3C /* HeaderViewController.swift */; };
 		0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937581C92690B00374A3C /* FadeOutViewController.swift */; };
@@ -106,6 +105,51 @@
 		0B9016081C4B197D00B1ACD1 /* BackgroundFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */; };
 		0B9D79CC1CE8DF7F0035E162 /* TutorialManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */; };
 		0B9D79CE1CE8F6530035E162 /* TutorialViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */; };
+		0B9F8A341D31A1BF00E6B453 /* AnyTweak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A071D31A1BF00E6B453 /* AnyTweak.swift */; };
+		0B9F8A351D31A1BF00E6B453 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A081D31A1BF00E6B453 /* AppTheme.swift */; };
+		0B9F8A361D31A1BF00E6B453 /* BasicAnimationTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A091D31A1BF00E6B453 /* BasicAnimationTweakTemplate.swift */; };
+		0B9F8A371D31A1BF00E6B453 /* CALayer+ShadowTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0A1D31A1BF00E6B453 /* CALayer+ShadowTweakTemplate.swift */; };
+		0B9F8A381D31A1BF00E6B453 /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0B1D31A1BF00E6B453 /* Clip.swift */; };
+		0B9F8A391D31A1BF00E6B453 /* ColorRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0C1D31A1BF00E6B453 /* ColorRepresentation.swift */; };
+		0B9F8A3A1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0D1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift */; };
+		0B9F8A3B1D31A1BF00E6B453 /* FloatingTweakGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0E1D31A1BF00E6B453 /* FloatingTweakGroupViewController.swift */; };
+		0B9F8A3C1D31A1BF00E6B453 /* HashingUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0F1D31A1BF00E6B453 /* HashingUtilities.swift */; };
+		0B9F8A3D1D31A1BF00E6B453 /* HitTransparentWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A101D31A1BF00E6B453 /* HitTransparentWindow.swift */; };
+		0B9F8A3E1D31A1BF00E6B453 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0B9F8A111D31A1BF00E6B453 /* Info.plist */; };
+		0B9F8A3F1D31A1BF00E6B453 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B9F8A121D31A1BF00E6B453 /* Media.xcassets */; };
+		0B9F8A401D31A1BF00E6B453 /* Precision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A131D31A1BF00E6B453 /* Precision.swift */; };
+		0B9F8A411D31A1BF00E6B453 /* ShadowTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A141D31A1BF00E6B453 /* ShadowTweakTemplate.swift */; };
+		0B9F8A421D31A1BF00E6B453 /* SignedNumberTweakDefaultParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A151D31A1BF00E6B453 /* SignedNumberTweakDefaultParameters.swift */; };
+		0B9F8A431D31A1BF00E6B453 /* SpringAnimationTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A161D31A1BF00E6B453 /* SpringAnimationTweakTemplate.swift */; };
+		0B9F8A441D31A1BF00E6B453 /* Tweak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A181D31A1BF00E6B453 /* Tweak.swift */; };
+		0B9F8A451D31A1BF00E6B453 /* TweakableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A191D31A1BF00E6B453 /* TweakableType.swift */; };
+		0B9F8A461D31A1BF00E6B453 /* TweakBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1A1D31A1BF00E6B453 /* TweakBackup.swift */; };
+		0B9F8A471D31A1BF00E6B453 /* TweakBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1B1D31A1BF00E6B453 /* TweakBinding.swift */; };
+		0B9F8A481D31A1BF00E6B453 /* TweakClusterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1C1D31A1BF00E6B453 /* TweakClusterType.swift */; };
+		0B9F8A491D31A1BF00E6B453 /* TweakCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1D1D31A1BF00E6B453 /* TweakCollection.swift */; };
+		0B9F8A4A1D31A1BF00E6B453 /* TweakCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1E1D31A1BF00E6B453 /* TweakCollectionViewController.swift */; };
+		0B9F8A4B1D31A1BF00E6B453 /* TweakColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1F1D31A1BF00E6B453 /* TweakColorCell.swift */; };
+		0B9F8A4C1D31A1BF00E6B453 /* TweakColorEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A201D31A1BF00E6B453 /* TweakColorEditViewController.swift */; };
+		0B9F8A4D1D31A1BF00E6B453 /* TweakDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A211D31A1BF00E6B453 /* TweakDebug.swift */; };
+		0B9F8A4E1D31A1BF00E6B453 /* TweakGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A221D31A1BF00E6B453 /* TweakGroup.swift */; };
+		0B9F8A4F1D31A1BF00E6B453 /* TweakGroupTemplateType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A231D31A1BF00E6B453 /* TweakGroupTemplateType.swift */; };
+		0B9F8A501D31A1BF00E6B453 /* TweakLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A241D31A1BF00E6B453 /* TweakLibrary.swift */; };
+		0B9F8A511D31A1BF00E6B453 /* TweakPersistency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A251D31A1BF00E6B453 /* TweakPersistency.swift */; };
+		0B9F8A521D31A1BF00E6B453 /* TweaksBackupsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A261D31A1BF00E6B453 /* TweaksBackupsListViewController.swift */; };
+		0B9F8A531D31A1BF00E6B453 /* TweaksCollectionsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A271D31A1BF00E6B453 /* TweaksCollectionsListViewController.swift */; };
+		0B9F8A541D31A1BF00E6B453 /* TweaksRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A281D31A1BF00E6B453 /* TweaksRootViewController.swift */; };
+		0B9F8A551D31A1BF00E6B453 /* TweakStore+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A291D31A1BF00E6B453 /* TweakStore+Sharing.swift */; };
+		0B9F8A561D31A1BF00E6B453 /* TweakStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A2A1D31A1BF00E6B453 /* TweakStore.swift */; };
+		0B9F8A571D31A1BF00E6B453 /* TweaksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A2B1D31A1BF00E6B453 /* TweaksViewController.swift */; };
+		0B9F8A581D31A1BF00E6B453 /* TweakTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A2C1D31A1BF00E6B453 /* TweakTableCell.swift */; };
+		0B9F8A591D31A1BF00E6B453 /* TweakViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A2D1D31A1BF00E6B453 /* TweakViewData.swift */; };
+		0B9F8A5A1D31A1BF00E6B453 /* TweakWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A2E1D31A1BF00E6B453 /* TweakWindow.swift */; };
+		0B9F8A5B1D31A1BF00E6B453 /* UIColor+Tweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A2F1D31A1BF00E6B453 /* UIColor+Tweaks.swift */; };
+		0B9F8A5C1D31A1BF00E6B453 /* UIEdgeInsets+EdgeInsetsTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A301D31A1BF00E6B453 /* UIEdgeInsets+EdgeInsetsTweakTemplate.swift */; };
+		0B9F8A5D1D31A1BF00E6B453 /* UIImage+SwiftTweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A311D31A1BF00E6B453 /* UIImage+SwiftTweaks.swift */; };
+		0B9F8A5E1D31A1BF00E6B453 /* UIView+BasicAnimationTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A321D31A1BF00E6B453 /* UIView+BasicAnimationTweakTemplate.swift */; };
+		0B9F8A5F1D31A1BF00E6B453 /* UIView+TweakGroupTemplateSpringAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A331D31A1BF00E6B453 /* UIView+TweakGroupTemplateSpringAnimation.swift */; };
+		0B9F8A611D31A81B00E6B453 /* KyoozTweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A601D31A81B00E6B453 /* KyoozTweaks.swift */; };
 		0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA242741C251671000170F9 /* AbstractTableViewCell.swift */; };
 		0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */; };
 		0BA6E7CC1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6E7CB1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift */; };
@@ -258,7 +302,6 @@
 		0B1DE1471CEFE8D100B72ADD /* PlaylistTypeDescriptions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = PlaylistTypeDescriptions.html; sourceTree = "<group>"; };
 		0B2064C21D27414F00725CB7 /* KyoozOption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOption.swift; sourceTree = "<group>"; };
 		0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsProvider.swift; sourceTree = "<group>"; };
-		0B2064C61D27500300725CB7 /* KyoozMenuViewControllerDep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozMenuViewControllerDep.swift; sourceTree = "<group>"; };
 		0B2064CA1D29C33900725CB7 /* ChangeLog.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ChangeLog.html; path = Kyooz/SupportingFiles/ChangeLog.html; sourceTree = SOURCE_ROOT; };
 		0B2937561C87E96200374A3C /* HeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
 		0B2937581C92690B00374A3C /* FadeOutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeOutViewController.swift; sourceTree = "<group>"; };
@@ -317,6 +360,52 @@
 		0B9016071C4B197D00B1ACD1 /* BackgroundFetchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundFetchController.swift; sourceTree = "<group>"; };
 		0B9D79CB1CE8DF7F0035E162 /* TutorialManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TutorialManagerTest.swift; path = KyoozTests/ViewControllers/Util_VCs/Tutorial/TutorialManagerTest.swift; sourceTree = SOURCE_ROOT; };
 		0B9D79CD1CE8F6530035E162 /* TutorialViewControllerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewControllerFactory.swift; sourceTree = "<group>"; };
+		0B9F8A071D31A1BF00E6B453 /* AnyTweak.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyTweak.swift; sourceTree = "<group>"; };
+		0B9F8A081D31A1BF00E6B453 /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		0B9F8A091D31A1BF00E6B453 /* BasicAnimationTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAnimationTweakTemplate.swift; sourceTree = "<group>"; };
+		0B9F8A0A1D31A1BF00E6B453 /* CALayer+ShadowTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CALayer+ShadowTweakTemplate.swift"; sourceTree = "<group>"; };
+		0B9F8A0B1D31A1BF00E6B453 /* Clip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Clip.swift; sourceTree = "<group>"; };
+		0B9F8A0C1D31A1BF00E6B453 /* ColorRepresentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorRepresentation.swift; sourceTree = "<group>"; };
+		0B9F8A0D1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EdgeInsetsTweakTemplate.swift; sourceTree = "<group>"; };
+		0B9F8A0E1D31A1BF00E6B453 /* FloatingTweakGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingTweakGroupViewController.swift; sourceTree = "<group>"; };
+		0B9F8A0F1D31A1BF00E6B453 /* HashingUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashingUtilities.swift; sourceTree = "<group>"; };
+		0B9F8A101D31A1BF00E6B453 /* HitTransparentWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HitTransparentWindow.swift; sourceTree = "<group>"; };
+		0B9F8A111D31A1BF00E6B453 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0B9F8A121D31A1BF00E6B453 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		0B9F8A131D31A1BF00E6B453 /* Precision.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Precision.swift; sourceTree = "<group>"; };
+		0B9F8A141D31A1BF00E6B453 /* ShadowTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowTweakTemplate.swift; sourceTree = "<group>"; };
+		0B9F8A151D31A1BF00E6B453 /* SignedNumberTweakDefaultParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignedNumberTweakDefaultParameters.swift; sourceTree = "<group>"; };
+		0B9F8A161D31A1BF00E6B453 /* SpringAnimationTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpringAnimationTweakTemplate.swift; sourceTree = "<group>"; };
+		0B9F8A171D31A1BF00E6B453 /* SwiftTweaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftTweaks.h; sourceTree = "<group>"; };
+		0B9F8A181D31A1BF00E6B453 /* Tweak.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tweak.swift; sourceTree = "<group>"; };
+		0B9F8A191D31A1BF00E6B453 /* TweakableType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakableType.swift; sourceTree = "<group>"; };
+		0B9F8A1A1D31A1BF00E6B453 /* TweakBackup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakBackup.swift; sourceTree = "<group>"; };
+		0B9F8A1B1D31A1BF00E6B453 /* TweakBinding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakBinding.swift; sourceTree = "<group>"; };
+		0B9F8A1C1D31A1BF00E6B453 /* TweakClusterType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakClusterType.swift; sourceTree = "<group>"; };
+		0B9F8A1D1D31A1BF00E6B453 /* TweakCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakCollection.swift; sourceTree = "<group>"; };
+		0B9F8A1E1D31A1BF00E6B453 /* TweakCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakCollectionViewController.swift; sourceTree = "<group>"; };
+		0B9F8A1F1D31A1BF00E6B453 /* TweakColorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakColorCell.swift; sourceTree = "<group>"; };
+		0B9F8A201D31A1BF00E6B453 /* TweakColorEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakColorEditViewController.swift; sourceTree = "<group>"; };
+		0B9F8A211D31A1BF00E6B453 /* TweakDebug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakDebug.swift; sourceTree = "<group>"; };
+		0B9F8A221D31A1BF00E6B453 /* TweakGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakGroup.swift; sourceTree = "<group>"; };
+		0B9F8A231D31A1BF00E6B453 /* TweakGroupTemplateType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakGroupTemplateType.swift; sourceTree = "<group>"; };
+		0B9F8A241D31A1BF00E6B453 /* TweakLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakLibrary.swift; sourceTree = "<group>"; };
+		0B9F8A251D31A1BF00E6B453 /* TweakPersistency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakPersistency.swift; sourceTree = "<group>"; };
+		0B9F8A261D31A1BF00E6B453 /* TweaksBackupsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweaksBackupsListViewController.swift; sourceTree = "<group>"; };
+		0B9F8A271D31A1BF00E6B453 /* TweaksCollectionsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweaksCollectionsListViewController.swift; sourceTree = "<group>"; };
+		0B9F8A281D31A1BF00E6B453 /* TweaksRootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweaksRootViewController.swift; sourceTree = "<group>"; };
+		0B9F8A291D31A1BF00E6B453 /* TweakStore+Sharing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TweakStore+Sharing.swift"; sourceTree = "<group>"; };
+		0B9F8A2A1D31A1BF00E6B453 /* TweakStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakStore.swift; sourceTree = "<group>"; };
+		0B9F8A2B1D31A1BF00E6B453 /* TweaksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweaksViewController.swift; sourceTree = "<group>"; };
+		0B9F8A2C1D31A1BF00E6B453 /* TweakTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakTableCell.swift; sourceTree = "<group>"; };
+		0B9F8A2D1D31A1BF00E6B453 /* TweakViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakViewData.swift; sourceTree = "<group>"; };
+		0B9F8A2E1D31A1BF00E6B453 /* TweakWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweakWindow.swift; sourceTree = "<group>"; };
+		0B9F8A2F1D31A1BF00E6B453 /* UIColor+Tweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Tweaks.swift"; sourceTree = "<group>"; };
+		0B9F8A301D31A1BF00E6B453 /* UIEdgeInsets+EdgeInsetsTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIEdgeInsets+EdgeInsetsTweakTemplate.swift"; sourceTree = "<group>"; };
+		0B9F8A311D31A1BF00E6B453 /* UIImage+SwiftTweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+SwiftTweaks.swift"; sourceTree = "<group>"; };
+		0B9F8A321D31A1BF00E6B453 /* UIView+BasicAnimationTweakTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+BasicAnimationTweakTemplate.swift"; sourceTree = "<group>"; };
+		0B9F8A331D31A1BF00E6B453 /* UIView+TweakGroupTemplateSpringAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+TweakGroupTemplateSpringAnimation.swift"; sourceTree = "<group>"; };
+		0B9F8A601D31A81B00E6B453 /* KyoozTweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozTweaks.swift; sourceTree = "<group>"; };
 		0BA242741C251671000170F9 /* AbstractTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractTableViewCell.swift; sourceTree = "<group>"; };
 		0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderLabelStackController.swift; sourceTree = "<group>"; };
 		0BA6E7CB1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtworkHeaderViewController.swift; sourceTree = "<group>"; };
@@ -729,12 +818,65 @@
 		0B83FE1F1B24EC8B00746A9E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				0B9F8A061D31A1BF00E6B453 /* SwiftTweaks */,
 				102756AA1CFE445E00B1B679 /* HelperTypes */,
 				0B1BFDAA1AF535DB009838A5 /* Extensions */,
 				0BBE16001AF6AC80007C6189 /* Logging */,
 				102756A91CFE444C00B1B679 /* StaticUtils */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		0B9F8A061D31A1BF00E6B453 /* SwiftTweaks */ = {
+			isa = PBXGroup;
+			children = (
+				0B9F8A071D31A1BF00E6B453 /* AnyTweak.swift */,
+				0B9F8A081D31A1BF00E6B453 /* AppTheme.swift */,
+				0B9F8A091D31A1BF00E6B453 /* BasicAnimationTweakTemplate.swift */,
+				0B9F8A0A1D31A1BF00E6B453 /* CALayer+ShadowTweakTemplate.swift */,
+				0B9F8A0B1D31A1BF00E6B453 /* Clip.swift */,
+				0B9F8A0C1D31A1BF00E6B453 /* ColorRepresentation.swift */,
+				0B9F8A0D1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift */,
+				0B9F8A0E1D31A1BF00E6B453 /* FloatingTweakGroupViewController.swift */,
+				0B9F8A0F1D31A1BF00E6B453 /* HashingUtilities.swift */,
+				0B9F8A101D31A1BF00E6B453 /* HitTransparentWindow.swift */,
+				0B9F8A111D31A1BF00E6B453 /* Info.plist */,
+				0B9F8A121D31A1BF00E6B453 /* Media.xcassets */,
+				0B9F8A131D31A1BF00E6B453 /* Precision.swift */,
+				0B9F8A141D31A1BF00E6B453 /* ShadowTweakTemplate.swift */,
+				0B9F8A151D31A1BF00E6B453 /* SignedNumberTweakDefaultParameters.swift */,
+				0B9F8A161D31A1BF00E6B453 /* SpringAnimationTweakTemplate.swift */,
+				0B9F8A171D31A1BF00E6B453 /* SwiftTweaks.h */,
+				0B9F8A181D31A1BF00E6B453 /* Tweak.swift */,
+				0B9F8A191D31A1BF00E6B453 /* TweakableType.swift */,
+				0B9F8A1A1D31A1BF00E6B453 /* TweakBackup.swift */,
+				0B9F8A1B1D31A1BF00E6B453 /* TweakBinding.swift */,
+				0B9F8A1C1D31A1BF00E6B453 /* TweakClusterType.swift */,
+				0B9F8A1D1D31A1BF00E6B453 /* TweakCollection.swift */,
+				0B9F8A1E1D31A1BF00E6B453 /* TweakCollectionViewController.swift */,
+				0B9F8A1F1D31A1BF00E6B453 /* TweakColorCell.swift */,
+				0B9F8A201D31A1BF00E6B453 /* TweakColorEditViewController.swift */,
+				0B9F8A211D31A1BF00E6B453 /* TweakDebug.swift */,
+				0B9F8A221D31A1BF00E6B453 /* TweakGroup.swift */,
+				0B9F8A231D31A1BF00E6B453 /* TweakGroupTemplateType.swift */,
+				0B9F8A241D31A1BF00E6B453 /* TweakLibrary.swift */,
+				0B9F8A251D31A1BF00E6B453 /* TweakPersistency.swift */,
+				0B9F8A261D31A1BF00E6B453 /* TweaksBackupsListViewController.swift */,
+				0B9F8A271D31A1BF00E6B453 /* TweaksCollectionsListViewController.swift */,
+				0B9F8A281D31A1BF00E6B453 /* TweaksRootViewController.swift */,
+				0B9F8A291D31A1BF00E6B453 /* TweakStore+Sharing.swift */,
+				0B9F8A2A1D31A1BF00E6B453 /* TweakStore.swift */,
+				0B9F8A2B1D31A1BF00E6B453 /* TweaksViewController.swift */,
+				0B9F8A2C1D31A1BF00E6B453 /* TweakTableCell.swift */,
+				0B9F8A2D1D31A1BF00E6B453 /* TweakViewData.swift */,
+				0B9F8A2E1D31A1BF00E6B453 /* TweakWindow.swift */,
+				0B9F8A2F1D31A1BF00E6B453 /* UIColor+Tweaks.swift */,
+				0B9F8A301D31A1BF00E6B453 /* UIEdgeInsets+EdgeInsetsTweakTemplate.swift */,
+				0B9F8A311D31A1BF00E6B453 /* UIImage+SwiftTweaks.swift */,
+				0B9F8A321D31A1BF00E6B453 /* UIView+BasicAnimationTweakTemplate.swift */,
+				0B9F8A331D31A1BF00E6B453 /* UIView+TweakGroupTemplateSpringAnimation.swift */,
+			);
+			path = SwiftTweaks;
 			sourceTree = "<group>";
 		};
 		0BBE16001AF6AC80007C6189 /* Logging */ = {
@@ -840,10 +982,9 @@
 		10088C9D1D25EC1A00AAC16F /* Options */ = {
 			isa = PBXGroup;
 			children = (
-				0B2064C61D27500300725CB7 /* KyoozMenuViewControllerDep.swift */,
-				10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */,
 				0B2064C21D27414F00725CB7 /* KyoozOption.swift */,
 				0B2064C41D2748D900725CB7 /* KyoozOptionsProvider.swift */,
+				10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */,
 				10B069051D2989F200CCDCA6 /* MenuBuilder.swift */,
 				10FD325A1C90E43800004CAB /* MenuOptionsDelegate.swift */,
 				10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */,
@@ -922,6 +1063,7 @@
 				102756A51CFE43CB00B1B679 /* EnumNameDescriptable.swift */,
 				0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */,
 				100A8BD61C5C3235009FAB17 /* KyoozErrorProtocol.swift */,
+				0B9F8A601D31A81B00E6B453 /* KyoozTweaks.swift */,
 				10FD32721C9B6B4300004CAB /* KYReachability.h */,
 				10FD32731C9B6B4300004CAB /* KYReachability.m */,
 				10B069031D272C8400CCDCA6 /* SizeConstraint.swift */,
@@ -1101,8 +1243,10 @@
 				0B83FE1E1B24CA1E00746A9E /* log_in-mobile.png in Resources */,
 				0B778B0D1B938E2500004A1B /* SkipTrackButtonView.xib in Resources */,
 				0B13D9CB1AE6F80E00CC5C01 /* LaunchScreen.xib in Resources */,
+				0B9F8A3E1D31A1BF00E6B453 /* Info.plist in Resources */,
 				10C7B9D71C3C8A6100ADAAB6 /* ListButtonView.xib in Resources */,
 				10B9E1041CC987CF0058F44E /* TempView.xib in Resources */,
+				0B9F8A3F1D31A1BF00E6B453 /* Media.xcassets in Resources */,
 				0BD11B631B0829FA00565471 /* Settings.storyboard in Resources */,
 				0B4E60081C2CD99C00BB9D77 /* RepeatButtonView.xib in Resources */,
 				0B4E60061C2CBB7700BB9D77 /* ShuffleButtonView.xib in Resources */,
@@ -1135,9 +1279,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B055A271C4C7F3C007CB60A /* MediaLibraryTableViewCell.swift in Sources */,
+				0B9F8A5E1D31A1BF00E6B453 /* UIView+BasicAnimationTweakTemplate.swift in Sources */,
 				10FD325B1C90E43900004CAB /* MenuOptionsDelegate.swift in Sources */,
 				100A8BDB1C5EFB6C009FAB17 /* AudioTrackCollectionDSD.swift in Sources */,
 				10B9E1061CD2A5880058F44E /* KyoozTableFooterView.swift in Sources */,
+				0B9F8A3D1D31A1BF00E6B453 /* HitTransparentWindow.swift in Sources */,
 				0B1BFDA81AF313AC009838A5 /* LastFmScrobbler.swift in Sources */,
 				0BD11B681B08FB2B00565471 /* ArrayExtension.swift in Sources */,
 				0B13DA5B1AEB1CB700CC5C01 /* StoryboardExtension.swift in Sources */,
@@ -1147,8 +1293,11 @@
 				0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */,
 				0B13DA251AE6FA9A00CC5C01 /* ThemeHelper.swift in Sources */,
 				0B0FB0AD1CDFEE010062AB4E /* TextViewController.swift in Sources */,
+				0B9F8A341D31A1BF00E6B453 /* AnyTweak.swift in Sources */,
 				10088C9A1D25D54100AAC16F /* KyoozOptionsViewController.swift in Sources */,
 				0B63061B1CD505C4006CD211 /* AddToPlaylistViewController.swift in Sources */,
+				0B9F8A511D31A1BF00E6B453 /* TweakPersistency.swift in Sources */,
+				0B9F8A481D31A1BF00E6B453 /* TweakClusterType.swift in Sources */,
 				10DB78FC1CB87770008402BB /* PlaybackControlsViewController.swift in Sources */,
 				10FD32741C9B6B4300004CAB /* KYReachability.m in Sources */,
 				0BBA91F51C081F8C00C79BA2 /* IndexBuildingOperation.swift in Sources */,
@@ -1161,20 +1310,29 @@
 				0BDA6CF61D249C65007D964F /* BasicAudioEntitySourceData.swift in Sources */,
 				10B069021D2722B200CCDCA6 /* ErrorTypeExtension.swift in Sources */,
 				0B5F13521C714F9D009A1FDD /* KyoozPlaylistSourceData.swift in Sources */,
+				0B9F8A521D31A1BF00E6B453 /* TweaksBackupsListViewController.swift in Sources */,
 				0BC3179B1C5D7AEA002BF431 /* AudioEntitySourceData.swift in Sources */,
+				0B9F8A461D31A1BF00E6B453 /* TweakBackup.swift in Sources */,
+				0B9F8A4D1D31A1BF00E6B453 /* TweakDebug.swift in Sources */,
+				0B9F8A401D31A1BF00E6B453 /* Precision.swift in Sources */,
 				0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */,
 				10E92FA51C52EFD70048B5BC /* ShortNotificationManager.swift in Sources */,
 				0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */,
 				0BB01A5F1CC87A5C00D4B57F /* PlainHeaderView.swift in Sources */,
+				0B9F8A391D31A1BF00E6B453 /* ColorRepresentation.swift in Sources */,
 				0BA6E7CC1D0BB42300E1CD86 /* ArtworkHeaderViewController.swift in Sources */,
 				0BCA19501BC73F05008CD0FF /* RemoteCommandHandler.swift in Sources */,
 				10DB79001CBAF53E008402BB /* NowPlayingPageViewController.swift in Sources */,
+				0B9F8A491D31A1BF00E6B453 /* TweakCollection.swift in Sources */,
 				10FD32591C8F986800004CAB /* BlurViewController.swift in Sources */,
-				0B2064C71D27500300725CB7 /* KyoozMenuViewControllerDep.swift in Sources */,
+				0B9F8A5D1D31A1BF00E6B453 /* UIImage+SwiftTweaks.swift in Sources */,
+				0B9F8A3C1D31A1BF00E6B453 /* HashingUtilities.swift in Sources */,
+				0B9F8A531D31A1BF00E6B453 /* TweaksCollectionsListViewController.swift in Sources */,
 				0BD11B6D1B09236900565471 /* GestureHandler.swift in Sources */,
 				0BA242751C251671000170F9 /* AbstractTableViewCell.swift in Sources */,
 				0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */,
 				0BB01A5D1CC5BEA100D4B57F /* AdHocKyoozPlaylistSearchOperation.swift in Sources */,
+				0B9F8A441D31A1BF00E6B453 /* Tweak.swift in Sources */,
 				0BC3179D1C5D7BB2002BF431 /* AudioEntityDSD.swift in Sources */,
 				0BF917441BF8124E001AC802 /* SearchIndexEntry.swift in Sources */,
 				0BF7C5B11D1E3E3B00D1EE37 /* FoundationExtensions.swift in Sources */,
@@ -1186,11 +1344,13 @@
 				0B13DA111AE6FA9A00CC5C01 /* AudioSessionManager.swift in Sources */,
 				10FD32571C8F948100004CAB /* AudioEntityLibraryViewController.swift in Sources */,
 				10FD32551C8900AB00004CAB /* AudioEntityHeaderViewController.swift in Sources */,
+				0B9F8A541D31A1BF00E6B453 /* TweaksRootViewController.swift in Sources */,
 				0B29375F1C9D8C9700374A3C /* AudioEntityDSDWrapper.swift in Sources */,
 				1060F6061CEA95AA001DE868 /* LongPressTutorialViewController.swift in Sources */,
 				0B4B2D661D0DC89A0036F358 /* GenericWrapperViewController.swift in Sources */,
 				0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
+				0B9F8A3A1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift in Sources */,
 				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
 				0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */,
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
@@ -1199,25 +1359,34 @@
 				10088C9C1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift in Sources */,
 				0B778B0B1B938E1200004A1B /* SkipTrackButtonView.swift in Sources */,
 				0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */,
+				0B9F8A4B1D31A1BF00E6B453 /* TweakColorCell.swift in Sources */,
 				0BBE15FA1AF5BE20007C6189 /* StringExtension.swift in Sources */,
 				0B13DA231AE6FA9A00CC5C01 /* AudioQueuePlayer.swift in Sources */,
 				0B5F134E1C714F56009A1FDD /* MediaQuerySourceData.swift in Sources */,
 				0B9016081C4B197D00B1ACD1 /* BackgroundFetchController.swift in Sources */,
 				0B13DA221AE6FA9A00CC5C01 /* PlaybackStateManager.swift in Sources */,
+				0B9F8A3B1D31A1BF00E6B453 /* FloatingTweakGroupViewController.swift in Sources */,
 				10FD325D1C90E7B200004CAB /* ConstraintUtils.swift in Sources */,
+				0B9F8A4E1D31A1BF00E6B453 /* TweakGroup.swift in Sources */,
 				0BD11B611B077F5600565471 /* DragGestureScrollingController.swift in Sources */,
 				104F15E81C4F026F00477ECD /* ShortNotificationViewController.swift in Sources */,
 				108DBA061CE295480013E990 /* CrossButtonView.swift in Sources */,
+				0B9F8A5F1D31A1BF00E6B453 /* UIView+TweakGroupTemplateSpringAnimation.swift in Sources */,
+				0B9F8A571D31A1BF00E6B453 /* TweaksViewController.swift in Sources */,
 				0B0FB0AF1CE16A390062AB4E /* MultiSelectButtonView.swift in Sources */,
 				0BB01A611CCBD91900D4B57F /* KyoozConstants.swift in Sources */,
 				10E0FBDF1D08DAF700B247FD /* SubGroupButtonController.swift in Sources */,
+				0B9F8A5C1D31A1BF00E6B453 /* UIEdgeInsets+EdgeInsetsTweakTemplate.swift in Sources */,
+				0B9F8A471D31A1BF00E6B453 /* TweakBinding.swift in Sources */,
 				0BD11B661B082C4B00565471 /* LastfmLoginViewController.swift in Sources */,
 				0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */,
 				10DB53CF1CB5C28F0041B179 /* AbstractPlaybackViewController.swift in Sources */,
 				0BF917481BF8F36A001AC802 /* KyoozUtils.swift in Sources */,
 				0BD43F671AF7108700D5B2D4 /* IPodLibraryDAO.swift in Sources */,
 				0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */,
+				0B9F8A351D31A1BF00E6B453 /* AppTheme.swift in Sources */,
 				10B068FA1D270FDA00CCDCA6 /* ComparableExtension.swift in Sources */,
+				0B9F8A411D31A1BF00E6B453 /* ShadowTweakTemplate.swift in Sources */,
 				10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
 				0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */,
@@ -1228,10 +1397,14 @@
 				100A8BDD1C62C12A009FAB17 /* AudioEntityDSDSectionDelegator.swift in Sources */,
 				10B9E1021CC987B60058F44E /* HomeButtonView.swift in Sources */,
 				0B58794D1C74140C009E713F /* UtilHeaderViewController.swift in Sources */,
+				0B9F8A5B1D31A1BF00E6B453 /* UIColor+Tweaks.swift in Sources */,
 				0B4E60121C34561600BB9D77 /* PlaybackStateSnapshot.swift in Sources */,
+				0B9F8A561D31A1BF00E6B453 /* TweakStore.swift in Sources */,
 				0BCE218C1B10DB6C0074DA47 /* SimpleAudioController.swift in Sources */,
 				0B13DA621AED49AF00CC5C01 /* SongDetailsTableViewCell.swift in Sources */,
 				102F6C0E1D27020600DEC44F /* DocumentType.swift in Sources */,
+				0B9F8A4C1D31A1BF00E6B453 /* TweakColorEditViewController.swift in Sources */,
+				0B9F8A421D31A1BF00E6B453 /* SignedNumberTweakDefaultParameters.swift in Sources */,
 				10B069061D2989F200CCDCA6 /* MenuBuilder.swift in Sources */,
 				0B83FE181B24BB9700746A9E /* SpotifyDAO.swift in Sources */,
 				0B5F13541C714FBD009A1FDD /* SectionDescription.swift in Sources */,
@@ -1242,6 +1415,7 @@
 				10DB53CD1CB31DA40041B179 /* PlaybackProgressViewController.swift in Sources */,
 				0BBA91F11C06A64E00C79BA2 /* SearchExecutionController.swift in Sources */,
 				0B055A231C4C6A97007CB60A /* MenuDotsView.swift in Sources */,
+				0B9F8A591D31A1BF00E6B453 /* TweakViewData.swift in Sources */,
 				0B70702C1B9767080000673E /* AlbumTrackTableViewCell.swift in Sources */,
 				0B7F7DCB1C4DC02200B932CA /* UserDefaultKeys.swift in Sources */,
 				0B5F13561C71682F009A1FDD /* AudioQueuePlayerSourceData.swift in Sources */,
@@ -1250,6 +1424,9 @@
 				100A8BD31C56F8DE009FAB17 /* KyoozPlaylistManager.swift in Sources */,
 				0BF7C5B31D1E4D2B00D1EE37 /* UIKitExtensions.swift in Sources */,
 				0B29375D1C9D8BA700374A3C /* DragToRearrangeDSDWrapper.swift in Sources */,
+				0B9F8A551D31A1BF00E6B453 /* TweakStore+Sharing.swift in Sources */,
+				0B9F8A371D31A1BF00E6B453 /* CALayer+ShadowTweakTemplate.swift in Sources */,
+				0B9F8A611D31A81B00E6B453 /* KyoozTweaks.swift in Sources */,
 				10BECBF31C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift in Sources */,
 				0BD11B711B09710000565471 /* LongPressDragAndDropGestureHandler.swift in Sources */,
 				10C7B9D51C3C8A4D00ADAAB6 /* ListButtonView.swift in Sources */,
@@ -1257,6 +1434,7 @@
 				0B1DA0691CB0849F00699D88 /* WrapperViewController.swift in Sources */,
 				100A8BD71C5C3235009FAB17 /* KyoozErrorProtocol.swift in Sources */,
 				0BCE218A1B10D78E0074DA47 /* AudioController.swift in Sources */,
+				0B9F8A4F1D31A1BF00E6B453 /* TweakGroupTemplateType.swift in Sources */,
 				0BC317A11C5D8F66002BF431 /* AudioTrackDSD.swift in Sources */,
 				0B29375B1C98F16700374A3C /* AudioEntityViewControllerProtocol.swift in Sources */,
 				0B533AC01BC1878900EA71B7 /* LibraryGrouping.swift in Sources */,
@@ -1267,32 +1445,40 @@
 				0B13DA5F1AEB3E3500CC5C01 /* ContainerViewController.swift in Sources */,
 				0BD11B6F1B0926BE00565471 /* LongPressToDragGestureHandler.swift in Sources */,
 				0B4E600C1C2DBC7800BB9D77 /* RepeatState.swift in Sources */,
+				0B9F8A581D31A1BF00E6B453 /* TweakTableCell.swift in Sources */,
 				0BA7F6E71C45E5960062A201 /* SystemQueueResyncWorkflowController.swift in Sources */,
 				0B70702F1B9799030000673E /* AudioTableCellProtocol.swift in Sources */,
 				10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */,
 				0BBA91EF1C02292B00C79BA2 /* AbstractResultOperation.swift in Sources */,
 				0B4E600A1C2CD9AD00BB9D77 /* RepeatButtonView.swift in Sources */,
+				0B9F8A381D31A1BF00E6B453 /* Clip.swift in Sources */,
 				0B13DA201AE6FA9A00CC5C01 /* NibContainer.swift in Sources */,
 				108DBA0D1CE537990013E990 /* Tutorial.swift in Sources */,
 				0BDA6CF81D249F1C007D964F /* AudioTrackCollection.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
 				0B13DA191AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift in Sources */,
 				0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */,
+				0B9F8A4A1D31A1BF00E6B453 /* TweakCollectionViewController.swift in Sources */,
 				0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */,
 				0B7F7DC91C4DBD4000B932CA /* SettingsViewController.swift in Sources */,
 				0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */,
 				1060F6041CE5399C001DE868 /* TutorialManager.swift in Sources */,
 				102756A81CFE43F600B1B679 /* ImageUtils.swift in Sources */,
 				0B476C721B21FA5400626810 /* AudioTrack.swift in Sources */,
+				0B9F8A361D31A1BF00E6B453 /* BasicAnimationTweakTemplate.swift in Sources */,
 				0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */,
 				0B2937591C92690B00374A3C /* FadeOutViewController.swift in Sources */,
 				0B0FE1701C40B92A001E4ABE /* ViewControllerFadeAnimator.swift in Sources */,
 				0B476C741B2273E500626810 /* AudioEntity.swift in Sources */,
 				0B58794B1C729ABF009E713F /* DragToInsertDSDWrapper.swift in Sources */,
+				0B9F8A5A1D31A1BF00E6B453 /* TweakWindow.swift in Sources */,
 				0BC3179F1C5D80D1002BF431 /* MediaPlayerFrameworkExtensions.swift in Sources */,
+				0B9F8A501D31A1BF00E6B453 /* TweakLibrary.swift in Sources */,
 				100A8BD51C583695009FAB17 /* DataPersistenceError.swift in Sources */,
 				0B2064C51D2748D900725CB7 /* KyoozOptionsProvider.swift in Sources */,
+				0B9F8A431D31A1BF00E6B453 /* SpringAnimationTweakTemplate.swift in Sources */,
 				0B13DA1B1AE6FA9A00CC5C01 /* ImageTableViewCell.swift in Sources */,
+				0B9F8A451D31A1BF00E6B453 /* TweakableType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1445,6 +1631,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.riaz.fahad.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Kyooz;
 				PROVISIONING_PROFILE = "";

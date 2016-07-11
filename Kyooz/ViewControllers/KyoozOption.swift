@@ -10,21 +10,27 @@ import Foundation
 
 protocol KyoozOption {
     
-    var title:String { get }
-    var info:String? { get }
-    var action:(()->())? { get }
+    var title: String { get }
+    var info: String? { get }
+    var action: (()->())? { get }
+    var highlighted: Bool { get }
 
 }
 
 struct KyoozMenuAction : KyoozOption {
     
-    let title:String
-    let info:String?
-    let action:(()->())?
+    let title: String
+    let info: String?
+    let action: (()->())?
+    let highlighted: Bool
     
-    init(title:String, info:String? = nil, action:(()->())? = nil) {
+    init(title: String,
+         info: String? = nil,
+         highlighted: Bool = false,
+         action: (()->())? = nil) {
         self.title = title
         self.info = info
+        self.highlighted = highlighted
         self.action = action
     }
 }

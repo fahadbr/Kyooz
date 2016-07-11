@@ -47,6 +47,14 @@ struct KyoozUtils {
 		return KYReachability.reachabilityForInternetConnection().currentReachabilityStatus() != NetworkStatus.NotReachable
 	}
     
+    static var isDebugEnabled: Bool {
+        #if DEBUG
+            return true
+        #else
+            return false
+        #endif
+    }
+    
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
     }
@@ -142,7 +150,6 @@ struct KyoozUtils {
         presentingVC.addChildViewController(kmvc)
         kmvc.didMoveToParentViewController(presentingVC)
         presentingVC.view.addSubview(kmvc.view)
-        kmvc.view.layer.addAnimation(fadeInAnimation, forKey: nil)
         (presentingVC as? ContainerViewController)?.longPressGestureRecognizer?.enabled = false
 
     }

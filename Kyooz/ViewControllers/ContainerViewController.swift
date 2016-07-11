@@ -149,16 +149,20 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 			])
 			
 			if !presentedTutorial {
-				do {
-					let vc = try whatsNewViewController()
-					KyoozUtils.showMenuViewController(vc, presentingVC: self)
-				} catch let error {
-					Logger.error("Couldn't show the whats new controller: \(error.description)")
-				}
+				showWhatsNew()
 			}
 			
 		}
 	}
+    
+    func showWhatsNew() {
+        do {
+            let vc = try whatsNewViewController()
+            KyoozUtils.showMenuViewController(vc, presentingVC: self)
+        } catch let error {
+            Logger.error("Couldn't show the whats new controller: \(error.description)")
+        }
+    }
 	
     override func canBecomeFirstResponder() -> Bool {
         return true
