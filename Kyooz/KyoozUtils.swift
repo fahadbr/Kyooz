@@ -55,6 +55,10 @@ struct KyoozUtils {
         #endif
     }
     
+    static var appVersion: String? {
+        return NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+    
     static func getDispatchTimeForSeconds(seconds:Double) -> dispatch_time_t {
         return dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC)))
     }

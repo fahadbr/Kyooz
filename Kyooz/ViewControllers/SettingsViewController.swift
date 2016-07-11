@@ -66,6 +66,8 @@ final class SettingsViewController: UITableViewController {
                 try showPrivacyPolicy()
             case 4:
                 try showAcknowledgements()
+            case 5:
+                try showWhatsNew()
             default:
                 break
             }
@@ -96,6 +98,11 @@ final class SettingsViewController: UITableViewController {
     private func showAcknowledgements() throws {
 		let textVC = try TextViewController(fileName: "Acknowledgments", documentType: .html)
         navigationController?.pushViewController(textVC, animated: true)
+    }
+    
+    private func showWhatsNew() throws {
+        let vc = try whatsNewViewController()
+        KyoozUtils.showMenuViewController(vc, presentingVC: navigationController!)
     }
 
 }

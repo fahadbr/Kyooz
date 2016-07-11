@@ -14,6 +14,7 @@ struct UserDefaultKeys {
     static let AllMusicBaseGroup = "AllMusicBaseGroup"
 	static let LastFmSessionKey = "SESSION_KEY"
 	static let LastFmUsernameKey = "USERNAME_KEY"
+    static let WhatsNewVersionShown = "WhatsNewVersionShown"
     
 }
 
