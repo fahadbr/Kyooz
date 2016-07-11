@@ -13,14 +13,28 @@ import MediaPlayer
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var lastFmScrobbler = LastFmScrobbler.instance
-    lazy var window: UIWindow? = UIWindow(frame: UIScreen.mainScreen().bounds)
+//    lazy var window: UIWindow? = UIWindow(frame: UIScreen.mainScreen().bounds)
+//    lazy var window: UIWindow? = TweakWindow(frame: UIScreen.mainScreen().bounds, tweakStore: KyoozTweaks.defaultStore)
+    var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         ThemeHelper.applyGlobalAppearanceSettings()
         
-        window!.rootViewController = ContainerViewController.instance
-        window!.makeKeyAndVisible()
+        
+        let tweaksGestureRecognizer = UIPinchGestureRecognizer()
+        let window = TweakWindow(frame: UIScreen.mainScreen().bounds,
+                                 gestureType: .Gesture(tweaksGestureRecognizer),
+                                 tweakStore: KyoozTweaks.defaultStore)
+        
+        let containerVC = ContainerViewController.instance
+        window.rootViewController = containerVC
+        window.makeKeyAndVisible()
+        self.window = window
+        
+        KyoozUtils.doInMainQueueAsync() {
+            containerVC.view.addGestureRecognizer(tweaksGestureRecognizer)
+        }
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         initMainQueueChecking()

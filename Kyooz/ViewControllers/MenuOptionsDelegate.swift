@@ -26,6 +26,8 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
     private let originatingCenter: CGPoint?
     
     let sizeConstraint: SizeConstraint = This.sizeConstraint
+    var sectionHeight: CGFloat { return 5 }
+    var sectionDividerPosition: CGFloat { return 0.5 }
     
     var headerView: UIView {
         let maxWidth = sizeConstraint.maxWidth
@@ -61,25 +63,19 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
         
         let titleSize = titleLabel.frame.size
         let detailsSize = detailsLabel.frame.size
-        let assumedLabelHeight = titleSize.height + detailsSize.height
-        let assumedLabelWidth = max(titleSize.width, detailsSize.width).cap(min: minWidth, max: maxWidth)
+        let offset:CGFloat = 8
+        let doubleOffset = offset * 2
+        let assumedLabelHeight = titleSize.height + detailsSize.height + doubleOffset
+        let assumedLabelWidth = max(titleSize.width, detailsSize.width).cap(min: minWidth, max: maxWidth) + doubleOffset
         let estimatedLabelContainerSize = CGSize(width: assumedLabelWidth, height: assumedLabelHeight)
         
         
         let stackView = UIStackView(arrangedSubviews: [titleLabel, detailsLabel])
         stackView.axis = UILayoutConstraintAxis.Vertical
         stackView.frame.size = estimatedLabelContainerSize
-        
-        let offset:CGFloat = 16
-        let containerSize = CGSize(width: estimatedLabelContainerSize.width + offset,
-                                   height: estimatedLabelContainerSize.height + offset)
-        
-        let labelContainerView = UIView()
-        labelContainerView.frame.size = containerSize
-        
-        stackView.center = labelContainerView.center
-        labelContainerView.addSubview(stackView)
-        return labelContainerView
+        stackView.layoutMargins = UIEdgeInsets(top: offset, left: offset, bottom: offset, right: offset)
+        stackView.layoutMarginsRelativeArrangement = true
+        return stackView
         
     }
     
@@ -91,19 +87,27 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     func animation(forView view: UIView) -> CAAnimation {
         //animate the menu from the originating center to the screens center
-        let transformAnimation = CABasicAnimation(keyPath: "transform")
+        let transformAnimation = CASpringAnimation(keyPath: "transform")
         let center = originatingCenter ?? view.center
         let scaleTransform = CATransform3DMakeScale(0.1, 0.1, 0)
         let translationTransform = CATransform3DMakeTranslation(abs(center.x) - view.center.x, abs(center.y) - view.center.y, 0)
         
+        transformAnimation.damping = 51
+        transformAnimation.stiffness = 900
+        transformAnimation.initialVelocity = 0
+        transformAnimation.mass = 1.3
+        
+        
         transformAnimation.fromValue = NSValue(CATransform3D: CATransform3DConcat(scaleTransform, translationTransform))
         transformAnimation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
-        transformAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        transformAnimation.duration = 0.2
+        transformAnimation.duration = transformAnimation.settlingDuration
         transformAnimation.fillMode = kCAFillModeBackwards
         return transformAnimation
     }
     
+    func headerView(forSection section: Int) -> UIView {
+        return UIView(frame: CGRect(x: 0, y: 0, width: sizeConstraint.maxWidth, height: sectionHeight))
+    }
     
 }
 

@@ -12,7 +12,12 @@ protocol KyoozOptionsViewControllerDelegate {
     
     var sizeConstraint: SizeConstraint { get }
     var headerView: UIView { get }
+    var sectionDividerPosition: CGFloat { get }
+    var sectionHeight: CGFloat { get }
+    
     func animation(forView view: UIView) -> CAAnimation
+    
+    func headerView(forSection section: Int) -> UIView
     
 }
 
@@ -20,15 +25,14 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
 
 	private typealias This = KyoozOptionsViewController
 	
-    private static let cellHeight:CGFloat = UIScreen.heightClass == .iPhone4 ? 45 : 50
-    private static let sectionHeight:CGFloat = 5
+    static let cellHeight:CGFloat = UIScreen.heightClass == .iPhone4 ? 45 : 50
     
 	private let tableView = UITableView()
     
     private lazy var dividerPath:UIBezierPath = {
         let path = UIBezierPath()
         let inset:CGFloat = 12
-        let midLine = This.sectionHeight/2
+        let midLine = self.delegate.sectionHeight * self.delegate.sectionDividerPosition
         path.moveToPoint(CGPoint(x: inset, y: midLine))
         path.addLineToPoint(CGPoint(x: self.tableView.frame.width - inset, y: midLine))
         return path
@@ -65,7 +69,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
 		let height = This.cellHeight
 			* CGFloat(optionsProviders.reduce(0) { $0 + $1.options.count })
 			+ tableHeaderSize.height
-			+ This.sectionHeight
+			+ delegate.sectionHeight
 			* CGFloat(optionsProviders.count)
 		
 		let width = tableHeaderSize.width
@@ -80,7 +84,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
 		tableContainerView.add(subView: tableView, with: Anchor.standardAnchors)
         tableView.scrollsToTop = false
 		tableView.rowHeight = This.cellHeight
-        tableView.sectionHeaderHeight = This.sectionHeight
+        tableView.sectionHeaderHeight = delegate.sectionHeight
         tableView.delegate = self
         tableView.dataSource = self
 		tableView.layer.cornerRadius = 10
@@ -95,7 +99,10 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
         tableContainerView.layer.shadowRadius = 4.0
         tableContainerView.layer.shadowColor = UIColor.whiteColor().CGColor
         
-        view.backgroundColor = UIColor(white: 0, alpha: 0.40)
+        view.backgroundColor = UIColor(white: 0, alpha: 0)
+        UIView.animateWithDuration(0.2) {
+            self.view.backgroundColor = UIColor(white: 0, alpha: 0.4)
+        }
         
         CATransaction.begin()
         CATransaction.setCompletionBlock() { [tableView = self.tableView] in
@@ -122,8 +129,17 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
             return UITableViewCell()
         }
 		let action = optionsProviders[indexPath.section].options[indexPath.row]
-			
+        
         cell.textLabel?.text = action.title
+        
+        if action.highlighted {
+            let highlightLayer = CALayer()
+            highlightLayer.backgroundColor = ThemeHelper.defaultVividColor.CGColor
+            highlightLayer.cornerRadius = 5
+            highlightLayer.frame = CGRect(x: 10, y: 5, width: delegate.sizeConstraint.maxWidth - 20, height: This.cellHeight - 10)
+            cell.layer.insertSublayer(highlightLayer, below: cell.contentView.layer)
+            cell.textLabel?.font = ThemeHelper.defaultFont(forStyle: .Bold)
+        }
         return cell
 	}
 	
@@ -134,7 +150,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: This.sectionHeight))
+        let view = delegate.headerView(forSection: section)
 
         let dividerPathLayer = CAShapeLayer()
         dividerPathLayer.path = dividerPath.CGPath
@@ -143,6 +159,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
         
         dividerPathLayer.frame = view.bounds
         view.layer.addSublayer(dividerPathLayer)
+        
         return view
     }
     
@@ -152,8 +169,8 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
 private final class KyoozMenuCell : AbstractTableViewCell {
 	
 	static let reuseIdentifier = "\(KyoozMenuCell.self)"
-    static let font = UIFont(name: ThemeHelper.defaultFontName, size: ThemeHelper.defaultFontSize)
-	
+    static let font = ThemeHelper.defaultFont(forStyle: .Normal)
+    
 	override func initialize() {
 		super.initialize()
         backgroundColor = UIColor.clearColor()
