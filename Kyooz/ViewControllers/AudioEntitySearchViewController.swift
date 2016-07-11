@@ -12,7 +12,10 @@ import MediaPlayer
 final class AudioEntitySearchViewController : AudioEntityHeaderViewController, UISearchBarDelegate, DragSource, SearchExecutionControllerDelegate, RowLimitedSectionDelegatorDelegate {
 
     static let instance = AudioEntitySearchViewController()
-
+    
+    override class var shouldAnimateInArtworkDefault: Bool {
+        return false
+    }
     
     var isExpanded = false {
         didSet {

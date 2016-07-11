@@ -49,17 +49,15 @@ class ImageTableViewCell: MediaLibraryTableViewCell{
         detailsLabel.text = strings.isEmpty ? count : strings.joinWithSeparator(" • ")
         if shouldAnimate {
             albumArtwork.alpha = 0
-        }
 		
-        entity.artworkImage(forSize: albumArtwork.frame.size) { [
-			albumArtwork = self.albumArtwork,
-			shouldAnimate = self.shouldAnimate
-		](image) in
-            albumArtwork.alpha = 1
-            if shouldAnimate {
+            entity.artworkImage(forSize: albumArtwork.frame.size) { [albumArtwork = self.albumArtwork](image) in
+                albumArtwork.alpha = 1
                 albumArtwork.layer.addAnimation(ImageTableViewCell.fadeInAnimation, forKey: nil)
+                albumArtwork.image = image
             }
-            albumArtwork.image = image
+        } else {
+            albumArtwork.image = entity.artworkImage(forSize: albumArtwork.frame.size)
+                ?? ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: albumArtwork.frame.size)
         }
     }
     

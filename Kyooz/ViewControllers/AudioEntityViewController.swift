@@ -11,8 +11,11 @@ import MediaPlayer
 
 class AudioEntityViewController: CustomPopableViewController, AudioEntityViewControllerProtocol, AudioTableCellDelegate {
     
-    let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    class var shouldAnimateInArtworkDefault: Bool {
+        return true
+    }
     
+    lazy var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     let tableView:UITableView = UITableView()
 	
 	var sourceData:AudioEntitySourceData = MediaQuerySourceData(filterQuery: LibraryGrouping.Artists.baseQuery, libraryGrouping: LibraryGrouping.Artists)
@@ -24,9 +27,7 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
 		}
 	}
 	
-	var shouldAnimateInArtwork:Bool {
-		return false
-	}
+	lazy var shouldAnimateInArtwork:Bool = self.dynamicType.shouldAnimateInArtworkDefault
     
 	
 	//MARK: - View Lifecycle functions
@@ -78,6 +79,14 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
         tableView.reloadData()
     }
     
+    func reloadTableViewUnanimated() {
+        shouldAnimateInArtwork = false
+        reloadTableViewData()
+        KyoozUtils.doInMainQueueAsync {
+            self.shouldAnimateInArtwork = self.dynamicType.shouldAnimateInArtworkDefault
+        }
+    }
+    
     func reloadSourceData() {
         sourceData.reloadSourceData()
     }
@@ -120,12 +129,12 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     func registerForNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self,
-                                       selector: #selector(self.reloadTableViewData),
+                                       selector: #selector(self.reloadTableViewUnanimated),
                                        name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
                                        object: audioQueuePlayer)
         //TODO: Why does this class need to know about playback state updates?
         notificationCenter.addObserver(self,
-                                       selector: #selector(self.reloadTableViewData),
+                                       selector: #selector(self.reloadTableViewUnanimated),
                                        name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue,
                                        object: audioQueuePlayer)
         

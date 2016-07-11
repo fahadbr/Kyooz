@@ -23,15 +23,10 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	var isBaseLevel:Bool = false
 	
-	override var shouldAnimateInArtwork: Bool {
-		return _shouldAnimateInArtwork
-	}
-	
 	var subGroups:[LibraryGrouping] {
 		return isBaseLevel ? LibraryGrouping.allMusicGroupings : sourceData.parentGroup?.subGroupsForNextLevel ?? []
 	}
 	
-	private var _shouldAnimateInArtwork:Bool = false
 	
 	private var reuseIdentifier:String {
 		if useCollapsableHeader && sourceData.parentGroup !== LibraryGrouping.Playlists {
@@ -77,14 +72,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		tableFooterView.text = "\(count) \(groupName)"
 		tableView.tableFooterView = tableFooterView
 	}
-    
-    override func reloadTableViewData() {
-		_shouldAnimateInArtwork = false
-        super.reloadTableViewData()
-		KyoozUtils.doInMainQueueAsync() {
-			self._shouldAnimateInArtwork = true
-		}
-    }
 	
     override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
 		if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
@@ -153,8 +140,10 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
     override func registerForNotifications() {
         super.registerForNotifications()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioEntityLibraryViewController.reloadAllData),
-                                                         name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(self.reloadAllData),
+                                                         name: KyoozPlaylistManager.PlaylistSetUpdate,
+                                                         object: KyoozPlaylistManager.instance)
     }
 	
 }
