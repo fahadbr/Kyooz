@@ -123,6 +123,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		addChildViewController(searchNavigationController)
         view.sendSubviewToBack(searchControllerView)
         searchNavigationController.didMoveToParentViewController(self)
+        
+        KyoozUtils.doInMainQueueAfterDelay(2, block: showWhatsNew)
     }
 	
     func dismissTutorials(targetPosition:Position) {
@@ -142,23 +144,28 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	
 	func showTutorials() {
 		if centerPanelPosition == .Center && !rootViewController.pullableViewExpanded {
-			let presentedTutorial = TutorialManager.instance.presentUnfulfilledTutorials([
+			TutorialManager.instance.presentUnfulfilledTutorials([
 				.GestureActivatedSearch,
 				.GestureToViewQueue,
 				.DragAndDrop
 			])
-			
-			if !presentedTutorial {
-				showWhatsNew()
-			}
 			
 		}
 	}
     
     func showWhatsNew() {
         do {
+            let version = KyoozUtils.appVersion ?? "1.0"
+            let whatsNewVersion = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.WhatsNewVersionShown)
+            
+            guard whatsNewVersion == nil || whatsNewVersion! != version else {
+                return
+            }
+            
             let vc = try whatsNewViewController()
             KyoozUtils.showMenuViewController(vc, presentingVC: self)
+            
+            NSUserDefaults.standardUserDefaults().setObject(version, forKey: UserDefaultKeys.WhatsNewVersionShown)
         } catch let error {
             Logger.error("Couldn't show the whats new controller: \(error.description)")
         }

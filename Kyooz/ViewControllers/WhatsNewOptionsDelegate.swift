@@ -8,12 +8,24 @@
 
 import UIKit
 
+private let appString = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1115959967&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"
+
 func whatsNewViewController() throws -> KyoozOptionsViewController {
+    
 	let op = BasicKyoozOptionsProvider(options:
         KyoozMenuAction(title: "Rate us in the AppStore", highlighted: true) {
+            
+            guard let url = NSURL(string: appString) else {
+                KyoozUtils.showPopupError(withTitle: "Unable to open AppStore page for Kyooz",
+                    withMessage: nil,
+                    presentationVC: nil)
+                return
+            }
+            
+            UIApplication.sharedApplication().openURL(url)
 			return
-		},
-	   KyoozMenuAction(title: "No thanks")
+            
+		},KyoozMenuAction(title: "No thanks")
 	)
 	
 	
@@ -49,7 +61,7 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     }
     
     var headerView: UIView {
-        let versionNumber = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String
+        let versionNumber = KyoozUtils.appVersion
         let version = versionNumber == nil ? "this Version" : "Version " + versionNumber!
         let whatsNewLabel = initLabel(text: "Whats New in \(version)",
                                       font: This.bigFont)

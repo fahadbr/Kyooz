@@ -99,10 +99,14 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
         tableContainerView.layer.shadowRadius = 4.0
         tableContainerView.layer.shadowColor = UIColor.whiteColor().CGColor
         
-        view.backgroundColor = UIColor(white: 0, alpha: 0)
-        UIView.animateWithDuration(0.2) {
-            self.view.backgroundColor = UIColor(white: 0, alpha: 0.4)
-        }
+        view.layer.backgroundColor = UIColor(white: 0, alpha: 0.4).CGColor
+        automaticallyAdjustsScrollViewInsets = false
+        
+        let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
+        colorAnimation.fromValue = UIColor.clearColor().CGColor
+        colorAnimation.duration = 0.2
+        colorAnimation.fillMode = kCAFillModeBackwards
+        
         
         CATransaction.begin()
         CATransaction.setCompletionBlock() { [tableView = self.tableView] in
@@ -110,6 +114,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
                 tableView.flashScrollIndicators()
             }
         }
+        view.layer.addAnimation(colorAnimation, forKey: nil)
         tableContainerView.layer.addAnimation(delegate.animation(forView: view), forKey: nil)
         CATransaction.commit()
     }
