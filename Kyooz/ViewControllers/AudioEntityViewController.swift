@@ -52,7 +52,7 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        reloadTableViewData()
+        reloadTableViewUnanimated()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -72,7 +72,7 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     //MARK: - Class functions
     func reloadAllData() {
         reloadSourceData()
-        reloadTableViewData()
+        reloadTableViewUnanimated()
     }
     
     func reloadTableViewData() {

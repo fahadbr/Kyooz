@@ -27,6 +27,7 @@ struct ApplicationDefaults {
     }()
     
     static func evaluateMinimumFetchInterval() {
+		
         if audioQueuePlayer is DRMAudioQueuePlayer && LastFmScrobbler.instance.validSessionObtained {
             Logger.debug("FETCH INTERVAL: setting minimum fetch interval")
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -35,6 +36,13 @@ struct ApplicationDefaults {
             UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
     }
+	
+	static func initializeData() {
+		#if MOCK_DATA
+			Logger.debug("launching with test data")
+			TestDataGenerator.generateData()
+		#endif
+	}
 	
 	
 }

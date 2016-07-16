@@ -58,7 +58,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         
         KyoozUtils.doInMainQueueAsync() {
             self.applyDataSourceAndDelegate()
-            self.reloadAllData()
+			self.reloadTableViewData()
         }
     }
 	
@@ -112,7 +112,8 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         
 		tableView.contentOffset.y = -tableView.contentInset.top
 		applyDataSourceAndDelegate()
-		reloadAllData()
+		reloadSourceData()
+		reloadTableViewData()
 	}
 	
 	

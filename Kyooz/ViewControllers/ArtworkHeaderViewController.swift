@@ -149,8 +149,13 @@ final class ArtworkHeaderViewController : HeaderViewController {
         guard keyPath != nil && keyPath! == observationKey else { return }
 		
 		func adjustGradientLocation(expandedFraction expandedFraction:CGFloat, invertedFraction:CGFloat) {
-			let clearGradiantStart = min(self.dynamicType.clearGradiantDefaultLocations.start * expandedFraction, self.dynamicType.clearGradiantDefaultLocations.start) //ranges from 25 -> 0 as view collapses
-			let clearGradiantEnd = max((0.25 * invertedFraction) + self.dynamicType.clearGradiantDefaultLocations.end, self.dynamicType.clearGradiantDefaultLocations.end) //ranges from 75 -> 100 as view collapses
+			let locations = self.dynamicType.clearGradiantDefaultLocations
+			
+			//ranges from 25 -> 0 as view collapses
+			let clearGradiantStart = min(locations.start * expandedFraction, locations.start)
+			
+			//ranges from 75 -> 100 as view collapses
+			let clearGradiantEnd = max((0.25 * invertedFraction) + locations.end, locations.end)
 			gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
 		}
 		
@@ -168,18 +173,31 @@ final class ArtworkHeaderViewController : HeaderViewController {
 		
 		gradiantLayer.frame = view.bounds
 		
-		if expandedFraction >= 1 {
-			let overexpandedFraction = (expandedFraction - 1) * 5.0/2.0
-			let invertedOverexpandedFraction = 1 - overexpandedFraction
-			centerViewController.view.alpha = invertedOverexpandedFraction
-			leftButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
-			selectButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
-			headerTitleLabel.alpha = invertedOverexpandedFraction
-			gradiantLayer.opacity = Float(invertedOverexpandedFraction)
-			adjustGradientLocation(expandedFraction: invertedOverexpandedFraction, invertedFraction: overexpandedFraction)
-			imageView.layer.transform = CATransform3DMakeTranslation(0, overexpandedFraction * 0.2 * imageView.frame.height, 0)
-			return
+		if expandedFraction > 1.0{
+			let factor:CGFloat = 5.0/2.0
+			var overexpandedFraction = (expandedFraction - 1) * factor
+			imageView.layer.transform = CATransform3DMakeTranslation(0,
+			                                                         overexpandedFraction * 0.2 * imageView.frame.height,
+			                                                         0)
+			
+			if expandedFraction >= 1.2 {
+				overexpandedFraction = expandedFraction - (0.2 * factor)
+				let invertedOverexpandedFraction = 1 - overexpandedFraction
+				centerViewController.view.alpha = invertedOverexpandedFraction
+				leftButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+				selectButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+				headerTitleLabel.alpha = invertedOverexpandedFraction
+				gradiantLayer.opacity = Float(invertedOverexpandedFraction)
+				
+				adjustGradientLocation(expandedFraction: invertedOverexpandedFraction,
+				                       invertedFraction: overexpandedFraction)
+				
+
+				return
+			}
 		}
+		
+
         
         detailsLabel1?.alpha = expandedFraction
         
