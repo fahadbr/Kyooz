@@ -700,7 +700,6 @@
 		0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndexEntry.swift; sourceTree = "<group>"; };
 		0BF917471BF8F36A001AC802 /* KyoozUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozUtils.swift; sourceTree = "<group>"; };
 		1001732F1D39C1AF0058B187 /* Kyooz_Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kyooz_Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		100173301D39C1AF0058B187 /* Kyooz copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Kyooz copy-Info.plist"; path = "/Users/fahadriaz/Documents/xcode/Kyooz/Kyooz copy-Info.plist"; sourceTree = "<absolute>"; };
 		10088C971D1C9B2800AAC16F /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsViewController.swift; sourceTree = "<group>"; };
 		10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhatsNewOptionsDelegate.swift; sourceTree = "<group>"; };
@@ -820,7 +819,6 @@
 				100A8BC31C54423B009FAB17 /* KyoozTests */,
 				10B0690C1D372DEE00CCDCA6 /* KyoozScreenshotUITests */,
 				0B13D9BC1AE6F80E00CC5C01 /* Products */,
-				100173301D39C1AF0058B187 /* Kyooz copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
