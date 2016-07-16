@@ -38,6 +38,16 @@
                ReferencedContainer = "container:Kyooz.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "10B0690A1D372DEE00CCDCA6"
+               BuildableName = "KyoozScreenshotUITests.xctest"
+               BlueprintName = "KyoozScreenshotUITests"
+               ReferencedContainer = "container:Kyooz.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

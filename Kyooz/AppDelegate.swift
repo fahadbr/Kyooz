@@ -38,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         initMainQueueChecking()
+		ApplicationDefaults.initializeData()
         return true
     }
 
