@@ -143,6 +143,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	}
 	
 	func showTutorials() {
+        guard !KyoozUtils.screenshotUITesting else { return }
+        
 		if centerPanelPosition == .Center && !rootViewController.pullableViewExpanded {
 			TutorialManager.instance.presentUnfulfilledTutorials([
 				.GestureActivatedSearch,
@@ -154,6 +156,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	}
     
     func showWhatsNew() {
+        guard !KyoozUtils.screenshotUITesting else { return }
+        
         do {
             let version = KyoozUtils.appVersion ?? "1.0"
             let whatsNewVersion = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.WhatsNewVersionShown)
