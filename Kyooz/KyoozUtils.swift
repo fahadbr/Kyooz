@@ -55,6 +55,14 @@ struct KyoozUtils {
         #endif
     }
     
+    static var screenshotUITesting: Bool {
+        #if MOCK_DATA
+            return NSProcessInfo.processInfo().environment[KyoozConstants.screenShotUITestingEntry.key] != nil
+        #else
+            return false
+        #endif
+    }
+    
     static var appVersion: String? {
         return NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String
     }

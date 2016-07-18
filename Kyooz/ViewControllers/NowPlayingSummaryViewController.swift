@@ -220,7 +220,9 @@ final class NowPlayingSummaryViewController: UIViewController {
 		
         let goToAlbumButton = createAndConfigureButton("ALBUM", selector: #selector(self.goToAlbum(_:)))
         let goToArtistButton = createAndConfigureButton("ARTIST", selector: #selector(self.goToArtist(_:)))
-        let addToPlaylistButton = createAndConfigureButton("ADD TO PLAYLIST", selector: #selector(self.addToPlaylist(_:)))
+        let addToPlaylistButton = createAndConfigureButton(UIScreen.widthClass == .iPhone345 ? "ADD TO.." : "ADD TO PLAYLIST",
+                                                           selector: #selector(self.addToPlaylist(_:)))
+        
 		let hideButton = createAndConfigureButton("HIDE", selector: #selector(self.collapseViewController(_:)))
 		
 		let goToStack = stackViewWrapperForViews([goToAlbumButton, goToArtistButton, addToPlaylistButton])
