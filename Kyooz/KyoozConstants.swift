@@ -19,6 +19,6 @@ struct KyoozConstants {
 	static let selectAllString = "SELECT ALL"
 	static let deselectAllString = "DESELECT ALL"
     
-    static let screenShotUITestingEntry = (key: "SCREENSHOT_UI_TESTING", value: "TRUE")
+    static let screenShotUITesting = "-FASTLANE_SNAPSHOT"
 	
 }

@@ -33,7 +33,7 @@ class TestDataGenerator {
         var tracks = [AudioTrackDTO]()
         
         for (k,artistName) in artistNames.enumerate() {
-            let noOfAlbums = KyoozUtils.randomNumberInRange(1...5)
+            let noOfAlbums = numberOfAlbumsToUse ?? KyoozUtils.randomNumberInRange(1...5)
             for j in 1...noOfAlbums {
                 let albumName = albumNames[(k + j) % albumNames.count] + " \(artistName)"
                 

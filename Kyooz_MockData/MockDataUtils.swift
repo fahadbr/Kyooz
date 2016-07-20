@@ -8,4 +8,10 @@
 
 import Foundation
 
-var numberOfAlbumsToUse
+
+var numberOfAlbumsToUse: Int? {
+	if let value = NSProcessInfo.processInfo()[.numberOfAlbums] {
+		return Int(value)
+	}
+	return nil
+}
