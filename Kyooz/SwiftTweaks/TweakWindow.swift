@@ -11,6 +11,17 @@ import UIKit
 /// A UIWindow that handles the presentation and dismissal of a TweaksViewController automatically.
 /// By default, the SwiftTweaks UI appears when you shake your device - but you can supply an alternate gesture, too!
 /// If you'd prefer to not use this, you can also init and present a TweaksViewController yourself.
+public func ==(lhs: TweakWindow.GestureType, rhs: TweakWindow.GestureType) -> Bool {
+    switch (lhs, rhs) {
+    case (.Shake, .Shake):
+        return true
+    case (.Gesture, .Gesture):
+        return true
+    default:
+        return false
+    }
+}
+
 @objc public final class TweakWindow: UIWindow {
 
 	public enum GestureType {
@@ -83,7 +94,7 @@ import UIKit
 
 	// MARK: Shaking & Gestures
 	public override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent?) {
-		if motion == .MotionShake {
+		if motion == .MotionShake && gestureType == .Shake {
 			shaking = true
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(TweakWindow.shakeWindowTimeInterval * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
 				if self.shouldPresentTweaks {
@@ -96,7 +107,7 @@ import UIKit
 	}
 
 	public override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
-		if motion == .MotionShake {
+		if motion == .MotionShake && gestureType == .Shake {
 			shaking = false
 		}
 
