@@ -173,31 +173,23 @@ final class ArtworkHeaderViewController : HeaderViewController {
 		
 		gradiantLayer.frame = view.bounds
 		
-		if expandedFraction > 1.0{
-			let factor:CGFloat = 5.0/2.0
-			var overexpandedFraction = (expandedFraction - 1) * factor
-			imageView.layer.transform = CATransform3DMakeTranslation(0,
-			                                                         overexpandedFraction * 0.2 * imageView.frame.height,
-			                                                         0)
-			
-			if expandedFraction >= 1.2 {
-				overexpandedFraction = expandedFraction - (0.2 * factor)
-				let invertedOverexpandedFraction = 1 - overexpandedFraction
-				centerViewController.view.alpha = invertedOverexpandedFraction
-				leftButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
-				selectButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
-				headerTitleLabel.alpha = invertedOverexpandedFraction
-				gradiantLayer.opacity = Float(invertedOverexpandedFraction)
-				
-				adjustGradientLocation(expandedFraction: invertedOverexpandedFraction,
-				                       invertedFraction: overexpandedFraction)
-				
-
-				return
-			}
-		}
-		
-
+        if expandedFraction >= 1 {
+            var overexpandedFraction = (expandedFraction - 1) * 5.0/2.0
+            var invertedOverexpandedFraction = 1 - overexpandedFraction
+            
+            imageView.layer.transform = CATransform3DMakeTranslation(0, overexpandedFraction * 0.2 * imageView.frame.height, 0)
+            if expandedFraction >= 1.2 {
+                overexpandedFraction = (expandedFraction - 1.2) * 5.0/2.0
+                invertedOverexpandedFraction = 1 - overexpandedFraction
+                centerViewController.view.alpha = invertedOverexpandedFraction
+                leftButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+                selectButton.alpha = invertedOverexpandedFraction * ThemeHelper.defaultButtonTextAlpha
+                headerTitleLabel.alpha = invertedOverexpandedFraction
+                gradiantLayer.opacity = Float(invertedOverexpandedFraction)
+                adjustGradientLocation(expandedFraction: invertedOverexpandedFraction, invertedFraction: overexpandedFraction)
+            }
+            return
+        }
         
         detailsLabel1?.alpha = expandedFraction
         
