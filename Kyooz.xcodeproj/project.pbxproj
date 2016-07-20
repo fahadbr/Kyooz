@@ -428,6 +428,8 @@
 		100173291D39C1AF0058B187 /* ChangeLog.html in Resources */ = {isa = PBXBuildFile; fileRef = 0B2064CA1D29C33900725CB7 /* ChangeLog.html */; };
 		1001732A1D39C1AF0058B187 /* MenuDotsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B055A241C4C6AB0007CB60A /* MenuDotsView.xib */; };
 		1001732B1D39C1AF0058B187 /* PlaylistTypeDescriptions.html in Resources */ = {isa = PBXBuildFile; fileRef = 0B1DE1471CEFE8D100B72ADD /* PlaylistTypeDescriptions.html */; };
+		100173341D3EDD180058B187 /* MockDataConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100173331D3EDD180058B187 /* MockDataConstants.swift */; };
+		100173351D3EDD1D0058B187 /* MockDataConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100173331D3EDD180058B187 /* MockDataConstants.swift */; };
 		10088C981D1C9B2800AAC16F /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C971D1C9B2800AAC16F /* Playlist.swift */; };
 		10088C9A1D25D54100AAC16F /* KyoozOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */; };
 		10088C9C1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */; };
@@ -704,6 +706,7 @@
 		0BF917431BF8124E001AC802 /* SearchIndexEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchIndexEntry.swift; sourceTree = "<group>"; };
 		0BF917471BF8F36A001AC802 /* KyoozUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozUtils.swift; sourceTree = "<group>"; };
 		1001732F1D39C1AF0058B187 /* Kyooz_MockData.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kyooz_MockData.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		100173331D3EDD180058B187 /* MockDataConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDataConstants.swift; sourceTree = "<group>"; };
 		10088C971D1C9B2800AAC16F /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		10088C991D25D54100AAC16F /* KyoozOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozOptionsViewController.swift; sourceTree = "<group>"; };
 		10088C9B1D25D5C000AAC16F /* WhatsNewOptionsDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhatsNewOptionsDelegate.swift; sourceTree = "<group>"; };
@@ -1140,6 +1143,7 @@
 				0B9F8A661D3A8D7600E6B453 /* FixtureData */,
 				0B9F8A6C1D3A8D7600E6B453 /* SupportingFiles */,
 				0B9F8A6B1D3A8D7600E6B453 /* info.plist */,
+				100173331D3EDD180058B187 /* MockDataConstants.swift */,
 				0B3DB7CC1D3C0100002B655D /* MockDataUtils.swift */,
 			);
 			path = Kyooz_MockData;
@@ -2003,6 +2007,7 @@
 				100172C61D39C1AF0058B187 /* PlaybackProgressViewController.swift in Sources */,
 				100172C71D39C1AF0058B187 /* SearchExecutionController.swift in Sources */,
 				100172C81D39C1AF0058B187 /* MenuDotsView.swift in Sources */,
+				100173341D3EDD180058B187 /* MockDataConstants.swift in Sources */,
 				100172C91D39C1AF0058B187 /* TweakViewData.swift in Sources */,
 				100172CA1D39C1AF0058B187 /* AlbumTrackTableViewCell.swift in Sources */,
 				100172CB1D39C1AF0058B187 /* UserDefaultKeys.swift in Sources */,
@@ -2090,6 +2095,7 @@
 				10B0690E1D372DEE00CCDCA6 /* KyoozScreenshotUITests.swift in Sources */,
 				0BA3E5491D3BFEB1004B977C /* KyoozConstants.swift in Sources */,
 				10B069161D372E9B00CCDCA6 /* SnapshotHelper.swift in Sources */,
+				100173351D3EDD1D0058B187 /* MockDataConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

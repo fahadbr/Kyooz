@@ -57,7 +57,8 @@ struct KyoozUtils {
     
     static var screenshotUITesting: Bool {
         #if MOCK_DATA
-            return NSProcessInfo.processInfo().environment[KyoozConstants.screenShotUITestingEntry.key] != nil
+//			return NSProcessInfo.processInfo().arguments.contains(KyoozConstants.screenShotUITesting)
+			return true
         #else
             return false
         #endif
