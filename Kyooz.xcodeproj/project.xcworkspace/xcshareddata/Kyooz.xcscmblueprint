@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BA0A8AF46EC749F04CE5D04DF7B6951E1FC97D51",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7FC9B41B7D8F26CED42C83B4780B5829912EBDA2" : 0,
+    "BA0A8AF46EC749F04CE5D04DF7B6951E1FC97D51" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D40BFB63-1411-4200-B133-A22A153FF866",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7FC9B41B7D8F26CED42C83B4780B5829912EBDA2" : "SwiftTweaks\/",
+    "BA0A8AF46EC749F04CE5D04DF7B6951E1FC97D51" : "Kyooz\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Kyooz",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Kyooz.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Khan\/SwiftTweaks.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7FC9B41B7D8F26CED42C83B4780B5829912EBDA2"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "\/Users\/fahadr\/Dropbox\/git\/Kyooz.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BA0A8AF46EC749F04CE5D04DF7B6951E1FC97D51"
+    }
+  ]
+}
