@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackProgressObserver, UIAccessi {
+final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackProgressObserver {
 	
 	private let menuButton = MenuDotsView()
 	private let progressView = UIProgressView()
