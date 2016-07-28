@@ -13,13 +13,15 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     static let instance:RootViewController = RootViewController()
     
-    static let nowPlayingViewCollapsedOffset:CGFloat = NowPlayingSummaryViewController.CollapsedHeight
+	static var miniPlayerHeight:CGFloat {
+		return NowPlayingViewController.miniPlayerHeight
+	}
 
     var pullableViewExpanded:Bool  {
         get {
-            return nowPlayingSummaryViewController.expanded
+            return nowPlayingViewController.expanded
         } set {
-            nowPlayingSummaryViewController.expanded = newValue
+            nowPlayingViewController.expanded = newValue
             nowPlayingTapGestureRecognizer.enabled = !newValue
             if newValue {
                 TutorialManager.instance.dimissTutorials([.DragAndDrop], action: .DismissUnfulfilled)
@@ -34,7 +36,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     var libraryNavigationController:UINavigationController!
     private var lncBottomConstraint:NSLayoutConstraint!
     
-    var nowPlayingSummaryViewController:NowPlayingSummaryViewController!
+    var nowPlayingViewController:NowPlayingViewController!
     
     var nowPlayingTapGestureRecognizer:UITapGestureRecognizer!
     var nowPlayingPanGestureRecognizer:UIPanGestureRecognizer!
@@ -64,7 +66,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 		
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
-        collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(self.dynamicType.nowPlayingViewCollapsedOffset).active = true
+        collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(self.dynamicType.miniPlayerHeight).active = true
         collapsedBarLayoutGuide.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
         collapsedBarLayoutGuide.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         collapsedBarLayoutGuide.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
@@ -86,13 +88,13 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         libraryView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
         libraryView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
         
-        nowPlayingSummaryViewController = NowPlayingSummaryViewController()
+        nowPlayingViewController = NowPlayingViewController()
         
-        let nowPlayingView = nowPlayingSummaryViewController.view
+        let nowPlayingView = nowPlayingViewController.view
         view.insertSubview(nowPlayingView, atIndex: 0)
         view.bringSubviewToFront(nowPlayingView)
-        addChildViewController(nowPlayingSummaryViewController)
-        nowPlayingSummaryViewController.didMoveToParentViewController(self)
+        addChildViewController(nowPlayingViewController)
+        nowPlayingViewController.didMoveToParentViewController(self)
         nowPlayingView.translatesAutoresizingMaskIntoConstraints = false
         collapsedConstraint = nowPlayingView.topAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor)
         collapsedConstraint.active = true
@@ -104,11 +106,11 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 
         nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(RootViewController.handlePanGesture(_:)))
         nowPlayingPanGestureRecognizer.delegate = self
-        nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingPanGestureRecognizer)
+        nowPlayingViewController.view.addGestureRecognizer(self.nowPlayingPanGestureRecognizer)
         
         nowPlayingTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RootViewController.handleTapGesture(_:)))
         nowPlayingTapGestureRecognizer.delegate = self
-        nowPlayingSummaryViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
+        nowPlayingViewController.view.addGestureRecognizer(self.nowPlayingTapGestureRecognizer)
     }
     
     //MARK: - Navigation controller delegate
@@ -139,7 +141,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         
         let warningView = warningVC.view
         warningView.frame = CGRect(origin: collapsedBarLayoutGuide.layoutFrame.origin, size: CGSize(width: view.frame.width, height: 0))
-        view.insertSubview(warningView, belowSubview: nowPlayingSummaryViewController.view)
+        view.insertSubview(warningView, belowSubview: nowPlayingViewController.view)
         warningViewController = warningVC
         
         warningView.translatesAutoresizingMaskIntoConstraints = false
@@ -183,7 +185,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     
     func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
         libraryNavigationController.view.userInteractionEnabled = shouldEnable
-        nowPlayingSummaryViewController.view.userInteractionEnabled = shouldEnable
+        nowPlayingViewController.view.userInteractionEnabled = shouldEnable
         sourceTableView?.scrollsToTop = shouldEnable
     }
     
@@ -204,7 +206,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
                 recognizer.setTranslation(CGPointZero, inView: view)
             }
         case .Ended, .Cancelled:
-            if(nowPlayingSummaryViewController != nil) {
+            if(nowPlayingViewController != nil) {
                 if(isDraggingUpward) {
                     animatePullablePanel(shouldExpand: (currenyYPos < self.view.frame.height * 0.80))
                 } else {
@@ -250,7 +252,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     override func childViewControllerForStatusBarHidden() -> UIViewController? {
-        return nowPlayingSummaryViewController
+        return nowPlayingViewController
     }
     
     

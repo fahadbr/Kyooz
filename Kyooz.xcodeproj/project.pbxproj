@@ -22,8 +22,8 @@
 		0B13DA121AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */; };
 		0B13DA131AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */; };
 		0B13DA141AE6FA9A00CC5C01 /* TempDataDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */; };
-		0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */; };
-		0B13DA191AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */; };
+		0B13DA181AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA021AE6FA9A00CC5C01 /* NowPlayingViewController.swift */; };
+		0B13DA191AE6FA9A00CC5C01 /* PlayQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA031AE6FA9A00CC5C01 /* PlayQueueViewController.swift */; };
 		0B13DA1A1AE6FA9A00CC5C01 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */; };
 		0B13DA1B1AE6FA9A00CC5C01 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA061AE6FA9A00CC5C01 /* ImageTableViewCell.swift */; };
 		0B13DA1C1AE6FA9A00CC5C01 /* ImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B13DA071AE6FA9A00CC5C01 /* ImageTableViewCell.xib */; };
@@ -272,7 +272,7 @@
 		100172861D39C1AF0058B187 /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2937561C87E96200374A3C /* HeaderViewController.swift */; };
 		100172871D39C1AF0058B187 /* CancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C6E1B1BFE5700626810 /* CancelView.swift */; };
 		100172881D39C1AF0058B187 /* EdgeInsetsTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A0D1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift */; };
-		100172891D39C1AF0058B187 /* NowPlayingSummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */; };
+		100172891D39C1AF0058B187 /* NowPlayingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA021AE6FA9A00CC5C01 /* NowPlayingViewController.swift */; };
 		1001728A1D39C1AF0058B187 /* PlayCountIteratorOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA7F6EA1C4A93320062A201 /* PlayCountIteratorOperation.swift */; };
 		1001728B1D39C1AF0058B187 /* MediaCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7070301B97C1600000673E /* MediaCollectionTableViewCell.swift */; };
 		1001728C1D39C1AF0058B187 /* AudioEntityPlainHeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B9E10B1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift */; };
@@ -308,7 +308,7 @@
 		100172AA1D39C1AF0058B187 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A081D31A1BF00E6B453 /* AppTheme.swift */; };
 		100172AB1D39C1AF0058B187 /* ComparableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B068F91D270FDA00CCDCA6 /* ComparableExtension.swift */; };
 		100172AC1D39C1AF0058B187 /* ShadowTweakTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A141D31A1BF00E6B453 /* ShadowTweakTemplate.swift */; };
-		100172AD1D39C1AF0058B187 /* NowPlayingBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FD1CB877A2008402BB /* NowPlayingBarViewController.swift */; };
+		100172AD1D39C1AF0058B187 /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FD1CB877A2008402BB /* MiniPlayerViewController.swift */; };
 		100172AE1D39C1AF0058B187 /* ApplicationDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA091AE6FA9A00CC5C01 /* ApplicationDefaults.swift */; };
 		100172AF1D39C1AF0058B187 /* HeaderLabelStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6E7C91D08E2CD00E1CD86 /* HeaderLabelStackController.swift */; };
 		100172B01D39C1AF0058B187 /* PlayCountIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9016051C4ABFFD00B1ACD1 /* PlayCountIterator.swift */; };
@@ -377,7 +377,7 @@
 		100172F01D39C1AF0058B187 /* Tutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108DBA0C1CE537990013E990 /* Tutorial.swift */; };
 		100172F11D39C1AF0058B187 /* AudioTrackCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDA6CF71D249F1C007D964F /* AudioTrackCollection.swift */; };
 		100172F21D39C1AF0058B187 /* ImageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA651AED584700CC5C01 /* ImageContainer.swift */; };
-		100172F31D39C1AF0058B187 /* NowPlayingQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */; };
+		100172F31D39C1AF0058B187 /* PlayQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B13DA031AE6FA9A00CC5C01 /* PlayQueueViewController.swift */; };
 		100172F41D39C1AF0058B187 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF917401BF7FD7D001AC802 /* SearchIndex.swift */; };
 		100172F51D39C1AF0058B187 /* TweakCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9F8A1E1D31A1BF00E6B453 /* TweakCollectionViewController.swift */; };
 		100172F61D39C1AF0058B187 /* CGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B081B9388BD00004A1B /* CGUtils.swift */; };
@@ -469,7 +469,7 @@
 		10DB53CD1CB31DA40041B179 /* PlaybackProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB53CC1CB31DA40041B179 /* PlaybackProgressViewController.swift */; };
 		10DB53CF1CB5C28F0041B179 /* AbstractPlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB53CE1CB5C28F0041B179 /* AbstractPlaybackViewController.swift */; };
 		10DB78FC1CB87770008402BB /* PlaybackControlsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FB1CB87770008402BB /* PlaybackControlsViewController.swift */; };
-		10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FD1CB877A2008402BB /* NowPlayingBarViewController.swift */; };
+		10DB78FE1CB877A2008402BB /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FD1CB877A2008402BB /* MiniPlayerViewController.swift */; };
 		10DB79001CBAF53E008402BB /* NowPlayingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */; };
 		10DB79041CC6E420008402BB /* KyoozNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */; };
 		10E0FBDF1D08DAF700B247FD /* SubGroupButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */; };
@@ -526,8 +526,8 @@
 		0B13D9FA1AE6FA9A00CC5C01 /* NowPlayingInfoHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingInfoHelper.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FB1AE6FA9A00CC5C01 /* AudioQueuePlayerImpl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AudioQueuePlayerImpl.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13D9FD1AE6FA9A00CC5C01 /* TempDataDAO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TempDataDAO.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingSummaryViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingQueueViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0B13DA021AE6FA9A00CC5C01 /* NowPlayingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NowPlayingViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		0B13DA031AE6FA9A00CC5C01 /* PlayQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PlayQueueViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0B13DA061AE6FA9A00CC5C01 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ImageTableViewCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0B13DA071AE6FA9A00CC5C01 /* ImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -750,7 +750,7 @@
 		10DB53CC1CB31DA40041B179 /* PlaybackProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackProgressViewController.swift; sourceTree = "<group>"; };
 		10DB53CE1CB5C28F0041B179 /* AbstractPlaybackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractPlaybackViewController.swift; sourceTree = "<group>"; };
 		10DB78FB1CB87770008402BB /* PlaybackControlsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackControlsViewController.swift; sourceTree = "<group>"; };
-		10DB78FD1CB877A2008402BB /* NowPlayingBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingBarViewController.swift; sourceTree = "<group>"; };
+		10DB78FD1CB877A2008402BB /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
 		10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingPageViewController.swift; sourceTree = "<group>"; };
 		10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozNavigationViewController.swift; sourceTree = "<group>"; };
 		10E0FBDE1D08DAF700B247FD /* SubGroupButtonController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubGroupButtonController.swift; sourceTree = "<group>"; };
@@ -915,7 +915,7 @@
 				0B0FE16E1C40B8F7001E4ABE /* VC Helpers */,
 				0B13DA5E1AEB3E3500CC5C01 /* ContainerViewController.swift */,
 				10DB79031CC6E420008402BB /* KyoozNavigationViewController.swift */,
-				0B13DA031AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift */,
+				0B13DA031AE6FA9A00CC5C01 /* PlayQueueViewController.swift */,
 				0B13DA041AE6FA9A00CC5C01 /* RootViewController.swift */,
 			);
 			path = ViewControllers;
@@ -1436,9 +1436,9 @@
 			isa = PBXGroup;
 			children = (
 				10DB53CE1CB5C28F0041B179 /* AbstractPlaybackViewController.swift */,
-				10DB78FD1CB877A2008402BB /* NowPlayingBarViewController.swift */,
+				10DB78FD1CB877A2008402BB /* MiniPlayerViewController.swift */,
 				10DB78FF1CBAF53E008402BB /* NowPlayingPageViewController.swift */,
-				0B13DA021AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift */,
+				0B13DA021AE6FA9A00CC5C01 /* NowPlayingViewController.swift */,
 				10DB53CC1CB31DA40041B179 /* PlaybackProgressViewController.swift */,
 				10DB78FB1CB87770008402BB /* PlaybackControlsViewController.swift */,
 			);
@@ -1732,7 +1732,7 @@
 				0B2937571C87E96200374A3C /* HeaderViewController.swift in Sources */,
 				0B476C6F1B1BFE5700626810 /* CancelView.swift in Sources */,
 				0B9F8A3A1D31A1BF00E6B453 /* EdgeInsetsTweakTemplate.swift in Sources */,
-				0B13DA181AE6FA9A00CC5C01 /* NowPlayingSummaryViewController.swift in Sources */,
+				0B13DA181AE6FA9A00CC5C01 /* NowPlayingViewController.swift in Sources */,
 				0BA7F6EB1C4A93320062A201 /* PlayCountIteratorOperation.swift in Sources */,
 				0B7070311B97C1600000673E /* MediaCollectionTableViewCell.swift in Sources */,
 				10B9E10C1CD41BF00058F44E /* AudioEntityPlainHeaderViewController.swift in Sources */,
@@ -1768,7 +1768,7 @@
 				0B9F8A351D31A1BF00E6B453 /* AppTheme.swift in Sources */,
 				10B068FA1D270FDA00CCDCA6 /* ComparableExtension.swift in Sources */,
 				0B9F8A411D31A1BF00E6B453 /* ShadowTweakTemplate.swift in Sources */,
-				10DB78FE1CB877A2008402BB /* NowPlayingBarViewController.swift in Sources */,
+				10DB78FE1CB877A2008402BB /* MiniPlayerViewController.swift in Sources */,
 				0B13DA1E1AE6FA9A00CC5C01 /* ApplicationDefaults.swift in Sources */,
 				0BA6E7CA1D08E2CD00E1CD86 /* HeaderLabelStackController.swift in Sources */,
 				0B9016061C4ABFFD00B1ACD1 /* PlayCountIterator.swift in Sources */,
@@ -1837,7 +1837,7 @@
 				108DBA0D1CE537990013E990 /* Tutorial.swift in Sources */,
 				0BDA6CF81D249F1C007D964F /* AudioTrackCollection.swift in Sources */,
 				0B13DA661AED584700CC5C01 /* ImageContainer.swift in Sources */,
-				0B13DA191AE6FA9A00CC5C01 /* NowPlayingQueueViewController.swift in Sources */,
+				0B13DA191AE6FA9A00CC5C01 /* PlayQueueViewController.swift in Sources */,
 				0BF917411BF7FD7D001AC802 /* SearchIndex.swift in Sources */,
 				0B9F8A4A1D31A1BF00E6B453 /* TweakCollectionViewController.swift in Sources */,
 				0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */,
@@ -1940,7 +1940,7 @@
 				100172861D39C1AF0058B187 /* HeaderViewController.swift in Sources */,
 				100172871D39C1AF0058B187 /* CancelView.swift in Sources */,
 				100172881D39C1AF0058B187 /* EdgeInsetsTweakTemplate.swift in Sources */,
-				100172891D39C1AF0058B187 /* NowPlayingSummaryViewController.swift in Sources */,
+				100172891D39C1AF0058B187 /* NowPlayingViewController.swift in Sources */,
 				1001728A1D39C1AF0058B187 /* PlayCountIteratorOperation.swift in Sources */,
 				1001728B1D39C1AF0058B187 /* MediaCollectionTableViewCell.swift in Sources */,
 				1001728C1D39C1AF0058B187 /* AudioEntityPlainHeaderViewController.swift in Sources */,
@@ -1977,7 +1977,7 @@
 				100172AA1D39C1AF0058B187 /* AppTheme.swift in Sources */,
 				100172AB1D39C1AF0058B187 /* ComparableExtension.swift in Sources */,
 				100172AC1D39C1AF0058B187 /* ShadowTweakTemplate.swift in Sources */,
-				100172AD1D39C1AF0058B187 /* NowPlayingBarViewController.swift in Sources */,
+				100172AD1D39C1AF0058B187 /* MiniPlayerViewController.swift in Sources */,
 				100172AE1D39C1AF0058B187 /* ApplicationDefaults.swift in Sources */,
 				100172AF1D39C1AF0058B187 /* HeaderLabelStackController.swift in Sources */,
 				100172B01D39C1AF0058B187 /* PlayCountIterator.swift in Sources */,
@@ -2050,7 +2050,7 @@
 				0B9F8A701D3A8D7600E6B453 /* TestDataGenerator.swift in Sources */,
 				100172F11D39C1AF0058B187 /* AudioTrackCollection.swift in Sources */,
 				100172F21D39C1AF0058B187 /* ImageContainer.swift in Sources */,
-				100172F31D39C1AF0058B187 /* NowPlayingQueueViewController.swift in Sources */,
+				100172F31D39C1AF0058B187 /* PlayQueueViewController.swift in Sources */,
 				100172F41D39C1AF0058B187 /* SearchIndex.swift in Sources */,
 				100172F51D39C1AF0058B187 /* TweakCollectionViewController.swift in Sources */,
 				100172F61D39C1AF0058B187 /* CGUtils.swift in Sources */,

@@ -31,9 +31,6 @@ class KyoozScreenshotUITests: XCTestCase {
 		tablesQuery.staticTexts["Antonio Agostini"].tap()
 		tablesQuery.staticTexts["Detrimental Comet Antonio Agostini"].tap()
 		tablesQuery.staticTexts["Hazing Pestered Keener Detrimental Comet Antonio Agostini Antonio Agostini"].tap()
-		app.toolbars.buttons["ADD TO PLAYLIST"].tap()
-		app.childrenMatchingType(.Window).elementBoundByIndex(0).childrenMatchingType(.Other).element.childrenMatchingType(.Other).elementBoundByIndex(1).childrenMatchingType(.Other).elementBoundByIndex(1).childrenMatchingType(.Other).elementBoundByIndex(2).childrenMatchingType(.Other).elementBoundByIndex(3).childrenMatchingType(.Other).element.childrenMatchingType(.Button).elementBoundByIndex(2).tap()
-		app.sliders["3%"].tap()
 //		snapshot("nowPlayingScreen")
 		
     }

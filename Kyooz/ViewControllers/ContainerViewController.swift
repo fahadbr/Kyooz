@@ -19,16 +19,16 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	private var invertedCenterVCOffset:CGFloat { return view.bounds.width - sideVCOffset }
 	private var kvoContext:UInt8 = 123
     
-    var longPressGestureRecognizer:UILongPressGestureRecognizer!
-    var dragAndDropHandler:LongPressDragAndDropGestureHandler!
+    private (set) var longPressGestureRecognizer:UILongPressGestureRecognizer!
+    private (set) var dragAndDropHandler:LongPressDragAndDropGestureHandler!
     
-    var tapGestureRecognizer:UITapGestureRecognizer!
-    var centerPanelPanGestureRecognizer:UIPanGestureRecognizer!
+    private (set) var tapGestureRecognizer:UITapGestureRecognizer!
+    private (set) var centerPanelPanGestureRecognizer:UIPanGestureRecognizer!
     
-    lazy var rootViewController:RootViewController = RootViewController.instance
+    private (set) lazy var rootViewController:RootViewController = RootViewController.instance
     
-    private let nowPlayingNavigationController = UINavigationController()
-    private let nowPlayingQueueViewController = NowPlayingQueueViewController.instance
+    private let playQueueNavigationController = UINavigationController()
+    private let playQueueViewController = PlayQueueViewController.instance
     private let searchViewController = AudioEntitySearchViewController.instance
     private let searchNavigationController = UINavigationController()
     private let kyoozNavigationViewController = KyoozNavigationViewController()
@@ -39,7 +39,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             let sidePanelVisible = centerPanelPosition != .Center
             tapGestureRecognizer.enabled = sidePanelVisible
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
-            nowPlayingQueueViewController.isExpanded = centerPanelPosition == .Left
+            playQueueViewController.isExpanded = centerPanelPosition == .Left
 			showTutorials()
         }
     }
@@ -97,12 +97,12 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		//NOW PLAYING VC
         
 		
-		nowPlayingNavigationController.setViewControllers([nowPlayingQueueViewController], animated: false)
-		nowPlayingNavigationController.navigationBar.clearBackgroundImage()
+		playQueueNavigationController.setViewControllers([playQueueViewController], animated: false)
+		playQueueNavigationController.navigationBar.clearBackgroundImage()
 		
-		let npView = nowPlayingQueueView
-		addChildViewController(nowPlayingNavigationController)
-		nowPlayingNavigationController.didMoveToParentViewController(self)
+		let npView = playQueueView
+		addChildViewController(playQueueNavigationController)
+		playQueueNavigationController.didMoveToParentViewController(self)
 		
 		view.add(subView: npView,
 		         with: [.Top, .Bottom, .Right, .Width])[.Width]!.constant = -sideVCOffset
@@ -344,13 +344,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         switch(recognizer.state) {
         case .Began:
             //initialize the drag and drop handler and all the resources necessary for the drag and drop handler
-            if(!nowPlayingQueueViewController.laidOutSubviews) {
+            if(!playQueueViewController.laidOutSubviews) {
                 dispatch_async(dispatch_get_main_queue()) { self.handleLongPressGesture(recognizer) }
                 return
             }
             if(dragAndDropHandler == nil) {
                 let dragSource:DragSource = centerPanelPosition == .Right ? searchViewController : rootViewController
-                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: nowPlayingQueueViewController)
+                dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: playQueueViewController)
                 dragAndDropHandler.delegate = self
             }
         default:
@@ -368,10 +368,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             CATransaction.commit()
             
             if centerViewRightConstraint.constant > 0 {
-                nowPlayingQueueView.hidden = true
+                playQueueView.hidden = true
                 searchControllerView.hidden = false
             } else if centerViewRightConstraint.constant < 0 {
-                nowPlayingQueueView.hidden = false
+                playQueueView.hidden = false
                 searchControllerView.hidden = true
             }
 		}
@@ -383,14 +383,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     func gestureDidBegin(sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
 			TutorialManager.instance.dismissTutorial(.DragAndDrop, action: .Fulfill)
-            nowPlayingQueueViewController.insertMode = true
+            playQueueViewController.insertMode = true
             animateCenterPanel(toPosition: .Left)
         }
     }
     
     func gestureDidEnd(sender: UIGestureRecognizer) {
         TutorialManager.instance.dismissTutorial(Tutorial.InsertOrCancel, action: .Fulfill)
-        nowPlayingQueueViewController.insertMode = false
+        playQueueViewController.insertMode = false
         KyoozUtils.doInMainQueueAfterDelay(0.3) { [unowned self]() in
             self.animateCenterPanel(toPosition: .Center)
             self.dragAndDropHandler = nil
@@ -417,8 +417,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
 //MARK: - convenience variables
 extension ContainerViewController {
-    var nowPlayingQueueView : UIView {
-        return nowPlayingNavigationController.view
+    var playQueueView : UIView {
+        return playQueueNavigationController.view
     }
     
     var searchControllerView : UIView {
