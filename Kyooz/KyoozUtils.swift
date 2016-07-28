@@ -148,7 +148,10 @@ struct KyoozUtils {
         showPopupError(withTitle: title, withMessage: message, presentationVC: presentationVC)
     }
 	
-    static func confirmAction(actionTitle:String, actionDetails:String? = nil, presentingVC:UIViewController = ContainerViewController.instance, action:()->()) {
+    static func confirmAction(actionTitle:String,
+                              actionDetails:String? = nil,
+                              presentingVC:UIViewController = ContainerViewController.instance,
+                              action:()->()) {
 		let b = MenuBuilder()
 			.with(title: actionTitle)
 			.with(details: actionDetails)
@@ -157,7 +160,8 @@ struct KyoozUtils {
 		showMenuViewController(b.viewController, presentingVC: presentingVC)
 	}
     
-    static func showMenuViewController(kmvc:UIViewController, presentingVC:UIViewController = ContainerViewController.instance) {
+    static func showMenuViewController(kmvc:UIViewController,
+                                       presentingVC:UIViewController = ContainerViewController.instance) {
         kmvc.view.frame = presentingVC.view.frame
         
         presentingVC.addChildViewController(kmvc)

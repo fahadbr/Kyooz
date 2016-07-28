@@ -10,7 +10,7 @@ import UIKit
 
 private let appString = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1115959967&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"
 
-func whatsNewViewController() throws -> KyoozOptionsViewController {
+func whatsNewViewController(completion: (()->Void)? = nil) throws -> KyoozOptionsViewController {
     
 	let op = BasicKyoozOptionsProvider(options:
         KyoozMenuAction(title: "Rate us in the AppStore", highlighted: true) {
@@ -23,9 +23,10 @@ func whatsNewViewController() throws -> KyoozOptionsViewController {
             }
             
             UIApplication.sharedApplication().openURL(url)
+			completion?()
 			return
             
-		},KyoozMenuAction(title: "No thanks")
+		},KyoozMenuAction(title: "No thanks", action: completion)
 	)
 	
 	

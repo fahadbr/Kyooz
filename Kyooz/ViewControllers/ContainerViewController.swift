@@ -166,7 +166,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                 return
             }
             
-            let vc = try whatsNewViewController()
+			let vc = try whatsNewViewController {
+				KyoozUtils.doInMainQueueAfterDelay(2, block: self.showTutorials)
+			}
+			
             KyoozUtils.showMenuViewController(vc, presentingVC: self)
             
             NSUserDefaults.standardUserDefaults().setObject(version, forKey: UserDefaultKeys.WhatsNewVersionShown)
@@ -183,7 +186,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         super.viewDidAppear(animated)
         becomeFirstResponder()
         KyoozUtils.doInMainQueueAfterDelay(3) {
-            self.showTutorials()
+			guard !self.childViewControllers.contains({ $0 is KyoozOptionsViewController }) else {
+				return
+			}
+			self.showTutorials()
         }
     }
     
