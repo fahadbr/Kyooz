@@ -1,5 +1,5 @@
 //
-//  NowPlayingBarViewController.swift
+//  MiniPlayerViewController.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 4/8/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class NowPlayingBarViewController: AbstractPlaybackViewController, PlaybackProgressObserver {
+final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackProgressObserver, UIAccessi {
 	
 	private let menuButton = MenuDotsView()
 	private let progressView = UIProgressView()
@@ -16,6 +16,10 @@ final class NowPlayingBarViewController: AbstractPlaybackViewController, Playbac
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		//accessability configuration
+		view.accessibilityIdentifier = "kyoozMiniPlayer"
+		view.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
+		
 		//progressBarConfig
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: progressView, parentView: view)
 		progressView.progressTintColor = ThemeHelper.defaultVividColor

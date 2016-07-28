@@ -1,5 +1,5 @@
 //
-//  NowPlayingSummaryViewController.swift
+//  NowPlayingViewController.swift
 //  MediaPlayer
 //
 //  Created by FAHAD RIAZ on 4/11/15.
@@ -11,10 +11,11 @@ import MediaPlayer
 
 private let bottomButtonHeight:CGFloat = 30
 
-final class NowPlayingSummaryViewController: UIViewController {
+final class NowPlayingViewController: UIViewController {
     //MARK: - PROPERTIES
 	
-	static let CollapsedHeight:CGFloat = 45
+	private typealias This = NowPlayingViewController
+	static let miniPlayerHeight:CGFloat = 45
 	static let heightScale:CGFloat = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)/667
     
     private lazy var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
@@ -22,7 +23,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     private let albumArtPageVC: NowPlayingPageViewController = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
     
     private let playbackProgressVC = PlaybackProgressViewController.instance
-	private let nowPlayingBarVC = NowPlayingBarViewController()
+	private let nowPlayingBarVC = MiniPlayerViewController()
 	private let playbackControlsVC = PlaybackControlsViewController()
     private lazy var labelWrapperVC:LabelStackWrapperViewController = {
         let track = self.audioQueuePlayer.nowPlayingItem
@@ -30,7 +31,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         let vc = LabelStackWrapperViewController(track: track,
                                                  isPresentedVC: true,
                                                  representingIndex: index,
-                                                 useSmallFont: self.dynamicType.heightScale < 0.8)
+                                                 useSmallFont: This.heightScale < 0.8)
         return vc
     }()
     
@@ -115,7 +116,7 @@ final class NowPlayingSummaryViewController: UIViewController {
 		
 		view.add(subView: nowPlayingBarVC.view, with: [.Top, .CenterX])
 		configure(vc: nowPlayingBarVC,
-		          withHeight: self.dynamicType.CollapsedHeight,
+		          withHeight: This.miniPlayerHeight,
 		          widthAnchor: view.widthAnchor,
 		          multiplier: 1)
 
@@ -146,7 +147,7 @@ final class NowPlayingSummaryViewController: UIViewController {
         albumArtPageVC.didMoveToParentViewController(self)
 		
 		configure(vc: labelWrapperVC,
-		          withHeight: self.dynamicType.CollapsedHeight,
+		          withHeight: This.miniPlayerHeight,
 		          widthAnchor: mainStackView.widthAnchor,
 		          multiplier: 0.95)
 		
@@ -289,7 +290,7 @@ final class NowPlayingSummaryViewController: UIViewController {
     private func updateAlphaLevels() {
         
         let frame = self.view.frame
-        let maxY = frame.height - RootViewController.nowPlayingViewCollapsedOffset
+        let maxY = frame.height - This.miniPlayerHeight
         let currentY = maxY - frame.origin.y
         
         let expandedFraction = (currentY/maxY).cap(min: 0, max: 1)

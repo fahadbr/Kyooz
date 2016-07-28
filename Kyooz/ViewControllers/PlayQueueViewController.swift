@@ -9,9 +9,9 @@
 import UIKit
 import MediaPlayer
 
-final class NowPlayingQueueViewController: UIViewController, DropDestination, AudioTableCellDelegate, GestureHandlerDelegate {
+final class PlayQueueViewController: UIViewController, DropDestination, AudioTableCellDelegate, GestureHandlerDelegate {
 
-    static let instance = NowPlayingQueueViewController()
+    static let instance = PlayQueueViewController()
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private let tableFooterView = KyoozTableFooterView()
@@ -350,7 +350,7 @@ final class NowPlayingQueueViewController: UIViewController, DropDestination, Au
 }
 
 //MARK: - Multi Select Functions
-extension NowPlayingQueueViewController {
+extension PlayQueueViewController {
 	
 	func toggleSelectMode() {
 		let willEdit = !tableView.editing

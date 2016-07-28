@@ -39,8 +39,8 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     
     private static var sizeConstraint: SizeConstraint {
-        let height = UIScreen.mainScreen().bounds.height * 0.80
-        let width = UIScreen.mainScreen().bounds.width * 0.80
+        let height = UIScreen.mainScreen().bounds.height * 0.90
+        let width = UIScreen.mainScreen().bounds.width * 0.85
         return SizeConstraint(maxHeight: height,
                               maxWidth: width,
                               minHeight: height,
@@ -52,7 +52,7 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     let sizeConstraint: SizeConstraint = This.sizeConstraint
     
-    let textView: UITextView
+    private let textView: UITextView
     
     var sectionDividerPosition: CGFloat { return 0 }
     
@@ -110,7 +110,6 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     }
     
     func headerView(forSection section: Int) -> UIView {
-        
         return self.sectionHeader
     }
     
