@@ -57,7 +57,7 @@ final class SettingsViewController: UITableViewController {
         do {
             switch cell.tag {
             case 1:
-                KyoozUtils.confirmAction("Are you sure you want to reset all tutorials?", presentingVC: self) {
+                KyoozUtils.confirmAction("Are you sure you want to reset all tutorials?", presentingVC: navigationController ?? self) {
                     TutorialManager.instance.resetAllTutorials()
                 }
             case 2:

@@ -17,6 +17,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		//accessability configuration
+		view.isAccessibilityElement = true
 		view.accessibilityIdentifier = "kyoozMiniPlayer"
 		view.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
 		
