@@ -55,6 +55,14 @@ struct KyoozUtils {
         #endif
     }
     
+    static var usingMockData: Bool {
+        #if MOCK_DATA
+            return true
+        #else
+            return false
+        #endif
+    }
+    
     static var screenshotUITesting: Bool {
         #if MOCK_DATA
 //			return NSProcessInfo.processInfo().arguments.contains(KyoozConstants.screenShotUITesting)

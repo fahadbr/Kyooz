@@ -59,6 +59,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         KyoozUtils.doInMainQueueAsync() {
             self.applyDataSourceAndDelegate()
 			self.reloadTableViewData()
+			self.updateFooterView()
         }
     }
 	
@@ -67,10 +68,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	override func reloadSourceData() {
 		super.reloadSourceData()
-		let count = sourceData.entities.count
-		let groupName = count == 1 ? sourceData.libraryGrouping.name.withoutLast() : sourceData.libraryGrouping.name
-		tableFooterView.text = "\(count) \(groupName)"
-		tableView.tableFooterView = tableFooterView
+		updateFooterView()
 	}
 	
     override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
@@ -146,5 +144,12 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
                                                          name: KyoozPlaylistManager.PlaylistSetUpdate,
                                                          object: KyoozPlaylistManager.instance)
     }
+	
+	private func updateFooterView() {
+		let count = sourceData.entities.count
+		let groupName = count == 1 ? sourceData.libraryGrouping.name.withoutLast() : sourceData.libraryGrouping.name
+		tableFooterView.text = "\(count) \(groupName)"
+		tableView.tableFooterView = tableFooterView
+	}
 	
 }

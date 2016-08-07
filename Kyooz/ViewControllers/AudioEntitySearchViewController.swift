@@ -93,6 +93,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         super.viewDidLoad()
         tableView.registerClass(RowLimitedSectionHeaderView.self,
                                 forHeaderFooterViewReuseIdentifier: RowLimitedSectionHeaderView.reuseIdentifier)
+        
         searchBar.searchBarStyle = UISearchBarStyle.Minimal
         searchBar.sizeToFit()
         searchBar.barStyle = UIBarStyle.Black
@@ -101,6 +102,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         searchBar.placeholder = "Search"
         searchBar.tintColor = ThemeHelper.defaultVividColor
         searchBar.backgroundColor = UIColor.clearColor()
+        searchBar.accessibilityLabel = "Search"
         
         headerHeightConstraint.constant = ThemeHelper.plainHeaderHight
         tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight

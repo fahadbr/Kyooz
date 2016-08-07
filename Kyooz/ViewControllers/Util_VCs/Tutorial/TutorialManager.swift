@@ -97,7 +97,8 @@ class TutorialManager {
     }
 	
 	func presentTutorialIfUnfulfilled(tutorial:Tutorial) -> Bool {
-        guard !tutorialIsFulfilled(tutorial) else {
+        guard !tutorialIsFulfilled(tutorial)
+            && !KyoozUtils.screenshotUITesting else {
             return false
         }
         

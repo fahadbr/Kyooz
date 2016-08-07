@@ -28,6 +28,7 @@ final class ShortNotificationManager {
     
     private func presentShortNotification(message:String) {
         guard UIApplication.sharedApplication().applicationState == .Active else { return }
+        guard !KyoozUtils.screenshotUITesting else { return }
         
         if shortNotificationVC?.transitionOut() != nil {
             shortNotificationVC = nil

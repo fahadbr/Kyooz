@@ -143,8 +143,6 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	}
 	
 	func showTutorials() {
-        guard !KyoozUtils.screenshotUITesting else { return }
-        
 		if centerPanelPosition == .Center && !rootViewController.pullableViewExpanded {
 			TutorialManager.instance.presentUnfulfilledTutorials([
 				.GestureActivatedSearch,

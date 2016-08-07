@@ -1,0 +1,17 @@
+{
+    "default": {
+        "keyword": {
+            "font": "./fonts/Avenir.ttc",
+            "color": "#db2c38"
+        },
+        "title": {
+            "font": "./fonts/Avenir.ttc",
+            "color": "#ffffff"
+        },
+        "background": "./background.jpg",
+        "padding": 50,
+        "show_complete_frame": false
+    },
+    
+    "data": []
+}

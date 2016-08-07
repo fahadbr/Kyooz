@@ -109,7 +109,8 @@ public class MarqueeLabel : UIView {
             && text != nil
             && superview != nil
             && animationRemoved
-            && UIApplication.sharedApplication().applicationState == .Active else {
+            && UIApplication.sharedApplication().applicationState == .Active
+            && !KyoozUtils.screenshotUITesting else {
                 return
         }
         
@@ -141,9 +142,9 @@ public class MarqueeLabel : UIView {
         func animateLabelPosition(newPosition:CGFloat) {
             guard newPosition != subLabel.frame.origin.x else { return }
             
-            UIView.animateWithDuration(1.0, delay: 0.5, options: .CurveEaseInOut, animations: { [weak self] in
-                self?.subLabel.frame.origin.x = newPosition
-                }, completion: nil)
+//            UIView.animateWithDuration(1.0, delay: 0.5, options: .CurveEaseInOut, animations: { [weak self] in
+                self.subLabel.frame.origin.x = newPosition
+//                }, completion: nil)
         }
         
 		stopScrolling()

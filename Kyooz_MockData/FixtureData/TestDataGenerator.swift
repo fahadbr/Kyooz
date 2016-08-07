@@ -17,7 +17,7 @@ class TestDataGenerator {
         let bundle = NSBundle(forClass: TestDataGenerator.self)
         let testDataDict = NSDictionary(contentsOfURL: bundle.URLForResource("TestData", withExtension: "plist")!)!
         
-        let artistNames = testDataDict.objectForKey("ArtistNames")! as! [String]
+        let artistNames = (testDataDict.objectForKey("ArtistNames")! as! [String]).sort()
         let albumNames = testDataDict.objectForKey("AlbumNames")! as! [String]
         let trackNames = testDataDict.objectForKey("TrackNames")! as! [String]
         
@@ -31,6 +31,7 @@ class TestDataGenerator {
         
 
         var tracks = [AudioTrackDTO]()
+        var totalNumberOfAlbums = 0
         
         for (k,artistName) in artistNames.enumerate() {
             let noOfAlbums = numberOfAlbumsToUse ?? KyoozUtils.randomNumberInRange(1...5)
@@ -49,12 +50,14 @@ class TestDataGenerator {
                     dto.albumTrackNumber = i
                     dto.albumId = getRandomId()
                     dto.albumArtistId = getRandomId()
-                    dto.artwork = artworks[j % artworks.count]
+                    dto.artwork = artworks[totalNumberOfAlbums % artworks.count]
                     dto.assetURL = trackAssetURL
                     dto.releaseYear = "\(KyoozUtils.randomNumberInRange(1990...2016))"
                     dto.playbackDuration = Double(KyoozUtils.randomNumberInRange(150...360))
                     tracks.append(dto)
                 }
+                
+                totalNumberOfAlbums += 1
             }
         }
         

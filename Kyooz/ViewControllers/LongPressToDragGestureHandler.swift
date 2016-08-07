@@ -92,6 +92,16 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
                 }
                 return
             }
+            
+            #if MOCK_DATA
+                if KyoozUtils.screenshotUITesting {
+                    KyoozUtils.doInMainQueueAfterDelay(1) {
+                        self.handleGesture(sender)
+                    }
+                    return
+                }
+            #endif
+            
             gestureActivated = false
             dragGestureScrollingController.invalidateDisplayLink()
             dragGestureScrollingController = nil

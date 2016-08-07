@@ -64,7 +64,10 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 		
 		headerVC.leftButton.addTarget(self, action: #selector(self.shuffleAllItems(_:)), forControlEvents: .TouchUpInside)
 		headerVC.selectButton.addTarget(self, action: #selector(self.toggleSelectMode), forControlEvents: .TouchUpInside)
-		
+		headerVC.selectButton.isAccessibilityElement = true
+        headerVC.selectButton.accessibilityLabel = "\(sourceData.parentCollection?.titleForGrouping(sourceData.parentGroup ?? LibraryGrouping.Albums) ?? "ALL MUSIC")-librarySelectEditButton"
+        headerVC.selectButton.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
+        
 		minHeight = headerVC.minimumHeight
 		maxHeight = headerVC.defaultHeight
 		collapsedTargetOffset = maxHeight - minHeight
