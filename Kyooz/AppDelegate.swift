@@ -13,45 +13,20 @@ import MediaPlayer
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var lastFmScrobbler = LastFmScrobbler.instance
-//    lazy var window: UIWindow? = UIWindow(frame: UIScreen.mainScreen().bounds)
-//    lazy var window: UIWindow? = TweakWindow(frame: UIScreen.mainScreen().bounds, tweakStore: KyoozTweaks.defaultStore)
-    var window: UIWindow?
+	
+	lazy var window: UIWindow? = self.createWindow()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         ThemeHelper.applyGlobalAppearanceSettings()
-        
-        
-        let tweaksGestureRecognizer = UIPinchGestureRecognizer()
-        let window = TweakWindow(frame: UIScreen.mainScreen().bounds,
-                                 gestureType: .Gesture(tweaksGestureRecognizer),
-                                 tweakStore: KyoozTweaks.defaultStore)
-        
-        let containerVC = ContainerViewController.instance
-        window.rootViewController = containerVC
-        window.makeKeyAndVisible()
-        self.window = window
-        
-        KyoozUtils.doInMainQueueAsync() {
-            containerVC.view.addGestureRecognizer(tweaksGestureRecognizer)
-        }
-
+		
+        window?.rootViewController = ContainerViewController.instance
+        window?.makeKeyAndVisible()
+		
         MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
         initMainQueueChecking()
 		ApplicationDefaults.initializeData()
         return true
-    }
-
-    func applicationWillResignActive(application: UIApplication) {
-        
-    }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-
-    }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-
     }
     
 
@@ -68,5 +43,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         BackgroundFetchController.instance.performFetchWithCompletionHandler(completionHandler)
     }
 
+}
+
+extension AppDelegate {
+	
+	func createWindow() -> UIWindow {
+		#if MOCK_DATA
+			Logger.debug("starting app with tweaks window")
+			let tweaksGestureRecognizer = UIPinchGestureRecognizer()
+			let window = TweakWindow(frame: UIScreen.mainScreen().bounds,
+			                         gestureType: .Gesture(tweaksGestureRecognizer),
+			                         tweakStore: KyoozTweaks.defaultStore)
+			KyoozUtils.doInMainQueueAsync() {
+				ContainerViewController.instance.view.addGestureRecognizer(tweaksGestureRecognizer)
+			}
+			return window
+		#else
+			return UIWindow(frame: UIScreen.mainScreen().bounds)
+		#endif
+	}
+	
+	
 }
 

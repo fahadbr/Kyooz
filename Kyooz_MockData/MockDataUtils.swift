@@ -14,4 +14,5 @@ var numberOfAlbumsToUse: Int? {
 		return Int(value)
 	}
 	return nil
+//    return 2
 }

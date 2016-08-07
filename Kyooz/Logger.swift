@@ -28,7 +28,7 @@ final class Logger {
     }
     
     static func debug(@autoclosure messageBlock: ()->String) {
-        if !debugEnabled { return }
+        guard debugEnabled else { return }
         
         let date = NSDate()
         let threadId = threadName

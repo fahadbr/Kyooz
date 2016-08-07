@@ -17,9 +17,10 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		//accessability configuration
-		view.isAccessibilityElement = true
-		view.accessibilityIdentifier = "kyoozMiniPlayer"
-		view.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
+		
+        playPauseButton.isAccessibilityElement = true
+		playPauseButton.accessibilityLabel = "miniPlayerPlayButton"
+		playPauseButton.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
 		
 		//progressBarConfig
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: progressView, parentView: view)
@@ -43,7 +44,10 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom], subView: labelPageVC.view, parentView: view)
         labelPageVC.view.leftAnchor.constraintEqualToAnchor(playPauseButton.rightAnchor).active = true
         labelPageVC.view.rightAnchor.constraintEqualToAnchor(menuButton.leftAnchor).active = true
-        
+        labelPageVC.view.isAccessibilityElement = true
+		labelPageVC.view.accessibilityLabel = "miniPlayerTrackDetails"
+		labelPageVC.view.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
+		
         KyoozUtils.doInMainQueueAsync() {
             self.updateButtonStates()
         }

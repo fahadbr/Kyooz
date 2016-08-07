@@ -63,11 +63,15 @@ class TempDataDAO : NSObject {
     }
     
     func persistPlaybackStateSnapshotToTempStorage() {
+        guard !KyoozUtils.usingMockData else { return }
+        
         let persistableState = ApplicationDefaults.audioQueuePlayer.playbackStateSnapshot.persistableSnapshot
         NSKeyedArchiver.archiveRootObject(persistableState, toFile: TempDataDAO.playbackStateSnapshotFileName)
     }
     
     func getPlaybackStateSnapshotFromTempStorage() -> PlaybackStateSnapshot? {
+        guard !KyoozUtils.usingMockData else { return nil }
+        
         let filename = TempDataDAO.playbackStateSnapshotFileName
         if !NSFileManager.defaultManager().fileExistsAtPath(filename) {
             return nil

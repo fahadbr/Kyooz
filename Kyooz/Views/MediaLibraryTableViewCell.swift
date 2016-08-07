@@ -31,13 +31,19 @@ class MediaLibraryTableViewCell : AbstractTableViewCell, AudioTableCellProtocol 
         }
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override func initialize() {
+        super.initialize()
+        guard titleLabel != nil else { return }
+        
         titleLabel.font = ThemeHelper.defaultFont
         let color = UIColor.lightGrayColor()
         detailsLabel.textColor = color
         cloudLabel.textColor = color
         drmLabel.textColor = color
+        
+        menuButton.isAccessibilityElement = true
+        menuButton.accessibilityLabel = "menu button"
+        menuButton.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
     }
     
     @IBAction func menuButtonPressed(sender:UIButton!) {

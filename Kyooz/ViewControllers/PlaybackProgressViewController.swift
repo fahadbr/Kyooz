@@ -58,6 +58,7 @@ final class PlaybackProgressViewController: UIViewController {
 //        progressSlider.maximumTrackTintColor = UIColor(white: 0.8, alpha: trackAlpha)
 		progressSlider.minimumTrackTintColor = ThemeHelper.defaultVividColor
         progressSlider.maximumTrackTintColor = UIColor(white: 0, alpha: trackAlpha)
+		progressSlider.accessibilityLabel = "playbackProgressSlider"
 
         let thumbView = UIView(frame: CGRect(x: 0, y: 0, width: 7, height: 20))
         thumbView.backgroundColor = UIColor.lightGrayColor()

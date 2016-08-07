@@ -145,13 +145,18 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.showsVerticalScrollIndicator = true
         tableView.indicatorStyle = .White
+        tableView.isAccessibilityElement = true
+        tableView.accessibilityIdentifier = "playQueue"
 		
 		let headerView = self.headerView
         ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
         headerView.bottomAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
 		tableView.contentOffset.y = -tableView.contentInset.top
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView:selectButton)
+        let selectButton = UIBarButtonItem(customView:self.selectButton)
+        selectButton.isAccessibilityElement = true
+        selectButton.accessibilityLabel = "playQueueSelectButton"
+        navigationItem.rightBarButtonItem = selectButton
 		
         dragToRearrangeGestureHandler = LongPressToDragGestureHandler(tableView: tableView)
         dragToRearrangeGestureHandler.delegate = self

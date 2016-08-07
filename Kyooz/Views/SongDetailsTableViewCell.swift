@@ -38,6 +38,8 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProto
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        songTitleLabel.isAccessibilityElement = true
+        songTitleLabel.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
         songTitleLabel.font = SongDetailsTableViewCell.boldFont
         albumArtistAndAlbumLabel.font =  SongDetailsTableViewCell.normalFont
         albumArtistAndAlbumLabel.textColor = UIColor.lightGrayColor()
@@ -53,6 +55,7 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProto
     func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         guard let track = entity as? AudioTrack else { return }
         songTitleLabel.text = track.trackTitle
+        songTitleLabel.accessibilityLabel = songTitleLabel.text
         var details = [String]()
         if let albumArtist = track.albumArtist {
             details.append(albumArtist)
