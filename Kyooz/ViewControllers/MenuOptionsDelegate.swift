@@ -12,13 +12,13 @@ import UIKit
 final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     private typealias This = MenuOptionsDelegate
-    private static let absoluteMax:CGFloat = UIScreen.mainScreen().bounds.width * 95
+    private static let absoluteMax:CGFloat = UIScreen.main.bounds.width * 95
     
     private static var sizeConstraint : SizeConstraint {
-        return SizeConstraint(maxHeight: UIScreen.mainScreen().bounds.height * 0.9,
+        return SizeConstraint(maxHeight: UIScreen.main.bounds.height * 0.9,
                               maxWidth: min(375 * 0.70, This.absoluteMax),
                               minHeight: 0,
-                              minWidth: min(UIScreen.mainScreen().bounds.width * 0.55 * ThemeHelper.contentSizeRatio, This.absoluteMax))
+                              minWidth: min(UIScreen.main.bounds.width * 0.55 * ThemeHelper.contentSizeRatio, This.absoluteMax))
     }
     
     private let title: String?
@@ -33,19 +33,19 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
         let maxWidth = sizeConstraint.maxWidth
         let minWidth = sizeConstraint.minWidth
         
-        func createLabel(text text:String?, font:UIFont!) -> UILabel{
+        func createLabel(text:String?, font:UIFont!) -> UILabel{
             let label = UILabel()
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.numberOfLines = 0
-            label.lineBreakMode = .ByWordWrapping
+            label.lineBreakMode = .byWordWrapping
             label.textColor = ThemeHelper.defaultVividColor
             label.text = text
             label.font = font ?? ThemeHelper.defaultFont
             
-            let rect = label.textRectForBounds(
-                CGRect(x: 0, y: 0,
+            let rect = label.textRect(
+                forBounds: CGRect(x: 0, y: 0,
                     width: maxWidth,
-                    height: UIScreen.mainScreen().bounds.height),
+                    height: UIScreen.main.bounds.height),
                 limitedToNumberOfLines: 0)
             
             label.frame.size = CGSize(
@@ -57,9 +57,9 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
         }
         
         
-        let titleLabel = createLabel(text: title, font:ThemeHelper.defaultFont?.fontWithSize(ThemeHelper.defaultFontSize + 1))
+        let titleLabel = createLabel(text: title, font:ThemeHelper.defaultFont?.withSize(ThemeHelper.defaultFontSize + 1))
         
-        let detailsLabel = createLabel(text: details, font:ThemeHelper.smallFontForStyle(.Normal))
+        let detailsLabel = createLabel(text: details, font:ThemeHelper.smallFontForStyle(.normal))
         
         let titleSize = titleLabel.frame.size
         let detailsSize = detailsLabel.frame.size
@@ -71,10 +71,10 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
         
         
         let stackView = UIStackView(arrangedSubviews: [titleLabel, detailsLabel])
-        stackView.axis = UILayoutConstraintAxis.Vertical
+        stackView.axis = UILayoutConstraintAxis.vertical
         stackView.frame.size = estimatedLabelContainerSize
         stackView.layoutMargins = UIEdgeInsets(top: offset, left: offset, bottom: offset, right: offset)
-        stackView.layoutMarginsRelativeArrangement = true
+        stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
         
     }
@@ -98,8 +98,8 @@ final class MenuOptionsDelegate : KyoozOptionsViewControllerDelegate {
         transformAnimation.mass = 1.3
         
         
-        transformAnimation.fromValue = NSValue(CATransform3D: CATransform3DConcat(scaleTransform, translationTransform))
-        transformAnimation.toValue = NSValue(CATransform3D: CATransform3DIdentity)
+        transformAnimation.fromValue = NSValue(caTransform3D: CATransform3DConcat(scaleTransform, translationTransform))
+        transformAnimation.toValue = NSValue(caTransform3D: CATransform3DIdentity)
         transformAnimation.duration = transformAnimation.settlingDuration
         transformAnimation.fillMode = kCAFillModeBackwards
         return transformAnimation

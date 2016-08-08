@@ -34,7 +34,7 @@ struct Playlists {
 
 	private (set) static var mostRecentlyModifiedPlaylist:PlaylistReference?
 	
-	static func setMostRecentlyModified(playlist playlist:AudioTrackCollection!) {
+	static func setMostRecentlyModified(playlist:AudioTrackCollection!) {
         guard playlist != nil else {
             mostRecentlyModifiedPlaylist = nil
             return
@@ -62,9 +62,9 @@ struct Playlists {
 	                                                              completionAction:(()->Void)? = nil) {
 		let presentingVC = ContainerViewController.instance
 		let addToPlaylistVC = AddToPlaylistViewController(tracksToAdd: tracks, title: title, completionAction: completionAction)
-		addToPlaylistVC.modalTransitionStyle = .CrossDissolve
+		addToPlaylistVC.modalTransitionStyle = .crossDissolve
 		
-		presentingVC.presentViewController(addToPlaylistVC, animated: true, completion: nil)
+		presentingVC.present(addToPlaylistVC, animated: true, completion: nil)
 		
 	}
 	
@@ -92,7 +92,7 @@ struct Playlists {
     }
     
     @available(iOS 9.3, *)
-    static func showPlaylistTypeInfoView(presentationController:UIViewController = ContainerViewController.instance,
+    static func showPlaylistTypeInfoView(_ presentationController:UIViewController = ContainerViewController.instance,
                                          completionAction:(()->Void)? = nil) {
         do {
             let textVC = try TextViewController(fileName: "PlaylistTypeDescriptions",
@@ -100,7 +100,7 @@ struct Playlists {
                                                 showDismissButton: true,
                                                 completionAction: completionAction)
             
-            presentationController.presentViewController(UINavigationController(rootViewController:textVC),
+            presentationController.present(UINavigationController(rootViewController:textVC),
                                                          animated: true,
                                                          completion: nil)
         } catch let error {
@@ -115,13 +115,13 @@ struct Playlists {
                                                    completionAction:(()->Void)? = nil) {
 		let ac = UIAlertController(title: "Save as playlist as..",
 		                           message: "Enter the name you would like to save the playlist as",
-		                           preferredStyle: .Alert)
+		                           preferredStyle: .alert)
         
 		ac.view.tintColor = ThemeHelper.defaultVividColor
-		ac.addTextFieldWithConfigurationHandler(nil)
+		ac.addTextField(configurationHandler: nil)
 
         
-        let kyoozOption = UIAlertAction(title: "Kyooz Playlist", style: .Default, handler: { (action) -> Void in
+        let kyoozOption = UIAlertAction(title: "Kyooz Playlist", style: .default, handler: { (action) -> Void in
             guard let text = ac.textFields?.first?.text where !text.isEmpty else {
                 Logger.error("No name found")
                 return
@@ -131,7 +131,7 @@ struct Playlists {
         ac.addAction(kyoozOption)
         
         if #available(iOS 9.3, *) {
-            let itunesOption = UIAlertAction(title: "iTunes Playlist", style: .Default, handler: { (action) -> Void in
+            let itunesOption = UIAlertAction(title: "iTunes Playlist", style: .default, handler: { (action) -> Void in
                 guard let text = ac.textFields?.first?.text where !text.isEmpty else {
                     Logger.error("No name found")
                     return
@@ -140,7 +140,7 @@ struct Playlists {
             })
             ac.addAction(itunesOption)
             
-            let infoOption = UIAlertAction(title: "What's the difference?", style: .Default) { _ in
+            let infoOption = UIAlertAction(title: "What's the difference?", style: .default) { _ in
                 showPlaylistTypeInfoView(presentationController) {
                     showPlaylistCreationController(for: tracks,
                                                    presentationController: presentationController,
@@ -150,8 +150,8 @@ struct Playlists {
             ac.addAction(infoOption)
         }
 		
-		ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-		presentationController.presentViewController(ac, animated: true, completion: {
+		ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+		presentationController.present(ac, animated: true, completion: {
 			ac.view.tintColor = ThemeHelper.defaultVividColor
 		})
 		

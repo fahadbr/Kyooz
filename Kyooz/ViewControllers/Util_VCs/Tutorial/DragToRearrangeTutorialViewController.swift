@@ -47,7 +47,7 @@ class DragToRearrangeTutorialViewController : LongPressTutorialViewController {
         translateAnimation.timingFunctions = [defaultTimingFunction, defaultTimingFunction, easeOutTimingFunction, easeOutTimingFunction, defaultTimingFunction]
         
         let fillAnimation = self.createKeyframeAnimation("fillColor")
-        fillAnimation.values = [UIColor.clearColor().CGColor, ThemeHelper.defaultFontColor.CGColor, ThemeHelper.defaultFontColor.CGColor, ThemeHelper.defaultFontColor.CGColor]
+        fillAnimation.values = [UIColor.clear.cgColor, ThemeHelper.defaultFontColor.cgColor, ThemeHelper.defaultFontColor.cgColor, ThemeHelper.defaultFontColor.cgColor]
         fillAnimation.calculationMode = kCAAnimationDiscrete
         
         return self.wrapInAnimationGroup([scaleAnimation, opacityAnimation, translateAnimation, fillAnimation])
@@ -60,7 +60,7 @@ class DragToRearrangeTutorialViewController : LongPressTutorialViewController {
         
         let fillAnimation = self.createKeyframeAnimation("fillColor")
         fillAnimation.keyTimes = [0.0, 0.05, 0.4, 1.0]
-        fillAnimation.values = [UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultVividColor.CGColor]
+        fillAnimation.values = [UIColor.clear.cgColor, UIColor.clear.cgColor, ThemeHelper.defaultVividColor.cgColor]
         fillAnimation.calculationMode = kCAAnimationDiscrete
         return self.wrapInAnimationGroup([strokeEndAnimation, fillAnimation])
     }()

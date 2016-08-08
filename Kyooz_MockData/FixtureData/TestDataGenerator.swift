@@ -14,18 +14,18 @@ class TestDataGenerator {
     
     static func generateData() {
 		
-        let bundle = NSBundle(forClass: TestDataGenerator.self)
-        let testDataDict = NSDictionary(contentsOfURL: bundle.URLForResource("TestData", withExtension: "plist")!)!
+        let bundle = Bundle(for: TestDataGenerator.self)
+        let testDataDict = NSDictionary(contentsOf: bundle.urlForResource("TestData", withExtension: "plist")!)!
         
-        let artistNames = (testDataDict.objectForKey("ArtistNames")! as! [String]).sort()
-        let albumNames = testDataDict.objectForKey("AlbumNames")! as! [String]
-        let trackNames = testDataDict.objectForKey("TrackNames")! as! [String]
+        let artistNames = (testDataDict.object(forKey: "ArtistNames")! as! [String]).sorted()
+        let albumNames = testDataDict.object(forKey: "AlbumNames")! as! [String]
+        let trackNames = testDataDict.object(forKey: "TrackNames")! as! [String]
         
-        let trackAssetURL = bundle.URLForResource("foreword", withExtension: "mp3")!
+        let trackAssetURL = bundle.urlForResource("foreword", withExtension: "mp3")!
         
         var images = [UIImage]()
         for i in 1...4 {
-            images.append(UIImage(named: "Artwork\(i)", inBundle: bundle, compatibleWithTraitCollection: nil)!)
+            images.append(UIImage(named: "Artwork\(i)", in: bundle, compatibleWith: nil)!)
         }
         let artworks = images.map() { MPMediaItemArtwork(image: $0) }
         
@@ -33,7 +33,7 @@ class TestDataGenerator {
         var tracks = [AudioTrackDTO]()
         var totalNumberOfAlbums = 0
         
-        for (k,artistName) in artistNames.enumerate() {
+        for (k,artistName) in artistNames.enumerated() {
             let noOfAlbums = numberOfAlbumsToUse ?? KyoozUtils.randomNumberInRange(1...5)
             for j in 1...noOfAlbums {
                 let albumName = albumNames[(k + j) % albumNames.count] + " \(artistName)"
@@ -42,7 +42,7 @@ class TestDataGenerator {
                 
                 for i in 1...noOfTracksInAlbum {
                     let dto = AudioTrackDTO()
-                    dto.trackTitle = trackNames[i - 1].capitalizedString + " \(albumName) \(artistName)"
+                    dto.trackTitle = trackNames[i - 1].capitalized + " \(albumName) \(artistName)"
                     dto.albumArtist = artistName
                     dto.artist = artistName
                     dto.albumTitle = albumName

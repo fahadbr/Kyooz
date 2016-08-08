@@ -10,7 +10,7 @@ import MediaPlayer
 
 class AudioTrackDTO : NSObject, AudioTrack {
     
-    static func titlePropertyForGrouping(libraryGroup:LibraryGrouping) -> String? {
+    static func titlePropertyForGrouping(_ libraryGroup:LibraryGrouping) -> String? {
         switch libraryGroup {
         case LibraryGrouping.Albums:
             return "albumTitle"
@@ -32,10 +32,10 @@ class AudioTrackDTO : NSObject, AudioTrack {
     var albumId:UInt64 = 0
     var albumTitle:String!
     var albumTrackNumber:Int = 0
-    var assetURL:NSURL!
+    var assetURL:URL!
     var artist:String!
     var id:UInt64 = 0
-    var playbackDuration:NSTimeInterval = 0
+    var playbackDuration:TimeInterval = 0
     var trackTitle:String!
     var artwork:MPMediaItemArtwork!
     var audioTrackSource:AudioTrackSource = .iPodLibrary
@@ -59,7 +59,7 @@ class AudioTrackDTO : NSObject, AudioTrack {
         
     }
     
-    override func valueForKey(key: String) -> AnyObject? {
+    override func value(forKey key: String) -> AnyObject? {
         switch key {
         case "albumArtist": return albumArtist
         case "albumTitle": return albumTitle
@@ -68,7 +68,7 @@ class AudioTrackDTO : NSObject, AudioTrack {
         }
     }
     
-    func titleForGrouping(libraryGrouping:LibraryGrouping) -> String? {
+    func titleForGrouping(_ libraryGrouping:LibraryGrouping) -> String? {
         switch libraryGrouping {
         case LibraryGrouping.Albums: return albumTitle
         case LibraryGrouping.Artists: return albumArtist
@@ -79,7 +79,7 @@ class AudioTrackDTO : NSObject, AudioTrack {
         return "Some music name"
     }
     
-    func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64 {
+    func persistentIdForGrouping(_ libraryGrouping:LibraryGrouping) -> UInt64 {
         switch libraryGrouping {
         case LibraryGrouping.Albums: return albumId
         case LibraryGrouping.Artists: return albumArtistId
@@ -89,15 +89,15 @@ class AudioTrackDTO : NSObject, AudioTrack {
         return 0
     }
     
-    func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void)) {
+    func enumerateValuesForProperties(_ properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void)) {
         
     }
 	
 	func artworkImage(forSize size: CGSize) -> UIImage? {
-		return artwork?.imageWithSize(size)
+		return artwork?.image(at: size)
 	}
     
-    func encodeWithCoder(aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         
     }
     

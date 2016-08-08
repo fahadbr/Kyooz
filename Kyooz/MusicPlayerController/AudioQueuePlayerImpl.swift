@@ -21,13 +21,13 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     //MARK: Class Properties
     let nowPlayingInfoHelper = NowPlayingInfoHelper.instance
-    let remoteCommandCenter = MPRemoteCommandCenter.sharedCommandCenter()
+    let remoteCommandCenter = MPRemoteCommandCenter.shared()
     
     var shouldPlayAfterLoading:Bool = false
     let audioController:AudioController = AudioEngineController()
     let lastFmScrobbler = LastFmScrobbler.instance
     
-    private var nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: .Default) {
+    private var nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: .default) {
         didSet {
             publishNotification(for: .queueUpdate)
         }
@@ -35,11 +35,11 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     private var previousIndex:Int {
         switch repeatMode {
-        case .Off:
+        case .off:
             return indexOfNowPlayingItem - 1
-        case .One:
+        case .one:
             return indexOfNowPlayingItem
-        case .All:
+        case .all:
             let index = indexOfNowPlayingItem - 1
             return index < 0 ? (nowPlayingQueue.count - 1) : index
         }
@@ -47,11 +47,11 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     private var nextIndex:Int {
         switch repeatMode {
-        case .Off:
+        case .off:
             return indexOfNowPlayingItem + 1
-        case .One:
+        case .one:
             return indexOfNowPlayingItem
-        case .All:
+        case .all:
             let queue = nowPlayingQueue
             if queue.isEmpty {
                 return 0
@@ -90,7 +90,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             }
         }
         
-        if let repeatStateRawValue = (TempDataDAO.instance.getPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey) as? NSNumber)?.integerValue,
+        if let repeatStateRawValue = (TempDataDAO.instance.getPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey) as? NSNumber)?.intValue,
             let repeatState = RepeatState(rawValue: repeatStateRawValue) {
             repeatMode = repeatState
         }
@@ -105,7 +105,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
     //MARK: AudioQueuePlayer - Properties
-    let type = AudioQueuePlayerType.Default
+    let type = AudioQueuePlayerType.default
     
     var playbackStateSnapshot:PlaybackStateSnapshot {
 		get {
@@ -183,9 +183,9 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         }
     }
 
-    var repeatMode:RepeatState = .Off {
+    var repeatMode:RepeatState = .off {
         didSet {
-            TempDataDAO.instance.addPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey, value: NSNumber(integer: repeatMode.rawValue))
+            TempDataDAO.instance.addPersistentValue(key: AudioQueuePlayerImpl.repeatStateKey, value: NSNumber(value: repeatMode.rawValue))
         }
     }
 
@@ -209,7 +209,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 //        LastFmScrobbler.instance.scrobbleMediaItem(nowPlayingItem!)
         updateNowPlayingStateToIndex(nextIndex)
     }
-    func skipBackwards(forcePreviousTrack: Bool) {
+    func skipBackwards(_ forcePreviousTrack: Bool) {
         if(currentPlaybackTime < 2.0 || forcePreviousTrack) {
             updateNowPlayingStateToIndex(previousIndex)
         } else {
@@ -281,7 +281,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     
     //MARK: Class Functions
     
-    private func filter(tracks:[AudioTrack], presentUnplayableTracks:Bool = true) -> [AudioTrack]? {
+    private func filter(_ tracks:[AudioTrack], presentUnplayableTracks:Bool = true) -> [AudioTrack]? {
         guard !tracks.isEmpty else { return nil }
         var unPlayableTrackNames = [String]()
         unPlayableTrackNames.reserveCapacity(tracks.count)
@@ -289,7 +289,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         filteredTracks.reserveCapacity(tracks.count)
         
 		
-        for (i, track) in tracks.enumerate() {
+        for (i, track) in tracks.enumerated() {
             if track.assetURL == nil {
                 unPlayableTrackNames.append("\(i + 1): \(track.trackTitle) - \(track.artist)")
             } else {
@@ -299,10 +299,10 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         
         if !unPlayableTrackNames.isEmpty && presentUnplayableTracks {
             KyoozUtils.doInMainQueueAsync() {
-                let message = "Filtered out tracks:\n\n" + unPlayableTrackNames.joinWithSeparator("\n")
-                let ac = UIAlertController(title: "Enable Apple Music/iCloud Music Library in settings to play the following tracks", message: message, preferredStyle: .Alert)
-                ac.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-                ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+                let message = "Filtered out tracks:\n\n" + unPlayableTrackNames.joined(separator: "\n")
+                let ac = UIAlertController(title: "Enable Apple Music/iCloud Music Library in settings to play the following tracks", message: message, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: nil))
+                ContainerViewController.instance.present(ac, animated: true, completion: nil)
             }
         }
         
@@ -310,7 +310,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         return filteredTracks
     }
     
-    private func updateNowPlayingStateToIndex(newIndex:Int, shouldLoadAfterUpdate:Bool = true) {
+    private func updateNowPlayingStateToIndex(_ newIndex:Int, shouldLoadAfterUpdate:Bool = true) {
         let nowPlayingQueue = self.nowPlayingQueue
         
         let reachedEndOfQueue = newIndex >= nowPlayingQueue.count
@@ -324,16 +324,16 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
 
-    private func loadMediaItem(mediaItem:AudioTrack) {
+    private func loadMediaItem(_ mediaItem:AudioTrack) {
         func handleError() {
-            if repeatMode == .One {
-                repeatMode = .Off
+            if repeatMode == .one {
+                repeatMode = .off
             }
             skipForwards()
         }
         
         do {
-            guard let url:NSURL = mediaItem.assetURL else {
+            guard let url:URL = mediaItem.assetURL else {
                 throw NSError(domain: "Kyooz", code: 1, userInfo: [NSLocalizedDescriptionKey:"No URL found"])
             }
             
@@ -353,36 +353,36 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         }
     }
     
-    func advanceToNextTrack(shouldLoadAfterUpdate:Bool) {
+    func advanceToNextTrack(_ shouldLoadAfterUpdate:Bool) {
         updateNowPlayingStateToIndex(nextIndex, shouldLoadAfterUpdate: shouldLoadAfterUpdate)
     }
     
     
     //MARK: Remote Command Center Registration
     private func registerForRemoteCommands() {
-        remoteCommandCenter.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+        remoteCommandCenter.playCommand.addTarget { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
             self.play()
-            return MPRemoteCommandHandlerStatus.Success
+            return MPRemoteCommandHandlerStatus.success
         }
-        remoteCommandCenter.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+        remoteCommandCenter.pauseCommand.addTarget { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
             self.pause()
-            return MPRemoteCommandHandlerStatus.Success
+            return MPRemoteCommandHandlerStatus.success
         }
-        remoteCommandCenter.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+        remoteCommandCenter.togglePlayPauseCommand.addTarget { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
             if(self.musicIsPlaying) {
                 self.pause()
             } else {
                 self.play()
             }
-            return MPRemoteCommandHandlerStatus.Success
+            return MPRemoteCommandHandlerStatus.success
         }
-        remoteCommandCenter.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+        remoteCommandCenter.previousTrackCommand.addTarget { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
             self.skipBackwards(false)
-            return MPRemoteCommandHandlerStatus.Success
+            return MPRemoteCommandHandlerStatus.success
         }
-        remoteCommandCenter.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
+        remoteCommandCenter.nextTrackCommand.addTarget { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
             self.skipForwards()
-            return MPRemoteCommandHandlerStatus.Success
+            return MPRemoteCommandHandlerStatus.success
         }
     }
     
@@ -401,12 +401,12 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     //MARK: AudioControllerDelegate functions
     
-    func audioPlayerDidFinishPlaying(player: AudioController, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AudioController, successfully flag: Bool) {
         if(flag) {
             KyoozUtils.doInMainQueue() {
                 self.advanceToNextTrack(true)
@@ -416,16 +416,16 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
         }
     }
     
-    func audioPlayerDidRequestNextItemToBuffer(player:AudioController) -> NSURL? {
+    func audioPlayerDidRequestNextItemToBuffer(_ player:AudioController) -> URL? {
         let nextIndex = self.nextIndex
         let nextItem:AudioTrack? = (nextIndex >= nowPlayingQueue.count) ?  nil : nowPlayingQueue[nextIndex]
         if let url = nextItem?.assetURL {
-            return url
+            return url as URL
         }
         return nil
     }
     
-    func audioPlayerDidAdvanceToNextItem(player:AudioController) {
+    func audioPlayerDidAdvanceToNextItem(_ player:AudioController) {
         KyoozUtils.doInMainQueue() {
             self.advanceToNextTrack(false)
 			self.publishNotification(for: .nowPlayingItemChanged)

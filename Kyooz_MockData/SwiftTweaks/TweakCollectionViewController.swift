@@ -9,8 +9,8 @@
 import UIKit
 
 internal protocol TweakCollectionViewControllerDelegate {
-	func tweakCollectionViewControllerDidPressDismissButton(tweakCollectionViewController: TweakCollectionViewController)
-	func tweakCollectionViewController(tweakCollectionViewController: TweakCollectionViewController, didTapFloatingTweakGroupButtonForTweakGroup tweakGroup: TweakGroup)
+	func tweakCollectionViewControllerDidPressDismissButton(_ tweakCollectionViewController: TweakCollectionViewController)
+	func tweakCollectionViewController(_ tweakCollectionViewController: TweakCollectionViewController, didTapFloatingTweakGroupButtonForTweakGroup tweakGroup: TweakGroup)
 }
 
 /// Displays the contents of a TweakCollection in a table - each child TweakGroup gets a section, each Tweak<T> gets a cell.
@@ -21,8 +21,8 @@ internal final class TweakCollectionViewController: UIViewController {
 	private let delegate: TweakCollectionViewControllerDelegate
 
 	private let tableView: UITableView = {
-		let tableView = UITableView(frame: CGRectZero, style: .Grouped)
-		tableView.keyboardDismissMode = .OnDrag
+		let tableView = UITableView(frame: CGRect.zero, style: .grouped)
+		tableView.keyboardDismissMode = .onDrag
 		return tableView
 	}()
 
@@ -36,8 +36,8 @@ internal final class TweakCollectionViewController: UIViewController {
 		title = tweakCollection.title
 
 		toolbarItems = [
-			UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
-			UIBarButtonItem(title: TweaksViewController.dismissButtonTitle, style: .Done, target: self, action: #selector(self.dismissButtonTapped))
+			UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+			UIBarButtonItem(title: TweaksViewController.dismissButtonTitle, style: .done, target: self, action: #selector(self.dismissButtonTapped))
 		]
 	}
 
@@ -49,15 +49,15 @@ internal final class TweakCollectionViewController: UIViewController {
 		super.viewDidLoad()
 
 		tableView.frame = view.bounds
-		tableView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+		tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.registerClass(TweakTableCell.self, forCellReuseIdentifier: TweakCollectionViewController.TweakTableViewCellIdentifer)
-		tableView.registerClass(TweakGroupSectionHeader.self, forHeaderFooterViewReuseIdentifier: TweakGroupSectionHeader.identifier)
+		tableView.register(TweakTableCell.self, forCellReuseIdentifier: TweakCollectionViewController.TweakTableViewCellIdentifer)
+		tableView.register(TweakGroupSectionHeader.self, forHeaderFooterViewReuseIdentifier: TweakGroupSectionHeader.identifier)
 		view.addSubview(tableView)
 	}
 
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		// Reload data (in case colors were changed on a divedown)
@@ -79,31 +79,31 @@ internal final class TweakCollectionViewController: UIViewController {
 }
 
 extension TweakCollectionViewController: UITableViewDelegate {
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let tweak = tweakAtIndexPath(indexPath)
 		switch tweak.tweakViewDataType {
-		case .UIColor:
+		case .uiColor:
 			let colorEditVC = TweakColorEditViewController(anyTweak: tweak, tweakStore: tweakStore, delegate: self)
 			navigationController?.pushViewController(colorEditVC, animated: true)
-		case .Boolean, .Integer, .CGFloat, .Double:
+		case .boolean, .integer, .cgFloat, .double:
 			break
 		}
 	}
 }
 
 extension TweakCollectionViewController: UITableViewDataSource {
-	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+	func numberOfSections(in tableView: UITableView) -> Int {
 		return tweakCollection.tweakGroups.count
 	}
 
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return tweakCollection.sortedTweakGroups[section].tweaks.count
 	}
 
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let tweak = tweakAtIndexPath(indexPath)
 
-		let cell = tableView.dequeueReusableCellWithIdentifier(TweakCollectionViewController.TweakTableViewCellIdentifer, forIndexPath: indexPath) as! TweakTableCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: TweakCollectionViewController.TweakTableViewCellIdentifer, for: indexPath) as! TweakTableCell
 		cell.textLabel?.text = tweak.tweakName
 		cell.viewData = tweakStore.currentViewDataForTweak(tweak)
 		cell.delegate = self
@@ -112,30 +112,30 @@ extension TweakCollectionViewController: UITableViewDataSource {
 
 	private static let sectionFooterHeight: CGFloat = 27
 
-	func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+	func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
 		return TweakCollectionViewController.sectionFooterHeight
 	}
 
-	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return TweakGroupSectionHeader.height
 	}
 
-	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(TweakGroupSectionHeader.identifier) as! TweakGroupSectionHeader
+	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TweakGroupSectionHeader.identifier) as! TweakGroupSectionHeader
 		headerView.tweakGroup = tweakCollection.sortedTweakGroups[section]
 		headerView.delegate = self
 		return headerView
 	}
 
-	private func tweakAtIndexPath(indexPath: NSIndexPath) -> AnyTweak {
-		return tweakCollection.sortedTweakGroups[indexPath.section].sortedTweaks[indexPath.row]
+	private func tweakAtIndexPath(_ indexPath: IndexPath) -> AnyTweak {
+		return tweakCollection.sortedTweakGroups[(indexPath as NSIndexPath).section].sortedTweaks[(indexPath as NSIndexPath).row]
 	}
 }
 
 extension TweakCollectionViewController: TweakTableCellDelegate {
-	func tweakCellDidChangeCurrentValue(tweakCell: TweakTableCell) {
+	func tweakCellDidChangeCurrentValue(_ tweakCell: TweakTableCell) {
 		if let
-			indexPath = tableView.indexPathForCell(tweakCell),
+			indexPath = tableView.indexPath(for: tweakCell),
 			viewData = tweakCell.viewData
 		{
 			let tweak = tweakAtIndexPath(indexPath)
@@ -145,13 +145,13 @@ extension TweakCollectionViewController: TweakTableCellDelegate {
 }
 
 extension TweakCollectionViewController: TweakColorEditViewControllerDelegate {
-	func tweakColorEditViewControllerDidPressDismissButton(tweakColorEditViewController: TweakColorEditViewController) {
+	func tweakColorEditViewControllerDidPressDismissButton(_ tweakColorEditViewController: TweakColorEditViewController) {
 		self.delegate.tweakCollectionViewControllerDidPressDismissButton(self)
 	}
 }
 
 extension TweakCollectionViewController: TweakGroupSectionHeaderDelegate {
-	private func tweakGroupSectionHeaderDidPressFloatingButton(sectionHeader: TweakGroupSectionHeader) {
+	private func tweakGroupSectionHeaderDidPressFloatingButton(_ sectionHeader: TweakGroupSectionHeader) {
 		guard let tweakGroup = sectionHeader.tweakGroup else { return }
 
 		delegate.tweakCollectionViewController(self, didTapFloatingTweakGroupButtonForTweakGroup: tweakGroup)
@@ -159,7 +159,7 @@ extension TweakCollectionViewController: TweakGroupSectionHeaderDelegate {
 }
 
 private protocol TweakGroupSectionHeaderDelegate: class {
-	func tweakGroupSectionHeaderDidPressFloatingButton(sectionHeader: TweakGroupSectionHeader)
+	func tweakGroupSectionHeaderDidPressFloatingButton(_ sectionHeader: TweakGroupSectionHeader)
 }
 
 /// Displays the name of a tweak group, and includes a (+) button to present the floating TweakGroup UI when tapped.
@@ -167,10 +167,10 @@ private final class TweakGroupSectionHeader: UITableViewHeaderFooterView {
 	static let identifier = "TweakGroupSectionHeader"
 
 	private let floatingButton: UIButton = {
-		let button = UIButton(type: .Custom)
-		let buttonImage = UIImage(swiftTweaksImage: .FloatingPlusButton).imageWithRenderingMode(.AlwaysTemplate)
-		button.setImage(buttonImage.imageTintedWithColor(AppTheme.Colors.controlTinted), forState: .Normal)
-		button.setImage(buttonImage.imageTintedWithColor(AppTheme.Colors.controlTintedPressed), forState: .Highlighted)
+		let button = UIButton(type: .custom)
+		let buttonImage = UIImage(swiftTweaksImage: .FloatingPlusButton).withRenderingMode(.alwaysTemplate)
+		button.setImage(buttonImage.imageTintedWithColor(AppTheme.Colors.controlTinted), for: UIControlState())
+		button.setImage(buttonImage.imageTintedWithColor(AppTheme.Colors.controlTintedPressed), for: .highlighted)
 		return button
 	}()
 
@@ -193,7 +193,7 @@ private final class TweakGroupSectionHeader: UITableViewHeaderFooterView {
 	override init(reuseIdentifier: String?) {
 		super.init(reuseIdentifier: reuseIdentifier)
 
-		floatingButton.addTarget(self, action: #selector(self.floatingButtonTapped), forControlEvents: .TouchUpInside)
+		floatingButton.addTarget(self, action: #selector(self.floatingButtonTapped), for: .touchUpInside)
 
 		contentView.addSubview(floatingButton)
 		contentView.addSubview(titleLabel)

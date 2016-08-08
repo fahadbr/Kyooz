@@ -22,14 +22,14 @@ final class IndexSearchOperation<T:SearchIndexValue> : AbstractResultOperation<[
     
     
     override func main() {
-        if cancelled { return }
+        if isCancelled { return }
         var results = searchIndex.searchIndexWithString(searchString, searchPredicate:searchPredicate)
         
-        if cancelled { return }
+        if isCancelled { return }
         
         inThreadCompletionBlock?(results)
         
-        if cancelled { return }
+        if isCancelled { return }
         
         let secondaryResults = searchIndex.searchValuesWithString(searchString, searchPredicate: searchPredicate)
         
@@ -37,14 +37,14 @@ final class IndexSearchOperation<T:SearchIndexValue> : AbstractResultOperation<[
 		
 		let tracksSet = NSSet(array: results)
 		let resultsSet = NSMutableSet(array: secondaryResults)
-		resultsSet.minusSet(tracksSet as Set<NSObject>)
+		resultsSet.minus(tracksSet as Set<NSObject>)
 		guard let differences = resultsSet.allObjects as? [T] else {
 			return
 		}
 		
-        results.appendContentsOf(differences)
+        results.append(contentsOf: differences)
         
-        if cancelled { return }
+        if isCancelled { return }
             
         inThreadCompletionBlock?(results)
     }

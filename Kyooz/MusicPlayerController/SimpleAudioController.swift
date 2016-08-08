@@ -13,7 +13,7 @@ class SimpleAudioController : NSObject, AudioController, AVAudioPlayerDelegate{
     
     static let instance = SimpleAudioController()
     
-    private var scrobbleTime:NSTimeInterval = 0
+    private var scrobbleTime:TimeInterval = 0
     
     var avAudioPlayer:AVAudioPlayer? {
         didSet {
@@ -63,14 +63,14 @@ class SimpleAudioController : NSObject, AudioController, AVAudioPlayerDelegate{
         return false
     }
     
-    func loadItem(url:NSURL) throws {
-        avAudioPlayer = try AVAudioPlayer(contentsOfURL: url)
+    func loadItem(_ url:URL) throws {
+        avAudioPlayer = try AVAudioPlayer(contentsOf: url)
 
         avAudioPlayer!.delegate = self
         avAudioPlayer!.prepareToPlay()
     }
     
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         delegate.audioPlayerDidFinishPlaying(self, successfully: flag)
     }
 }

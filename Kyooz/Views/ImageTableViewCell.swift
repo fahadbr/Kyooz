@@ -23,7 +23,7 @@ class ImageTableViewCell: MediaLibraryTableViewCell{
 		return delegate?.shouldAnimateInArtwork ?? false
 	}
 
-    override func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    override func configureCellForItems(_ entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
         titleLabel.text = entity.titleForGrouping(libraryGrouping)
         
@@ -43,17 +43,17 @@ class ImageTableViewCell: MediaLibraryTableViewCell{
 			}
 			configureDRMAndCloudLabels(track)
 		} else {
-			accessoryStack.hidden = true
+			accessoryStack.isHidden = true
 		}
 		
-        detailsLabel.text = strings.isEmpty ? count : strings.joinWithSeparator(" • ")
+        detailsLabel.text = strings.isEmpty ? count : strings.joined(separator: " • ")
         if shouldAnimate {
             albumArtwork.alpha = 0
 		
             entity.artworkImage(forSize: albumArtwork.frame.size) { [albumArtwork = self.albumArtwork](image) in
-                albumArtwork.alpha = 1
-                albumArtwork.layer.addAnimation(ImageTableViewCell.fadeInAnimation, forKey: nil)
-                albumArtwork.image = image
+                albumArtwork?.alpha = 1
+                albumArtwork?.layer.add(ImageTableViewCell.fadeInAnimation, forKey: nil)
+                albumArtwork?.image = image
             }
         } else {
             albumArtwork.image = entity.artworkImage(forSize: albumArtwork.frame.size)

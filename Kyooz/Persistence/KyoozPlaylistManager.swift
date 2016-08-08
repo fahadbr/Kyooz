@@ -14,7 +14,7 @@ final class KyoozPlaylistManager : NSObject {
 	static let instance = KyoozPlaylistManager()
 	
     static let PlaylistSetUpdate = "KyoozPlaylistManagerPlaylistSetUpdate"
-	private static let listDirectory:String = KyoozUtils.libraryDirectory.stringByAppendingPathComponent("kyoozPlaylists")
+	private static let listDirectory:String = KyoozUtils.libraryDirectory.appendingPathComponent("kyoozPlaylists")
 	
     private var playlistsSet:NSMutableOrderedSet = NSMutableOrderedSet()
 	
@@ -27,17 +27,17 @@ final class KyoozPlaylistManager : NSObject {
         reloadSourceData()
     }
 	
-	func create(playlist playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
-		if playlistsSet.containsObject(playlist) {
+	func create(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
+		if playlistsSet.contains(playlist) {
 			let b = MenuBuilder()
                 .with(title: "There's already a playlist with the name \(playlist.name). Would you like to overwrite?")
-            b.with(options:KyoozMenuAction(title: "OVERWRITE,") {
-				do {
-					try self.createOrUpdatePlaylist(playlist, withTracks: tracks)
-				} catch let error {
-					KyoozUtils.showPopupError(withTitle: "Error occurred while saving playlist \(playlist.name)", withThrownError: error, presentationVC: nil)
-				}
-			})
+                .with(options:KyoozMenuAction(title: "OVERWRITE,") {
+                    do {
+                        try self.createOrUpdatePlaylist(playlist, withTracks: tracks)
+                    } catch let error {
+                        KyoozUtils.showPopupError(withTitle: "Error occurred while saving playlist \(playlist.name)", withThrownError: error, presentationVC: nil)
+                    }
+                })
 			
             KyoozUtils.showMenuViewController(b.viewController)
 		} else {
@@ -45,20 +45,20 @@ final class KyoozPlaylistManager : NSObject {
 		}
 	}
 	
-	func update(playlist playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
-		guard playlistsSet.containsObject(playlist) else {
+	func update(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
+		guard playlistsSet.contains(playlist) else {
 			throw DataPersistenceError(errorDescription:"Playlist with name \(playlist.name) does not exist")
 		}
 		try createOrUpdatePlaylist(playlist, withTracks: tracks)
 	}
 	
-    func deletePlaylist(playlist:KyoozPlaylist) throws {
+    func deletePlaylist(_ playlist:KyoozPlaylist) throws {
 		try playlist.setTracks(nil)
         try updatePlaylistSet(withPlaylist: playlist, actionIsDelete: true)
 		ShortNotificationManager.instance.presentShortNotification(withMessage:"Deleted playlist \(playlist.name)")
     }
 	
-	private func createOrUpdatePlaylist(playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
+	private func createOrUpdatePlaylist(_ playlist:KyoozPlaylist, withTracks tracks:[AudioTrack]) throws {
 		playlist.count = tracks.count
 		
 		let oldCount = playlistsSet.count
@@ -71,11 +71,11 @@ final class KyoozPlaylistManager : NSObject {
 	}
 	
 	private func updatePlaylistSet(withPlaylist playlist:KyoozPlaylist, actionIsDelete:Bool) throws {
-		func addOrRemove(remove:Bool) {
+		func addOrRemove(_ remove:Bool) {
 			if remove {
-				playlistsSet.removeObject(playlist)
+				playlistsSet.remove(playlist)
 			} else {
-				playlistsSet.addObject(playlist)
+				playlistsSet.add(playlist)
 			}
 		}
 		addOrRemove(actionIsDelete)
@@ -85,8 +85,8 @@ final class KyoozPlaylistManager : NSObject {
 		}
 		
 		Playlists.setMostRecentlyModified(playlist: playlist)
-        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(1.0), dispatch_get_main_queue()) {
-            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: KyoozPlaylistManager.PlaylistSetUpdate, object: self))
+        DispatchQueue.main.asyncAfter(deadline: KyoozUtils.getDispatchTimeForSeconds(1.0)) {
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: KyoozPlaylistManager.PlaylistSetUpdate), object: self))
         }
 	}
 }
@@ -114,7 +114,7 @@ extension KyoozPlaylistManager : MutableAudioEntitySourceData {
 	}
 	
     func reloadSourceData() {
-        guard let object = NSKeyedUnarchiver.unarchiveObjectWithFile(KyoozPlaylistManager.listDirectory) else {
+        guard let object = NSKeyedUnarchiver.unarchiveObject(withFile: KyoozPlaylistManager.listDirectory) else {
             Logger.debug("couldnt find playlist set in list directory")
 			guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory) else {
 				Logger.error("couldn't save kyooz playlist set")
@@ -130,34 +130,34 @@ extension KyoozPlaylistManager : MutableAudioEntitySourceData {
         playlistsSet = set
     }
     
-    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
-        guard let playlist = playlistsSet.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
+    func sourceDataForIndex(_ indexPath: IndexPath) -> AudioEntitySourceData? {
+        guard let playlist = playlistsSet.object(at: (indexPath as NSIndexPath).row) as? KyoozPlaylist else {
             return nil
         }
         return KyoozPlaylistSourceData(playlist: playlist)
     }
     
-    func deleteEntitiesAtIndexPaths(indexPaths: [NSIndexPath]) throws {
+    func deleteEntitiesAtIndexPaths(_ indexPaths: [IndexPath]) throws {
 		
-        let sortedIndexPaths = indexPaths.sort() { $0.row > $1.row }
+        let sortedIndexPaths = indexPaths.sorted() { ($0 as NSIndexPath).row > ($1 as NSIndexPath).row }
         for indexPath in sortedIndexPaths {
-            guard let playlist = playlistsSet.objectAtIndex(indexPath.row) as? KyoozPlaylist else {
+            guard let playlist = playlistsSet.object(at: (indexPath as NSIndexPath).row) as? KyoozPlaylist else {
                 return
             }
             try deletePlaylist(playlist)
         }
     }
     
-    func insertEntities(entities: [AudioEntity], atIndexPath indexPathToInsert: NSIndexPath) throws -> Int {
+    func insertEntities(_ entities: [AudioEntity], atIndexPath indexPathToInsert: IndexPath) throws -> Int {
         throw KyoozError(errorDescription: "unsupported implementation")
     }
     
-    func moveEntity(fromIndexPath originalIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) throws {
+    func moveEntity(fromIndexPath originalIndexPath: IndexPath, toIndexPath destinationIndexPath: IndexPath) throws {
         //reordering is not supported
     }
     
-    subscript(i:NSIndexPath) -> AudioEntity {
-        return playlistsSet.objectAtIndex(i.row) as! KyoozPlaylist
+    subscript(i:IndexPath) -> AudioEntity {
+        return playlistsSet.object(at: (i as NSIndexPath).row) as! KyoozPlaylist
     }
 }
 
@@ -166,7 +166,7 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	static let nameKey = "kyoozPlaylist.name"
 	static let countKey = "kyoozPlaylist.count"
 	
-	static func supportsSecureCoding() -> Bool {
+    static var supportsSecureCoding: Bool {
 		return true
 	}
 	
@@ -178,7 +178,7 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 		return name.hashValue
 	}
     
-    override func isEqual(object: AnyObject?) -> Bool {
+    override func isEqual(_ object: AnyObject?) -> Bool {
         guard let otherPlaylist = object as? KyoozPlaylist else {
             return false
         }
@@ -196,7 +196,7 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
     }
     
     private var playlistTracksFileName : String {
-        return KyoozUtils.libraryDirectory.stringByAppendingPathComponent(name)
+        return KyoozUtils.libraryDirectory.appendingPathComponent(name)
     }
 	
 	init(name:String) {
@@ -204,21 +204,21 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	}
 	
 	init?(coder aDecoder: NSCoder) {
-		guard let persistedName = aDecoder.decodeObjectOfClass(NSString.self, forKey: KyoozPlaylist.nameKey) as? String else {
+        guard let persistedName = aDecoder.decodeObject(of: NSString.self, forKey: KyoozPlaylist.nameKey) as? String else {
 			name = "Unknown"
 			count = 0
 			return
 		}
 		
-		count = aDecoder.decodeIntegerForKey(KyoozPlaylist.countKey)
+		count = aDecoder.decodeInteger(forKey: KyoozPlaylist.countKey)
 		name = persistedName
 	}
 	
 
 	
-	private func setTracks(tracks:[AudioTrack]?) throws {
+	private func setTracks(_ tracks:[AudioTrack]?) throws {
 		guard let newTracks = tracks else {
-			try NSFileManager.defaultManager().removeItemAtPath(playlistTracksFileName)
+			try FileManager.default.removeItem(atPath: playlistTracksFileName)
 			return
 		}
 		
@@ -228,9 +228,9 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
         _tracks = tracks
 	}
 	
-	func encodeWithCoder(aCoder: NSCoder) {
-		aCoder.encodeObject(name, forKey: KyoozPlaylist.nameKey)
-		aCoder.encodeInteger(count, forKey: KyoozPlaylist.countKey)
+	func encode(with aCoder: NSCoder) {
+		aCoder.encode(name, forKey: KyoozPlaylist.nameKey)
+		aCoder.encode(count, forKey: KyoozPlaylist.countKey)
 	}
 	
 }
@@ -240,20 +240,20 @@ extension KyoozPlaylist : AudioTrackCollection {
         return tracks.first
     }
     
-    func titleForGrouping(libraryGrouping:LibraryGrouping) -> String? {
+    func titleForGrouping(_ libraryGrouping:LibraryGrouping) -> String? {
         if libraryGrouping == LibraryGrouping.Playlists {
             return name
         }
         return tracks.first?.titleForGrouping(libraryGrouping)
     }
     
-    func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64 {
+    func persistentIdForGrouping(_ libraryGrouping:LibraryGrouping) -> UInt64 {
         return tracks.first?.persistentIdForGrouping(libraryGrouping) ?? 0
     }
     
     var tracks:[AudioTrack] {
         if _tracks == nil {
-            _tracks = NSKeyedUnarchiver.unarchiveObjectWithFile(playlistTracksFileName) as? [AudioTrack] ?? [AudioTrack]()
+            _tracks = NSKeyedUnarchiver.unarchiveObject(withFile: playlistTracksFileName) as? [AudioTrack] ?? [AudioTrack]()
         }
         return _tracks
     }

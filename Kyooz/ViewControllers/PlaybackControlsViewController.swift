@@ -19,17 +19,17 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		func addConstraint(view:UIView, constant:CGFloat) {
+		func addConstraint(_ view:UIView, constant:CGFloat) {
 			view.translatesAutoresizingMaskIntoConstraints = false
-			view.heightAnchor.constraintEqualToConstant(constant).active = true
-			view.widthAnchor.constraintEqualToAnchor(view.heightAnchor).active = true
+			view.heightAnchor.constraint(equalToConstant: constant).isActive = true
+			view.widthAnchor.constraint(equalTo: view.heightAnchor).isActive = true
 		}
 		
         playPauseButton.hasOuterFrame = false
-		shuffleButton.addTarget(self, action: #selector(self.toggleShuffle(_:)), forControlEvents: .TouchUpInside)
-		skipBackButton.addTarget(self, action: #selector(self.skipBackward(_:)), forControlEvents: .TouchUpInside)
-		skipForwardButton.addTarget(self, action: #selector(self.skipForward(_:)), forControlEvents: .TouchUpInside)
-		repeatButton.addTarget(self, action: #selector(self.switchRepeatMode(_:)), forControlEvents: .TouchUpInside)
+		shuffleButton.addTarget(self, action: #selector(self.toggleShuffle(_:)), for: .touchUpInside)
+		skipBackButton.addTarget(self, action: #selector(self.skipBackward(_:)), for: .touchUpInside)
+		skipForwardButton.addTarget(self, action: #selector(self.skipForward(_:)), for: .touchUpInside)
+		repeatButton.addTarget(self, action: #selector(self.switchRepeatMode(_:)), for: .touchUpInside)
 		
         let inactiveColor = UIColor(white: 1, alpha: ThemeHelper.defaultButtonTextAlpha)
         shuffleButton.color = inactiveColor
@@ -54,11 +54,11 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 		}
 		
 		stackView = UIStackView(arrangedSubviews: viewArray)
-		stackView.axis = .Horizontal
-		stackView.alignment = .Center
-		stackView.distribution = .EqualSpacing
+		stackView.axis = .horizontal
+		stackView.alignment = .center
+		stackView.distribution = .equalSpacing
 		
-		ConstraintUtils.applyStandardConstraintsToView(subView: stackView, parentView: view)
+		_ = ConstraintUtils.applyStandardConstraintsToView(subView: stackView, parentView: view)
 	}
 	
 	override func updateButtonStates() {
@@ -67,15 +67,15 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 		shuffleButton.isActive = audioQueuePlayer.shuffleActive
 	}
 	
-	func skipBackward(sender: AnyObject) {
+	func skipBackward(_ sender: AnyObject) {
 		audioQueuePlayer.skipBackwards(false)
 	}
 	
-	func skipForward(sender: AnyObject) {
+	func skipForward(_ sender: AnyObject) {
 		audioQueuePlayer.skipForwards()
 	}
 	
-	func playPauseAction(sender: AnyObject) {
+	func playPauseAction(_ sender: AnyObject) {
 		if(audioQueuePlayer.musicIsPlaying) {
 			self.audioQueuePlayer.pause()
 		} else {
@@ -83,13 +83,13 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 		}
 	}
 	
-	func toggleShuffle(sender: AnyObject) {
+	func toggleShuffle(_ sender: AnyObject) {
 		let newState = !audioQueuePlayer.shuffleActive
 		audioQueuePlayer.shuffleActive = newState
 		shuffleButton.isActive = audioQueuePlayer.shuffleActive
 	}
 	
-	func switchRepeatMode(sender: AnyObject) {
+	func switchRepeatMode(_ sender: AnyObject) {
 		let newState = audioQueuePlayer.repeatMode.nextState
 		audioQueuePlayer.repeatMode = newState
 		repeatButton.repeatState = audioQueuePlayer.repeatMode
@@ -97,9 +97,9 @@ final class PlaybackControlsViewController : AbstractPlaybackViewController {
 	
 	override func registerForNotifications() {
 		super.registerForNotifications()
-		NSNotificationCenter.defaultCenter()
+		NotificationCenter.default
 			.addObserver(self, selector: #selector(self.updateButtonStates),
-			             name: AudioQueuePlayerUpdate.systematicQueueUpdate.rawValue, object: audioQueuePlayer)
+			             name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.systematicQueueUpdate.rawValue), object: audioQueuePlayer)
 	}
 	
 }

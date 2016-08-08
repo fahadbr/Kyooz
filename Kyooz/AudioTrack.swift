@@ -15,10 +15,10 @@ import Foundation
     var albumId:UInt64 { get }
     var albumTitle:String! { get }
     var albumTrackNumber:Int { get }
-    var assetURL:NSURL! { get }
+    var assetURL:URL! { get }
     var artist:String! { get }
     var id:UInt64 { get }
-    var playbackDuration:NSTimeInterval { get }
+    var playbackDuration:TimeInterval { get }
     var trackTitle:String! { get }
     var audioTrackSource:AudioTrackSource { get }
     var isCloudTrack:Bool { get }
@@ -26,13 +26,13 @@ import Foundation
     var releaseYear:String? { get }
     var hasArtwork:Bool { get }
     
-    func enumerateValuesForProperties(properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
+    func enumerateValuesForProperties(_ properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
     
 }
 
 @objc enum AudioTrackSource:Int {
     case iPodLibrary
-    case Spotify
+    case spotify
 }
 
 

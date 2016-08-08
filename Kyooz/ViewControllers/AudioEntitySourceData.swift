@@ -21,11 +21,11 @@ protocol AudioEntitySourceData : class {
     var libraryGrouping:LibraryGrouping { get }
 	
     func reloadSourceData()
-    func flattenedIndex(indexPath:NSIndexPath) -> Int
-    func getTracksAtIndex(indexPath:NSIndexPath) -> [AudioTrack]
-    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData?
+    func flattenedIndex(_ indexPath:IndexPath) -> Int
+    func getTracksAtIndex(_ indexPath:IndexPath) -> [AudioTrack]
+    func sourceDataForIndex(_ indexPath:IndexPath) -> AudioEntitySourceData?
     
-    subscript(i:NSIndexPath) -> AudioEntity { get }
+    subscript(i:IndexPath) -> AudioEntity { get }
 }
 
 protocol GroupMutableAudioEntitySourceData : AudioEntitySourceData {
@@ -34,11 +34,11 @@ protocol GroupMutableAudioEntitySourceData : AudioEntitySourceData {
 
 protocol MutableAudioEntitySourceData : AudioEntitySourceData {
     
-    func deleteEntitiesAtIndexPaths(indexPaths:[NSIndexPath]) throws
+    func deleteEntitiesAtIndexPaths(_ indexPaths:[IndexPath]) throws
     
-    func moveEntity(fromIndexPath originalIndexPath:NSIndexPath, toIndexPath destinationIndexPath:NSIndexPath) throws
+    func moveEntity(fromIndexPath originalIndexPath:IndexPath, toIndexPath destinationIndexPath:IndexPath) throws
     
-    func insertEntities(entities:[AudioEntity], atIndexPath indexPathToInsert:NSIndexPath) throws -> Int
+    func insertEntities(_ entities:[AudioEntity], atIndexPath indexPathToInsert:IndexPath) throws -> Int
 }
 
 extension AudioEntitySourceData {
@@ -57,7 +57,7 @@ extension AudioEntitySourceData {
         return []
     }
     
-    func getTracksAtIndex(indexPath:NSIndexPath) -> [AudioTrack] {
+    func getTracksAtIndex(_ indexPath:IndexPath) -> [AudioTrack] {
         
         if !entities.isEmpty {
             let entity = self[indexPath]
@@ -71,15 +71,15 @@ extension AudioEntitySourceData {
         return [AudioTrack]()
     }
     
-    func flattenedIndex(indexPath:NSIndexPath) -> Int {
-        return indexPath.row
+    func flattenedIndex(_ indexPath:IndexPath) -> Int {
+        return (indexPath as NSIndexPath).row
     }
     
-    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
+    func sourceDataForIndex(_ indexPath:IndexPath) -> AudioEntitySourceData? {
         return nil
     }
     
-    subscript(i:NSIndexPath) -> AudioEntity {
+    subscript(i:IndexPath) -> AudioEntity {
         return entities[flattenedIndex(i)]
     }
 }

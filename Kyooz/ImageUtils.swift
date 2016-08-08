@@ -10,7 +10,7 @@ import UIKit
 
 struct ImageUtils {
 	
-	static func customSnapshotFromView(inputView:UIView) -> UIView {
+	static func customSnapshotFromView(_ inputView:UIView) -> UIView {
 		//Make an image from the input view
 		let image = imageForView(inputView, opaque: false)
 		
@@ -23,22 +23,22 @@ struct ImageUtils {
 		return snapshot
 	}
     
-    static func resizeImage(image:UIImage, toSize newSize:CGSize) -> UIImage {
+    static func resizeImage(_ image:UIImage, toSize newSize:CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         
-        image.drawInRect(CGRect(origin: CGPoint.zero, size: newSize))
+        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
         
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return newImage;
+        return newImage!;
     }
 	
-	static func imageForView(inputView:UIView, opaque:Bool = true) -> UIImage {
+	static func imageForView(_ inputView:UIView, opaque:Bool = true) -> UIImage {
 		UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, opaque, 0)
-		inputView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+		inputView.layer.render(in: UIGraphicsGetCurrentContext()!)
 		let image = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()
-		return image
+		return image!
 	}
     
     
@@ -71,7 +71,7 @@ struct ImageUtils {
             break
         }
 		UIGraphicsBeginImageContextWithOptions(size, true, 0)
-		for case let (i,image?) in images.enumerate() {
+		for case let (i,image?) in images.enumerated() {
 			let halfSize = CGSize(width: size.width/2, height: size.height/2)
 			
 			let origin:CGPoint
@@ -87,7 +87,7 @@ struct ImageUtils {
 			default:
 				fatalError("should not be a value outside of 0...3")
 			}
-			image.drawInRect(CGRect(origin: origin, size: halfSize))
+			image.draw(in: CGRect(origin: origin, size: halfSize))
 		}
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()

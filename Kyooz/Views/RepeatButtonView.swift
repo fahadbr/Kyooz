@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable
 final class RepeatButtonView: UIButton {
 
-    var repeatState:RepeatState = .Off
+    var repeatState:RepeatState = .off
     
     var color:UIColor = ThemeHelper.defaultFontColor {
         didSet {
@@ -19,19 +19,19 @@ final class RepeatButtonView: UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
-            colorToUse = UIColor.redColor()
-        } else if repeatState != .Off {
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
+            colorToUse = UIColor.red
+        } else if repeatState != .off {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
             colorToUse = color
@@ -43,7 +43,7 @@ final class RepeatButtonView: UIButton {
         
         let insetX = rect.width * 0.30
         let insetY = rect.height * 0.35
-        let insetRect = CGRectInset(rect, insetX, insetY)
+        let insetRect = rect.insetBy(dx: insetX, dy: insetY)
         
         let path = UIBezierPath()
         
@@ -51,7 +51,7 @@ final class RepeatButtonView: UIButton {
         drawCurve(path, insetRect: insetRect, inverted: true)
         
         path.lineWidth = min(insetRect.height, insetRect.width) * 0.15
-        path.lineCapStyle = CGLineCap.Round
+        path.lineCapStyle = CGLineCap.round
         path.stroke()
         
         let smallerSide = min(insetRect.width, insetRect.height)
@@ -67,13 +67,13 @@ final class RepeatButtonView: UIButton {
         trianglePath2.stroke()
         trianglePath2.fill()
         
-        if repeatState == .One {
+        if repeatState == .one {
             drawRepeatOne(insetRect)
         }
         
     }
     
-    private func drawCurve(path:UIBezierPath, insetRect:CGRect, inverted:Bool) {
+    private func drawCurve(_ path:UIBezierPath, insetRect:CGRect, inverted:Bool) {
         let xStartingPoint:CGFloat
         let xEndingPoint:CGFloat
         let midY = insetRect.midY
@@ -88,26 +88,26 @@ final class RepeatButtonView: UIButton {
             yEdge = insetRect.origin.y
         }
         
-        path.moveToPoint(CGPoint(x: xStartingPoint, y: midY))
+        path.move(to: CGPoint(x: xStartingPoint, y: midY))
         
-        path.addQuadCurveToPoint(CGPoint(x: insetRect.midX, y: yEdge), controlPoint: CGPoint(x: xStartingPoint, y: yEdge))
-        path.addLineToPoint(CGPoint(x: xEndingPoint, y: yEdge))
+        path.addQuadCurve(to: CGPoint(x: insetRect.midX, y: yEdge), controlPoint: CGPoint(x: xStartingPoint, y: yEdge))
+        path.addLine(to: CGPoint(x: xEndingPoint, y: yEdge))
     }
     
-    private func drawRepeatOne(insetRect:CGRect) {
+    private func drawRepeatOne(_ insetRect:CGRect) {
         let xInset = insetRect.width * 0.05
         let yInset = insetRect.height * 0.30
         let midX = insetRect.midX
         let maxY = insetRect.maxY - yInset
         
         let path = UIBezierPath()
-        path.moveToPoint(CGPoint(x: midX - xInset, y: insetRect.minY + yInset * 1.2))
-        path.addLineToPoint(CGPoint(x: midX, y: insetRect.minY + yInset))
-        path.addLineToPoint(CGPoint(x: midX, y: maxY))
-        path.moveToPoint(CGPoint(x: midX - xInset, y: maxY))
-        path.addLineToPoint(CGPoint(x: midX + xInset, y: maxY))
+        path.move(to: CGPoint(x: midX - xInset, y: insetRect.minY + yInset * 1.2))
+        path.addLine(to: CGPoint(x: midX, y: insetRect.minY + yInset))
+        path.addLine(to: CGPoint(x: midX, y: maxY))
+        path.move(to: CGPoint(x: midX - xInset, y: maxY))
+        path.addLine(to: CGPoint(x: midX + xInset, y: maxY))
         path.lineWidth = min(insetRect.width, insetRect.height) * 0.10
-        path.lineCapStyle = CGLineCap.Round
+        path.lineCapStyle = CGLineCap.round
         path.stroke()
     }
 

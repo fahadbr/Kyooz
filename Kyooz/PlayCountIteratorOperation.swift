@@ -9,7 +9,7 @@
 import Foundation
 import MediaPlayer
 
-final class PlayCountIteratorOperation: NSOperation {
+final class PlayCountIteratorOperation: Operation {
     
     private let lastFmScrobbler = LastFmScrobbler.instance
     
@@ -32,30 +32,30 @@ final class PlayCountIteratorOperation: NSOperation {
     }
     
     private func iterateThroughPlaycounts() {
-        guard let items = MPMediaQuery.songsQuery().items else {
+        guard let items = MPMediaQuery.songs().items else {
             Logger.debug("no items found in library")
             return
         }
         
         for item in items {
-            if cancelled { return }
+            if isCancelled { return }
             
             let newCount = item.playCount
-            let key = NSNumber(unsignedLongLong: item.persistentID)
+            let key = NSNumber(value: item.persistentID)
             
-            if let oldCount = (oldPlayCounts.objectForKey(key) as? NSNumber)?.integerValue {
+            if let oldCount = (oldPlayCounts.object(forKey: key) as? NSNumber)?.intValue {
                 if newCount > oldCount {
-                    let timeStamp = floor(item.lastPlayedDate?.timeIntervalSince1970 ?? NSDate().timeIntervalSince1970)
+                    let timeStamp = floor(item.lastPlayedDate?.timeIntervalSince1970 ?? Date().timeIntervalSince1970)
                     for i in 0..<(newCount-oldCount) {
                         lastFmScrobbler.addToScrobbleCache(item, timeStampToScrobble: timeStamp + Double(i))
                     }
                 }
             }
             
-            newPlayCounts.setObject(NSNumber(integer: newCount), forKey: key)
+            newPlayCounts.setObject(NSNumber(value: newCount), forKey: key)
         }
         
-        if !cancelled {
+        if !isCancelled {
             playCountCompletionBlock?(newPlayCounts)
         }
     }

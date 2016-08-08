@@ -11,12 +11,12 @@ import UIKit
 
 final class PlayCountIterator : NSObject {
     
-    private static let directory = TempDataDAO.tempDirectory.URLByAppendingPathComponent("storedPlayCounts.archive").path!
+    private static let directory = TempDataDAO.tempDirectory.appendingPathComponent("storedPlayCounts.archive").path
     private static let timeIntervalInSeconds:Double = 20 * 60 //20 minutes
     
-    private static let backgroundQueue:NSOperationQueue = {
-        let queue = NSOperationQueue()
-        queue.qualityOfService = NSQualityOfService.Background
+    private static let backgroundQueue:OperationQueue = {
+        let queue = OperationQueue()
+        queue.qualityOfService = QualityOfService.background
         queue.maxConcurrentOperationCount = 1
         queue.name = "Kyooz.PlayCountIteratorBackgroundQueue"
         return queue
@@ -31,8 +31,8 @@ final class PlayCountIterator : NSObject {
         super.init()
         registerForAppNotifications()
         BackgroundFetchController.instance.playCountIterator = self
-        dispatch_after(KyoozUtils.getDispatchTimeForSeconds(3), dispatch_get_main_queue()) {
-            PlayCountIterator.backgroundQueue.addOperationWithBlock() {
+        DispatchQueue.main.asyncAfter(deadline: KyoozUtils.getDispatchTimeForSeconds(3)) {
+            PlayCountIterator.backgroundQueue.addOperation() {
                 self.performOperationIfTimeWindowPassed()
             }
         }
@@ -52,7 +52,7 @@ final class PlayCountIterator : NSObject {
         performOperationWithTime(currentTime)
     }
     
-    private func performOperationWithTime(currentTime:CFAbsoluteTime, operationCompletionBlock:(()->Void)? = nil) {
+    private func performOperationWithTime(_ currentTime:CFAbsoluteTime, operationCompletionBlock:(()->Void)? = nil) {
         lastOperationTime = currentTime
         guard let oldPlayCounts = getPersistedPlayCounts() else {
             Logger.debug("no play counts to compare to")
@@ -68,18 +68,18 @@ final class PlayCountIterator : NSObject {
     }
     
     private func getPersistedPlayCounts() -> NSDictionary? {
-        if !NSFileManager.defaultManager().fileExistsAtPath(PlayCountIterator.directory) {
-            PlayCountIterator.backgroundQueue.addOperationWithBlock() {
+        if !FileManager.default.fileExists(atPath: PlayCountIterator.directory) {
+            PlayCountIterator.backgroundQueue.addOperation() {
                 self.createInitialPlaycounts()
             }
             return nil
         }
         
-        return NSKeyedUnarchiver.unarchiveObjectWithFile(PlayCountIterator.directory) as? NSDictionary
+        return NSKeyedUnarchiver.unarchiveObject(withFile: PlayCountIterator.directory) as? NSDictionary
     }
     
     private func createInitialPlaycounts() {
-        guard let items = MPMediaQuery.songsQuery().items else {
+        guard let items = MPMediaQuery.songs().items else {
             return
         }
 
@@ -87,19 +87,19 @@ final class PlayCountIterator : NSObject {
         
         let newPlayCounts = NSMutableDictionary()
         for item in items {
-            newPlayCounts.setObject(NSNumber(integer: item.playCount), forKey: NSNumber(unsignedLongLong: item.persistentID))
+            newPlayCounts.setObject(NSNumber(value: item.playCount), forKey: NSNumber(value: item.persistentID))
         }
         
         persistPlayCounts(newPlayCounts)
     }
     
-    private func persistPlayCounts(playCounts:NSDictionary) {
+    private func persistPlayCounts(_ playCounts:NSDictionary) {
         if !NSKeyedArchiver.archiveRootObject(playCounts, toFile: PlayCountIterator.directory) {
             Logger.error("couldn't write the new playcounts successfully")
         }
     }
     
-    private func playcountOpDidComplete(newPlayCounts:NSDictionary) {
+    private func playcountOpDidComplete(_ newPlayCounts:NSDictionary) {
         persistPlayCounts(newPlayCounts)
         playCountIteratorOperation = nil
         if backgroundTaskIdentifier != UIBackgroundTaskInvalid  {
@@ -113,15 +113,15 @@ final class PlayCountIterator : NSObject {
     
     private func endBackgroundTask() {
         if backgroundTaskIdentifier != UIBackgroundTaskInvalid {
-            UIApplication.sharedApplication().endBackgroundTask(backgroundTaskIdentifier)
+            UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
             backgroundTaskIdentifier = UIBackgroundTaskInvalid
         }
     }
     
-    func performBackgroundIteration(completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func performBackgroundIteration(_ completionHandler: (UIBackgroundFetchResult) -> Void) {
         guard playCountIteratorOperation == nil else {
             Logger.debug("already performing background fetch")
-            completionHandler(.NoData)
+            completionHandler(.noData)
             return
         }
         
@@ -130,27 +130,27 @@ final class PlayCountIterator : NSObject {
             LastFmScrobbler.instance.submitCachedScrobbles() {
                 Logger.debug("done with background iteration")
                 self.performingBackgroundFetch = false
-                completionHandler(ApplicationDefaults.audioQueuePlayer.musicIsPlaying ? .NewData : .NoData)
+                completionHandler(ApplicationDefaults.audioQueuePlayer.musicIsPlaying ? .newData : .noData)
             }
         }
     }
     
     //MARK: - App Notification Handlers
     
-    func handleApplicationWillEnterForeground(notification: NSNotification) {
+    func handleApplicationWillEnterForeground(_ notification: Notification) {
         endBackgroundTask()
-        PlayCountIterator.backgroundQueue.addOperationWithBlock() {
+        PlayCountIterator.backgroundQueue.addOperation() {
             self.performOperationIfTimeWindowPassed()
         }
     }
     
-    func handleApplicationDidEnterBackground(notification: NSNotification) {
+    func handleApplicationDidEnterBackground(_ notification: Notification) {
         if playCountIteratorOperation == nil { return }
         
         endBackgroundTask()
         
         Logger.debug("starting background task for playCountIterator")
-        backgroundTaskIdentifier = UIApplication.sharedApplication().beginBackgroundTaskWithName("playCountIteratorOperation") { () -> Void in
+        backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "playCountIteratorOperation") { () -> Void in
             Logger.debug("canceling play count task")
             PlayCountIterator.backgroundQueue.cancelAllOperations()
         }
@@ -160,19 +160,19 @@ final class PlayCountIterator : NSObject {
         }
     }
     
-    func handleApplicationWillTerminateNotification(notification:NSNotification) {
+    func handleApplicationWillTerminateNotification(_ notification:Notification) {
         PlayCountIterator.backgroundQueue.cancelAllOperations()
     }
     
     private func registerForAppNotifications() {
-        let app = UIApplication.sharedApplication()
-        let n = NSNotificationCenter.defaultCenter()
-        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: app)
-        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationWillTerminateNotification(_:)), name: UIApplicationWillTerminateNotification, object: app)
-        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: app)
+        let app = UIApplication.shared
+        let n = NotificationCenter.default
+        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: app)
+        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationWillTerminateNotification(_:)), name: NSNotification.Name.UIApplicationWillTerminate, object: app)
+        n.addObserver(self, selector: #selector(PlayCountIterator.handleApplicationDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: app)
     }
     
     private func unregisterForAppNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 }

@@ -17,7 +17,7 @@ final class BlurViewController : UIViewController {
 			visualEffectView?.layer.timeOffset = cappedRadius
 		}
 	}
-	var blurEffect:UIBlurEffectStyle = .Dark {
+	var blurEffect:UIBlurEffectStyle = .dark {
 		didSet {
 			resetBlurAnimation()
 		}
@@ -37,11 +37,11 @@ final class BlurViewController : UIViewController {
 	private var removedFromViewHierarchy = true
 	
 	override func viewDidLoad() {
-		view.backgroundColor = UIColor.clearColor()
+		view.backgroundColor = UIColor.clear
 	}
 
 	
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
 		if removedFromViewHierarchy {
@@ -51,12 +51,12 @@ final class BlurViewController : UIViewController {
 		}
 	}
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         registerForApplicationNotifications()
     }
 	
-	override func viewDidDisappear(animated: Bool) {
+	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
 		createSnapshotBlur()
@@ -67,7 +67,7 @@ final class BlurViewController : UIViewController {
 	
 	func createSnapshotBlur() {
 		removeSnapshotBlur()
-		blurSnapshotView = view.superview?.snapshotViewAfterScreenUpdates(false)
+		blurSnapshotView = view.superview?.snapshotView(afterScreenUpdates: false)
 	}
 	
 	func removeBlurAnimation() {
@@ -85,7 +85,7 @@ final class BlurViewController : UIViewController {
 		ConstraintUtils.applyStandardConstraintsToView(subView: visualEffectView, parentView: view)
 		visualEffectView.layer.speed = 0 //setting the layer speed to 0 because we want to control the animation so that we can control the blur
         self.visualEffectView = visualEffectView
-		UIView.animateWithDuration(1) { [finalBlurEffect = self.blurEffect] in
+		UIView.animate(withDuration: 1) { [finalBlurEffect = self.blurEffect] in
 			visualEffectView.effect = UIBlurEffect(style: finalBlurEffect)
 		}
 		
@@ -99,15 +99,15 @@ final class BlurViewController : UIViewController {
 	}
     
     func registerForApplicationNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(self.createSnapshotBlur), name: UIApplicationWillResignActiveNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: #selector(self.removeBlurAnimation), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: #selector(self.resetBlurAnimation), name: UIApplicationWillEnterForegroundNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: #selector(self.removeSnapshotBlur), name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(self.createSnapshotBlur), name: NSNotification.Name.UIApplicationWillResignActive, object: UIApplication.shared)
+        notificationCenter.addObserver(self, selector: #selector(self.removeBlurAnimation), name: NSNotification.Name.UIApplicationDidEnterBackground, object: UIApplication.shared)
+        notificationCenter.addObserver(self, selector: #selector(self.resetBlurAnimation), name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared)
+        notificationCenter.addObserver(self, selector: #selector(self.removeSnapshotBlur), name: NSNotification.Name.UIApplicationDidBecomeActive, object: UIApplication.shared)
     }
     
     func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 	
 }

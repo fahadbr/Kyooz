@@ -11,11 +11,11 @@ import UIKit
 class SubGroupButtonController: UIViewController {
 	
 	lazy var libraryGroupingButton: UIButton = {
-		$0.setTitle("", forState: .Normal)
-		$0.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
-		$0.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
+		$0.setTitle("", for: UIControlState())
+		$0.setTitleColor(ThemeHelper.defaultFontColor, for: UIControlState())
+		$0.setTitleColor(ThemeHelper.defaultVividColor, for: .highlighted)
 		$0.titleLabel?.font = UIFont(name: ThemeHelper.defaultFontName, size: ThemeHelper.smallFontSize+1)
-		$0.addTarget(self, action: #selector(self.showSubGroupings(_:)), forControlEvents: .TouchUpInside)
+		$0.addTarget(self, action: #selector(self.showSubGroupings(_:)), for: .touchUpInside)
 		
 		$0.alpha = ThemeHelper.defaultButtonTextAlpha
 		return $0
@@ -31,7 +31,7 @@ class SubGroupButtonController: UIViewController {
 		
 		let group = aelvc.sourceData.libraryGrouping
 		if !subGroups.isEmpty && subGroups.contains(group) {
-			libraryGroupingButton.hidden = false
+			libraryGroupingButton.isHidden = false
 			setActiveGroup(group)
 		}
     }
@@ -44,7 +44,7 @@ class SubGroupButtonController: UIViewController {
 		view = libraryGroupingButton
 	}
 	
-	func showSubGroupings(sender: AnyObject) {
+	func showSubGroupings(_ sender: AnyObject) {
 		
 		let b = MenuBuilder().with(title: "Change Grouping Type")
     
@@ -58,13 +58,13 @@ class SubGroupButtonController: UIViewController {
 			})
 		}
 		b.with(options: actions)
-		let center = libraryGroupingButton.convertPoint(CGPoint(x:libraryGroupingButton.bounds.midX, y: libraryGroupingButton.bounds.midY), toCoordinateSpace: UIScreen.mainScreen().fixedCoordinateSpace)
+		let center = libraryGroupingButton.convert(CGPoint(x:libraryGroupingButton.bounds.midX, y: libraryGroupingButton.bounds.midY), to: UIScreen.main.fixedCoordinateSpace)
 		b.with(originatingCenter: center)
 		KyoozUtils.showMenuViewController(b.viewController)
 	}
 	
-	private func setActiveGroup(group:LibraryGrouping) {
-		libraryGroupingButton.setTitle("  \(group.name) ⇣", forState: .Normal)
+	private func setActiveGroup(_ group:LibraryGrouping) {
+		libraryGroupingButton.setTitle("  \(group.name) ⇣", for: UIControlState())
 	}
 
 }

@@ -30,8 +30,8 @@ class LastFmScrobblerTest: XCTestCase {
         lastFmScrobbler.simpleWsClient = mockSimpleWsClient
         lastFmScrobbler.userDefaults = mockUserDefaults
         
-        mockUserDefaults.setObject("username", forKey: UserDefaultKeys.LastFmUsernameKey)
-        mockUserDefaults.setObject("session", forKey: UserDefaultKeys.LastFmSessionKey)
+        mockUserDefaults.set("username", forKey: UserDefaultKeys.LastFmUsernameKey)
+        mockUserDefaults.set("session", forKey: UserDefaultKeys.LastFmSessionKey)
         mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent()
         
         lastFmScrobbler.initialize()
@@ -49,7 +49,7 @@ class LastFmScrobblerTest: XCTestCase {
         mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent() - (KyoozConstants.ONE_DAY_IN_SECONDS * 2)
         lastFmScrobbler.initialize()
         
-        lastFmScrobbler.addToScrobbleCache(MPMediaItem(), timeStampToScrobble: NSDate().timeIntervalSince1970)
+        lastFmScrobbler.addToScrobbleCache(MPMediaItem(), timeStampToScrobble: Date().timeIntervalSince1970)
         
         let scrobbleCacheCountAfter = lastFmScrobbler.scrobbleCache.count
         XCTAssertEqual(scrobbleCacheCountBefore, scrobbleCacheCountAfter)
@@ -58,7 +58,7 @@ class LastFmScrobblerTest: XCTestCase {
     func testAddToScrobbleCache() {
         let scrobbleCacheCountBefore = lastFmScrobbler.scrobbleCache.count
         
-        lastFmScrobbler.addToScrobbleCache(MPMediaItem(), timeStampToScrobble: NSDate().timeIntervalSince1970)
+        lastFmScrobbler.addToScrobbleCache(MPMediaItem(), timeStampToScrobble: Date().timeIntervalSince1970)
         
         let scrobbleCacheCountAfter = lastFmScrobbler.scrobbleCache.count
         XCTAssertEqual(scrobbleCacheCountBefore + 1, scrobbleCacheCountAfter)
@@ -71,7 +71,7 @@ class LastFmScrobblerTest: XCTestCase {
         XCTAssertFalse(lastFmScrobbler.validSessionObtained)
         XCTAssertEqual(0, lastFmScrobbler.lastSessionValidationTime)
         
-        let initializedExpectation = expectationWithDescription("lastFm initialized")
+        let initializedExpectation = expectation(description: "lastFm initialized")
         
         lastFmScrobbler.initializeScrobbler() {
             XCTAssertTrue(self.lastFmScrobbler.validSessionObtained)
@@ -80,7 +80,7 @@ class LastFmScrobblerTest: XCTestCase {
             initializedExpectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(2) { (error) in
+        waitForExpectations(timeout: 2) { (error) in
             XCTAssertNil(error, error?.errorDescription ?? "Timed out with unknown error")
         }
         
@@ -117,13 +117,13 @@ class LastFmScrobblerTest: XCTestCase {
     }
     
     //old method
-    private func getOrderedParamKeys(params:[String:String]) -> [String] {
+    private func getOrderedParamKeys(_ params:[String:String]) -> [String] {
         var orderedParamKeys = [String]()
         for (key, _) in params {
             orderedParamKeys.append(key)
         }
-        orderedParamKeys.sortInPlace { (val1:String, val2:String) -> Bool in
-            return val1.caseInsensitiveCompare(val2) == NSComparisonResult.OrderedAscending
+        orderedParamKeys.sort { (val1:String, val2:String) -> Bool in
+            return val1.caseInsensitiveCompare(val2) == ComparisonResult.orderedAscending
         }
         return orderedParamKeys
     }
@@ -134,10 +134,10 @@ class LastFmScrobblerTest: XCTestCase {
     class MockTempDataDAO : TempDataDAO {
         var persistentNumberToReturn:NSNumber!
         
-        override func getPersistentNumber(key key:String) -> NSNumber? {
+        override func getPersistentNumber(key:String) -> NSNumber? {
             return persistentNumberToReturn
         }
-        override func addPersistentValue(key key: String, value: AnyObject) {
+        override func addPersistentValue(key: String, value: AnyObject) {
             if let num = value as? NSNumber {
                 persistentNumberToReturn = num
             }
@@ -145,23 +145,23 @@ class LastFmScrobblerTest: XCTestCase {
     }
     
     class MockSimpleWsClient : SimpleWSClient {
-        override func executeHTTPSPOSTCall(baseURL baseURL: String, params: [String], successHandler: ([String : String]) -> Void, failureHandler: () -> ()) {
+        override func executeHTTPSPOSTCall(baseURL: String, params: [String], successHandler: ([String : String]) -> Void, failureHandler: () -> ()) {
             successHandler(["info":"i", "session":"s", "username":"U", "lfm.status":"ok"])
         }
     }
     
-    class MockUserDefaults : NSUserDefaults {
+    class MockUserDefaults : UserDefaults {
         let values = NSMutableDictionary()
-        override func setObject(value: AnyObject?, forKey defaultName: String) {
+        override func set(_ value: AnyObject?, forKey defaultName: String) {
             if let v = value {
                 values.setObject(v, forKey: defaultName)
             } else {
-                values.removeObjectForKey(defaultName)
+                values.removeObject(forKey: defaultName)
             }
         }
         
-        override func objectForKey(defaultName: String) -> AnyObject? {
-            return values.objectForKey(defaultName)
+        override func object(forKey defaultName: String) -> AnyObject? {
+            return values.object(forKey: defaultName)
         }
     }
     

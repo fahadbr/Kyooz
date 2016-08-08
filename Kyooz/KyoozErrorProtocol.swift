@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol KyoozErrorProtocol : ErrorType {
+protocol KyoozErrorProtocol : Error {
 	
 	var errorDescription:String { get }
 	

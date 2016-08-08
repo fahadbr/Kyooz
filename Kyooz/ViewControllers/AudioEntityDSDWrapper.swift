@@ -42,16 +42,16 @@ class AudioEntityDSDWrapper : NSObject, AudioEntityDSDProtocol {
     }
     
     //MARK: - table view datasource methods
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return datasourceDelegate.tableView(tableView, numberOfRowsInSection: section)
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return datasourceDelegate.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return datasourceDelegate.tableView(tableView, cellForRowAt: indexPath)
     }
     
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return datasourceDelegate.tableView?(tableView, canMoveRowAtIndexPath: indexPath) ?? false
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return datasourceDelegate.tableView?(tableView, canMoveRowAt: indexPath) ?? false
     }
     
 }

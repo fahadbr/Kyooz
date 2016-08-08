@@ -15,29 +15,29 @@ class TutorialManager {
 	private static let userDefaultKeyPrefix = "KyoozTutorialFulfilled."
 	
 	//MARK: - DEPENDENCIES
-	lazy var userDefaults = NSUserDefaults.standardUserDefaults()
+	lazy var userDefaults = UserDefaults.standard
 	lazy var presentationController:UIViewController = ContainerViewController.instance
     lazy var tutorialViewControllerFactory = TutorialViewControllerFactory()
 	
     let tutorialDataMap:[Tutorial:TutorialDTO] = {
         var tutorials = [TutorialDTO]()
-        tutorials.append(TutorialDTO(tutorial: .DragAndDrop,
+        tutorials.append(TutorialDTO(tutorial: .dragAndDrop,
             instructionText: "Press and hold a cell to drag and drop it on to the play queue",
-            nextTutorial: .InsertOrCancel))
+            nextTutorial: .insertOrCancel))
         
-        tutorials.append(TutorialDTO(tutorial: .GestureActivatedSearch,
+        tutorials.append(TutorialDTO(tutorial: .gestureActivatedSearch,
             instructionText: "Swipe to the right to search everywhere",
             nextTutorial: nil))
         
-        tutorials.append(TutorialDTO(tutorial: .GestureToViewQueue,
+        tutorials.append(TutorialDTO(tutorial: .gestureToViewQueue,
             instructionText: "Swipe to the left to view the play queue",
             nextTutorial: nil))
         
-        tutorials.append(TutorialDTO(tutorial: .InsertOrCancel,
+        tutorials.append(TutorialDTO(tutorial: .insertOrCancel,
             instructionText: "Let go to insert the tracks\nMove left to cancel",
             nextTutorial: nil))
         
-        tutorials.append(TutorialDTO(tutorial: .DragToRearrange,
+        tutorials.append(TutorialDTO(tutorial: .dragToRearrange,
             instructionText: "Press and hold on a cell in the play queue to rearrange",
             nextTutorial: nil))
         
@@ -50,7 +50,7 @@ class TutorialManager {
     
     weak var presentedTutorial:TutorialViewController?
     
-    func dimissTutorials(tutorials:[Tutorial], action:TutorialAction) {
+    func dimissTutorials(_ tutorials:[Tutorial], action:TutorialAction) {
         for tutorial in tutorials {
             if dismissTutorial(tutorial, action: action){
                 break
@@ -58,16 +58,16 @@ class TutorialManager {
         }
     }
     
-    func dismissTutorial(tutorial:Tutorial, action:TutorialAction) -> Bool {
-        guard let tvc = presentedTutorial where tvc.tutorialDTO.tutorial == tutorial else {
+    func dismissTutorial(_ tutorial:Tutorial, action:TutorialAction) -> Bool {
+        guard let tvc = presentedTutorial , tvc.tutorialDTO.tutorial == tutorial else {
             return false
         }
         
         switch action {
-        case .DismissFulfilled, .Fulfill:
+        case .dismissFulfilled, .fulfill:
             setFulfulled(tutorial, fulfilled: true)
             break
-        case .DismissUnfulfilled:
+        case .dismissUnfulfilled:
             break
         }
         
@@ -81,13 +81,13 @@ class TutorialManager {
         }
     }
 	
-    private func setFulfulled(tutorial:Tutorial, fulfilled:Bool) {
-		userDefaults.setBool(fulfilled, forKey: self.dynamicType.keyForTutorial(tutorial))
+    private func setFulfulled(_ tutorial:Tutorial, fulfilled:Bool) {
+		userDefaults.set(fulfilled, forKey: self.dynamicType.keyForTutorial(tutorial))
 	}
     
     //use this function when the intention is to present one of many
     //unfulfilled tutorials in the same invocation
-    func presentUnfulfilledTutorials(tutorials:[Tutorial]) -> Bool {
+    func presentUnfulfilledTutorials(_ tutorials:[Tutorial]) -> Bool {
         for tutorial in tutorials {
             if presentTutorialIfUnfulfilled(tutorial) {
 				return true
@@ -96,7 +96,7 @@ class TutorialManager {
 		return false
     }
 	
-	func presentTutorialIfUnfulfilled(tutorial:Tutorial) -> Bool {
+	func presentTutorialIfUnfulfilled(_ tutorial:Tutorial) -> Bool {
         guard !tutorialIsFulfilled(tutorial)
             && !KyoozUtils.screenshotUITesting else {
             return false
@@ -107,7 +107,7 @@ class TutorialManager {
                 return true
             } else {
                 //this dismisses the presenting tutorial when a new one is requested to be shown
-                dismissTutorial(tvc.tutorialDTO.tutorial, action: .DismissUnfulfilled)
+                _ = dismissTutorial(tvc.tutorialDTO.tutorial, action: .dismissUnfulfilled)
             }
         }
         
@@ -116,18 +116,18 @@ class TutorialManager {
         }
         
         let tvc:TutorialViewController = tutorialViewControllerFactory.viewControllerForTutorial(dto)
-		ConstraintUtils.applyStandardConstraintsToView(subView: tvc.view, parentView: presentationController.view)
+		_ = ConstraintUtils.applyStandardConstraintsToView(subView: tvc.view, parentView: presentationController.view)
 		presentationController.addChildViewController(tvc)
-		tvc.didMoveToParentViewController(presentationController)
+		tvc.didMove(toParentViewController: presentationController)
         presentedTutorial = tvc
         return true
 	}
 	
-	private func tutorialIsFulfilled(tutorial:Tutorial) -> Bool {
-		return userDefaults.boolForKey(self.dynamicType.keyForTutorial(tutorial))
+	private func tutorialIsFulfilled(_ tutorial:Tutorial) -> Bool {
+		return userDefaults.bool(forKey: self.dynamicType.keyForTutorial(tutorial))
 	}
 	
-    static func keyForTutorial(tutorial:Tutorial) -> String {
+    static func keyForTutorial(_ tutorial:Tutorial) -> String {
 		return "\(userDefaultKeyPrefix)\(tutorial)"
 	}
     

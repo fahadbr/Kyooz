@@ -23,28 +23,28 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 	
 	//MARK: - Multi Select Toolbar Buttons
     private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO..",
-                                                                   style: .Plain,
+                                                                   style: .plain,
 	                                                               target: self,
 	                                                               action: #selector(self.showAddToOptions(_:)))
     
     
 	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString,
-	                                                                   style: .Plain,
+	                                                                   style: .plain,
 	                                                                   target: self,
 	                                                                   action: #selector(self.selectOrDeselectAll))
     
     private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
-                                                                    style: .Plain,
+                                                                    style: .plain,
 	                                                                target: self,
 	                                                                action: #selector(self.deleteSelectedItems))
     
     private lazy var playButton:UIBarButtonItem = UIBarButtonItem(title: "PLAY",
-                                                                  style: .Plain,
+                                                                  style: .plain,
                                                                   target: self,
                                                                   action: #selector(self.playSelectedTracks(_:)))
     
     private lazy var shuffleToolbarButton:UIBarButtonItem = UIBarButtonItem(title: "SHUFFLE",
-                                                                            style: .Plain,
+                                                                            style: .plain,
                                                                             target: self,
                                                                             action: #selector(self.playSelectedTracks(_:)))
     
@@ -55,15 +55,15 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 		automaticallyAdjustsScrollViewInsets = false
 		view.backgroundColor = ThemeHelper.defaultTableCellColor
 		
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerVC.view, parentView: view)
-		headerHeightConstraint = headerVC.view.heightAnchor.constraintEqualToConstant(headerVC.defaultHeight)
-		headerHeightConstraint.active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.top, .left, .right], subView: headerVC.view, parentView: view)
+		headerHeightConstraint = headerVC.view.heightAnchor.constraint(equalToConstant: headerVC.defaultHeight)
+		headerHeightConstraint.isActive = true
 		
         addChildViewController(headerVC)
-        headerVC.didMoveToParentViewController(self)
+        headerVC.didMove(toParentViewController: self)
 		
-		headerVC.leftButton.addTarget(self, action: #selector(self.shuffleAllItems(_:)), forControlEvents: .TouchUpInside)
-		headerVC.selectButton.addTarget(self, action: #selector(self.toggleSelectMode), forControlEvents: .TouchUpInside)
+		headerVC.leftButton.addTarget(self, action: #selector(self.shuffleAllItems(_:)), for: .touchUpInside)
+		headerVC.selectButton.addTarget(self, action: #selector(self.toggleSelectMode), for: .touchUpInside)
 		headerVC.selectButton.isAccessibilityElement = true
         headerVC.selectButton.accessibilityLabel = "\(sourceData.parentCollection?.titleForGrouping(sourceData.parentGroup ?? LibraryGrouping.Albums) ?? "ALL MUSIC")-librarySelectEditButton"
         headerVC.selectButton.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
@@ -75,8 +75,8 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
         tableView.scrollIndicatorInsets.top = maxHeight
         tableView.contentOffset.y = -tableView.contentInset.top
         
-        tableView.panGestureRecognizer.requireGestureRecognizerToFail(popGestureRecognizer)
-        tableView.panGestureRecognizer.requireGestureRecognizerToFail(ContainerViewController.instance.centerPanelPanGestureRecognizer)
+        tableView.panGestureRecognizer.require(toFail: popGestureRecognizer)
+        tableView.panGestureRecognizer.require(toFail: ContainerViewController.instance.centerPanelPanGestureRecognizer)
 
 		if useCollapsableHeader {
 			tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: collapsedTargetOffset))
@@ -90,7 +90,7 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
     }
 	
 	//MARK: - Scroll View Delegate
-	final func scrollViewDidScroll(scrollView: UIScrollView) {
+	final func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if !useCollapsableHeader { return }
 		let currentOffset = scrollView.contentOffset.y + scrollView.contentInset.top
 		
@@ -106,16 +106,16 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 	}
     
     override func reloadTableViewData() {
-        if !tableView.editing {
+        if !tableView.isEditing {
             super.reloadTableViewData()
         }
     }
     
     override func registerForNotifications() {
         super.registerForNotifications()
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
                                                          selector: #selector(self.refreshButtonStates),
-                                                         name: UITableViewSelectionDidChangeNotification,
+                                                         name: NSNotification.Name.UITableViewSelectionDidChange,
                                                          object: tableView)
     }
 	
@@ -127,7 +127,7 @@ extension AudioEntityHeaderViewController {
 	
 	
 	func toggleSelectMode() {
-		let willEdit = !tableView.editing
+		let willEdit = !tableView.isEditing
 		
 		tableView.setEditing(willEdit, animated: true)
         navigationController?.setToolbarHidden(!willEdit, animated: true)
@@ -144,7 +144,7 @@ extension AudioEntityHeaderViewController {
 
             
             if sourceData is MutableAudioEntitySourceData {
-                toolbarItems.insertContentsOf([UIBarButtonItem.flexibleSpace(), deleteButton], at: 5)
+                toolbarItems.insert(contentsOf: [UIBarButtonItem.flexibleSpace(), deleteButton], at: 5)
             }
 
 			self.toolbarItems = toolbarItems
@@ -155,18 +155,18 @@ extension AudioEntityHeaderViewController {
 		refreshButtonStates()
 	}
 	
-	func shuffleAllItems(sender:UIButton?) {
+	func shuffleAllItems(_ sender:UIButton?) {
 		playAllItems(sender, shouldShuffle: true)
 	}
 	
-	private func playAllItems(sender:UIButton?, shouldShuffle:Bool) {
+	private func playAllItems(_ sender:UIButton?, shouldShuffle:Bool) {
         let items = sourceData.tracks
 		if !items.isEmpty {
 			self.playTracks(items, shouldShuffle: shouldShuffle)
 		}
 	}
 	
-	private func playTracks(tracks:[AudioTrack], shouldShuffle:Bool) {
+	private func playTracks(_ tracks:[AudioTrack], shouldShuffle:Bool) {
 		audioQueuePlayer.playNow(withTracks: tracks,
 		                         startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: tracks.count):0,
 		                         shouldShuffleIfOff: shouldShuffle)
@@ -174,14 +174,14 @@ extension AudioEntityHeaderViewController {
 	
 	
 	func refreshButtonStates() {
-        guard tableView.editing else { return }
+        guard tableView.isEditing else { return }
         
 		let isNotEmpty = tableView.indexPathsForSelectedRows != nil
 		
-		playButton.enabled = isNotEmpty
-        deleteButton.enabled = isNotEmpty
-		addToButton.enabled = isNotEmpty
-		shuffleToolbarButton.enabled = isNotEmpty
+		playButton.isEnabled = isNotEmpty
+        deleteButton.isEnabled = isNotEmpty
+		addToButton.isEnabled = isNotEmpty
+		shuffleToolbarButton.isEnabled = isNotEmpty
 		selectAllButton.title = isNotEmpty ? KyoozConstants.deselectAllString : KyoozConstants.selectAllString
 	}
 	
@@ -191,10 +191,10 @@ extension AudioEntityHeaderViewController {
 	}
 	
 	private func getOrderedTracks() -> [AudioTrack]? {
-        return tableView.indexPathsForSelectedRows?.sort(<).flatMap() { self.sourceData.getTracksAtIndex($0) }
+        return tableView.indexPathsForSelectedRows?.sorted(by: <).flatMap() { self.sourceData.getTracksAtIndex($0) }
 	}
 	
-	func playSelectedTracks(sender:AnyObject!) {
+	func playSelectedTracks(_ sender:AnyObject!) {
 		guard let tracks = getOrderedTracks() else { return }
 		
 		playTracks(tracks, shouldShuffle: (sender != nil && sender is ShuffleButtonView))
@@ -203,7 +203,7 @@ extension AudioEntityHeaderViewController {
 		toggleSelectMode()
 	}
 	
-	func showAddToOptions(sender:UIBarButtonItem!) {
+	func showAddToOptions(_ sender:UIBarButtonItem!) {
 		guard let items = getOrderedTracks() else { return }
 		let b = MenuBuilder()
             .with(title: "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items")
@@ -225,7 +225,7 @@ extension AudioEntityHeaderViewController {
 			}
 			do {
 				try mutableSourceData.deleteEntitiesAtIndexPaths(selectedIndicies)
-				tableView.deleteRowsAtIndexPaths(selectedIndicies, withRowAnimation: .Automatic)
+				tableView.deleteRows(at: selectedIndicies, with: .automatic)
 				refreshButtonStates()
 			} catch let error {
 				KyoozUtils.showPopupError(withTitle: "Error occured while deleting items", withThrownError: error, presentationVC: nil)

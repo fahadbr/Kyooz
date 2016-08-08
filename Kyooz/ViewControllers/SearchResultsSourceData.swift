@@ -43,7 +43,7 @@ final class SearchResultsSourceData : AudioEntitySourceData {
         searchExecutionController.rebuildSearchIndex()
     }
     
-    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
+    func sourceDataForIndex(_ indexPath:IndexPath) -> AudioEntitySourceData? {
         let entity = self[indexPath]
         switch entity {
         case let playlist as KyoozPlaylist:

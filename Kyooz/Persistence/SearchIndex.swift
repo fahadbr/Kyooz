@@ -8,10 +8,10 @@
 
 import Foundation
 
-let indexQueue:NSOperationQueue = {
-    var queue = NSOperationQueue()
+let indexQueue:OperationQueue = {
+    var queue = OperationQueue()
     queue.name = "com.riaz.fahad.Kyooz.IndexQueue"
-    queue.qualityOfService = NSQualityOfService.Background
+    queue.qualityOfService = QualityOfService.background
     return queue
 }()
 
@@ -43,7 +43,7 @@ final class SearchIndex<T:SearchIndexValue> : CustomStringConvertible {
         
     }
     
-    func searchIndexWithString(searchString:String, searchPredicate:NSPredicate? = nil) -> [T] {
+    func searchIndexWithString(_ searchString:String, searchPredicate:NSPredicate? = nil) -> [T] {
         let predicate = searchPredicate == nil ? createDefaultPredicate(searchString) : searchPredicate!
         if indexLevel < searchString.characters.count {
             if let searchIndex = self.subIndex?[searchString[indexLevel]] {
@@ -53,15 +53,15 @@ final class SearchIndex<T:SearchIndexValue> : CustomStringConvertible {
         return searchValuesWithString(searchString, searchPredicate: predicate, searchAllValues: false)
     }
     
-    func searchValuesWithString(searchString:String, searchPredicate:NSPredicate, searchAllValues:Bool = true) -> [T] {
+    func searchValuesWithString(_ searchString:String, searchPredicate:NSPredicate, searchAllValues:Bool = true) -> [T] {
         var filteredValues = [T]()
         
         if let values = self.sameLevelValues {
             if indexLevel >= searchString.characters.count && !searchAllValues {
-                filteredValues.appendContentsOf(values.map({ $0.object } ))
+                filteredValues.append(contentsOf: values.map({ $0.object } ))
             } else {
                 filteredValues.reserveCapacity(values.count)
-                values.lazy.filter( { searchPredicate.evaluateWithObject($0) } ).map({$0.object }).forEach({
+                values.lazy.filter( { searchPredicate.evaluate(with: $0) } ).map({$0.object }).forEach({
                     filteredValues.append($0)
                 })
             }
@@ -69,14 +69,14 @@ final class SearchIndex<T:SearchIndexValue> : CustomStringConvertible {
         
         if let subIndex = self.subIndex {
             for (_,index) in subIndex {
-                filteredValues.appendContentsOf(index.searchValuesWithString(searchString, searchPredicate: searchPredicate))
+                filteredValues.append(contentsOf: index.searchValuesWithString(searchString, searchPredicate: searchPredicate))
             }
         }
         
         return filteredValues
     }
     
-    func insertIntoIndex(entry:SearchIndexEntry<T>) {
+    func insertIntoIndex(_ entry:SearchIndexEntry<T>) {
         let key = entry.primaryKey
         if indexLevel < key.characters.count {
             if let index = self.subIndex?[key[indexLevel]] {
@@ -89,14 +89,14 @@ final class SearchIndex<T:SearchIndexValue> : CustomStringConvertible {
         }
     }
     
-    private func createDefaultPredicate(searchString:String) -> NSPredicate {
-        let searchItems = searchString.componentsSeparatedByString(" ") as [String]
+    private func createDefaultPredicate(_ searchString:String) -> NSPredicate {
+        let searchItems = searchString.components(separatedBy: " ") as [String]
         let andMatchPredicates: [NSPredicate] = searchItems.map { searchString in
             let titleExpression = NSExpression(forKeyPath: "primaryKey")
             let searchStringExpression = NSExpression(forConstantValue: searchString)
             
-            let titleSearchComparisonPredicate = NSComparisonPredicate(leftExpression: titleExpression, rightExpression: searchStringExpression, modifier: .DirectPredicateModifier, type: NSPredicateOperatorType.ContainsPredicateOperatorType,
-                options: NSComparisonPredicateOptions.NormalizedPredicateOption)
+            let titleSearchComparisonPredicate = NSComparisonPredicate(leftExpression: titleExpression, rightExpression: searchStringExpression, modifier: .direct, type: NSComparisonPredicate.Operator.contains,
+                options: NSComparisonPredicate.Options.normalized)
             
             
             return titleSearchComparisonPredicate

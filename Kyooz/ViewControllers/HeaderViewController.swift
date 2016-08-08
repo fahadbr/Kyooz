@@ -40,36 +40,36 @@ class HeaderViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		leftButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
-		leftButton.widthAnchor.constraintEqualToAnchor(leftButton.heightAnchor).active = true
-		selectButton.heightAnchor.constraintEqualToConstant(buttonHeight).active = true
-		selectButton.widthAnchor.constraintEqualToAnchor(selectButton.heightAnchor).active = true
+		leftButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+		leftButton.widthAnchor.constraint(equalTo: leftButton.heightAnchor).isActive = true
+		selectButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+		selectButton.widthAnchor.constraint(equalTo: selectButton.heightAnchor).isActive = true
 		
         leftButton.alpha = ThemeHelper.defaultButtonTextAlpha
         selectButton.alpha = ThemeHelper.defaultButtonTextAlpha
         selectButton.scale = 0.5
 		
 		let stackView = UIStackView(arrangedSubviews: [leftButton, centerViewController.view, selectButton])
-		stackView.axis = .Horizontal
+		stackView.axis = .horizontal
         
-        let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: view)
+        let constraints = ConstraintUtils.applyConstraintsToView(withAnchors: [.centerX, .bottom], subView: stackView, parentView: view)
         var multiplier:CGFloat = 0.9
         
         
         switch centerViewController.dynamicType {
         case is HeaderLabelStackController.Type:
-            stackView.distribution = .Fill
-            stackView.alignment = UIStackViewAlignment.Bottom
-            constraints[.Bottom]!.constant = -4
+            stackView.distribution = .fill
+            stackView.alignment = UIStackViewAlignment.bottom
+            constraints[.bottom]!.constant = -4
         case is SubGroupButtonController.Type:
-            stackView.distribution = .Fill
+            stackView.distribution = .fill
 		case is GenericWrapperViewController<UISearchBar>.Type:
-			stackView.distribution = .Fill
+			stackView.distribution = .fill
             multiplier = 1.0
         default:
-            stackView.distribution = .EqualCentering
+            stackView.distribution = .equalCentering
         }
-        stackView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, multiplier: multiplier).active = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: multiplier).isActive = true
     }
 	
 	func createLeftButton() -> UIButton {

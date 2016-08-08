@@ -13,7 +13,7 @@ import UIKit
 extension NSLayoutConstraint {
     
     func activate() -> NSLayoutConstraint {
-        active = true
+        isActive = true
         return self
     }
 }
@@ -29,18 +29,18 @@ extension UIScreen {
     }
     
     static var maxScreenLength:CGFloat {
-        let bounds = mainScreen().bounds
+        let bounds = main.bounds
         return max(bounds.width, bounds.height)
     }
     
     static var minScreenLength:CGFloat {
-        let bounds = mainScreen().bounds
+        let bounds = main.bounds
         return min(bounds.width, bounds.height)
     }
     
     static var heightClass : HeightClass {
         switch maxScreenLength {
-        case 668...CGFloat.max:
+        case 668...CGFloat.greatestFiniteMagnitude:
             return .iPhone6P
         case 569...667:
             return .iPhone6
@@ -53,7 +53,7 @@ extension UIScreen {
     
     static var widthClass : WidthClass {
         switch minScreenLength {
-        case 376...CGFloat.max:
+        case 376...CGFloat.greatestFiniteMagnitude:
             return .iPhone6P
         case 321...375:
             return .iPhone6
@@ -70,21 +70,21 @@ extension UITableView {
     
     func selectAll() {
         for section in 0 ..< numberOfSections {
-            for row in 0 ..< numberOfRowsInSection(section) {
-                let indexPath = NSIndexPath(forRow: row, inSection: section)
-                selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
+            for row in 0 ..< numberOfRows(inSection: section) {
+                let indexPath = IndexPath(row: row, section: section)
+                selectRow(at: indexPath, animated: false, scrollPosition: .none)
             }
         }
     }
     
     func deselectAll() {
         indexPathsForSelectedRows?.forEach() {
-            deselectRowAtIndexPath($0, animated: false)
+            deselectRow(at: $0, animated: false)
         }
     }
     
     func selectOrDeselectAll() {
-        guard (editing && allowsMultipleSelectionDuringEditing) || allowsMultipleSelection else { return }
+        guard (isEditing && allowsMultipleSelectionDuringEditing) || allowsMultipleSelection else { return }
         
         if indexPathsForSelectedRows != nil {
             deselectAll()
@@ -98,7 +98,7 @@ extension UITableView {
 extension UIBarButtonItem {
     
     static func flexibleSpace() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
     
 }
@@ -107,7 +107,7 @@ extension UINavigationBar {
 	
 	func clearBackgroundImage() {
 		let image = UIImage()
-		setBackgroundImage(image, forBarMetrics: .Default)
+		setBackgroundImage(image, for: .default)
 		shadowImage = image
 	}
 }

@@ -41,46 +41,46 @@ public struct SpringAnimationTweakTemplate: TweakGroupTemplateType {
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Stiffness",
-			defaultParameters: SpringAnimationTweakTemplate.stiffnessDefaults,
-			customDefaultValue: stiffness
+			defaultValue: SpringAnimationTweakTemplate.stiffnessDefaults,
+			minimumValue: stiffness
 		)
 
 		self.mass = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Mass",
-			defaultParameters: SpringAnimationTweakTemplate.massDefaults,
-			customDefaultValue: mass
+			defaultValue: SpringAnimationTweakTemplate.massDefaults,
+			minimumValue: mass
 		)
 
 		self.damping = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Damping",
-			defaultParameters: SpringAnimationTweakTemplate.dampingDefaults,
-			customDefaultValue: damping
+			defaultValue: SpringAnimationTweakTemplate.dampingDefaults,
+			minimumValue: damping
 		)
 
 		self.initialSpringVelocity = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Initial V.",
-			defaultParameters: SpringAnimationTweakTemplate.initialSpringVelocityDefaults,
-			customDefaultValue: initialSpringVelocity
+			defaultValue: SpringAnimationTweakTemplate.initialSpringVelocityDefaults,
+			minimumValue: initialSpringVelocity
 		)
 	}
 
 	private static let stiffnessDefaults = SignedNumberTweakDefaultParameters<CGFloat>(
 		defaultValue: 100,
 		minValue: 1,
-		maxValue: CGFloat.max,
+		maxValue: CGFloat.greatestFiniteMagnitude,
 		stepSize: 100
 	)
     
     private static let massDefaults = SignedNumberTweakDefaultParameters<CGFloat>(
         defaultValue: 1.0,
         minValue: 1,
-        maxValue: CGFloat.max,
+        maxValue: CGFloat.greatestFiniteMagnitude,
         stepSize: 0.1
     )
 
@@ -88,14 +88,14 @@ public struct SpringAnimationTweakTemplate: TweakGroupTemplateType {
 	private static let dampingDefaults = SignedNumberTweakDefaultParameters<CGFloat>(
 		defaultValue: 10,
 		minValue: 0.0,
-		maxValue: CGFloat.max,
+		maxValue: CGFloat.greatestFiniteMagnitude,
 		stepSize: 1
 	)
 
 	private static let initialSpringVelocityDefaults = SignedNumberTweakDefaultParameters<CGFloat>(
 		defaultValue: 0.0,
-		minValue: -CGFloat.max,
-		maxValue: CGFloat.max,
+		minValue: -CGFloat.greatestFiniteMagnitude,
+		maxValue: CGFloat.greatestFiniteMagnitude,
 		stepSize: 5
 	)
 }

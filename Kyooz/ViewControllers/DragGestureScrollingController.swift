@@ -49,7 +49,7 @@ final class DragGestureScrollingController :NSObject {
         displayLink?.invalidate()
     }
     
-    func startScrollingWithLocation(location: CGPoint, gestureRecognizer:UILongPressGestureRecognizer) {
+    func startScrollingWithLocation(_ location: CGPoint, gestureRecognizer:UILongPressGestureRecognizer) {
         visiblePosition = location.y - scrollView.contentOffset.y
         self.gestureRecognizer = gestureRecognizer
         
@@ -72,7 +72,7 @@ final class DragGestureScrollingController :NSObject {
         
         if(displayLink == nil) {
             let displayLink = CADisplayLink(target: self, selector: #selector(DragGestureScrollingController.adjustScrollOffset))
-            displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            displayLink.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
             self.displayLink = displayLink
         }
 

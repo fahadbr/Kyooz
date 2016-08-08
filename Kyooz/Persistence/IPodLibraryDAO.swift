@@ -12,7 +12,7 @@ import StoreKit
 
 class IPodLibraryDAO {
     
-    static func queryMediaItemsFromIds(persistentIds:[AnyObject]) -> [AudioTrack]? {
+    static func queryMediaItemsFromIds(_ persistentIds:[AnyObject]) -> [AudioTrack]? {
         var queriedMediaItems = [AnyObject]()
         KyoozUtils.performWithMetrics(blockDescription: "Query of List of IDs from iPod Library") {
             for mediaId in persistentIds {
@@ -27,7 +27,7 @@ class IPodLibraryDAO {
         return queriedMediaItems as? [AudioTrack]
     }
     
-    static func queryMediaItemFromId(persistentId:AnyObject) -> AudioTrack? {
+    static func queryMediaItemFromId(_ persistentId:AnyObject) -> AudioTrack? {
         let query = MPMediaQuery()
         query.addFilterPredicate(MPMediaPropertyPredicate(value: persistentId, forProperty: MPMediaItemPropertyPersistentID))
         return query.items?.first
@@ -35,10 +35,10 @@ class IPodLibraryDAO {
     
     
     @available(iOS 9.3, *)
-    static func addTracksToPlaylist(playlist:MPMediaPlaylist, tracks:[MPMediaItem]) {
+    static func addTracksToPlaylist(_ playlist:MPMediaPlaylist, tracks:[MPMediaItem]) {
         validateAndExecute() {
             let message = playlist.items.count != 0 ? "Saved changes to playlist \(playlist.name ?? "")" : "Created playlist \(playlist.name ?? "")"
-            playlist.addMediaItems(tracks, completionHandler: { (error) in
+            playlist.add(tracks, completionHandler: { (error) in
                 if let e = error {
                     KyoozUtils.showPopupError(withTitle: "Error saving tracks to playlist \(playlist.name)",
 						withThrownError: e,
@@ -58,7 +58,7 @@ class IPodLibraryDAO {
     static func createPlaylist(named name:String, withTracks tracks:[MPMediaItem]) {
         validateAndExecute() {
             let metaData = MPMediaPlaylistCreationMetadata(name: name)
-            MPMediaLibrary.defaultMediaLibrary().getPlaylistWithUUID(NSUUID(), creationMetadata: metaData, completionHandler: { (createdPlaylist, error) in
+            MPMediaLibrary.default().getPlaylist(with: UUID(), creationMetadata: metaData, completionHandler: { (createdPlaylist, error) in
                 guard error == nil else {
                     KyoozUtils.showPopupError(withTitle: "Could not create playlist with name \(name)",
 						withThrownError: error!,
@@ -80,23 +80,23 @@ class IPodLibraryDAO {
     }
     
     @available(iOS 9.3, *)
-    private static func validateAndExecute(block:()->()) {
+    private static func validateAndExecute(_ block:()->()) {
         switch SKCloudServiceController.authorizationStatus() {
-        case .NotDetermined :
+        case .notDetermined :
             SKCloudServiceController.requestAuthorization({ (status) in
-                if status == .Authorized {
+                if status == .authorized {
                     block()
                 }
             })
-        case .Authorized:
+        case .authorized:
             block()
         default:
 			let b = MenuBuilder()
                 .with(title: "Access to modify the iTunes Library is not available.  Please grant access to the media library in the system settings")
             
             let goToSettingsAction = KyoozMenuAction(title: "Jump To Settings") {
-                if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
-                    UIApplication.sharedApplication().openURL(url)
+                if let url = URL(string: UIApplicationOpenSettingsURLString) {
+                    UIApplication.shared.openURL(url)
                 } else {
                     KyoozUtils.showPopupError(withTitle: "Error with opening URL to settings", withMessage: nil, presentationVC: nil)
                 }

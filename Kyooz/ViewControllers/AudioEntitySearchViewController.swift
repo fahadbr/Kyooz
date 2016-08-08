@@ -24,7 +24,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
                 textField?.selectAll(nil)
             } else {
                 searchBar.resignFirstResponder()
-                if tableView.editing {
+                if tableView.isEditing {
                     toggleSelectMode()
                 }
                 KyoozUtils.doInMainQueueAfterDelay(0.4) {
@@ -91,23 +91,23 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     //MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerClass(RowLimitedSectionHeaderView.self,
+        tableView.register(RowLimitedSectionHeaderView.self,
                                 forHeaderFooterViewReuseIdentifier: RowLimitedSectionHeaderView.reuseIdentifier)
         
-        searchBar.searchBarStyle = UISearchBarStyle.Minimal
+        searchBar.searchBarStyle = UISearchBarStyle.minimal
         searchBar.sizeToFit()
-        searchBar.barStyle = UIBarStyle.Black
-        searchBar.translucent = false
+        searchBar.barStyle = UIBarStyle.black
+        searchBar.isTranslucent = false
         searchBar.delegate = self
         searchBar.placeholder = "Search"
         searchBar.tintColor = ThemeHelper.defaultVividColor
-        searchBar.backgroundColor = UIColor.clearColor()
+        searchBar.backgroundColor = UIColor.clear
         searchBar.accessibilityLabel = "Search"
         
         headerHeightConstraint.constant = ThemeHelper.plainHeaderHight
         tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight
         tableView.contentInset.top = ThemeHelper.plainHeaderHight
-        navigationController?.navigationBar.userInteractionEnabled = false
+        navigationController?.navigationBar.isUserInteractionEnabled = false
 		
         tableView.scrollsToTop = isExpanded
         tableView.rowHeight = ThemeHelper.sidePanelTableViewRowHeight
@@ -115,9 +115,9 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         applyDatasourceDelegate()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        popGestureRecognizer.enabled = false
+        popGestureRecognizer.isEnabled = false
     }
     
 	
@@ -175,7 +175,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     }
     
     
-    private func reloadTableFooter(rowLimitedDSD:RowLimitedSectionDelegator) {
+    private func reloadTableFooter(_ rowLimitedDSD:RowLimitedSectionDelegator) {
         let count = rowLimitedDSD.dsdSections.reduce(0) {
             return $0 + $1.sourceData.entities.count
         }
@@ -193,10 +193,10 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         return UtilHeaderViewController(centerViewController:vc)
     }
     
-	override func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
+	override func addCustomMenuActions(_ indexPath:IndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
         searchBar.resignFirstResponder()
         super.addCustomMenuActions(indexPath, tracks:tracks, menuBuilder: menuBuilder)
-        guard let mediaItem = tracks.first where tracks.count == 1 else { return }
+        guard let mediaItem = tracks.first , tracks.count == 1 else { return }
         var actions = [KyoozOption]()
         if mediaItem.albumId != 0 {
             let goToAlbumAction = KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
@@ -217,11 +217,11 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
     //MARK: - Search Bar Delegate
     
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
     
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		guard !searchText.isEmpty else { return }
 		
 		let normalizedSearchText = searchText.normalizedString
@@ -230,7 +230,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
 		}
 		
 		self.searchText = normalizedSearchText
-		let searchStringComponents = normalizedSearchText.componentsSeparatedByString(" ")
+		let searchStringComponents = normalizedSearchText.components(separatedBy: " ")
 		
 		for searchExecutor in searchExecutionControllers {
 			searchExecutor.executeSearchForStringComponents(normalizedSearchText, stringComponents: searchStringComponents)
@@ -239,15 +239,15 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     
     
     //MARK: - SearchExecutionController Delegate
-    func searchResultsDidGetUpdated(searchExecutionController:SearchExecutionController) {
-        if tableView.editing {
+    func searchResultsDidGetUpdated(_ searchExecutionController:SearchExecutionController) {
+        if tableView.isEditing {
             toggleSelectMode()
         }
         reloadTableViewData()
     }
     
-    func searchDidComplete(searchExecutionController:SearchExecutionController) {
-        if !searchExecutionControllers.contains({ $0.searchInProgress }){
+    func searchDidComplete(_ searchExecutionController:SearchExecutionController) {
+        if !searchExecutionControllers.contains(where: { $0.searchInProgress }){
             reloadTableViewData()
         }
     }
@@ -280,11 +280,11 @@ extension AudioEntitySearchViewController {
     override func selectOrDeselectAll() {
         let willSelectAll = tableView.indexPathsForSelectedRows == nil
         if let rowLimitedDSD = datasourceDelegate as? RowLimitedSectionDelegator
-            where rowLimitedDSD.sections.count > 1 && willSelectAll {
+            , rowLimitedDSD.sections.count > 1 && willSelectAll {
             
             let strokeAnimation = CABasicAnimation(keyPath: "strokeColor")
             strokeAnimation.duration = 0.2
-            strokeAnimation.toValue = UIColor.whiteColor().CGColor
+            strokeAnimation.toValue = UIColor.white.cgColor
 
             
             let widthAnimation = CABasicAnimation(keyPath: "lineWidth")
@@ -297,9 +297,9 @@ extension AudioEntitySearchViewController {
             animationGroup.autoreverses = true
             
             (0..<tableView.numberOfSections).forEach { section in
-                (tableView.headerViewForSection(section) as? KyoozSectionHeaderView)?
+                (tableView.headerView(forSection: section) as? KyoozSectionHeaderView)?
                     .strokeLayer
-                    .addAnimation(animationGroup, forKey: nil)
+                    .add(animationGroup, forKey: nil)
             }
             
         } else {

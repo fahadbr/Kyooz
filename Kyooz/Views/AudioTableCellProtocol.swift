@@ -15,7 +15,7 @@ protocol AudioTableCellProtocol : class {
     
     var isNowPlaying:Bool { get set }
     
-    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping)
+    func configureCellForItems(_ entity:AudioEntity, libraryGrouping:LibraryGrouping)
 
 }
 
@@ -23,6 +23,6 @@ protocol AudioTableCellDelegate : class {
 	
 	var shouldAnimateInArtwork:Bool { get }
 	
-	func presentActionsForCell(cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint)
+	func presentActionsForCell(_ cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint)
 	
 }

@@ -18,23 +18,23 @@ extension MPMediaItemCollection : AudioTrackCollection {
     var tracks:[AudioTrack] { return self.items }
     
     //overriding this so that collections can be searched by their underlying track properties
-    override public func valueForUndefinedKey(key: String) -> AnyObject? {
-        return self.representativeItem?.valueForProperty(key)
+    override public func value(forUndefinedKey key: String) -> AnyObject? {
+        return self.representativeItem?.value(forProperty: key)
     }
     
-    func titleForGrouping(libraryGrouping: LibraryGrouping) -> String? {
-        let titleProperty = MPMediaItem.titlePropertyForGroupingType(libraryGrouping.groupingType)
+    func titleForGrouping(_ libraryGrouping: LibraryGrouping) -> String? {
+        let titleProperty = MPMediaItem.titleProperty(forGroupingType: libraryGrouping.groupingType)
         guard let representativeItem = self.representativeItem else {
             Logger.error("Could not get representative item for collection \(self.description)")
             return nil
         }
-        return representativeItem.valueForProperty(titleProperty) as? String
+        return representativeItem.value(forProperty: titleProperty) as? String
 
     }
     
-    func persistentIdForGrouping(libraryGrouping: LibraryGrouping) -> UInt64 {
-        let idProperty = MPMediaItem.persistentIDPropertyForGroupingType(libraryGrouping.groupingType)
-        return ((self.representativeItem)?.valueForProperty(idProperty) as? NSNumber)?.unsignedLongLongValue ?? 0
+    func persistentIdForGrouping(_ libraryGrouping: LibraryGrouping) -> UInt64 {
+        let idProperty = MPMediaItem.persistentIDProperty(forGroupingType: libraryGrouping.groupingType)
+        return ((self.representativeItem)?.value(forProperty: idProperty) as? NSNumber)?.uint64Value ?? 0
     }
     
     
@@ -46,14 +46,14 @@ extension MPMediaItemCollection : AudioTrackCollection {
 
 extension MPMediaPlaylist {
     
-    override func titleForGrouping(libraryGrouping: LibraryGrouping) -> String? {
+    override func titleForGrouping(_ libraryGrouping: LibraryGrouping) -> String? {
         if libraryGrouping !== LibraryGrouping.Playlists {
             return super.titleForGrouping(libraryGrouping)
         }
         return name
     }
     
-    override func persistentIdForGrouping(libraryGrouping: LibraryGrouping) -> UInt64 {
+    override func persistentIdForGrouping(_ libraryGrouping: LibraryGrouping) -> UInt64 {
         if libraryGrouping !== LibraryGrouping.Playlists {
             return super.persistentIdForGrouping(libraryGrouping)
         }
@@ -72,24 +72,24 @@ extension MPMediaItem : AudioTrack {
     var albumArtistId:UInt64 { return albumArtistPersistentID }
     var albumId:UInt64 { return albumPersistentID }
     var audioTrackSource:AudioTrackSource { return AudioTrackSource.iPodLibrary }
-    var isCloudTrack:Bool { return cloudItem }
+    var isCloudTrack:Bool { return isCloudItem }
     var hasArtwork:Bool { return artwork != nil }
     
     var releaseYear:String? {
-        if let releaseDate = valueForKey("year") as? NSNumber where releaseDate.integerValue != 0 {
+        if let releaseDate = value(forKey: "year") as? NSNumber where releaseDate.intValue != 0 {
             return "\(releaseDate)"
         }
         return nil
     }
     
-    func titleForGrouping(libraryGrouping: LibraryGrouping) -> String? {
-        let titleProperty = MPMediaItem.titlePropertyForGroupingType(libraryGrouping.groupingType)
-        return self.valueForProperty(titleProperty) as? String
+    func titleForGrouping(_ libraryGrouping: LibraryGrouping) -> String? {
+        let titleProperty = MPMediaItem.titleProperty(forGroupingType: libraryGrouping.groupingType)
+        return self.value(forProperty: titleProperty) as? String
     }
     
-    func persistentIdForGrouping(libraryGrouping: LibraryGrouping) -> UInt64 {
-        let idProperty = MPMediaItem.persistentIDPropertyForGroupingType(libraryGrouping.groupingType)
-        return (self.valueForProperty(idProperty) as? NSNumber)?.unsignedLongLongValue ?? 0
+    func persistentIdForGrouping(_ libraryGrouping: LibraryGrouping) -> UInt64 {
+        let idProperty = MPMediaItem.persistentIDProperty(forGroupingType: libraryGrouping.groupingType)
+        return (self.value(forProperty: idProperty) as? NSNumber)?.uint64Value ?? 0
     }
     
     var count:Int {
@@ -101,7 +101,7 @@ extension MPMediaItem : AudioTrack {
     }
 	
 	func artworkImage(forSize size: CGSize) -> UIImage? {
-		return artwork?.imageWithSize(size)
+		return artwork?.image(at: size)
 	}
 
 }
@@ -112,13 +112,13 @@ public func ==(lhs:MPMediaItem, rhs:MPMediaItem) -> Bool {
 
 extension MPMediaQuery {
     static func albumArtistsQuery() -> MPMediaQuery {
-        let query = MPMediaQuery.songsQuery()
-        query.groupingType = MPMediaGrouping.AlbumArtist
+        let query = MPMediaQuery.songs()
+        query.groupingType = MPMediaGrouping.albumArtist
         return query
     }
     
     
-    func shouldQueryCloudItems(shouldQueryCloudItems:Bool) -> MPMediaQuery {
+    func shouldQueryCloudItems(_ shouldQueryCloudItems:Bool) -> MPMediaQuery {
         if(!shouldQueryCloudItems) {
             self.addFilterPredicate(MPMediaPropertyPredicate(value: shouldQueryCloudItems, forProperty: MPMediaItemPropertyIsCloudItem))
         }

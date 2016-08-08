@@ -18,13 +18,13 @@ final class AlbumTrackTableViewCell: MediaLibraryTableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        let color = UIColor.lightGrayColor()
+        let color = UIColor.lightGray
         trackNumber.textColor = color
         trackDuration.textColor = color
         shouldHideAccessoryStack = false
     }
     
-    override func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    override func configureCellForItems(_ entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         guard let mediaItem = entity as? AudioTrack else {
             return
         }

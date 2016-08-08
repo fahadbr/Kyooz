@@ -36,7 +36,7 @@ final class PlaybackStateManager: NSObject {
    
     
     func musicIsPlaying() -> Bool {
-        return musicPlaybackState == MPMusicPlaybackState.Playing
+        return musicPlaybackState == MPMusicPlaybackState.playing
     }
     
     func otherMusicIsPlaying() -> Bool {
@@ -52,21 +52,21 @@ final class PlaybackStateManager: NSObject {
         }
     }
     
-    private func checkAgainstPlaybackTime(playbackTime : NSTimeInterval) {
+    private func checkAgainstPlaybackTime(_ playbackTime : TimeInterval) {
         let newPlaybackTime = self.musicPlayer.currentPlaybackTime
         var playbackStateCorrected:Bool = false
 
         if(newPlaybackTime.isNaN && playbackTime.isNaN) {
-            if(self.musicPlaybackState != MPMusicPlaybackState.Stopped) {
-                self.musicPlaybackState = MPMusicPlaybackState.Stopped
+            if(self.musicPlaybackState != MPMusicPlaybackState.stopped) {
+                self.musicPlaybackState = MPMusicPlaybackState.stopped
                 playbackStateCorrected = true
             }
         } else {
-            if(newPlaybackTime != playbackTime && self.musicPlaybackState != MPMusicPlaybackState.Playing) {
-                self.musicPlaybackState = MPMusicPlaybackState.Playing
+            if(newPlaybackTime != playbackTime && self.musicPlaybackState != MPMusicPlaybackState.playing) {
+                self.musicPlaybackState = MPMusicPlaybackState.playing
                 playbackStateCorrected = true
-            } else if (newPlaybackTime == playbackTime && self.musicPlaybackState == MPMusicPlaybackState.Playing) {
-                self.musicPlaybackState = MPMusicPlaybackState.Paused
+            } else if (newPlaybackTime == playbackTime && self.musicPlaybackState == MPMusicPlaybackState.playing) {
+                self.musicPlaybackState = MPMusicPlaybackState.paused
                 playbackStateCorrected = true
             }
         }
@@ -78,8 +78,8 @@ final class PlaybackStateManager: NSObject {
             }
             Logger.debug("Playback State Corrected to: \(description ?? "unknown"). oldTime:\(playbackTime), newTime:\(newPlaybackTime)")
             KyoozUtils.doInMainQueueAsync() {
-                let notification = NSNotification(name: PlaybackStateManager.PlaybackStateCorrectedNotification, object: self)
-                NSNotificationCenter.defaultCenter().postNotification(notification)
+                let notification = Notification(name: Notification.Name(rawValue: PlaybackStateManager.PlaybackStateCorrectedNotification), object: self)
+                NotificationCenter.default.post(notification)
             }
         }
 
@@ -87,19 +87,19 @@ final class PlaybackStateManager: NSObject {
     
 
     
-    func handlePlaybackStateChanged(notification:NSNotification){
+    func handlePlaybackStateChanged(_ notification:Notification){
         musicPlaybackState = musicPlayer.playbackState
         correctPlaybackState()
     }
     
     private func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PlaybackStateManager.handlePlaybackStateChanged(_:)),
-            name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
+        NotificationCenter.default.addObserver(self, selector: #selector(PlaybackStateManager.handlePlaybackStateChanged(_:)),
+            name:NSNotification.Name.MPMusicPlayerControllerPlaybackStateDidChange,
             object: musicPlayer)
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
     

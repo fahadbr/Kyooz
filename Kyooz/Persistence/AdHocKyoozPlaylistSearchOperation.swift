@@ -22,18 +22,18 @@ final class AdHocKyoozPlaylistSearchOperation : AbstractResultOperation<[AudioEn
     
     
     override func main() {
-        if cancelled { return }
+        if isCancelled { return }
         var results = [KyoozPlaylist]()
         for element in KyoozPlaylistManager.instance.playlists {
             guard let playlist = element as? KyoozPlaylist else {
                 continue
             }
             let primaryKey = playlist.name.normalizedString
-            if searchPredicate.evaluateWithObject(SearchIndexEntry(object: playlist, primaryKeyValue: (primaryKeyName,primaryKey))) {
+            if searchPredicate.evaluate(with: SearchIndexEntry(object: playlist, primaryKeyValue: (primaryKeyName,primaryKey))) {
                 results.append(playlist)
             }
             
-            if cancelled { return }
+            if isCancelled { return }
         }
         
         

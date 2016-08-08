@@ -14,32 +14,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var lastFmScrobbler = LastFmScrobbler.instance
 	
-	lazy var window: UIWindow? = self.createWindow()
+	var window: UIWindow?
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         ThemeHelper.applyGlobalAppearanceSettings()
 		
-        window?.rootViewController = ContainerViewController.instance
-        window?.makeKeyAndVisible()
+        window = createWindow()
+        window!.rootViewController = ContainerViewController.instance
+        window!.makeKeyAndVisible()
 		
-        MPMediaLibrary.defaultMediaLibrary().beginGeneratingLibraryChangeNotifications()
+        MPMediaLibrary.default().beginGeneratingLibraryChangeNotifications()
         initMainQueueChecking()
 		ApplicationDefaults.initializeData()
         return true
     }
     
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         lastFmScrobbler.initializeScrobbler()
         lastFmScrobbler.submitCachedScrobbles()
     }
 
-    func applicationWillTerminate(application: UIApplication) {
-        MPMediaLibrary.defaultMediaLibrary().endGeneratingLibraryChangeNotifications()
+    func applicationWillTerminate(_ application: UIApplication) {
+        MPMediaLibrary.default().endGeneratingLibraryChangeNotifications()
     }
     
-    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         BackgroundFetchController.instance.performFetchWithCompletionHandler(completionHandler)
     }
 
@@ -51,15 +52,15 @@ extension AppDelegate {
 		#if MOCK_DATA
 			Logger.debug("starting app with tweaks window")
 			let tweaksGestureRecognizer = UIPinchGestureRecognizer()
-			let window = TweakWindow(frame: UIScreen.mainScreen().bounds,
-			                         gestureType: .Gesture(tweaksGestureRecognizer),
+			let window = TweakWindow(frame: UIScreen.main.bounds,
+			                         gestureType: .gesture(tweaksGestureRecognizer),
 			                         tweakStore: KyoozTweaks.defaultStore)
 			KyoozUtils.doInMainQueueAsync() {
 				ContainerViewController.instance.view.addGestureRecognizer(tweaksGestureRecognizer)
 			}
 			return window
 		#else
-			return UIWindow(frame: UIScreen.mainScreen().bounds)
+			return UIWindow(frame: UIScreen.main.bounds)
 		#endif
 	}
 	

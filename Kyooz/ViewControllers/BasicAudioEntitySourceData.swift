@@ -47,7 +47,7 @@ class BasicAudioEntitySourceData: NSObject, GroupMutableAudioEntitySourceData {
     
     
     private func regroupEntities() {
-        if let collection = parentCollection where libraryGrouping == LibraryGrouping.Playlists {
+        if let collection = parentCollection , libraryGrouping == LibraryGrouping.Playlists {
             entities = [collection]
             return
         }
@@ -60,7 +60,7 @@ class BasicAudioEntitySourceData: NSObject, GroupMutableAudioEntitySourceData {
         if libraryGrouping == LibraryGrouping.Songs {
             switch parentGroup {
             case LibraryGrouping.Albums?, LibraryGrouping.Compilations?, LibraryGrouping.Podcasts?:
-                entities = tracks.sort { $0.albumTrackNumber < $1.albumTrackNumber }
+                entities = tracks.sorted { $0.albumTrackNumber < $1.albumTrackNumber }
             default:
                 entities = tracks
             }
@@ -68,7 +68,7 @@ class BasicAudioEntitySourceData: NSObject, GroupMutableAudioEntitySourceData {
         }
         
         var dict = [String:AudioTrackCollectionDTO]()
-        let unknownTitle = "Unknown \(libraryGrouping.name.capitalizedString.withoutLast())"
+        let unknownTitle = "Unknown \(libraryGrouping.name.capitalized.withoutLast())"
         for track in tracks {
             let title = track.titleForGrouping(libraryGrouping) ?? unknownTitle
             if dict[title]?.tracks.append(track) == nil {
@@ -76,7 +76,7 @@ class BasicAudioEntitySourceData: NSObject, GroupMutableAudioEntitySourceData {
                 dict[title] = coll
             }
         }
-        entities = dict.sort { $0.0 < $1.0 }.map { $1 }
+        entities = dict.sorted { $0.0 < $1.0 }.map { $1 }
         
     }
     
@@ -84,7 +84,7 @@ class BasicAudioEntitySourceData: NSObject, GroupMutableAudioEntitySourceData {
         //no op
     }
     
-    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
+    func sourceDataForIndex(_ indexPath:IndexPath) -> AudioEntitySourceData? {
         guard let nextGrouping = libraryGrouping.nextGroupLevel else {
             return nil
         }

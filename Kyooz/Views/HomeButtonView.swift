@@ -24,13 +24,13 @@ final class HomeButtonView : UIButton {
 		}
 	}
 	
-	override var highlighted:Bool {
+	override var isHighlighted:Bool {
 		didSet {
 			setNeedsDisplay()
 		}
 	}
 	
-	override var enabled:Bool {
+	override var isEnabled:Bool {
 		didSet {
 			setNeedsDisplay()
 		}
@@ -42,17 +42,17 @@ final class HomeButtonView : UIButton {
 	@IBInspectable
 	var sideExtensionProportion:CGFloat = 0.13
 	
-	override func drawRect(rect: CGRect) {
-		if !enabled {
-			UIColor.darkGrayColor().setFill()
-			UIColor.darkGrayColor().setStroke()
-		} else if highlighted {
-			if let highlightColor = titleColorForState(.Highlighted) {
+	override func draw(_ rect: CGRect) {
+		if !isEnabled {
+			UIColor.darkGray.setFill()
+			UIColor.darkGray.setStroke()
+		} else if isHighlighted {
+			if let highlightColor = titleColor(for: .highlighted) {
 				highlightColor.setFill()
 				highlightColor.setStroke()
 			} else {
-				UIColor.darkGrayColor().setFill()
-				UIColor.darkGrayColor().setStroke()
+				UIColor.darkGray.setFill()
+				UIColor.darkGray.setStroke()
 			}
 		} else {
 			color.setFill()
@@ -60,7 +60,7 @@ final class HomeButtonView : UIButton {
 		}
 		
 		let inset:CGFloat = (1 - scale)/2
-		let insetRect = CGRectInset(rect, inset * rect.width, inset * rect.height)
+		let insetRect = rect.insetBy(dx: inset * rect.width, dy: inset * rect.height)
 		
 		let smallerSide = min(insetRect.height, insetRect.width)
 		let roofHeight = smallerSide * roofHeightProportion
@@ -69,21 +69,21 @@ final class HomeButtonView : UIButton {
 		
 		let baseRect = CGRect(x: insetRect.midX - baseWidth/2, y: insetRect.origin.y + roofHeight, width: baseWidth, height: baseSide)
         let basePath = UIBezierPath()
-        basePath.moveToPoint(baseRect.origin)
-        basePath.addLineToPoint(CGPoint(x: baseRect.origin.x, y: baseRect.maxY))
-        basePath.addLineToPoint(CGPoint(x: baseRect.maxX, y: baseRect.maxY))
-        basePath.addLineToPoint(CGPoint(x: baseRect.maxX, y: baseRect.origin.y))
+        basePath.move(to: baseRect.origin)
+        basePath.addLine(to: CGPoint(x: baseRect.origin.x, y: baseRect.maxY))
+        basePath.addLine(to: CGPoint(x: baseRect.maxX, y: baseRect.maxY))
+        basePath.addLine(to: CGPoint(x: baseRect.maxX, y: baseRect.origin.y))
         
 		let slope = roofHeight/(baseWidth/2)
 		
 		let xOffset = smallerSide * sideExtensionProportion
 		let yOffset = xOffset * slope
 		
-		basePath.moveToPoint(CGPoint(x: baseRect.origin.x - xOffset, y: baseRect.origin.y + yOffset))
-		basePath.addLineToPoint(CGPoint(x: insetRect.midX, y: insetRect.origin.y))
-		basePath.addLineToPoint(CGPoint(x: baseRect.maxX + xOffset, y: baseRect.origin.y + yOffset))
+		basePath.move(to: CGPoint(x: baseRect.origin.x - xOffset, y: baseRect.origin.y + yOffset))
+		basePath.addLine(to: CGPoint(x: insetRect.midX, y: insetRect.origin.y))
+		basePath.addLine(to: CGPoint(x: baseRect.maxX + xOffset, y: baseRect.origin.y + yOffset))
 		
-        basePath.lineCapStyle = .Round
+        basePath.lineCapStyle = .round
         basePath.lineWidth = smallerSide * 0.05
 //        basePath.applyTransform(CGAffineTransformMakeTranslation(inset * rect.width * 0.6, 0))
 		basePath.stroke()

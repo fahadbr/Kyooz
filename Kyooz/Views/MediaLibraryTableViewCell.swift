@@ -36,7 +36,7 @@ class MediaLibraryTableViewCell : AbstractTableViewCell, AudioTableCellProtocol 
         guard titleLabel != nil else { return }
         
         titleLabel.font = ThemeHelper.defaultFont
-        let color = UIColor.lightGrayColor()
+        let color = UIColor.lightGray
         detailsLabel.textColor = color
         cloudLabel.textColor = color
         drmLabel.textColor = color
@@ -46,22 +46,22 @@ class MediaLibraryTableViewCell : AbstractTableViewCell, AudioTableCellProtocol 
         menuButton.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
     }
     
-    @IBAction func menuButtonPressed(sender:UIButton!) {
+    @IBAction func menuButtonPressed(_ sender:UIButton!) {
         let point = CGPoint(x: bounds.maxX, y: bounds.midY)
-		let convertedPoint = convertPoint(point, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
+		let convertedPoint = convert(point, from: window!.screen.fixedCoordinateSpace)
         delegate?.presentActionsForCell(self, title: titleLabel.text, details: detailsLabel.text, originatingCenter: convertedPoint)
     }
     
-    final func configureDRMAndCloudLabels(item:AudioTrack) {
+    final func configureDRMAndCloudLabels(_ item:AudioTrack) {
         let cloudHidden = !item.isCloudTrack
         let drmHidden = !cloudHidden || item.assetURL != nil //hide DRM label when either showing the cloud item or if its not cloud and not drm
         
-        cloudLabel.hidden = cloudHidden
-        drmLabel.hidden = drmHidden
-        accessoryStack.hidden = cloudHidden && drmHidden && shouldHideAccessoryStack
+        cloudLabel.isHidden = cloudHidden
+        drmLabel.isHidden = drmHidden
+        accessoryStack.isHidden = cloudHidden && drmHidden && shouldHideAccessoryStack
     }
 	
-	func configureCellForItems(entity: AudioEntity, libraryGrouping: LibraryGrouping) {
+	func configureCellForItems(_ entity: AudioEntity, libraryGrouping: LibraryGrouping) {
 		//no op
 	}
 }

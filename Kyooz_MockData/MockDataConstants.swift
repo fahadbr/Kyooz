@@ -16,7 +16,7 @@ struct MockDataConstants {
 	
 }
 
-extension NSProcessInfo {
+extension ProcessInfo {
 	
 	subscript(key: MockDataConstants.Key) -> String? {
 		return environment[key.rawValue]

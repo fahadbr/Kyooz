@@ -25,13 +25,13 @@ class CrossButtonView : UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override var enabled:Bool {
+    override var isEnabled:Bool {
         didSet {
             setNeedsDisplay()
         }
@@ -43,11 +43,11 @@ class CrossButtonView : UIButton {
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
             colorToUse = color
@@ -58,26 +58,26 @@ class CrossButtonView : UIButton {
         
         
         let inset = (1 - scale)/2 * min(rect.height, rect.width)
-        let circleRect = CGRectInset(rect, inset, inset)
+        let circleRect = rect.insetBy(dx: inset, dy: inset)
         
         if showsCircle {
-            let circlePath = UIBezierPath(ovalInRect: circleRect)
+            let circlePath = UIBezierPath(ovalIn: circleRect)
             circlePath.fill()
         }
         
 //        let crossInset = showsCircle ? 2 : inset
-        let rectToUse = CGRectInset(showsCircle ? circleRect : rect, inset, inset)
+        let rectToUse = (showsCircle ? circleRect : rect).insetBy(dx: inset, dy: inset)
         
         let crossPath = UIBezierPath()
-        crossPath.moveToPoint(rectToUse.origin)
-        crossPath.addLineToPoint(CGPoint(x: rectToUse.maxX, y: rectToUse.maxY))
-        crossPath.moveToPoint(CGPoint(x: rectToUse.maxX, y: rectToUse.minY))
-        crossPath.addLineToPoint(CGPoint(x: rectToUse.minX, y: rectToUse.maxY))
+        crossPath.move(to: rectToUse.origin)
+        crossPath.addLine(to: CGPoint(x: rectToUse.maxX, y: rectToUse.maxY))
+        crossPath.move(to: CGPoint(x: rectToUse.maxX, y: rectToUse.minY))
+        crossPath.addLine(to: CGPoint(x: rectToUse.minX, y: rectToUse.maxY))
         
         crossPath.lineWidth = 2.5
-        crossPath.lineCapStyle = .Round
+        crossPath.lineCapStyle = .round
         if showsCircle {
-            crossPath.strokeWithBlendMode(.Clear, alpha: 1.0)
+            crossPath.stroke(with: .clear, alpha: 1.0)
         } else {
             crossPath.stroke()
         }

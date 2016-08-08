@@ -16,11 +16,11 @@ final class NowPlayingViewController: UIViewController {
 	
 	private typealias This = NowPlayingViewController
 	static let miniPlayerHeight:CGFloat = 45
-	static let heightScale:CGFloat = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)/667
+	static let heightScale:CGFloat = max(UIScreen.main.bounds.height, UIScreen.main.bounds.width)/667
     
     private lazy var audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
-    private let albumArtPageVC: NowPlayingPageViewController = ImagePageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+    private let albumArtPageVC: NowPlayingPageViewController = ImagePageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
     
     private let playbackProgressVC = PlaybackProgressViewController.instance
 	private let nowPlayingBarVC = MiniPlayerViewController()
@@ -41,10 +41,10 @@ final class NowPlayingViewController: UIViewController {
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
         gradiant.colors = [
-			ThemeHelper.defaultTableCellColor.CGColor,
-			UIColor.clearColor().CGColor,
-			UIColor.clearColor().CGColor,
-			ThemeHelper.defaultTableCellColor.CGColor
+			ThemeHelper.defaultTableCellColor.cgColor,
+			UIColor.clear.cgColor,
+			UIColor.clear.cgColor,
+			ThemeHelper.defaultTableCellColor.cgColor
 		]
         gradiant.locations = [0.0,0.25,0.75,1.0]
         return gradiant
@@ -54,7 +54,7 @@ final class NowPlayingViewController: UIViewController {
     
     var expanded:Bool = false {
         didSet{
-            UIView.animateWithDuration(0.5) { 
+            UIView.animate(withDuration: 0.5) { 
                 self.setNeedsStatusBarAppearanceUpdate()
             }
         }
@@ -67,20 +67,20 @@ final class NowPlayingViewController: UIViewController {
     }
 
     
-    func goToArtist(sender: AnyObject) {
+    func goToArtist(_ sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Artists)
     }
     
-    func goToAlbum(sender: AnyObject) {
+    func goToAlbum(_ sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
     
-    func addToPlaylist(sender: AnyObject) {
+    func addToPlaylist(_ sender: AnyObject) {
         guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else { return }
         Playlists.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
     }
 	
-    private func goToVCWithGrouping(libraryGrouping:LibraryGrouping) {
+    private func goToVCWithGrouping(_ libraryGrouping:LibraryGrouping) {
 		if let nowPlayingItem = audioQueuePlayer.nowPlayingItem,
 			let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem,
 			                                      parentLibraryGroup: libraryGrouping,
@@ -92,29 +92,29 @@ final class NowPlayingViewController: UIViewController {
 		}
     }
 	
-    func collapseViewController(sender: AnyObject) {
+    func collapseViewController(_ sender: AnyObject) {
         RootViewController.instance.animatePullablePanel(shouldExpand: false)
     }
 	
     //MARK: - FUNCTIONS: - Overridden functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.contentMode = .ScaleAspectFill
+        view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
         registerForNotifications()
         
-        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
 		view.add(subView: blurView, with: Anchor.standardAnchors)
         blurView.contentView.layer.addSublayer(gradiantLayer)
 		
-		func configure(vc vc:UIViewController, withHeight height:CGFloat, widthAnchor:NSLayoutDimension, multiplier:CGFloat) {
-			vc.view.heightAnchor.constraintEqualToConstant(height).active = true
-			vc.view.widthAnchor.constraintEqualToAnchor(widthAnchor, multiplier: multiplier).active = true
+		func configure(vc:UIViewController, withHeight height:CGFloat, widthAnchor:NSLayoutDimension, multiplier:CGFloat) {
+			vc.view.heightAnchor.constraint(equalToConstant: height).isActive = true
+			vc.view.widthAnchor.constraint(equalTo: widthAnchor, multiplier: multiplier).isActive = true
 			addChildViewController(vc)
-			vc.didMoveToParentViewController(self)
+			vc.didMove(toParentViewController: self)
 		}
 		
-		view.add(subView: nowPlayingBarVC.view, with: [.Top, .CenterX])
+		view.add(subView: nowPlayingBarVC.view, with: [.top, .centerX])
 		configure(vc: nowPlayingBarVC,
 		          withHeight: This.miniPlayerHeight,
 		          widthAnchor: view.widthAnchor,
@@ -130,21 +130,21 @@ final class NowPlayingViewController: UIViewController {
 			bottomButtonView
 		])
 		
-        mainStackView.axis = .Vertical
-        mainStackView.distribution = .EqualSpacing
-        mainStackView.alignment = .Center
+        mainStackView.axis = .vertical
+        mainStackView.distribution = .equalSpacing
+        mainStackView.alignment = .center
         
-        view.add(subView: mainStackView, with: [.Left, .Right, .CenterY])
-        mainStackView.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.95).active = true
+        view.add(subView: mainStackView, with: [.left, .right, .centerY])
+        mainStackView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.95).isActive = true
 		
 		let anchor_mult:(NSLayoutDimension, CGFloat) = UIScreen.heightClass == .iPhone4 ?
 			(view.heightAnchor, 0.55) :
 			(albumArtPageVC.view.widthAnchor, 0.9)
 		
-		albumArtPageVC.view.heightAnchor.constraintEqualToAnchor(anchor_mult.0, multiplier: anchor_mult.1).active = true
-		albumArtPageVC.view.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor).active = true
+		albumArtPageVC.view.heightAnchor.constraint(equalTo: anchor_mult.0, multiplier: anchor_mult.1).isActive = true
+		albumArtPageVC.view.widthAnchor.constraint(equalTo: mainStackView.widthAnchor).isActive = true
         addChildViewController(albumArtPageVC)
-        albumArtPageVC.didMoveToParentViewController(self)
+        albumArtPageVC.didMove(toParentViewController: self)
 		
 		configure(vc: labelWrapperVC,
 		          withHeight: This.miniPlayerHeight,
@@ -162,16 +162,16 @@ final class NowPlayingViewController: UIViewController {
                   multiplier: 0.9)
 		
         
-        bottomButtonView.widthAnchor.constraintEqualToAnchor(mainStackView.widthAnchor, multiplier: 0.9).active = true
-        bottomButtonView.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
+        bottomButtonView.widthAnchor.constraint(equalTo: mainStackView.widthAnchor, multiplier: 0.9).isActive = true
+        bottomButtonView.heightAnchor.constraint(equalToConstant: bottomButtonHeight).isActive = true
 
         KyoozUtils.doInMainQueueAsync() {
             self.reloadData(nil)
             self.updateAlphaLevels()
         }
         
-        view.addObserver(self, forKeyPath: "center", options: .New, context: &observationContext)
-        view.bringSubviewToFront(nowPlayingBarVC.view)
+        view.addObserver(self, forKeyPath: "center", options: .new, context: &observationContext)
+        view.bringSubview(toFront: nowPlayingBarVC.view)
     }
     
     override func viewDidLayoutSubviews() {
@@ -180,40 +180,40 @@ final class NowPlayingViewController: UIViewController {
     }
     
     private func createBottomButtonView() -> UIView {
-        let font = ThemeHelper.smallFontForStyle(.Medium)
+        let font = ThemeHelper.smallFontForStyle(.medium)
 		
-        func createAndConfigureButton(title:String, selector:Selector) -> UIButton {
+        func createAndConfigureButton(_ title:String, selector:Selector) -> UIButton {
             let button = UIButton()
-            button.setTitle(title, forState: .Normal)
-			button.setTitleColor(ThemeHelper.defaultFontColor, forState: .Normal)
-			button.setTitleColor(ThemeHelper.defaultVividColor, forState: .Highlighted)
-            button.addTarget(self, action: selector, forControlEvents: .TouchUpInside)
+            button.setTitle(title, for: UIControlState())
+			button.setTitleColor(ThemeHelper.defaultFontColor, for: UIControlState())
+			button.setTitleColor(ThemeHelper.defaultVividColor, for: .highlighted)
+            button.addTarget(self, action: selector, for: .touchUpInside)
             if let label = button.titleLabel {
                 label.alpha = ThemeHelper.defaultButtonTextAlpha
                 label.font = font
-                label.textAlignment = .Center
-				label.lineBreakMode = .ByTruncatingTail
-				button.heightAnchor.constraintEqualToConstant(bottomButtonHeight).active = true
-				button.widthAnchor.constraintEqualToConstant(label.intrinsicContentSize().width + 20).active = true
+                label.textAlignment = .center
+				label.lineBreakMode = .byTruncatingTail
+				button.heightAnchor.constraint(equalToConstant: bottomButtonHeight).isActive = true
+				button.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width + 20).isActive = true
             }
             return button
 		}
 		
-		func stackViewWrapperForViews(views:[UIView]) -> UIView {
+		func stackViewWrapperForViews(_ views:[UIView]) -> UIView {
 			let stackView = UIStackView(arrangedSubviews: views)
-			stackView.axis = .Horizontal
-			stackView.distribution = .EqualSpacing
+			stackView.axis = .horizontal
+			stackView.distribution = .equalSpacing
             
-            1.stride(to: views.count, by: 2).forEach {
+            stride(from: 1, to: views.count, by: 2).forEach {
                 let view = views[$0]
-                view.layer.borderColor = UIColor.darkGrayColor().CGColor
+                view.layer.borderColor = UIColor.darkGray.cgColor
                 view.layer.borderWidth = 1
             }
 
 			let wrapperView = UIView()
             wrapperView.add(subView: stackView, with: Anchor.standardAnchors)
 			wrapperView.layer.cornerRadius = 5
-			wrapperView.layer.borderColor = UIColor.darkGrayColor().CGColor
+			wrapperView.layer.borderColor = UIColor.darkGray.cgColor
 			wrapperView.layer.borderWidth = 1
 			wrapperView.layer.masksToBounds = true
 			return wrapperView
@@ -230,29 +230,29 @@ final class NowPlayingViewController: UIViewController {
 		let otherStack = stackViewWrapperForViews([hideButton])
         
         let stackView = UIStackView(arrangedSubviews: [goToStack, otherStack])
-        stackView.axis = .Horizontal
-        stackView.distribution = .EqualCentering
-        stackView.alignment = .Center
+        stackView.axis = .horizontal
+        stackView.distribution = .equalCentering
+        stackView.alignment = .center
         return stackView
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden: Bool {
         return expanded
     }
     
-    override func preferredStatusBarUpdateAnimation() -> UIStatusBarAnimation {
-        return .Slide
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
     }
 	
 
-    func reloadData(notification:NSNotification?) {
-        guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else { return }
+    func reloadData(_ notification:Notification?) {
+        guard UIApplication.shared.applicationState == UIApplicationState.active else { return }
         
-        func transitionPageVC(pageVC:NowPlayingPageViewController, withVC vc:()->WrapperViewController){
+        func transitionPageVC(_ pageVC:NowPlayingPageViewController, withVC vc:()->WrapperViewController){
 			if !((pageVC.viewControllers?.first as? WrapperViewController)?.isPresentedVC ?? false)
 				 || pageVC.refreshNeeded {
 				pageVC.refreshNeeded = false
-				pageVC.setViewControllers([vc()], direction: .Forward, animated: false, completion: nil)
+				pageVC.setViewControllers([vc()], direction: .forward, animated: false, completion: nil)
 			}
         }
         
@@ -266,7 +266,7 @@ final class NowPlayingViewController: UIViewController {
         transitionPageVC(albumArtPageVC, withVC: imageWrapper)
         
         KyoozUtils.doInMainQueueAsync() {
-            if let image = (self.albumArtPageVC.viewControllers?.first as? ImageWrapperViewController)?.imageView.image?.CGImage {
+            if let image = (self.albumArtPageVC.viewControllers?.first as? ImageWrapperViewController)?.imageView.image?.cgImage {
                 self.view.layer.contents = image
             }
         }
@@ -276,7 +276,7 @@ final class NowPlayingViewController: UIViewController {
 
     
     //MARK: - FUNCTIONS: - KVOFunction
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
         guard keyPath != nil else { return }
 		if keyPath == "center"{
             updateAlphaLevels()
@@ -299,7 +299,7 @@ final class NowPlayingViewController: UIViewController {
         
         albumArtPageVC.view.alpha = expandedFraction
         
-        func updateAlphaForView(view:UIView, fraction:CGFloat) {
+        func updateAlphaForView(_ view:UIView, fraction:CGFloat) {
             if fraction > 0.75 {
                 view.alpha = (fraction - 0.75) * 4
             } else {
@@ -318,31 +318,31 @@ final class NowPlayingViewController: UIViewController {
     }
 	
     private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue),
                                        object: audioQueuePlayer)
         
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue,
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue),
                                        object: audioQueuePlayer)
         
 		//this is for refreshing the page views
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: AudioQueuePlayerUpdate.queueUpdate.rawValue,
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.queueUpdate.rawValue),
                                        object: audioQueuePlayer)
         
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadData(_:)),
-                                       name: UIApplicationDidBecomeActiveNotification,
-                                       object: UIApplication.sharedApplication())
+                                       name: NSNotification.Name.UIApplicationDidBecomeActive,
+                                       object: UIApplication.shared)
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
 }

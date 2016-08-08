@@ -13,12 +13,12 @@ final class DragToInsertDSDWrapper: DragToRearrangeDSDWrapper {
 
     var locationInDestinationTableView:Bool = true
     
-    override var indexPathOfMovingItem:NSIndexPath {
+    override var indexPathOfMovingItem:IndexPath {
         didSet {
             if indexPathOfMovingItem.row == sourceData.entities.count || indexPathOfMovingItem.row == 0 {
-                placeholderCell?.hidden = false
+                placeholderCell?.isHidden = false
             } else {
-                placeholderCell?.hidden = true
+                placeholderCell?.isHidden = true
             }
         }
     }
@@ -27,46 +27,46 @@ final class DragToInsertDSDWrapper: DragToRearrangeDSDWrapper {
         let cell = UITableViewCell()
         cell.backgroundColor = ThemeHelper.defaultTableCellColor
         cell.textLabel?.text = "Insert Here"
-        cell.textLabel?.textAlignment = NSTextAlignment.Center
+        cell.textLabel?.textAlignment = NSTextAlignment.center
         cell.textLabel?.font = ThemeHelper.defaultFont
-        cell.textLabel?.textColor = UIColor.grayColor()
-        cell.layer.rasterizationScale = UIScreen.mainScreen().scale
+        cell.textLabel?.textColor = UIColor.gray
+        cell.layer.rasterizationScale = UIScreen.main.scale
         cell.layer.shouldRasterize = true
-        cell.hidden = true
+        cell.isHidden = true
         return cell
     }()
     
     private let entitiesToInsert:[AudioEntity]
     
-    init(tableView: UITableView, datasourceDelegate: AudioEntityDSDProtocol, originalIndexPath: NSIndexPath, entitiesToInsert:[AudioEntity]) {
+    init(tableView: UITableView, datasourceDelegate: AudioEntityDSDProtocol, originalIndexPath: IndexPath, entitiesToInsert:[AudioEntity]) {
         self.entitiesToInsert = entitiesToInsert
         super.init(tableView: tableView, datasourceDelegate: datasourceDelegate, originalIndexPath: originalIndexPath)
     }
     
     //MARK: - table view datasource methods
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = datasourceDelegate.tableView(tableView, numberOfRowsInSection: section)
         return placeholderCell == nil ? count : count + 1
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		var indexPathToUse = indexPath
         if let placeholderCell = self.placeholderCell {
             if indexPath == indexPathOfMovingItem {
                 return placeholderCell
             }
             
-            if indexPathOfMovingItem.row < indexPath.row {
-                indexPathToUse = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
+            if indexPathOfMovingItem.row < (indexPath as NSIndexPath).row {
+                indexPathToUse = IndexPath(row: (indexPath as NSIndexPath).row - 1, section: (indexPath as NSIndexPath).section)
             }
         }
-        return datasourceDelegate.tableView(tableView, cellForRowAtIndexPath: indexPathToUse)
+        return datasourceDelegate.tableView(tableView, cellForRowAt: indexPathToUse)
     }
     
     override func persistChanges() throws {
         placeholderCell = nil
         
-        tableView.deleteRowsAtIndexPaths([indexPathOfMovingItem], withRowAnimation: .None)
+        tableView.deleteRows(at: [indexPathOfMovingItem], with: .none)
         
         guard let destinationSourceData = self.sourceData as? MutableAudioEntitySourceData where locationInDestinationTableView else {
             return
@@ -75,13 +75,13 @@ final class DragToInsertDSDWrapper: DragToRearrangeDSDWrapper {
         let noOfItemsToInsert = try destinationSourceData.insertEntities(entitiesToInsert, atIndexPath: indexPathOfMovingItem)
         let startingIndex = indexPathOfMovingItem.row
         
-        var indexPaths = [NSIndexPath]()
+        var indexPaths = [IndexPath]()
         indexPaths.reserveCapacity(noOfItemsToInsert)
         for index in startingIndex ..< (startingIndex + noOfItemsToInsert)  {
-            indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
+            indexPaths.append(IndexPath(row: index, section: 0))
         }
         
-        tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: noOfItemsToInsert == 1 ? .Fade : .Automatic)
+        tableView.insertRows(at: indexPaths, with: noOfItemsToInsert == 1 ? .fade : .automatic)
 
     }
 

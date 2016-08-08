@@ -13,14 +13,14 @@ protocol GestureHandler : NSObjectProtocol {
     
     associatedtype GestureRecognizerType:UIGestureRecognizer
     
-    func handleGesture(sender:GestureRecognizerType)
+    func handleGesture(_ sender:GestureRecognizerType)
     
 }
 
 @objc protocol GestureHandlerDelegate {
     
-    optional func gestureDidBegin(sender:UIGestureRecognizer)
+    @objc optional func gestureDidBegin(_ sender:UIGestureRecognizer)
     
-    optional func gestureDidEnd(sender:UIGestureRecognizer)
+    @objc optional func gestureDidEnd(_ sender:UIGestureRecognizer)
     
 }

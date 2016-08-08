@@ -23,7 +23,7 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[AudioEnti
     }
         
     override func main() {
-        if cancelled { return }
+        if isCancelled { return }
         
         let isItemQuery:Bool = group == LibraryGrouping.Songs
         guard let entities:[AudioEntity] = isItemQuery ? group.baseQuery.items : group.baseQuery.collections else {
@@ -46,23 +46,23 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[AudioEnti
         }
         
         var finalResults = [AudioEntity]()
-        let title = MPMediaItem.titlePropertyForGroupingType(group.groupingType)
+        let title = MPMediaItem.titleProperty(forGroupingType: group.groupingType)
         for i in startIndex...endIndex {
             let value = entities[i]
             guard let primaryKey = value.titleForGrouping(group)?.normalizedString else {
                 continue
             }
-            if searchPredicate.evaluateWithObject(SearchIndexEntry(object: value, primaryKeyValue: (title,primaryKey))) {
+            if searchPredicate.evaluate(with: SearchIndexEntry(object: value, primaryKeyValue: (title,primaryKey))) {
                 finalResults.append(value)
             }
-            if cancelled { return }
+            if isCancelled { return }
         }
         
-        if cancelled { return }
+        if isCancelled { return }
         
         inThreadCompletionBlock?(finalResults)
         
-        if cancelled { return }
+        if isCancelled { return }
 
         //now do a full library search
         var secondaryResults = [AudioEntity]()
@@ -70,26 +70,26 @@ final class AdHocIPodLibrarySearchOperation : AbstractResultOperation<[AudioEnti
             guard let primaryKey = entity.titleForGrouping(group)?.normalizedString else {
                 continue
             }
-            if searchPredicate.evaluateWithObject(SearchIndexEntry(object: entity, primaryKeyValue: (title,primaryKey))) {
+            if searchPredicate.evaluate(with: SearchIndexEntry(object: entity, primaryKeyValue: (title,primaryKey))) {
                 secondaryResults.append(entity)
             }
             
-            if cancelled { return }
+            if isCancelled { return }
         }
         
         if(secondaryResults.isEmpty) { return }
 		
 		let primarySet = NSSet(array: finalResults)
 		let resultsSet = NSMutableSet(array: secondaryResults)
-		resultsSet.minusSet(primarySet as Set<NSObject>)
+		resultsSet.minus(primarySet as Set<NSObject>)
 		
 		guard let differences = resultsSet.allObjects as? [AudioEntity] else {
 			return
 		}
 		
-        finalResults.appendContentsOf(differences)
+        finalResults.append(contentsOf: differences)
         
-        if cancelled { return }
+        if isCancelled { return }
         
         inThreadCompletionBlock?(finalResults)
 

@@ -39,19 +39,19 @@ final class AudioSessionManager : NSObject {
         deviceSampleRate = audioSession.sampleRate
     }
     
-    func handleAudioSessionChange(notification:NSNotification) {
+    func handleAudioSessionChange(_ notification:Notification) {
         ApplicationDefaults.audioQueuePlayer.pause()
     }
     
     private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
 
         notificationCenter.addObserver(self, selector: #selector(AudioSessionManager.handleAudioSessionChange(_:)),
-            name: AVAudioSessionInterruptionNotification, object: audioSession)
+            name: NSNotification.Name.AVAudioSessionInterruption, object: audioSession)
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     

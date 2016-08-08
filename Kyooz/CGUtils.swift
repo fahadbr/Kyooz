@@ -10,7 +10,7 @@ import UIKit
 
 struct CGUtils {
     
-    static func drawTriangleWithCurvedEdges(rect:CGRect, isPointingRight:Bool) -> UIBezierPath {
+    static func drawTriangleWithCurvedEdges(_ rect:CGRect, isPointingRight:Bool) -> UIBezierPath {
         
         let sideLength = rect.height
         let outerRadius = sideLength/pow(3, 0.5)
@@ -29,18 +29,18 @@ struct CGUtils {
         let insetX = isPointingRight ? inset : inset * -1
         
         let path = UIBezierPath()
-        path.moveToPoint(CGPoint(x: pointA.x, y: pointA.y + inset))
-        path.addLineToPoint(CGPoint(x: pointB.x, y: pointB.y - inset))
-        path.addQuadCurveToPoint(CGPoint(x: pointB.x + insetX, y: pointB.y), controlPoint: pointB)
-        path.addLineToPoint(CGPoint(x: pointC.x - insetX, y: pointC.y + inset))
-        path.addQuadCurveToPoint(CGPoint(x: pointC.x - insetX, y: pointC.y - inset), controlPoint: pointC)
-        path.addLineToPoint(CGPoint(x: pointA.x + insetX, y: pointA.y))
-        path.addQuadCurveToPoint(CGPoint(x: pointA.x, y: pointA.y + inset), controlPoint: pointA)
+        path.move(to: CGPoint(x: pointA.x, y: pointA.y + inset))
+        path.addLine(to: CGPoint(x: pointB.x, y: pointB.y - inset))
+        path.addQuadCurve(to: CGPoint(x: pointB.x + insetX, y: pointB.y), controlPoint: pointB)
+        path.addLine(to: CGPoint(x: pointC.x - insetX, y: pointC.y + inset))
+        path.addQuadCurve(to: CGPoint(x: pointC.x - insetX, y: pointC.y - inset), controlPoint: pointC)
+        path.addLine(to: CGPoint(x: pointA.x + insetX, y: pointA.y))
+        path.addQuadCurve(to: CGPoint(x: pointA.x, y: pointA.y + inset), controlPoint: pointA)
         
         return path
     }
     
-    static func drawRectWithCurvedEdges(rect:CGRect) -> UIBezierPath {
+    static func drawRectWithCurvedEdges(_ rect:CGRect) -> UIBezierPath {
         let path = UIBezierPath()
         let origin = rect.origin
         let point2 = CGPoint(x:rect.maxX, y:rect.minY)
@@ -49,16 +49,16 @@ struct CGUtils {
         
         let inset = min(rect.width * 0.15, rect.height * 0.15)
         
-        path.moveToPoint(CGPoint(x: origin.x + inset, y: origin.y))
+        path.move(to: CGPoint(x: origin.x + inset, y: origin.y))
         
-        path.addLineToPoint(CGPoint(x: point2.x - inset, y: point2.y))
-        path.addQuadCurveToPoint(CGPoint(x: point2.x, y: point2.y + inset), controlPoint: point2)
-        path.addLineToPoint(CGPoint(x: point3.x, y: point3.y - inset))
-        path.addQuadCurveToPoint(CGPoint(x: point3.x - inset , y: point3.y), controlPoint: point3)
-        path.addLineToPoint(CGPoint(x: point4.x + inset, y: point4.y))
-        path.addQuadCurveToPoint(CGPoint(x: point4.x, y: point4.y - inset), controlPoint: point4)
-        path.addLineToPoint(CGPoint(x: origin.x, y: origin.y + inset))
-        path.addQuadCurveToPoint(CGPoint(x: origin.x + inset, y: origin.y), controlPoint: origin)
+        path.addLine(to: CGPoint(x: point2.x - inset, y: point2.y))
+        path.addQuadCurve(to: CGPoint(x: point2.x, y: point2.y + inset), controlPoint: point2)
+        path.addLine(to: CGPoint(x: point3.x, y: point3.y - inset))
+        path.addQuadCurve(to: CGPoint(x: point3.x - inset , y: point3.y), controlPoint: point3)
+        path.addLine(to: CGPoint(x: point4.x + inset, y: point4.y))
+        path.addQuadCurve(to: CGPoint(x: point4.x, y: point4.y - inset), controlPoint: point4)
+        path.addLine(to: CGPoint(x: origin.x, y: origin.y + inset))
+        path.addQuadCurve(to: CGPoint(x: origin.x + inset, y: origin.y), controlPoint: origin)
         
         return path
     }

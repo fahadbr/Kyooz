@@ -22,9 +22,9 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
             return nowPlayingViewController.expanded
         } set {
             nowPlayingViewController.expanded = newValue
-            nowPlayingTapGestureRecognizer.enabled = !newValue
+            nowPlayingTapGestureRecognizer.isEnabled = !newValue
             if newValue {
-                TutorialManager.instance.dimissTutorials([.DragAndDrop], action: .DismissUnfulfilled)
+                TutorialManager.instance.dimissTutorials([.dragAndDrop], action: .dismissUnfulfilled)
             }
         }
     }
@@ -49,7 +49,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     private lazy var reducedAnimationDelegate = ReducedAnimationNavigationControllerDelegate()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -57,7 +57,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 
         let aelvc = AudioEntityLibraryViewController()
 		aelvc.isBaseLevel = true
-        let baseGroupIndex = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AllMusicBaseGroup)
+        let baseGroupIndex = UserDefaults.standard.integer(forKey: UserDefaultKeys.AllMusicBaseGroup)
         let selectedGroup = LibraryGrouping.allMusicGroupings[baseGroupIndex]
         aelvc.title = "ALL MUSIC"
         aelvc.sourceData = MediaQuerySourceData(filterQuery: selectedGroup.baseQuery, libraryGrouping: selectedGroup)
@@ -66,43 +66,43 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 		
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
-        collapsedBarLayoutGuide.heightAnchor.constraintEqualToConstant(self.dynamicType.miniPlayerHeight).active = true
-        collapsedBarLayoutGuide.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-        collapsedBarLayoutGuide.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        collapsedBarLayoutGuide.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        collapsedBarLayoutGuide.heightAnchor.constraint(equalToConstant: self.dynamicType.miniPlayerHeight).isActive = true
+        collapsedBarLayoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collapsedBarLayoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        collapsedBarLayoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
         view.addSubview(libraryNavigationController.view)
         addChildViewController(libraryNavigationController)
-        libraryNavigationController.didMoveToParentViewController(self)
-        libraryNavigationController.navigationBar.backgroundColor = UIColor.clearColor()
-        libraryNavigationController.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
+        libraryNavigationController.didMove(toParentViewController: self)
+        libraryNavigationController.navigationBar.backgroundColor = UIColor.clear
+        libraryNavigationController.navigationBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         libraryNavigationController.navigationBar.shadowImage = UIImage()
 
         setNavigationDelegate()
         
         let libraryView = libraryNavigationController.view
-        libraryView.translatesAutoresizingMaskIntoConstraints = false
-        libraryView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        lncBottomConstraint = libraryView.bottomAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor)
-        lncBottomConstraint.active = true
-        libraryView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        libraryView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        libraryView?.translatesAutoresizingMaskIntoConstraints = false
+        libraryView?.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        lncBottomConstraint = libraryView?.bottomAnchor.constraint(equalTo: collapsedBarLayoutGuide.topAnchor)
+        lncBottomConstraint.isActive = true
+        libraryView?.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        libraryView?.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
         nowPlayingViewController = NowPlayingViewController()
         
         let nowPlayingView = nowPlayingViewController.view
-        view.insertSubview(nowPlayingView, atIndex: 0)
-        view.bringSubviewToFront(nowPlayingView)
+        view.insertSubview(nowPlayingView!, at: 0)
+        view.bringSubview(toFront: nowPlayingView!)
         addChildViewController(nowPlayingViewController)
-        nowPlayingViewController.didMoveToParentViewController(self)
-        nowPlayingView.translatesAutoresizingMaskIntoConstraints = false
-        collapsedConstraint = nowPlayingView.topAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor)
-        collapsedConstraint.active = true
-        expandedConstraint = nowPlayingView.topAnchor.constraintEqualToAnchor(view.topAnchor)
+        nowPlayingViewController.didMove(toParentViewController: self)
+        nowPlayingView?.translatesAutoresizingMaskIntoConstraints = false
+        collapsedConstraint = nowPlayingView?.topAnchor.constraint(equalTo: collapsedBarLayoutGuide.topAnchor)
+        collapsedConstraint.isActive = true
+        expandedConstraint = nowPlayingView?.topAnchor.constraint(equalTo: view.topAnchor)
         
-        nowPlayingView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        nowPlayingView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-        nowPlayingView.heightAnchor.constraintEqualToAnchor(view.heightAnchor).active = true
+        nowPlayingView?.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        nowPlayingView?.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        nowPlayingView?.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
 
         nowPlayingPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(RootViewController.handlePanGesture(_:)))
         nowPlayingPanGestureRecognizer.delegate = self
@@ -114,14 +114,14 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
     }
     
     //MARK: - Navigation controller delegate
-    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
-        if !navigationController.toolbarHidden {
-            navigationController.toolbarHidden = true
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if !navigationController.isToolbarHidden {
+            navigationController.isToolbarHidden = true
         }
     }
     
     func setNavigationDelegate() {
-        let reduceAnimations = NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations)
+        let reduceAnimations = UserDefaults.standard.bool(forKey: UserDefaultKeys.ReduceAnimations)
         if reduceAnimations {
             libraryNavigationController.delegate = reducedAnimationDelegate
         } else {
@@ -130,7 +130,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         (libraryNavigationController.topViewController as? CustomPopableViewController)?.enableCustomPopGestureRecognizer(reduceAnimations)
     }
     
-    func presentWarningView(message:String, handler:()->()) {
+    func presentWarningView(_ message:String, handler:()->()) {
         if self.warningViewController != nil {
             Logger.debug("already displaying warning view")
             return
@@ -140,19 +140,19 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         warningVC.message = message
         
         let warningView = warningVC.view
-        warningView.frame = CGRect(origin: collapsedBarLayoutGuide.layoutFrame.origin, size: CGSize(width: view.frame.width, height: 0))
-        view.insertSubview(warningView, belowSubview: nowPlayingViewController.view)
+        warningView?.frame = CGRect(origin: collapsedBarLayoutGuide.layoutFrame.origin, size: CGSize(width: view.frame.width, height: 0))
+        view.insertSubview(warningView!, belowSubview: nowPlayingViewController.view)
         warningViewController = warningVC
         
-        warningView.translatesAutoresizingMaskIntoConstraints = false
-        lncBottomConstraint.active = false
-        warningView.topAnchor.constraintEqualToAnchor(libraryNavigationController.view.bottomAnchor).active = true
-        warningView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        warningView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-        warningView.heightAnchor.constraintEqualToConstant(40).active = true
-        warningView.bottomAnchor.constraintEqualToAnchor(collapsedBarLayoutGuide.topAnchor).active = true
+        warningView?.translatesAutoresizingMaskIntoConstraints = false
+        lncBottomConstraint.isActive = false
+        warningView?.topAnchor.constraint(equalTo: libraryNavigationController.view.bottomAnchor).isActive = true
+        warningView?.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        warningView?.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        warningView?.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        warningView?.bottomAnchor.constraint(equalTo: collapsedBarLayoutGuide.topAnchor).isActive = true
         warningVC.warningButton.alpha = 0
-        UIView.animateWithDuration(0.6, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .CurveEaseInOut, animations: { () -> Void in
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: UIViewAnimationOptions(), animations: { () -> Void in
             self.view.layoutIfNeeded()
             warningVC.warningButton.alpha = 1
             }, completion: nil)
@@ -165,47 +165,47 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         }
         
         guard let heightConstraint = warningVC.view.constraints.filter({
-            return $0.firstAttribute == NSLayoutAttribute.Height && $0.firstItem === warningVC.view && $0.secondItem == nil
+            return $0.firstAttribute == NSLayoutAttribute.height && $0.firstItem === warningVC.view && $0.secondItem == nil
         }).first else { return }
         heightConstraint.constant = 0
-        warningVC.warningButton.hidden = true
-        UIView.animateWithDuration(0.15, delay: 0, options: .CurveEaseInOut, animations: { self.view.layoutIfNeeded() }, completion: {_ in
+        warningVC.warningButton.isHidden = true
+        UIView.animate(withDuration: 0.15, delay: 0, options: UIViewAnimationOptions(), animations: { self.view.layoutIfNeeded() }, completion: {_ in
             warningVC.view.removeFromSuperview()
-            self.lncBottomConstraint.active = true
+            self.lncBottomConstraint.isActive = true
             self.warningViewController = nil
         })
     }
     
-    func pushViewController(vc:UIViewController) {
+    func pushViewController(_ vc:UIViewController) {
         if(pullableViewExpanded) {
             animatePullablePanel(shouldExpand: false)
         }
         libraryNavigationController.pushViewController(vc, animated: true)
     }
     
-    func enableGesturesInSubViews(shouldEnable shouldEnable:Bool) {
-        libraryNavigationController.view.userInteractionEnabled = shouldEnable
-        nowPlayingViewController.view.userInteractionEnabled = shouldEnable
+    func enableGesturesInSubViews(shouldEnable:Bool) {
+        libraryNavigationController.view.isUserInteractionEnabled = shouldEnable
+        nowPlayingViewController.view.isUserInteractionEnabled = shouldEnable
         sourceTableView?.scrollsToTop = shouldEnable
     }
     
-    func handlePanGesture(recognizer: UIPanGestureRecognizer) {
-        let isDraggingUpward = (recognizer.velocityInView(view).y < 0)
+    func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+        let isDraggingUpward = (recognizer.velocity(in: view).y < 0)
         let currenyYPos = recognizer.view!.frame.origin.y
         
-        let activeConstraint = expandedConstraint.active ? expandedConstraint : collapsedConstraint
+        let activeConstraint = expandedConstraint.isActive ? expandedConstraint : collapsedConstraint
         
         switch(recognizer.state) {
-        case .Changed:
-            let translationY = recognizer.translationInView(self.view).y
+        case .changed:
+            let translationY = recognizer.translation(in: self.view).y
             let endYPos = currenyYPos + translationY
             
             if(endYPos >= view.frame.minY && endYPos <= collapsedBarLayoutGuide.layoutFrame.minY) {
-                activeConstraint.constant += translationY
+                activeConstraint?.constant += translationY
 
-                recognizer.setTranslation(CGPointZero, inView: view)
+                recognizer.setTranslation(CGPoint.zero, in: view)
             }
-        case .Ended, .Cancelled:
+        case .ended, .cancelled:
             if(nowPlayingViewController != nil) {
                 if(isDraggingUpward) {
                     animatePullablePanel(shouldExpand: (currenyYPos < self.view.frame.height * 0.80))
@@ -227,52 +227,52 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         return nil
     }
     
-    func handleTapGesture(recognizer: UITapGestureRecognizer) {
+    func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
         if(!pullableViewExpanded) {
             animatePullablePanel(shouldExpand: true)
         }
     }
     
-    func animatePullablePanel(shouldExpand shouldExpand:Bool) {
+    func animatePullablePanel(shouldExpand:Bool) {
         if shouldExpand { //need to make sure one is deactivated before activating the other
-            collapsedConstraint.active = false
-            expandedConstraint.active = true
+            collapsedConstraint.isActive = false
+            expandedConstraint.isActive = true
         } else {
-            expandedConstraint.active = false
-            collapsedConstraint.active = true
+            expandedConstraint.isActive = false
+            collapsedConstraint.isActive = true
         }
         
         collapsedConstraint.constant = 0
         expandedConstraint.constant = 0
         
         pullableViewExpanded = shouldExpand
-        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: { () -> Void in
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: UIViewAnimationOptions(), animations: { () -> Void in
             self.view.layoutIfNeeded()
         }, completion: nil)
     }
     
-    override func childViewControllerForStatusBarHidden() -> UIViewController? {
+    override var childViewControllerForStatusBarHidden: UIViewController? {
         return nowPlayingViewController
     }
     
     
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === nowPlayingPanGestureRecognizer {
-            let translation = nowPlayingPanGestureRecognizer.translationInView(nowPlayingPanGestureRecognizer.view)
+            let translation = nowPlayingPanGestureRecognizer.translation(in: nowPlayingPanGestureRecognizer.view)
             return abs(translation.y) > abs(translation.x)
         }
         return true
     }
 	
-	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 		return gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer === nowPlayingPanGestureRecognizer
 	}
 	
-	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 		return false
 	}
 	
-	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 		return gestureRecognizer === nowPlayingPanGestureRecognizer && otherGestureRecognizer is UISwipeGestureRecognizer
 	}
 }
@@ -282,18 +282,18 @@ private class ReducedAnimationNavigationControllerDelegate : NSObject, UINavigat
     private let transition = ViewControllerFadeAnimator.instance
     
     //MARK: - Navigation controller delegate
-    @objc func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
-        if !navigationController.toolbarHidden {
-            navigationController.toolbarHidden = true
+    @objc func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if !navigationController.isToolbarHidden {
+            navigationController.isToolbarHidden = true
         }
     }
     
-    @objc func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    @objc func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         transition.operation = operation
         return transition
     }
     
-    @objc func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    @objc func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         if transition.interactive {
             return transition
         }

@@ -36,7 +36,7 @@ class LongPressTutorialViewController : TutorialViewController {
     
     lazy var progressLayer:CAShapeLayer = {
 		let p = self.createCircleLayer()
-		p.strokeColor = ThemeHelper.defaultVividColor.CGColor
+		p.strokeColor = ThemeHelper.defaultVividColor.cgColor
 		p.strokeEnd = 0
 		p.frame.origin = CGPoint.zero
 		self.circleLayer.addSublayer(p)
@@ -52,7 +52,7 @@ class LongPressTutorialViewController : TutorialViewController {
 		opacityAnimation.values = [0, 1, 1, 0]
 		
 		let fillAnimation = self.createKeyframeAnimation("fillColor")
-		fillAnimation.values = [UIColor.clearColor().CGColor, ThemeHelper.defaultFontColor.CGColor, ThemeHelper.defaultFontColor.CGColor]
+		fillAnimation.values = [UIColor.clear.cgColor, ThemeHelper.defaultFontColor.cgColor, ThemeHelper.defaultFontColor.cgColor]
 		fillAnimation.calculationMode = kCAAnimationDiscrete
 		
 		return self.wrapInAnimationGroup([scaleAnimation, opacityAnimation, fillAnimation])
@@ -65,7 +65,7 @@ class LongPressTutorialViewController : TutorialViewController {
 		
 		let fillAnimation = self.createKeyframeAnimation("fillColor")
 		fillAnimation.keyTimes = [0.0, 0.1, 0.6, 1.0]
-		fillAnimation.values = [UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultVividColor.CGColor]
+		fillAnimation.values = [UIColor.clear.cgColor, UIColor.clear.cgColor, ThemeHelper.defaultVividColor.cgColor]
 		fillAnimation.calculationMode = kCAAnimationDiscrete
 		return self.wrapInAnimationGroup([strokeEndAnimation, fillAnimation])
 	}()
@@ -75,8 +75,8 @@ class LongPressTutorialViewController : TutorialViewController {
 	
 	override func applyAnimation() {
 		super.applyAnimation()
-		circleLayer.addAnimation(circleLayerAnimation, forKey: "tutorial")
-		progressLayer.addAnimation(progressLayerAnimation, forKey: "progress")
+		circleLayer.add(circleLayerAnimation, forKey: "tutorial")
+		progressLayer.add(progressLayerAnimation, forKey: "progress")
 	}
 	
 	override func removeAnimations() {
@@ -85,7 +85,7 @@ class LongPressTutorialViewController : TutorialViewController {
 		super.removeAnimations()
 	}
 	
-	func createKeyframeAnimation(keyPath:String) -> CAKeyframeAnimation {
+	func createKeyframeAnimation(_ keyPath:String) -> CAKeyframeAnimation {
 		let animation = CAKeyframeAnimation(keyPath: keyPath)
 		animation.keyTimes = keyTimes
 		animation.duration = animationTime
@@ -94,7 +94,7 @@ class LongPressTutorialViewController : TutorialViewController {
 		return animation
 	}
 	
-    func wrapInAnimationGroup(animations:[CAAnimation]) -> CAAnimationGroup {
+    func wrapInAnimationGroup(_ animations:[CAAnimation]) -> CAAnimationGroup {
 		let groupAnimation = CAAnimationGroup()
 		groupAnimation.duration = delay + animationTime
 		groupAnimation.repeatCount = Float.infinity

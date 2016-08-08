@@ -34,7 +34,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
     
     private let fadeOutAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.4)
     
-	private let tableView = UITableView(frame: CGRect.zero, style: .Grouped)
+	private let tableView = UITableView(frame: CGRect.zero, style: .grouped)
     
     private var sectionConfigurations = [SectionConfiguration]()
 
@@ -45,40 +45,40 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	private lazy var allMusicCellConfiguration:CellConfiguration = {
         let title = "ALL MUSIC"
 		let action = { () -> () in
-			RootViewController.instance.libraryNavigationController.popToRootViewControllerAnimated(true)
+			RootViewController.instance.libraryNavigationController.popToRootViewController(animated: true)
 		}
         return BasicCellConfiguration(name:title, action: action)
 	}()
 	
 	private lazy var settingsCellConfiguration:CellConfiguration = {
 		let action = {
-			ContainerViewController.instance.presentViewController(UIStoryboard.settingsViewController(), animated: true, completion: nil)
+			ContainerViewController.instance.present(UIStoryboard.settingsViewController(), animated: true, completion: nil)
 		}
 		return BasicCellConfiguration(name:"SETTINGS", action: action)
 	}()
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         fadeOutAnimation.delegate = self
 		let headerHeight:CGFloat = ThemeHelper.plainHeaderHight
         let headerView = PlainHeaderView()
         headerView.effect = nil
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: headerView, parentView: view)
-        headerView.heightAnchor.constraintEqualToConstant(headerHeight).active = true
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.top, .left, .right], subView: headerView, parentView: view)
+        headerView.heightAnchor.constraint(equalToConstant: headerHeight).isActive = true
 
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: tableView, parentView: view)
-        tableView.topAnchor.constraintEqualToAnchor(headerView.bottomAnchor).active = true
-        tableView.separatorStyle = .SingleLine
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.left, .right, .bottom], subView: tableView, parentView: view)
+        tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor).isActive = true
+        tableView.separatorStyle = .singleLine
 		tableView.rowHeight = 50
         tableView.sectionFooterHeight = 0
-        tableView.backgroundColor = UIColor.clearColor()
+        tableView.backgroundColor = UIColor.clear
         
-        tableView.registerClass(AbstractTableViewCell.self, forCellReuseIdentifier: KyoozNavigationViewController.reuseIdentifier)
+        tableView.register(AbstractTableViewCell.self, forCellReuseIdentifier: KyoozNavigationViewController.reuseIdentifier)
 		
-		func cellConfigurationForGrouping(libraryGrouping:LibraryGrouping) -> CellConfiguration {
+		func cellConfigurationForGrouping(_ libraryGrouping:LibraryGrouping) -> CellConfiguration {
 			let title = libraryGrouping.name
 			let action = {
 				let vc = AudioEntityLibraryViewController()
@@ -90,7 +90,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 		}
 		
 		var musicGroupings:[CellConfiguration] = [allMusicCellConfiguration]
-		musicGroupings.appendContentsOf(LibraryGrouping.otherMusicGroupings.map(cellConfigurationForGrouping))
+        musicGroupings.append(contentsOf: LibraryGrouping.otherMusicGroupings.map(cellConfigurationForGrouping))
 		sectionConfigurations.append(SectionConfiguration(sectionName: "MUSIC", cellConfigurations: musicGroupings))
 		
 		let otherAudio = LibraryGrouping.otherGroupings.map(cellConfigurationForGrouping)
@@ -106,31 +106,31 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         titleLabel.text = "NAVIGATION"
         titleLabel.textColor = ThemeHelper.defaultFontColor
         titleLabel.font = UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize)
-        titleLabel.textAlignment = .Center
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Bottom], subView: titleLabel, parentView: headerView.contentView)
-        titleLabel.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        titleLabel.textAlignment = .center
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.left, .right, .bottom], subView: titleLabel, parentView: headerView.contentView)
+        titleLabel.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
         
         let cancelButton = CrossButtonView()
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Bottom], subView: cancelButton, parentView: headerView.contentView)
-        cancelButton.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
-        cancelButton.widthAnchor.constraintEqualToAnchor(cancelButton.heightAnchor).active = true
-        cancelButton.addTarget(self, action: #selector(self.transitionOut), forControlEvents: .TouchUpInside)
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.right, .bottom], subView: cancelButton, parentView: headerView.contentView)
+        cancelButton.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
+        cancelButton.widthAnchor.constraint(equalTo: cancelButton.heightAnchor).isActive = true
+        cancelButton.addTarget(self, action: #selector(self.transitionOut), for: .touchUpInside)
 	}
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animateCells()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let blurView = UIVisualEffectView()
         self.blurView = blurView
         ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
-        view.sendSubviewToBack(blurView)
-        UIView.animateWithDuration(0.35, delay: 0, options: .CurveEaseIn, animations: {
-            blurView.effect = UIBlurEffect(style: .Dark)
+        view.sendSubview(toBack: blurView)
+        UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseIn, animations: {
+            blurView.effect = UIBlurEffect(style: .dark)
         }, completion: nil)
 		
 		if !initialLoadComplete {
@@ -146,7 +146,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         for cell in tableView.visibleCells {
             cell.alpha = 0
             cell.contentView.alpha = 1
-            UIView.animateWithDuration(0.35, delay: delay, options: .CurveEaseOut, animations: {
+            UIView.animate(withDuration: 0.35, delay: delay, options: .curveEaseOut, animations: {
                 cell.alpha = 1
                 }, completion: nil)
             delay += 0.05
@@ -154,27 +154,27 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
     }
 
     
-	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+	func numberOfSections(in tableView: UITableView) -> Int {
 		return sectionConfigurations.count
 	}
 	
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return sectionConfigurations[section].count
 	}
 	
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCellWithIdentifier(KyoozNavigationViewController.reuseIdentifier) ?? AbstractTableViewCell()
-		cell.textLabel?.text = sectionConfigurations[indexPath.section][indexPath.row].name
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: KyoozNavigationViewController.reuseIdentifier) ?? AbstractTableViewCell()
+		cell.textLabel?.text = sectionConfigurations[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row].name
 		cell.textLabel?.font = ThemeHelper.defaultFont
         cell.textLabel?.textColor = ThemeHelper.defaultFontColor
         if !initialLoadComplete {
             cell.contentView.alpha = 0
         }
-		cell.backgroundColor = UIColor.clearColor()
+		cell.backgroundColor = UIColor.clear
         
-        if indexPath.row == 0 && indexPath.section == 0 {
+        if (indexPath as NSIndexPath).row == 0 && (indexPath as NSIndexPath).section == 0 {
             let homeView = HomeButtonView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-            homeView.userInteractionEnabled = false
+            homeView.isUserInteractionEnabled = false
             cell.accessoryView = homeView
         }
 
@@ -182,23 +182,23 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	}
 
 	
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		tableView.deselectRowAtIndexPath(indexPath, animated: false)
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: false)
         
-        let cellConfiguration = sectionConfigurations[indexPath.section][indexPath.row]
+        let cellConfiguration = sectionConfigurations[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
 		
         cellConfiguration.action()
         
         transitionOut()
 	}
 	
-	func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let cell = UITableViewCell(style: .Subtitle, reuseIdentifier: nil)
+	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
         cell.textLabel?.text = " "
-        cell.backgroundColor = UIColor.clearColor()
+        cell.backgroundColor = UIColor.clear
         if let label = cell.detailTextLabel {
             label.text = "\(sectionConfigurations[section].sectionName)"
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.font = sectionHeaderFont
             label.textColor = ThemeHelper.defaultFontColor
             label.alpha = ThemeHelper.defaultButtonTextAlpha
@@ -208,20 +208,23 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 	
 	//only implementing this method because of a bug with viewForHeaderInSection
 	//which doesnt load the first section unless this method is implemented
-	func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return 45
 	}
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sectionConfigurations[section].sectionName
     }
 	
     func transitionOut() {
-        ContainerViewController.instance.longPressGestureRecognizer.enabled = true
-        view.layer.addAnimation(fadeOutAnimation, forKey: nil)
+        ContainerViewController.instance.longPressGestureRecognizer.isEnabled = true
+        view.layer.add(fadeOutAnimation, forKey: nil)
     }
-    
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+}
+
+extension KyoozNavigationViewController: CAAnimationDelegate {
+
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         blurView?.removeFromSuperview()
         blurView = nil
         view.layer.removeAllAnimations()

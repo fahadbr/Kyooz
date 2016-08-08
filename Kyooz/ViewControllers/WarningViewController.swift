@@ -15,7 +15,7 @@ final class WarningViewController: UIViewController {
     var handler:(()->())?
     var message:String! {
         didSet {
-            warningButton?.setTitle(message, forState: .Normal)
+            warningButton?.setTitle(message, for: UIControlState())
         }
     }
     
@@ -24,13 +24,13 @@ final class WarningViewController: UIViewController {
         guard let label = warningButton.titleLabel else {
             return
         }
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.minimumScaleFactor = 0.6
         label.adjustsFontSizeToFitWidth = true
         label.allowsDefaultTighteningForTruncation = true
-        label.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        label.lineBreakMode = NSLineBreakMode.byTruncatingTail
         label.numberOfLines = 2
-        warningButton.setTitle(message, forState: .Normal)
+        warningButton.setTitle(message, for: UIControlState())
         // Do any additional setup after loading the view.
     }
 
@@ -39,7 +39,7 @@ final class WarningViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func executeHandler(sender: UIButton) {
+    @IBAction func executeHandler(_ sender: UIButton) {
         handler?()
     }
 

@@ -30,23 +30,23 @@ final class PlayPauseButtonView: UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override var enabled:Bool {
+    override var isEnabled:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
             colorToUse = color
@@ -63,13 +63,13 @@ final class PlayPauseButtonView: UIButton {
 
         
         if hasOuterFrame {
-            let outerRect = CGRectInset(rect, rect.width * 0.01, rect.height * 0.01)
+            let outerRect = rect.insetBy(dx: rect.width * 0.01, dy: rect.height * 0.01)
             let outerRectPath = CGUtils.drawRectWithCurvedEdges(outerRect)
             outerRectPath.stroke()
         }
     }
     
-    private func drawPlayButton(rect:CGRect) -> UIBezierPath {
+    private func drawPlayButton(_ rect:CGRect) -> UIBezierPath {
         //the scale factor used to determine the triangles size relative to the encapsuling views frame
 
         
@@ -80,16 +80,16 @@ final class PlayPauseButtonView: UIButton {
         let tX:CGFloat = rect.width *  inverseScaleFactor * 0.5
         let tY:CGFloat = rect.height * inverseScaleFactor * 0.5
         
-        let triangleRect = CGRectInset(rect, tX, tY)
+        let triangleRect = rect.insetBy(dx: tX, dy: tY)
         let path = CGUtils.drawTriangleWithCurvedEdges(triangleRect, isPointingRight: true)
         
-        path.applyTransform(CGAffineTransformMakeTranslation((triangleRect.midX - path.bounds.midX), 0))
+        path.apply(CGAffineTransform(translationX: (triangleRect.midX - path.bounds.midX), y: 0))
         
         return path
     }
     
     
-    private func drawPauseButton(rect:CGRect) -> UIBezierPath {
+    private func drawPauseButton(_ rect:CGRect) -> UIBezierPath {
         let pauseButtonRectWidth:CGFloat = rect.width * 0.20 * scale
         let pauseButtonRectHeight:CGFloat = rect.height * 0.50 * scale
         let pauseButtonRectSize = CGSize(width: pauseButtonRectWidth, height: pauseButtonRectHeight)
@@ -108,7 +108,7 @@ final class PlayPauseButtonView: UIButton {
             x: center.x + gap/2,
             y: center.y - pauseButtonRectHeight/2)
         let secondRect = CGRect(origin: secondRectOrigin, size: pauseButtonRectSize)
-        firstRectPath.appendPath(CGUtils.drawRectWithCurvedEdges(secondRect))
+        firstRectPath.append(CGUtils.drawRectWithCurvedEdges(secondRect))
         
         return firstRectPath
     }

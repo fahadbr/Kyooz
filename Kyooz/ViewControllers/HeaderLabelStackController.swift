@@ -10,13 +10,13 @@ import UIKit
 
 class HeaderLabelStackController: UIViewController {
 	
-	enum LabelConfiguration:Int { case AlbumArtist, TotalCollectionDuration, AlbumDetails, CollectionCount }
+	enum LabelConfiguration:Int { case albumArtist, totalCollectionDuration, albumDetails, collectionCount }
 	
 	static let labelConfigsMap:[LibraryGrouping:[LabelConfiguration]] = [
-		LibraryGrouping.Playlists : [.CollectionCount, .TotalCollectionDuration]
+		LibraryGrouping.Playlists : [.collectionCount, .totalCollectionDuration]
 	]
 	
-	static let defaultLabelConfigurations:[LabelConfiguration] = [.AlbumArtist, .TotalCollectionDuration, .AlbumDetails]
+	static let defaultLabelConfigurations:[LabelConfiguration] = [.albumArtist, .totalCollectionDuration, .albumDetails]
     
     typealias TextStyle = (font:UIFont?, color:UIColor)
     
@@ -29,15 +29,15 @@ class HeaderLabelStackController: UIViewController {
 	init(sourceData:AudioEntitySourceData) {
         var labels = [UILabel]()
         let mainDetailLabelStyle:TextStyle = (UIFont(name: ThemeHelper.defaultFontNameBold, size: ThemeHelper.defaultFontSize - 1), ThemeHelper.defaultFontColor)
-        let subDetailLabelStyle:TextStyle = (ThemeHelper.smallFontForStyle(.Normal), UIColor.lightGrayColor())
-        func createLabel(labelNumber:Int, config:LabelConfiguration) -> UILabel {
-            let textStyle = config == .AlbumArtist ? mainDetailLabelStyle : subDetailLabelStyle
+        let subDetailLabelStyle:TextStyle = (ThemeHelper.smallFontForStyle(.normal), UIColor.lightGray)
+        func createLabel(_ labelNumber:Int, config:LabelConfiguration) -> UILabel {
+            let textStyle = config == .albumArtist ? mainDetailLabelStyle : subDetailLabelStyle
             let label = UILabel()
             label.font = textStyle.font
             label.textColor = textStyle.color
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.layer.shouldRasterize = true
-            label.layer.rasterizationScale = UIScreen.mainScreen().scale
+            label.layer.rasterizationScale = UIScreen.main.scale
             return label
         }
 		
@@ -48,7 +48,7 @@ class HeaderLabelStackController: UIViewController {
 			labelConfigs = HeaderLabelStackController.defaultLabelConfigurations
 		}
         
-        for (i, config) in labelConfigs.enumerate() {
+        for (i, config) in labelConfigs.enumerated() {
             labels.append(createLabel(i, config:config))
         }
 		
@@ -57,7 +57,7 @@ class HeaderLabelStackController: UIViewController {
         self.labels = labels
         
         labelStackView = UIStackView(arrangedSubviews: labels)
-        labelStackView.axis = .Vertical
+        labelStackView.axis = .vertical
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -75,14 +75,14 @@ class HeaderLabelStackController: UIViewController {
 		let trackString = "Tracks"
 		let trackCountString = "\(tracks.count) \(tracks.count == 1 ? trackString.withoutLast() : trackString)"
 		
-		for (labelNumber, labelConfig) in labelConfigurations.enumerate() {
+		for (labelNumber, labelConfig) in labelConfigurations.enumerated() {
 			let label = labels[labelNumber]
 			switch labelConfig {
 				
-			case .AlbumArtist:
+			case .albumArtist:
 				label.text = track.albumArtist ?? track.artist
 				
-			case .AlbumDetails:
+			case .albumDetails:
 				var details = [String]()
 				if let releaseDate = track.releaseYear {
 					details.append(releaseDate)
@@ -92,20 +92,20 @@ class HeaderLabelStackController: UIViewController {
 				}
 				details.append(trackCountString)
 				
-				label.text = details.joinWithSeparator(" • ")
+				label.text = details.joined(separator: " • ")
 				
-			case .TotalCollectionDuration:
-				var duration:NSTimeInterval = 0
+			case .totalCollectionDuration:
+				var duration:TimeInterval = 0
 				for item in tracks {
 					duration += item.playbackDuration
 				}
 				if let albumDurationString = MediaItemUtils.getLongTimeRepresentation(duration) {
 					label.text = "\(albumDurationString)"
 				} else {
-					label.hidden = true
+					label.isHidden = true
 				}
 				
-			case .CollectionCount:
+			case .collectionCount:
 				label.text = trackCountString
 			}
 		}

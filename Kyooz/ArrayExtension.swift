@@ -10,16 +10,16 @@ import Foundation
 
 extension Array {
     
-    mutating func insertAtIndex(itemsToInsert:[Element], index:Int, placeHolderItem:Element) {
+    mutating func insertAtIndex(_ itemsToInsert:[Element], index:Int, placeHolderItem:Element) {
         if(itemsToInsert.isEmpty) { return }
         
         if(index >= self.count) {
-            self.appendContentsOf(itemsToInsert)
+            self.append(contentsOf: itemsToInsert)
             return
         }
         
         if(itemsToInsert.count == 1) {
-            self.insert(itemsToInsert[0], atIndex: index)
+            self.insert(itemsToInsert[0], at: index)
             return
         }
         
@@ -29,7 +29,7 @@ extension Array {
         let endIndexOfInsertedItems = index + itemsToInsert.count
         let newArraySize = originalArray.count + itemsToInsert.count
 
-        var newArray = [Element](count:newArraySize, repeatedValue:placeHolderItem)
+        var newArray = [Element](repeating: placeHolderItem, count: newArraySize)
         
         for i in 0..<newArraySize {
             if(index <= i && i < endIndexOfInsertedItems) {
@@ -50,7 +50,7 @@ extension Array {
     }
 }
 
-enum ValueResult { case Added, Removed }
+enum ValueResult { case added, removed }
 
 struct ArrayDiffValue<T> { let index:Int, value:T, result:ValueResult }
 
@@ -60,8 +60,8 @@ struct ArrayDiff<T> {
     
     init(lhs:[T], rhs:[T], predicate:(T, T) -> Bool ) {
         var diffValues = [ArrayDiffValue<T>]()
-        diffValues.appendContentsOf(lhs.filter { i in !rhs.contains({ predicate($0, i) }) }.enumerate().map { ArrayDiffValue(index: $0, value: $1, result: .Removed) })
-        diffValues.appendContentsOf(rhs.filter { i in !lhs.contains({ predicate($0, i) }) }.enumerate().map { ArrayDiffValue(index: $0, value: $1, result: .Added) })
+        diffValues.append(contentsOf: lhs.filter { i in !rhs.contains(where: { predicate($0, i) }) }.enumerated().map { ArrayDiffValue(index: $0, value: $1, result: .removed) })
+        diffValues.append(contentsOf: rhs.filter { i in !lhs.contains(where: { predicate($0, i) }) }.enumerated().map { ArrayDiffValue(index: $0, value: $1, result: .added) })
         self.diffValues = diffValues
     }
     

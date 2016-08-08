@@ -8,15 +8,15 @@
 
 import Foundation
 
-private let legalCharacters = NSCharacterSet(charactersInString: "!*'();:@&=+$,/?%#[] ").invertedSet
+private let legalCharacters = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
 
 extension String {
     
     var md5:String! {
-        let str = self.cStringUsingEncoding(NSUTF8StringEncoding)
-        let strLen = CC_LONG(self.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        let str = self.cString(using: String.Encoding.utf8)
+        let strLen = CC_LONG(self.lengthOfBytes(using: String.Encoding.utf8))
         let digestLen = Int(CC_MD5_DIGEST_LENGTH)
-        let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
+        let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
         
         CC_MD5(str!, strLen, result)
         let hash = NSMutableString()
@@ -24,28 +24,28 @@ extension String {
             hash.appendFormat("%02x", result[i])
         }
         
-        result.dealloc(digestLen)
+        result.deallocate(capacity: digestLen)
         
         return String(format:hash as String)
     }
     
     var urlEncodedString:String! {
-        return stringByAddingPercentEncodingWithAllowedCharacters(legalCharacters)
+        return addingPercentEncoding(withAllowedCharacters: legalCharacters)
     }
     
     var normalizedString:String {
         guard startIndex != endIndex else { return self }
         var stringToNormalize = self
-        if startIndex.successor() != endIndex {
-            let charsToRemove = NSCharacterSet.punctuationCharacterSet()
-            stringToNormalize = stringToNormalize.componentsSeparatedByCharactersInSet(charsToRemove).joinWithSeparator("")
+        if characters.index(after: startIndex) != endIndex {
+            let charsToRemove = CharacterSet.punctuation
+            stringToNormalize = stringToNormalize.components(separatedBy: charsToRemove).joined(separator: "")
         }
-        stringToNormalize = stringToNormalize.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        return stringToNormalize.stringByFoldingWithOptions(.DiacriticInsensitiveSearch, locale: NSLocale.currentLocale())
+        stringToNormalize = stringToNormalize.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return stringToNormalize.folding(options: .diacriticInsensitive, locale: Locale.current)
     }
     
     subscript (i: Int) -> Character {
-        return self[self.startIndex.advancedBy(i)]
+        return self[self.characters.index(self.startIndex, offsetBy: i)]
     }
     
     subscript (i: Int) -> String {
@@ -53,25 +53,25 @@ extension String {
     }
     
     subscript (r: Range<Int>) -> String {
-        return substringWithRange(startIndex.advancedBy(r.startIndex) ..< startIndex.advancedBy(r.endIndex))
+        return substring(with: characters.index(startIndex, offsetBy: r.lowerBound) ..< characters.index(startIndex, offsetBy: r.upperBound))
     }
     
-    func containsIgnoreCase(stringToCheck:String) -> (doesContain:Bool, rangeOfString:Range<String.Index>?) {
-        if let range = self.rangeOfString(stringToCheck, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) {
+    func containsIgnoreCase(_ stringToCheck:String) -> (doesContain:Bool, rangeOfString:Range<String.Index>?) {
+        if let range = self.range(of: stringToCheck, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil) {
             return (true, range)
         }
         return (false, nil)
     }
     
-    mutating func removeSubstring(stringToRemove:String) {
-        if let range = rangeOfString(stringToRemove) {
-            removeRange(range)
+    mutating func removeSubstring(_ stringToRemove:String) {
+        if let range = range(of: stringToRemove) {
+            removeSubrange(range)
         }
     }
 	
 	func withoutLast() -> String {
 		var s = self
-		s.removeAtIndex(s.endIndex.predecessor())
+		s.remove(at: s.index(before: s.endIndex))
 		return s
 	}
 }

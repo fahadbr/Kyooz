@@ -24,10 +24,10 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
     private var indexOfNewItem:Int? {
         didSet {
             if oldValue == nil && indexOfNewItem != nil {
-                UIView.transitionWithView(messageLabel, duration: 0.5, options: UIViewAnimationOptions.TransitionFlipFromBottom, animations: { () -> Void in
+                UIView.transition(with: messageLabel, duration: 0.5, options: UIViewAnimationOptions.transitionFlipFromBottom, animations: { () -> Void in
                     self.messageLabel.text = "Choose another track or tap here to Finish!"
                     }, completion: {_ in self.tableView.reloadData() })
-                UIView.animateWithDuration(0.3, animations: { [weak self]() -> Void in
+                UIView.animate(withDuration: 0.3, animations: { [weak self]() -> Void in
                     self?.headerView.backgroundColor = SystemQueueResyncWorkflowController.greenHeaderColor
                 })
             }
@@ -36,15 +36,15 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
     
     var completionBlock:((Int)->())?
     
-    @IBAction func cancelWorkflow(sender: UIButton?) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func cancelWorkflow(_ sender: UIButton?) {
+        dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func messageLabelTapped(sender:UITapGestureRecognizer) {
+    @IBAction func messageLabelTapped(_ sender:UITapGestureRecognizer) {
         guard let newIndex = indexOfNewItem else {
             return
         }
-        dismissViewControllerAnimated(true) { [completionBlock = self.completionBlock] in
+        dismiss(animated: true) { [completionBlock = self.completionBlock] in
             completionBlock?(newIndex)
         }
     }
@@ -58,31 +58,31 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         
         nowPlayingItem = item
         
-        tableView.registerNib(NibContainer.songTableViewCellNib, forCellReuseIdentifier: SongDetailsTableViewCell.reuseIdentifier)
-        tableView.registerClass(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
+        tableView.register(NibContainer.songTableViewCellNib, forCellReuseIdentifier: SongDetailsTableViewCell.reuseIdentifier)
+        tableView.register(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
                                                          selector: #selector(self.handleNowPlayingItemChanged(_:)),
-                                                         name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
+                                                         name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue),
                                                          object: audioQueuePlayer)
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return previewQueue.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(SongDetailsTableViewCell.reuseIdentifier) as? SongDetailsTableViewCell else {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SongDetailsTableViewCell.reuseIdentifier) as? SongDetailsTableViewCell else {
             return UITableViewCell()
         }
-        let indexToUse = indexPath.row
+        let indexToUse = (indexPath as NSIndexPath).row
         var isNowPlayingItem = false
         
-        if let index = indexOfNewItem where index == indexPath.row {
+        if let index = indexOfNewItem where index == (indexPath as NSIndexPath).row {
             isNowPlayingItem = true
         }
         
@@ -90,13 +90,13 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         
         cell.configureCellForItems(mediaItem, libraryGrouping: LibraryGrouping.Songs)
         cell.isNowPlaying = isNowPlayingItem
-        cell.menuButton.hidden = true
+        cell.menuButton.isHidden = true
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        var index = indexPath.row
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        var index = (indexPath as NSIndexPath).row
         if let oldIndex = indexOfNewItem {
             if oldIndex == (index - 1) || oldIndex == index {
                 return
@@ -106,25 +106,25 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
                 index = index - 1
             }
             
-            let item = previewQueue.removeAtIndex(oldIndex)
-            previewQueue.insert(item, atIndex: index)
+            let item = previewQueue.remove(at: oldIndex)
+            previewQueue.insert(item, at: index)
             indexOfNewItem = index
-            tableView.moveRowAtIndexPath(NSIndexPath(forRow: oldIndex, inSection: 0), toIndexPath: NSIndexPath(forRow: index, inSection: 0))
+            tableView.moveRow(at: IndexPath(row: oldIndex, section: 0), to: IndexPath(row: index, section: 0))
             return
         }
         
 
         if index == 0 || nowPlayingItem.id != previewQueue[index - 1].id {
             indexOfNewItem = index
-            previewQueue.insert(nowPlayingItem, atIndex: index)
-            tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Middle)
+            previewQueue.insert(nowPlayingItem, at: index)
+            tableView.insertRows(at: [indexPath], with: .middle)
         } else {
             indexOfNewItem = index - 1
         }
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(KyoozSectionHeaderView.reuseIdentifier) as? KyoozSectionHeaderView else {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: KyoozSectionHeaderView.reuseIdentifier) as? KyoozSectionHeaderView else {
             return nil
         }
         
@@ -134,12 +134,12 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
     
     //MARK: - Class functions
     
-    func handleNowPlayingItemChanged(notification:NSNotification!) {
+    func handleNowPlayingItemChanged(_ notification:Notification!) {
         if let item = audioQueuePlayer.nowPlayingItem {
             nowPlayingItem = item
             if let index = indexOfNewItem {
                 previewQueue[index] = nowPlayingItem
-                tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+                tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.fade)
             }
         } else {
             cancelWorkflow(nil)

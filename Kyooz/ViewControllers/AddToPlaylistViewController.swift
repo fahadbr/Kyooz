@@ -31,7 +31,7 @@ class AddToPlaylistViewController: UINavigationController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(white: 0, alpha: 0.4)
         navigationBar.clearBackgroundImage()
-		toolbarHidden = false
+		isToolbarHidden = false
 		
 
 		
@@ -49,7 +49,7 @@ class AddToPlaylistViewController: UINavigationController {
             let recentDSD:AudioEntityDSDProtocol?
 			switch recentPlaylist.type {
 			case .kyooz:
-                guard KyoozPlaylistManager.instance.playlists.containsObject(recentPlaylist.playlist) else {
+                guard KyoozPlaylistManager.instance.playlists.contains(recentPlaylist.playlist) else {
                     recentDSD = nil
                     Playlists.setMostRecentlyModified(playlist: nil)
                     break
@@ -61,9 +61,9 @@ class AddToPlaylistViewController: UINavigationController {
                 
 			case .iTunes:
 				if #available(iOS 9.3, *) {
-                    let query = MPMediaQuery.playlistsQuery()
+                    let query = MPMediaQuery.playlists()
                     query.addFilterPredicate(MPMediaPropertyPredicate(
-                        value: NSNumber(unsignedLongLong:recentPlaylist.playlist.persistentIdForGrouping(LibraryGrouping.Playlists)),
+                        value: NSNumber(value:recentPlaylist.playlist.persistentIdForGrouping(LibraryGrouping.Playlists)),
                         forProperty: MPMediaPlaylistPropertyPersistentID))
                     guard query.collections?.first != nil else {
                         recentDSD = nil
@@ -94,7 +94,7 @@ class AddToPlaylistViewController: UINavigationController {
 		datasourceDelegates.append(kyoozPlaylistDSD)
 		
         let cancelButton = UIBarButtonItem(title:"CANCEL",
-                                           style: .Plain,
+                                           style: .plain,
                                            target: self,
                                            action: #selector(self.dismissOnly))
 		
@@ -102,18 +102,18 @@ class AddToPlaylistViewController: UINavigationController {
 		
         
         if #available(iOS 9.3, *) {
-			func dsdForForPlaylistAttribute(attribute:MPMediaPlaylistAttribute) -> MPMediaQuery {
-				let playlistQuery = MPMediaQuery.playlistsQuery()
+			func dsdForForPlaylistAttribute(_ attribute:MPMediaPlaylistAttribute) -> MPMediaQuery {
+				let playlistQuery = MPMediaQuery.playlists()
 				playlistQuery.addFilterPredicate(MPMediaPropertyPredicate(
-					value: NSNumber(unsignedInteger: attribute.rawValue),
+					value: NSNumber(value: attribute.rawValue),
 					forProperty: MPMediaPlaylistPropertyPlaylistAttributes,
-					comparisonType: .EqualTo))
+					comparisonType: .equalTo))
 				
 				return playlistQuery
 			}
 			
-            let standardPlaylistsQuery = dsdForForPlaylistAttribute(.None)
-            let otgPlaylistsQuery = dsdForForPlaylistAttribute(.OnTheGo)
+            let standardPlaylistsQuery = dsdForForPlaylistAttribute(MPMediaPlaylistAttribute())
+            let otgPlaylistsQuery = dsdForForPlaylistAttribute(.onTheGo)
             let jointQuery = JointMediaQuery(query1: standardPlaylistsQuery, query2: otgPlaylistsQuery)
 			
 			let queryDatasource = MediaQuerySourceData(filterQuery: jointQuery,
@@ -136,7 +136,7 @@ class AddToPlaylistViewController: UINavigationController {
         vc.title = vcTitle
         vc.sourceData = sectionDelegator
         vc.datasourceDelegate = sectionDelegator
-		vc.navigationItem.rightBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .Add,
+		vc.navigationItem.rightBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .add,
 		                                                        target: self,
 		                                                        action: #selector(self.showNewPlaylistMenu))
 		
@@ -144,8 +144,8 @@ class AddToPlaylistViewController: UINavigationController {
 		
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 	
 	func showNewPlaylistMenu() {
@@ -155,12 +155,12 @@ class AddToPlaylistViewController: UINavigationController {
 	}
     
     func dismissAddToPlaylistController() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
         completionAction?()
     }
     
     func dismissOnly() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 
 

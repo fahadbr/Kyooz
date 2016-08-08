@@ -20,7 +20,7 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 	}
     
 
-	private func wrapperVCForIndex(index:Int, completionBlock:(()->())? = nil) -> WrapperViewController? {
+	private func wrapperVCForIndex(_ index:Int, completionBlock:(()->())? = nil) -> WrapperViewController? {
 		//use this to fix a but where the pageViewController caches the result of the 'viewControllerBefore/AfterViewController'
 		//call.  when this is true for the corresponding pageVC then we reset the current vc so that it clears its before and after pages
 		refreshNeeded = true
@@ -36,25 +36,25 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 		return vc
 	}
 	
-	private func getWrapperVCForTrack(track:AudioTrack, index:Int) -> WrapperViewController {
+	private func getWrapperVCForTrack(_ track:AudioTrack, index:Int) -> WrapperViewController {
 		fatalError("this method needs to be overridden")
 	}
 	
-	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		let index = (viewController as? WrapperViewController)?.representingIndex ?? audioQueuePlayer.indexOfNowPlayingItem
 		return wrapperVCForIndex(index + 1) { [audioQueuePlayer = self.audioQueuePlayer] in
 			audioQueuePlayer.skipForwards()
 		}
 	}
 	
-	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 		let index = (viewController as? WrapperViewController)?.representingIndex ?? audioQueuePlayer.indexOfNowPlayingItem
 		return wrapperVCForIndex(index - 1) { [audioQueuePlayer = self.audioQueuePlayer] in
 			audioQueuePlayer.skipBackwards(true)
 		}
 	}
 	
-	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+	func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		if completed {
 			(pageViewController.viewControllers?.first as? WrapperViewController)?.completionBlock?()
 		}
@@ -63,7 +63,7 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 }
 
 final class LabelPageViewController : NowPlayingPageViewController {
-	private override func getWrapperVCForTrack(track: AudioTrack, index:Int) -> WrapperViewController {
+	private override func getWrapperVCForTrack(_ track: AudioTrack, index:Int) -> WrapperViewController {
 		return LabelStackWrapperViewController(track: track, isPresentedVC: false, representingIndex: index)
 	}
 }
@@ -78,7 +78,7 @@ final class ImagePageViewController : NowPlayingPageViewController {
         view.clipsToBounds = false
     }
     
-	private override func getWrapperVCForTrack(track: AudioTrack, index:Int) -> WrapperViewController {
+	private override func getWrapperVCForTrack(_ track: AudioTrack, index:Int) -> WrapperViewController {
 		return ImageWrapperViewController(track: track, isPresentedVC: false, representingIndex:index, size: view.frame.size)
 	}
 }

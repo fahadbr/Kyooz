@@ -9,7 +9,7 @@ public class MarqueeLabel : UIView {
     
     private let gradientMaskLayer:CAGradientLayer = {
         let layer = CAGradientLayer()
-        layer.colors = [UIColor.clearColor().CGColor, UIColor.blackColor().CGColor, UIColor.blackColor().CGColor, UIColor.clearColor().CGColor]
+        layer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
         layer.startPoint = CGPoint(x: 0, y: 0.5)
         layer.endPoint = CGPoint(x: 1, y: 0.5)
         layer.locations = [0.0, 0.025, 0.975, 1.0]
@@ -28,13 +28,13 @@ public class MarqueeLabel : UIView {
         }
     }
 	
-	public func setText(text:String?, animated:Bool) {
+	public func setText(_ text:String?, animated:Bool) {
 		guard animated else {
 			self.text = text
 			return
 		}
 		subLabel.layer.shouldRasterize = false
-		UIView.transitionWithView(self, duration: 0.5, options: .TransitionFlipFromBottom, animations: {
+		UIView.transition(with: self, duration: 0.5, options: .transitionFlipFromBottom, animations: {
 				self.text = text
 			}, completion: {_ in
 				self.subLabel.layer.shouldRasterize = true
@@ -48,7 +48,7 @@ public class MarqueeLabel : UIView {
 		
 		super.init(frame: CGRect.zero)
 		
-		userInteractionEnabled = false
+		isUserInteractionEnabled = false
 		//using this to get an estimatated height at initialization
 		subLabel.text = "text for sizing"
 		resetLabelSizes()
@@ -56,13 +56,13 @@ public class MarqueeLabel : UIView {
         
 		layer.addSublayer(replicatingLayer)
 		replicatingLayer.addSublayer(subLabel.layer)
-        subLabel.layer.rasterizationScale = UIScreen.mainScreen().scale
+        subLabel.layer.rasterizationScale = UIScreen.main.scale
         subLabel.layer.shouldRasterize = true
         
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.stopScrolling),
-		                                                 name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.startScrolling),
-		                                                 name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+		NotificationCenter.default.addObserver(self, selector: #selector(self.stopScrolling),
+		                                                 name: NSNotification.Name.UIApplicationDidEnterBackground, object: UIApplication.shared)
+		NotificationCenter.default.addObserver(self, selector: #selector(self.startScrolling),
+		                                                 name: NSNotification.Name.UIApplicationDidBecomeActive, object: UIApplication.shared)
 	}
 	
 	required public init?(coder aDecoder: NSCoder) {
@@ -71,7 +71,7 @@ public class MarqueeLabel : UIView {
     
     deinit {
         stopScrolling()
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     public override func didMoveToWindow() {
@@ -100,8 +100,8 @@ public class MarqueeLabel : UIView {
         gradientMaskLayer.frame = bounds
 	}
     
-    public override func intrinsicContentSize() -> CGSize {
-        return CGSize(width: UIScreen.mainScreen().bounds.width, height: subLabel.frame.height)
+    public override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIScreen.main.bounds.width, height: subLabel.frame.height)
     }
 	
 	func startScrolling() {
@@ -109,7 +109,7 @@ public class MarqueeLabel : UIView {
             && text != nil
             && superview != nil
             && animationRemoved
-            && UIApplication.sharedApplication().applicationState == .Active
+            && UIApplication.shared.applicationState == .active
             && !KyoozUtils.screenshotUITesting else {
                 return
         }
@@ -126,10 +126,10 @@ public class MarqueeLabel : UIView {
         let scrollAnimation = CABasicAnimation(keyPath: "position")
         scrollAnimation.duration = duration
         scrollAnimation.beginTime = 3.5
-        scrollAnimation.toValue = NSValue(CGPoint: CGPoint(x: subLabel.layer.position.x - horizontalOffset, y: subLabel.layer.position.y))
+        scrollAnimation.toValue = NSValue(cgPoint: CGPoint(x: subLabel.layer.position.x - horizontalOffset, y: subLabel.layer.position.y))
         
         repeatAnimation.animations = [scrollAnimation]
-        subLabel.layer.addAnimation(repeatAnimation, forKey: "scroll")
+        subLabel.layer.add(repeatAnimation, forKey: "scroll")
         animationRemoved = false
     }
 	
@@ -139,7 +139,7 @@ public class MarqueeLabel : UIView {
 	}
 	
 	private func resetLabelSizes() {
-        func animateLabelPosition(newPosition:CGFloat) {
+        func animateLabelPosition(_ newPosition:CGFloat) {
             guard newPosition != subLabel.frame.origin.x else { return }
             
 //            UIView.animateWithDuration(1.0, delay: 0.5, options: .CurveEaseInOut, animations: { [weak self] in
@@ -149,8 +149,8 @@ public class MarqueeLabel : UIView {
         
 		stopScrolling()
 		
-		let height = UIScreen.mainScreen().bounds.height
-		subLabel.frame.size = subLabel.textRectForBounds(CGRect(x:0, y:0, width: CGFloat.infinity, height: height), limitedToNumberOfLines: 1).size
+		let height = UIScreen.main.bounds.height
+		subLabel.frame.size = subLabel.textRect(forBounds: CGRect(x:0, y:0, width: CGFloat.infinity, height: height), limitedToNumberOfLines: 1).size
 		subLabel.frame.size.width = max(subLabel.frame.width, bounds.width)
 		
         if extendsPastBounds {

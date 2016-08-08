@@ -13,7 +13,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     static let instance:ContainerViewController = ContainerViewController()
     
-    enum Position : Int { case Left, Center, Right }
+    enum Position : Int { case left, center, right }
     
     private let sideVCOffset:CGFloat = 60
 	private var invertedCenterVCOffset:CGFloat { return view.bounds.width - sideVCOffset }
@@ -33,24 +33,24 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     private let searchNavigationController = UINavigationController()
     private let kyoozNavigationViewController = KyoozNavigationViewController()
     
-    var centerPanelPosition:Position = .Center {
+    var centerPanelPosition:Position = .center {
         didSet {
-            searchViewController.isExpanded = centerPanelPosition == .Right
-            let sidePanelVisible = centerPanelPosition != .Center
-            tapGestureRecognizer.enabled = sidePanelVisible
+            searchViewController.isExpanded = centerPanelPosition == .right
+            let sidePanelVisible = centerPanelPosition != .center
+            tapGestureRecognizer.isEnabled = sidePanelVisible
             rootViewController.enableGesturesInSubViews(shouldEnable: !sidePanelVisible)
-            playQueueViewController.isExpanded = centerPanelPosition == .Left
+            playQueueViewController.isExpanded = centerPanelPosition == .left
 			showTutorials()
         }
     }
     
-    private let _undoManager:NSUndoManager = {
-        let undoManager = NSUndoManager()
+    private let _undoManager:UndoManager = {
+        let undoManager = UndoManager()
         undoManager.levelsOfUndo = 2
         return undoManager
     }()
     
-    override var undoManager:NSUndoManager! {
+    override var undoManager:UndoManager! {
         return _undoManager
     }
     
@@ -66,13 +66,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         let rootView = rootViewController.view
         addChildViewController(rootViewController)
-        rootViewController.didMoveToParentViewController(self)
-        rootView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        rootView.layer.shadowRadius = 6
-        rootView.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.New, context: &kvoContext)
+        rootViewController.didMove(toParentViewController: self)
+        rootView?.layer.shadowOffset = CGSize(width: 0, height: 0)
+        rootView?.layer.shadowRadius = 6
+        rootView?.addObserver(self, forKeyPath: "center", options: NSKeyValueObservingOptions.new, context: &kvoContext)
 		
-		centerViewRightConstraint = view.add(subView: rootView,
-		                                     with: [.Top, .Bottom, .Width, .Right])[.Right]!
+		centerViewRightConstraint = view.add(subView: rootView!,
+		                                     with: [.top, .bottom, .width, .right])[.right]!
 		
         centerPanelPanGestureRecognizer = UIPanGestureRecognizer(target: self,
                                                                  action: #selector(self.handlePanGesture(_:)))
@@ -80,13 +80,13 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         rootViewController.view.addGestureRecognizer(centerPanelPanGestureRecognizer)
 		
 		if let popGR = rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
-            centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGR)
+            centerPanelPanGestureRecognizer.require(toFail: popGR)
         }
 
         //keep a reference of this gesture recogizer to enable/disable it
         tapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                       action: #selector(self.handleTouchGesture(_:)))
-        tapGestureRecognizer.enabled = false
+        tapGestureRecognizer.isEnabled = false
         rootViewController.view.addGestureRecognizer(tapGestureRecognizer)
 
         longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
@@ -102,52 +102,52 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 		
 		let npView = playQueueView
 		addChildViewController(playQueueNavigationController)
-		playQueueNavigationController.didMoveToParentViewController(self)
+		playQueueNavigationController.didMove(toParentViewController: self)
 		
 		view.add(subView: npView,
-		         with: [.Top, .Bottom, .Right, .Width])[.Width]!.constant = -sideVCOffset
+		         with: [.top, .bottom, .right, .width])[.width]!.constant = -sideVCOffset
 		
-		view.sendSubviewToBack(npView)
-		npView.layer.rasterizationScale = UIScreen.mainScreen().scale
+		view.sendSubview(toBack: npView)
+		npView.layer.rasterizationScale = UIScreen.main.scale
         
         
         searchNavigationController.setViewControllers([searchViewController], animated: false)
         searchNavigationController.navigationBar.clearBackgroundImage()
         
         let searchControllerView = self.searchControllerView
-        searchControllerView.layer.rasterizationScale = UIScreen.mainScreen().scale
+        searchControllerView.layer.rasterizationScale = UIScreen.main.scale
 		
 		view.add(subView: searchControllerView,
-		         with: [.Top, .Bottom, .Left, .Width])[.Width]!.constant = -sideVCOffset
+		         with: [.top, .bottom, .left, .width])[.width]!.constant = -sideVCOffset
 		
 		addChildViewController(searchNavigationController)
-        view.sendSubviewToBack(searchControllerView)
-        searchNavigationController.didMoveToParentViewController(self)
+        view.sendSubview(toBack: searchControllerView)
+        searchNavigationController.didMove(toParentViewController: self)
         
         KyoozUtils.doInMainQueueAfterDelay(2, block: showWhatsNew)
     }
 	
-    func dismissTutorials(targetPosition:Position) {
+    func dismissTutorials(_ targetPosition:Position) {
         switch targetPosition {
-        case .Right:
-            if !TutorialManager.instance.dismissTutorial(.GestureActivatedSearch, action: .Fulfill) {
-                TutorialManager.instance.dimissTutorials([.GestureToViewQueue], action: .DismissUnfulfilled)
+        case .right:
+            if !TutorialManager.instance.dismissTutorial(.gestureActivatedSearch, action: .fulfill) {
+                TutorialManager.instance.dimissTutorials([.gestureToViewQueue], action: .dismissUnfulfilled)
             }
-        case .Left:
-            if !TutorialManager.instance.dismissTutorial(.GestureToViewQueue, action: .Fulfill) {
-                TutorialManager.instance.dimissTutorials([.GestureActivatedSearch, .DragAndDrop], action: .DismissUnfulfilled)
+        case .left:
+            if !TutorialManager.instance.dismissTutorial(.gestureToViewQueue, action: .fulfill) {
+                TutorialManager.instance.dimissTutorials([.gestureActivatedSearch, .dragAndDrop], action: .dismissUnfulfilled)
             }
-		case .Center:
+		case .center:
 			break
         }
 	}
 	
 	func showTutorials() {
-		if centerPanelPosition == .Center && !rootViewController.pullableViewExpanded {
+		if centerPanelPosition == .center && !rootViewController.pullableViewExpanded {
 			TutorialManager.instance.presentUnfulfilledTutorials([
-				.GestureActivatedSearch,
-				.GestureToViewQueue,
-				.DragAndDrop
+				.gestureActivatedSearch,
+				.gestureToViewQueue,
+				.dragAndDrop
 			])
 			
 		}
@@ -158,7 +158,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
         do {
             let version = KyoozUtils.appVersion ?? "1.0"
-            let whatsNewVersion = NSUserDefaults.standardUserDefaults().stringForKey(UserDefaultKeys.WhatsNewVersionShown)
+            let whatsNewVersion = UserDefaults.standard.string(forKey: UserDefaultKeys.WhatsNewVersionShown)
             
             guard whatsNewVersion == nil || whatsNewVersion! != version else {
                 return
@@ -170,57 +170,57 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 			
             KyoozUtils.showMenuViewController(vc, presentingVC: self)
             
-            NSUserDefaults.standardUserDefaults().setObject(version, forKey: UserDefaultKeys.WhatsNewVersionShown)
+            UserDefaults.standard.set(version, forKey: UserDefaultKeys.WhatsNewVersionShown)
         } catch let error {
             Logger.error("Couldn't show the whats new controller: \(error.description)")
         }
     }
 	
-    override func canBecomeFirstResponder() -> Bool {
+    override var canBecomeFirstResponder: Bool {
         return true
     }
 	
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         becomeFirstResponder()
         KyoozUtils.doInMainQueueAfterDelay(3) {
-			guard !self.childViewControllers.contains({ $0 is KyoozOptionsViewController }) else {
+			guard !self.childViewControllers.contains(where: { $0 is KyoozOptionsViewController }) else {
 				return
 			}
 			self.showTutorials()
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         resignFirstResponder()
     }
     
     func toggleSidePanel() {
-        let newPosition:Position = centerPanelPosition == .Center ? .Left : .Center
+        let newPosition:Position = centerPanelPosition == .center ? .left : .center
         animateCenterPanel(toPosition: newPosition)
     }
     
-    override func childViewControllerForStatusBarHidden() -> UIViewController? {
+    override var childViewControllerForStatusBarHidden: UIViewController? {
         return rootViewController
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
-    func pushViewController(vc:UIViewController) {
-        if centerPanelPosition != .Center {
-            animateCenterPanel(toPosition: .Center)
+    func pushViewController(_ vc:UIViewController) {
+        if centerPanelPosition != .center {
+            animateCenterPanel(toPosition: .center)
         }
         rootViewController.pushViewController(vc)
     }
     
-    func pushNewMediaEntityControllerWithProperties(sourceData:AudioEntitySourceData, parentGroup:LibraryGrouping, entity:AudioEntity) {
+    func pushNewMediaEntityControllerWithProperties(_ sourceData:AudioEntitySourceData, parentGroup:LibraryGrouping, entity:AudioEntity) {
         
         if let item = entity as? MPMediaItem {
-            guard IPodLibraryDAO.queryMediaItemFromId(NSNumber(unsignedLongLong: item.persistentID)) != nil else {
-                let name = parentGroup.name.capitalizedString.withoutLast()
+            guard IPodLibraryDAO.queryMediaItemFromId(NSNumber(value: item.persistentID)) != nil else {
+                let name = parentGroup.name.capitalized.withoutLast()
                 KyoozUtils.showPopupError(withTitle: "Track Not Found In Library",
                     withMessage: "Kyooz can't show details about this track's \(name) because it's not in your music library.",
                     presentationVC: self)
@@ -241,7 +241,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         if parentGroup.usesArtwork {
 			vc.useCollapsableHeader = true
         } else {
-            vc.title = entity.titleForGrouping(parentGroup)?.uppercaseString
+            vc.title = entity.titleForGrouping(parentGroup)?.uppercased()
         }
 		
         pushViewController(vc)
@@ -251,8 +251,8 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         let nc = kyoozNavigationViewController
         ConstraintUtils.applyStandardConstraintsToView(subView: nc.view, parentView: view)
         addChildViewController(nc)
-        nc.didMoveToParentViewController(self)
-        longPressGestureRecognizer.enabled = false
+        nc.didMove(toParentViewController: self)
+        longPressGestureRecognizer.isEnabled = false
     }
     
     //MARK: NOTIFICATION REGISTRATIONS
@@ -262,20 +262,20 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     
     // MARK: Gesture recognizer
     
-    func handleTouchGesture(recognizer:UITapGestureRecognizer) {
-        if recognizer.state == .Ended {
+    func handleTouchGesture(_ recognizer:UITapGestureRecognizer) {
+        if recognizer.state == .ended {
             toggleSidePanel()
         }
     }
     
     private func animateCenterPanel(toPosition targetPosition:Position) {
-        if centerPanelPosition == .Left && targetPosition == .Center {
+        if centerPanelPosition == .left && targetPosition == .center {
             animateCenterPanelXPosition(toPosition: targetPosition) { finished in
                 self.centerPanelPosition = targetPosition
             }
@@ -288,19 +288,19 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     private func animateCenterPanelXPosition(toPosition targetPosition:Position, completion: ((Bool) -> Void)! = nil) {
         switch targetPosition {
-        case .Center:
+        case .center:
             centerViewRightConstraint.constant = 0
-        case .Left:
+        case .left:
             centerViewRightConstraint.constant = -invertedCenterVCOffset
-        case .Right:
+        case .right:
             centerViewRightConstraint.constant = invertedCenterVCOffset
         }
         
-        UIView.animateWithDuration(0.4,
+        UIView.animate(withDuration: 0.4,
             delay: 0,
             usingSpringWithDamping: 1.0,
             initialSpringVelocity: 0,
-            options: .CurveEaseInOut,
+            options: UIViewAnimationOptions(),
             animations: {
                 self.view.layoutIfNeeded()
             },
@@ -308,33 +308,33 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
 
     
-    private func applyTranslationToViews(recognizer:UIPanGestureRecognizer) {
-		let newConstant = centerViewRightConstraint.constant + recognizer.translationInView(view).x
+    private func applyTranslationToViews(_ recognizer:UIPanGestureRecognizer) {
+		let newConstant = centerViewRightConstraint.constant + recognizer.translation(in: view).x
 		centerViewRightConstraint.constant = KyoozUtils.cap(newConstant, min: -invertedCenterVCOffset, max: invertedCenterVCOffset)
-        recognizer.setTranslation(CGPoint.zero, inView: view)
+        recognizer.setTranslation(CGPoint.zero, in: view)
     }
     
     
-    func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+    func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
 
         switch(recognizer.state) {
-        case .Changed:
+        case .changed:
             applyTranslationToViews(recognizer)
-        case .Ended, .Cancelled:
+        case .ended, .cancelled:
             let targetPosition:Position
             let centerPanelXPos = rootViewController.view.frame.origin.x
             
-            let movingRight = recognizer.velocityInView(recognizer.view).x > 0
+            let movingRight = recognizer.velocity(in: recognizer.view).x > 0
             
             
             if centerPanelXPos < 0 {
                 let markerX = movingRight ? (invertedCenterVCOffset * -0.80) : (invertedCenterVCOffset * -0.20)
-                targetPosition = centerPanelXPos < markerX ? .Left : .Center
+                targetPosition = centerPanelXPos < markerX ? .left : .center
             } else if centerPanelXPos > 0 {
                 let markerX = movingRight ? (invertedCenterVCOffset * 0.20) : (invertedCenterVCOffset * 0.80)
-                targetPosition = centerPanelXPos > markerX ? .Right : .Center
+                targetPosition = centerPanelXPos > markerX ? .right : .center
             } else {
-                targetPosition = .Center
+                targetPosition = .center
             }
             dismissTutorials(targetPosition)
             animateCenterPanel(toPosition: targetPosition)
@@ -344,16 +344,16 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
     }
     
-    func handleLongPressGesture(recognizer:UILongPressGestureRecognizer) {
+    func handleLongPressGesture(_ recognizer:UILongPressGestureRecognizer) {
         switch(recognizer.state) {
-        case .Began:
+        case .began:
             //initialize the drag and drop handler and all the resources necessary for the drag and drop handler
             if(!playQueueViewController.laidOutSubviews) {
-                dispatch_async(dispatch_get_main_queue()) { self.handleLongPressGesture(recognizer) }
+                DispatchQueue.main.async { self.handleLongPressGesture(recognizer) }
                 return
             }
             if(dragAndDropHandler == nil) {
-                let dragSource:DragSource = centerPanelPosition == .Right ? searchViewController : rootViewController
+                let dragSource:DragSource = centerPanelPosition == .right ? searchViewController : rootViewController
                 dragAndDropHandler = LongPressDragAndDropGestureHandler(dragSource: dragSource, dropDestination: playQueueViewController)
                 dragAndDropHandler.delegate = self
             }
@@ -363,7 +363,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         dragAndDropHandler?.handleGesture(recognizer)
     }
 	
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+	override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
 		if keyPath != nil && keyPath! == "center" {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
@@ -372,11 +372,11 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
             CATransaction.commit()
             
             if centerViewRightConstraint.constant > 0 {
-                playQueueView.hidden = true
-                searchControllerView.hidden = false
+                playQueueView.isHidden = true
+                searchControllerView.isHidden = false
             } else if centerViewRightConstraint.constant < 0 {
-                playQueueView.hidden = false
-                searchControllerView.hidden = true
+                playQueueView.isHidden = false
+                searchControllerView.isHidden = true
             }
 		}
 	}
@@ -384,36 +384,36 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     //MARK: INSERT MODE DELEGATION METHODS
 
-    func gestureDidBegin(sender: UIGestureRecognizer) {
+    func gestureDidBegin(_ sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
-			TutorialManager.instance.dismissTutorial(.DragAndDrop, action: .Fulfill)
+			TutorialManager.instance.dismissTutorial(.dragAndDrop, action: .fulfill)
             playQueueViewController.insertMode = true
-            animateCenterPanel(toPosition: .Left)
+            animateCenterPanel(toPosition: .left)
         }
     }
     
-    func gestureDidEnd(sender: UIGestureRecognizer) {
-        TutorialManager.instance.dismissTutorial(Tutorial.InsertOrCancel, action: .Fulfill)
+    func gestureDidEnd(_ sender: UIGestureRecognizer) {
+        TutorialManager.instance.dismissTutorial(Tutorial.insertOrCancel, action: .fulfill)
         playQueueViewController.insertMode = false
         KyoozUtils.doInMainQueueAfterDelay(0.3) { [unowned self]() in
-            self.animateCenterPanel(toPosition: .Center)
+            self.animateCenterPanel(toPosition: .center)
             self.dragAndDropHandler = nil
         }
     }
     
     //MARK: - Gesture recognizer delegates
     
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer === longPressGestureRecognizer {
-            return (!rootViewController.pullableViewExpanded || centerPanelPosition == .Right)
+            return (!rootViewController.pullableViewExpanded || centerPanelPosition == .right)
         } else if gestureRecognizer === centerPanelPanGestureRecognizer {
-            let translation = centerPanelPanGestureRecognizer.translationInView(centerPanelPanGestureRecognizer.view)
+            let translation = centerPanelPanGestureRecognizer.translation(in: centerPanelPanGestureRecognizer.view)
             return abs(translation.x) > abs(translation.y)
         }
         return true
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return false
     }
    

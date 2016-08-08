@@ -9,7 +9,7 @@
 import Foundation
 
 
-class AbstractResultOperation<T> : NSOperation {
+class AbstractResultOperation<T> : Operation {
     
     var inThreadCompletionBlock:((T)->())?
     

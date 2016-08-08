@@ -11,7 +11,7 @@ import MediaPlayer
 
 class RemoteCommandHandler : NSObject {
     
-    let rcc = MPRemoteCommandCenter.sharedCommandCenter()
+    let rcc = MPRemoteCommandCenter.shared()
     let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     
     override init() {
@@ -27,9 +27,9 @@ class RemoteCommandHandler : NSObject {
     //MARK: Remote Command Center Registration
     private func registerForRemoteCommands() {
         let shouldEnable = true
-        rcc.previousTrackCommand.enabled = shouldEnable
-        rcc.nextTrackCommand.enabled = shouldEnable
-        rcc.playCommand.enabled = shouldEnable
+        rcc.previousTrackCommand.isEnabled = shouldEnable
+        rcc.nextTrackCommand.isEnabled = shouldEnable
+        rcc.playCommand.isEnabled = shouldEnable
         rcc.nextTrackCommand.addTarget(self, action: #selector(RemoteCommandHandler.nextTrack))
         rcc.previousTrackCommand.addTarget(self, action: #selector(RemoteCommandHandler.previousTrack))
         rcc.playCommand.addTarget(self, action: #selector(RemoteCommandHandler.play))
@@ -76,7 +76,7 @@ class RemoteCommandHandler : NSObject {
     
     
     func play() {
-        rcc.playCommand.enabled = true
+        rcc.playCommand.isEnabled = true
         if audioQueuePlayer.musicIsPlaying {
             audioQueuePlayer.pause()
         } else {
