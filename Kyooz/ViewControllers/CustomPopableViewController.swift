@@ -13,31 +13,31 @@ class CustomPopableViewController: UIViewController {
     var transitionAnimator = ViewControllerFadeAnimator.instance
     lazy var popGestureRecognizer:UIScreenEdgePanGestureRecognizer = {
         let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(CustomPopableViewController.handlePan(_:)))
-        popGestureRecognizer.edges = UIRectEdge.Left
+        popGestureRecognizer.edges = UIRectEdge.left
         return popGestureRecognizer
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        popGestureRecognizer.enabled = NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations)
+        popGestureRecognizer.isEnabled = UserDefaults.standard.bool(forKey: UserDefaultKeys.ReduceAnimations)
         view.addGestureRecognizer(popGestureRecognizer)
-        ContainerViewController.instance.centerPanelPanGestureRecognizer.requireGestureRecognizerToFail(popGestureRecognizer)
+        ContainerViewController.instance.centerPanelPanGestureRecognizer.require(toFail: popGestureRecognizer)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        enableCustomPopGestureRecognizer(NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations))
+        enableCustomPopGestureRecognizer(UserDefaults.standard.bool(forKey: UserDefaultKeys.ReduceAnimations))
     }
     
-    func enableCustomPopGestureRecognizer(shouldEnable:Bool) {
-        popGestureRecognizer.enabled = shouldEnable
+    func enableCustomPopGestureRecognizer(_ shouldEnable:Bool) {
+        popGestureRecognizer.isEnabled = shouldEnable
     }
 
     //MARK: - gesture recognizer handling methods
-    final func handlePan(recognizer:UIPanGestureRecognizer) {
-        if recognizer.state == .Began {
+    final func handlePan(_ recognizer:UIPanGestureRecognizer) {
+        if recognizer.state == .began {
             transitionAnimator.interactive = true
-            navigationController?.popViewControllerAnimated(true)
+            navigationController?.popViewController(animated: true)
         }
         transitionAnimator.handlePan(recognizer)
     }

@@ -30,14 +30,14 @@ class TestSourceData: NSObject, GroupMutableAudioEntitySourceData {
         self.libraryGrouping = grouping
     }
     
-    private static func getGroupedEntities(entities:[AudioEntity], libraryGrouping:LibraryGrouping) -> [AudioEntity] {
+    private static func getGroupedEntities(_ entities:[AudioEntity], libraryGrouping:LibraryGrouping) -> [AudioEntity] {
         guard let allTracks = (entities as? [AudioTrack]) ?? (entities as? [AudioTrackCollection])?.lazy.flatMap( { return $0.tracks } ) else {
             Logger.error("unexpected audio entity type, couldnt get tracks")
             return [AudioEntity]()
         }
         
         if libraryGrouping == LibraryGrouping.Songs {
-            return allTracks.sort({ $0.albumTrackNumber < $1.albumTrackNumber })
+            return allTracks.sorted(by: { $0.albumTrackNumber < $1.albumTrackNumber })
         }
         
         
@@ -52,7 +52,7 @@ class TestSourceData: NSObject, GroupMutableAudioEntitySourceData {
                 dict[title] = coll
             }
         }
-        return dict.sort( { $0.0 < $1.0 } ).map({return $1})
+        return dict.sorted( by: { $0.0 < $1.0 } ).map({return $1})
         
     }
     
@@ -60,7 +60,7 @@ class TestSourceData: NSObject, GroupMutableAudioEntitySourceData {
         //no op
     }
     
-    func sourceDataForIndex(indexPath:NSIndexPath) -> AudioEntitySourceData? {
+    func sourceDataForIndex(_ indexPath:IndexPath) -> AudioEntitySourceData? {
         guard let nextGrouping = libraryGrouping.nextGroupLevel else {
             return nil
         }

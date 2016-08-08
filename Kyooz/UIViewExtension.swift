@@ -9,48 +9,48 @@
 import UIKit
 
 enum Anchor:Int {
-	static let standardAnchors:[Anchor] = [.Top, .Bottom, .Left, .Right]
+	static let standardAnchors:[Anchor] = [.top, .bottom, .left, .right]
 	
-	case Top, Bottom, Left, Right, CenterX, CenterY, Width, Height
+	case top, bottom, left, right, centerX, centerY, width, height
 	
 }
 
 extension UIView {
 	
-	func add(subView subView:UIView, with anchors: Anchor...) -> [Anchor : NSLayoutConstraint] {
+	func add(subView:UIView, with anchors: Anchor...) -> [Anchor : NSLayoutConstraint] {
 		return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
 	}
     
-    func add(subView subView:UIView, with anchors: [Anchor]) -> [Anchor : NSLayoutConstraint] {
+    func add(subView:UIView, with anchors: [Anchor]) -> [Anchor : NSLayoutConstraint] {
         return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
     }
 	
-	func constrainWidthToHeight(multiplier:CGFloat = 1) {
+	func constrainWidthToHeight(_ multiplier:CGFloat = 1) {
 		translatesAutoresizingMaskIntoConstraints = false
-		widthAnchor.constraintEqualToAnchor(heightAnchor, multiplier: multiplier).active = true
+		widthAnchor.constraint(equalTo: heightAnchor, multiplier: multiplier).isActive = true
 	}
 	
-	func constrain(height height:CGFloat, widthRatio multiplier:CGFloat = 1) -> [Anchor : NSLayoutConstraint]{
+	func constrain(height:CGFloat, widthRatio multiplier:CGFloat = 1) -> [Anchor : NSLayoutConstraint]{
 		translatesAutoresizingMaskIntoConstraints = false
 		return [
-			.Height : heightAnchor.constraintEqualToConstant(height).activate(),
-			.Width : widthAnchor.constraintEqualToAnchor(heightAnchor, multiplier: multiplier)
+			.height : heightAnchor.constraint(equalToConstant: height).activate(),
+			.width : widthAnchor.constraint(equalTo: heightAnchor, multiplier: multiplier)
 		]
 	}
 	
-	func constrain(width width:CGFloat, heightRatio multiplier:CGFloat = 1) -> [Anchor : NSLayoutConstraint]{
+	func constrain(width:CGFloat, heightRatio multiplier:CGFloat = 1) -> [Anchor : NSLayoutConstraint]{
 		translatesAutoresizingMaskIntoConstraints = false
 		return [
-			.Width : widthAnchor.constraintEqualToConstant(width).activate(),
-			.Height : heightAnchor.constraintEqualToAnchor(widthAnchor, multiplier: multiplier).activate()
+			.width : widthAnchor.constraint(equalToConstant: width).activate(),
+			.height : heightAnchor.constraint(equalTo: widthAnchor, multiplier: multiplier).activate()
 		]
 	}
 	
-	func constrain(height height:CGFloat, width:CGFloat) -> [Anchor : NSLayoutConstraint] {
+	func constrain(height:CGFloat, width:CGFloat) -> [Anchor : NSLayoutConstraint] {
 		translatesAutoresizingMaskIntoConstraints = false
 		return [
-			.Height : heightAnchor.constraintEqualToConstant(height).activate(),
-			.Width : widthAnchor.constraintEqualToConstant(width).activate()
+			.height : heightAnchor.constraint(equalToConstant: height).activate(),
+			.width : widthAnchor.constraint(equalToConstant: width).activate()
 		]
 	}
 	

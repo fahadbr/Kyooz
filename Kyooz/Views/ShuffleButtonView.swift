@@ -33,25 +33,25 @@ final class ShuffleButtonView : UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override var enabled:Bool {
+    override var isEnabled:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
  
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = isActive ? ThemeHelper.defaultVividColor.colorWithAlphaComponent(0.4) : UIColor.darkGrayColor()
-        } else if highlighted {
-            colorToUse = UIColor.redColor()
+        if !isEnabled {
+            colorToUse = isActive ? ThemeHelper.defaultVividColor.withAlphaComponent(0.4) : UIColor.darkGray
+        } else if isHighlighted {
+            colorToUse = UIColor.red
         } else if isActive {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
@@ -72,12 +72,12 @@ final class ShuffleButtonView : UIButton {
         let xInset = rectToUse.width * 0.30
         let yInset = rectToUse.height * 0.35
         
-        let insetRect = CGRectInset(rectToUse, xInset, yInset)
+        let insetRect = rectToUse.insetBy(dx: xInset, dy: yInset)
         drawCurve(path, rect: insetRect, invertY: false)
         drawCurve(path, rect: insetRect, invertY: true)
         
         path.lineWidth = min(insetRect.height, insetRect.width) * 0.15
-        path.lineCapStyle = CGLineCap.Round
+        path.lineCapStyle = CGLineCap.round
         path.stroke()
         
         let smallerSide = min(insetRect.width, insetRect.height)
@@ -96,7 +96,7 @@ final class ShuffleButtonView : UIButton {
         trianglePath2.fill()
     }
     
-    private func drawCurve(path:UIBezierPath, rect:CGRect, invertY:Bool) {
+    private func drawCurve(_ path:UIBezierPath, rect:CGRect, invertY:Bool) {
         let minY:CGFloat
         let maxY:CGFloat
         if invertY {
@@ -109,8 +109,8 @@ final class ShuffleButtonView : UIButton {
         
         let midX = rect.midX
         
-        path.moveToPoint(CGPoint(x:rect.origin.x, y: minY))
-        path.addCurveToPoint(CGPoint(x: rect.maxX, y: maxY), controlPoint1: CGPoint(x: midX, y: minY), controlPoint2: CGPoint(x: midX, y: maxY))
+        path.move(to: CGPoint(x:rect.origin.x, y: minY))
+        path.addCurve(to: CGPoint(x: rect.maxX, y: maxY), controlPoint1: CGPoint(x: midX, y: minY), controlPoint2: CGPoint(x: midX, y: maxY))
     }
     
 }

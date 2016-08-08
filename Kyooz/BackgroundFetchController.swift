@@ -14,7 +14,7 @@ final class BackgroundFetchController {
     
     var playCountIterator:PlayCountIterator?
     
-    func performFetchWithCompletionHandler(completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func performFetchWithCompletionHandler(_ completionHandler: (UIBackgroundFetchResult) -> Void) {
         playCountIterator?.performBackgroundIteration(completionHandler)
     }
     

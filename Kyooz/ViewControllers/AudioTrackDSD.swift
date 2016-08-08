@@ -12,11 +12,11 @@ class AudioTrackDSD : AudioEntityDSD {
 	
     var playAllTracksOnSelection = true
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		guard !tableView.editing else { return }
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+		guard !tableView.isEditing else { return }
 		
         defer {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
         }
         
         guard let tracks = sourceData.entities as? [AudioTrack] else {
@@ -36,16 +36,16 @@ class AudioTrackDSD : AudioEntityDSD {
 
 class EditableAudioTrackDSD : AudioTrackDSD {
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAtIndexPath indexPath: IndexPath) -> Bool {
         return true
     }
     
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canMoveRowAtIndexPath indexPath: IndexPath) -> Bool {
         return true
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle != .Delete { return }
+    func tableView(_ tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: IndexPath) {
+        if editingStyle != .delete { return }
         
         let success = executeSourceDataUpdate {
             guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
@@ -55,11 +55,11 @@ class EditableAudioTrackDSD : AudioTrackDSD {
         }
         
         if success {
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
     
-    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, moveRowAtIndexPath sourceIndexPath: IndexPath, toIndexPath destinationIndexPath: IndexPath) {
         executeSourceDataUpdate {
             guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
                 throw KyoozError(errorDescription:"Source Data is not Mutable")
@@ -68,7 +68,7 @@ class EditableAudioTrackDSD : AudioTrackDSD {
         }
     }
     
-    private func executeSourceDataUpdate(tracksUpdatingBlock:(() throws -> Void)) -> Bool {
+    private func executeSourceDataUpdate(_ tracksUpdatingBlock:(() throws -> Void)) -> Bool {
         do {
             try tracksUpdatingBlock()
         } catch let error {
@@ -86,17 +86,17 @@ final class NowPlayingQueueDSD : EditableAudioTrackDSD {
         super.init(sourceData: AudioQueuePlayerSourceData(), reuseIdentifier: reuseIdentifier, audioCellDelegate: audioCellDelegate)
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard !tableView.editing else { return }
+    override func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+        guard !tableView.isEditing else { return }
         
         defer {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
         }
         
-        audioQueuePlayer.playTrack(at: indexPath.row)
+        audioQueuePlayer.playTrack(at: (indexPath as NSIndexPath).row)
     }
     
-    override func entityIsNowPlaying(entity: AudioEntity, libraryGrouping: LibraryGrouping, indexPath: NSIndexPath) -> Bool {
-        return audioQueuePlayer.indexOfNowPlayingItem == indexPath.row
+    override func entityIsNowPlaying(_ entity: AudioEntity, libraryGrouping: LibraryGrouping, indexPath: IndexPath) -> Bool {
+        return audioQueuePlayer.indexOfNowPlayingItem == (indexPath as NSIndexPath).row
     }
 }

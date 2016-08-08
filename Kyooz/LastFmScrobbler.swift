@@ -55,15 +55,15 @@ final class LastFmScrobbler {
     //MARK: - Dependencies
     
     lazy var tempDataDAO:TempDataDAO = TempDataDAO.instance
-    lazy var userDefaults:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    lazy var userDefaults:UserDefaults = UserDefaults.standard
 	lazy var shortNotificationManager = ShortNotificationManager.instance
     lazy var simpleWsClient:SimpleWSClient = SimpleWSClient.instance
     
     //MARK: - initializers
     func initialize() -> LastFmScrobbler {
         lastSessionValidationTime = tempDataDAO.getPersistentNumber(key: LastFmScrobbler.LastSessionValidationTimeKey)?.doubleValue ?? 0
-        username_value = userDefaults.stringForKey(UserDefaultKeys.LastFmUsernameKey)
-        session = userDefaults.stringForKey(UserDefaultKeys.LastFmSessionKey)
+        username_value = userDefaults.string(forKey: UserDefaultKeys.LastFmUsernameKey)
+        session = userDefaults.string(forKey: UserDefaultKeys.LastFmSessionKey)
         return self
     }
 
@@ -71,19 +71,19 @@ final class LastFmScrobbler {
     
     private (set) var username_value:String? {
         didSet {
-			userDefaults.setObject(username_value, forKey: UserDefaultKeys.LastFmUsernameKey)
+			userDefaults.set(username_value, forKey: UserDefaultKeys.LastFmUsernameKey)
 		}
 	}
 	
     private (set) var session:String? {
         didSet {
-			userDefaults.setObject(session, forKey: UserDefaultKeys.LastFmSessionKey)
+			userDefaults.set(session, forKey: UserDefaultKeys.LastFmSessionKey)
 		}
 	}
 	
     private (set) var lastSessionValidationTime:CFAbsoluteTime = 0 {
         didSet {
-            tempDataDAO.addPersistentValue(key: LastFmScrobbler.LastSessionValidationTimeKey, value: NSNumber(double: lastSessionValidationTime))
+            tempDataDAO.addPersistentValue(key: LastFmScrobbler.LastSessionValidationTimeKey, value: NSNumber(value: lastSessionValidationTime))
         }
     }
 
@@ -108,7 +108,7 @@ final class LastFmScrobbler {
     //MARK: FUNCTIONS
 	
     
-    func initializeScrobbler(completionHandler:(()->())? = nil) {
+    func initializeScrobbler(_ completionHandler:(()->())? = nil) {
 		func initializeScrobblerSync() {
 			guard !validSessionObtained else {
                 completionHandler?()
@@ -137,12 +137,12 @@ final class LastFmScrobbler {
                     completionHandler?()
 				})
 		}
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), initializeScrobblerSync)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: initializeScrobblerSync)
 	}
 	
 
 	
-    func initializeSession(usernameForSession usernameForSession:String, password:String, completionHandler:() -> Void) {
+    func initializeSession(usernameForSession:String, password:String, completionHandler:() -> Void) {
         Logger.debug("attempting to log in as \(usernameForSession)")
         let params:[String:String] = [
             api_key:api_key_value,
@@ -177,26 +177,23 @@ final class LastFmScrobbler {
     }
     
     func scrobbleMediaItem() {
-        if(mediaItemToScrobble == nil || !validSessionObtained) { return }
-		
-		guard let session = self.session else {
-			return
-		}
-        
-        let mediaItem = mediaItemToScrobble
+        guard validSessionObtained, let mediaItem = mediaItemToScrobble, let session = self.session else {
+            return
+        }
         mediaItemToScrobble = nil
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { [unowned self]() -> Void in
-            let timeStampToScrobble = NSDate().timeIntervalSince1970
+        
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async { [unowned self]() -> Void in
+            let timeStampToScrobble = Date().timeIntervalSince1970
             
             var params:[String:String] = [
-                track:mediaItem.trackTitle,
-                artist:mediaItem.artist,
-                album:mediaItem.albumTitle,
-                duration:"\(Int(mediaItem.playbackDuration))",
-                timestamp:"\(Int(timeStampToScrobble))",
-                method:method_scrobble,
-                api_key:api_key_value,
-                sk:session
+                track : mediaItem.trackTitle,
+                artist : mediaItem.artist,
+                album : mediaItem.albumTitle,
+                duration : "\(Int(mediaItem.playbackDuration))",
+                timestamp : "\(Int(timeStampToScrobble))",
+                method : method_scrobble,
+                api_key : api_key_value,
+                sk : session
             ]
             
             if(mediaItem.albumArtist != mediaItem.artist) {
@@ -216,13 +213,13 @@ final class LastFmScrobbler {
         }
     }
     
-	func submitCachedScrobbles(completionHandler:(()->())? = nil)  {
+	func submitCachedScrobbles(_ completionHandler:(()->())? = nil)  {
         guard !scrobbleCache.isEmpty && validSessionObtained else {
             completionHandler?()
             return
         }
         
-        func submitBatchOfScrobbles(scrobbleBatch:ArraySlice<([String:String])>, completionHandler:((shouldRemove:Bool)->())? = nil) {
+        func submitBatchOfScrobbles(_ scrobbleBatch:ArraySlice<([String:String])>, completionHandler:((shouldRemove:Bool)->())? = nil) {
             Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
             var params = [String:String]()
             for scrobbleDict in scrobbleBatch {
@@ -247,9 +244,9 @@ final class LastFmScrobbler {
         }
         
         
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { [scrobbleCache = self.scrobbleCache]() -> Void in
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: { [scrobbleCache = self.scrobbleCache]() -> Void in
             Logger.debug("submitting the scrobble cache")
-            let dispatchGroup = dispatch_group_create() // use the dispatch group to know when the asynch tasks are finished
+            let dispatchGroup = DispatchGroup() // use the dispatch group to know when the asynch tasks are finished
             let maxValue = scrobbleCache.count
             
             var startIndex = 0
@@ -259,18 +256,18 @@ final class LastFmScrobbler {
                 let slice = scrobbleCache[startIndex ..< endIndex]
                 splitCache[startIndex] = slice
                 
-                dispatch_group_enter(dispatchGroup)
+                dispatchGroup.enter()
                 let key = startIndex
                 submitBatchOfScrobbles(slice) { (shouldRemove:Bool) -> Void in
                     if shouldRemove {
-                        splitCache.removeValueForKey(key)
+                        splitCache.removeValue(forKey: key)
                     }
-                    dispatch_group_leave(dispatchGroup)
+                    dispatchGroup.leave()
                 }
                 startIndex = endIndex
             }
             
-            dispatch_group_notify(dispatchGroup, dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
+            dispatchGroup.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.background)) {
                 Logger.debug("completed all async tasks for submitting scrobbles")
                 self.scrobbleCache = splitCache.flatMap() { return $1 } //assign back to the main scrobbleCache if any batches failed and did not remove their portion of the caches
                 completionHandler?()
@@ -281,7 +278,7 @@ final class LastFmScrobbler {
     
 
     
-    func addToScrobbleCache(mediaItemToScrobble: AudioTrack, timeStampToScrobble:NSTimeInterval) {
+    func addToScrobbleCache(_ mediaItemToScrobble: AudioTrack, timeStampToScrobble:TimeInterval) {
         //check if there is a valid session before adding to the scrobble cache
         //if the session/user name exists but hasnt been validated, check that it has been validated in the last 24 hours
         //this is to prevent the scrobble cache from building up infinitely if there happens to be a username/session but no valid session
@@ -302,7 +299,7 @@ final class LastFmScrobbler {
         scrobbleCache.append(scrobbleDict)
     }
     
-    private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:String]) -> Void, failureHandler lastFmFailureHandler: ([String:String]) -> ()) {
+    private func buildApiSigAndCallWS(_ params:[String:String], successHandler lastFmSuccessHandler:([String:String]) -> Void, failureHandler lastFmFailureHandler: ([String:String]) -> ()) {
 		guard KyoozUtils.internetConnectionAvailable else {
 			Logger.debug("no internet connection available")
 			lastFmFailureHandler([error_key:httpFailure])
@@ -340,19 +337,19 @@ final class LastFmScrobbler {
     //MARK: Parameter builders
 
     
-    func getOrderedParamKeys(params:[String:String]) -> [String] {
-		return params.map({ return $0.0 }).sort() {
-            return $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending
+    func getOrderedParamKeys(_ params:[String:String]) -> [String] {
+		return params.map({ return $0.0 }).sorted() {
+            return $0.caseInsensitiveCompare($1) == ComparisonResult.orderedAscending
         }
     }
     
     
-    private func buildApiSig(params:[String:String], orderedParamKeys:[String]) -> String {
+    private func buildApiSig(_ params:[String:String], orderedParamKeys:[String]) -> String {
         let apiSig = NSMutableString()
         for paramKey in orderedParamKeys {
-            apiSig.appendString("\(paramKey)\(params[paramKey]!)")
+            apiSig.append("\(paramKey)\(params[paramKey]!)")
         }
-        apiSig.appendString(api_secret)
+        apiSig.append(api_secret)
         return (apiSig as String).md5
     }
     

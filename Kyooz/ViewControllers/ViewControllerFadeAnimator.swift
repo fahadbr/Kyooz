@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UIViewControllerAnimatedTransitioning {
+final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UIViewControllerAnimatedTransitioning, CAAnimationDelegate {
     
     static let instance = ViewControllerFadeAnimator()
     
@@ -21,33 +21,33 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
     }
     let interactiveAnimationDuration = 0.5
     
-    var operation:UINavigationControllerOperation = .Push
+    var operation:UINavigationControllerOperation = .push
     
     var interactive:Bool = false
     
     weak var storedContext:UIViewControllerContextTransitioning?
     
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return animationDuration
     }
 
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         storedContext = transitionContext
-        let isPushOperation = operation == .Push
+        let isPushOperation = operation == .push
 
-        guard let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey), let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) else {
+        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextFromViewControllerKey), let toVC = transitionContext.viewController(forKey: UITransitionContextToViewControllerKey) else {
             return
         }
         
         let vcToAnimate:UIViewController
         
         let viewToAdd = toVC.view
-        viewToAdd.frame = transitionContext.finalFrameForViewController(toVC)
+        viewToAdd?.frame = transitionContext.finalFrame(for: toVC)
         
         if isPushOperation {
             vcToAnimate = toVC
-            transitionContext.containerView()?.addSubview(viewToAdd)
+            transitionContext.containerView.addSubview(viewToAdd!)
             
             let fadeAnimation = CABasicAnimation(keyPath: "opacity")
             fadeAnimation.duration = animationDuration
@@ -55,27 +55,27 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
             fadeAnimation.fromValue = 0
             fadeAnimation.toValue = 1
             
-            vcToAnimate.view.layer.addAnimation(fadeAnimation, forKey: nil)
+            vcToAnimate.view.layer.add(fadeAnimation, forKey: nil)
         } else {
             vcToAnimate = fromVC
-            transitionContext.containerView()?.insertSubview(viewToAdd, belowSubview: fromVC.view)
+            transitionContext.containerView.insertSubview(viewToAdd!, belowSubview: fromVC.view)
             
             var animations = { vcToAnimate.view.alpha = 0.0 }
             if interactive {
-                let transform = CGAffineTransformMakeTranslation(vcToAnimate.view.frame.width, 0)
+                let transform = CGAffineTransform(translationX: vcToAnimate.view.frame.width, y: 0)
                 animations = {
                     vcToAnimate.view.transform = transform
                     vcToAnimate.view.alpha = 0.0
                 }
             }
-            UIView.animateWithDuration(animationDuration, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: animations, completion: {_ in
+            UIView.animate(withDuration: animationDuration, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: animations, completion: {_ in
                 self.handleAnimationCompletion()
             })
         }
 
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         handleAnimationCompletion()
     }
     
@@ -83,28 +83,28 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
     private func handleAnimationCompletion() {
 //        Logger.debug("completed \(operation == .Push ? "push" : "pop") animation")
         if let context = storedContext {
-            context.completeTransition(!context.transitionWasCancelled())
+            context.completeTransition(!context.transitionWasCancelled)
         }
         storedContext = nil
     }
     
-    final func handlePan(recognizer:UIPanGestureRecognizer) {
+    final func handlePan(_ recognizer:UIPanGestureRecognizer) {
         guard let superView = recognizer.view?.superview else {
             return
         }
-        let translation = recognizer.translationInView(superView)
+        let translation = recognizer.translation(in: superView)
         let screenSize = superView.bounds.size
         let widthToTravel = min(screenSize.width, screenSize.height)
         let progress:CGFloat = min(max(abs(translation.x/widthToTravel), 0.01), 0.99)
         
         switch recognizer.state {
-        case .Changed:
-            updateInteractiveTransition(progress)
-        case .Cancelled, .Ended:
+        case .changed:
+            update(progress)
+        case .cancelled, .ended:
             if progress < 0.25 {
-                cancelInteractiveTransition()
+                cancel()
             } else {
-                finishInteractiveTransition()
+                finish()
             }
             interactive = false
         default:

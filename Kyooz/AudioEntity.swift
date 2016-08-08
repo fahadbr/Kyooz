@@ -13,9 +13,9 @@ import UIKit
     var count:Int { get }
     var representativeTrack:AudioTrack? { get }
 
-    func titleForGrouping(libraryGrouping:LibraryGrouping) -> String?
+    func titleForGrouping(_ libraryGrouping:LibraryGrouping) -> String?
     
-    func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64
+    func persistentIdForGrouping(_ libraryGrouping:LibraryGrouping) -> UInt64
 	
 	func artworkImage(forSize size:CGSize) -> UIImage?
 	
@@ -25,7 +25,7 @@ import UIKit
 extension AudioEntity {
 	
 	func artworkImage(forSize size:CGSize, completion:(UIImage)->()) {
-		dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
+		DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
 			let image = self.artworkImage(forSize: size) ?? ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: size)
 			KyoozUtils.doInMainQueueAsync() {
 				completion(image)

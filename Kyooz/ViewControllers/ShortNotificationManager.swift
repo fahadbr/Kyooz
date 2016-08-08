@@ -26,8 +26,8 @@ final class ShortNotificationManager {
         }
     }
     
-    private func presentShortNotification(message:String) {
-        guard UIApplication.sharedApplication().applicationState == .Active else { return }
+    private func presentShortNotification(_ message:String) {
+        guard UIApplication.shared.applicationState == .active else { return }
         guard !KyoozUtils.screenshotUITesting else { return }
         
         if shortNotificationVC?.transitionOut() != nil {
@@ -45,11 +45,11 @@ final class ShortNotificationManager {
         
         presentationController.view.addSubview(vc.view)
         presentationController.addChildViewController(vc)
-        vc.didMoveToParentViewController(presentationController)
+        vc.didMove(toParentViewController: presentationController)
         
-        vc.view.layer.rasterizationScale = UIScreen.mainScreen().scale
+        vc.view.layer.rasterizationScale = UIScreen.main.scale
         vc.view.layer.shouldRasterize = true
-        vc.view.layer.addAnimation(self.dynamicType.fadeInAnimation, forKey: nil)
+        vc.view.layer.add(self.dynamicType.fadeInAnimation, forKey: nil)
 
     }
 	

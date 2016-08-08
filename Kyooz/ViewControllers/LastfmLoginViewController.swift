@@ -29,15 +29,15 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
         super.viewDidLoad()
 		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
-		errorLabel.textColor = UIColor.redColor()
+		errorLabel.textColor = UIColor.red
 		updateViewBasedOnSession()
     }
     
-    @IBAction func doLogIn(sender: AnyObject) {
+    @IBAction func doLogIn(_ sender: AnyObject) {
         lastFmScrobbler.initializeSession(usernameForSession: usernameField.text!, password: passwordField.text!) { [weak self] in
             KyoozUtils.doInMainQueue() {
                 if let view = self?.view {
-                    UIView.transitionWithView(view, duration: 0.4, options: .TransitionCrossDissolve, animations: { 
+                    UIView.transition(with: view, duration: 0.4, options: .transitionCrossDissolve, animations: { 
                         self?.updateViewBasedOnSession()
                         }, completion: nil)
                 }
@@ -45,16 +45,16 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
         }
     }
     
-    @IBAction func doLogOut(sender: AnyObject) {
+    @IBAction func doLogOut(_ sender: AnyObject) {
         usernameField.text = ""
         passwordField.text = ""
         lastFmScrobbler.removeSession()
-        UIView.transitionWithView(view, duration: 0.4, options: .TransitionCrossDissolve, animations: { [weak self] in
+        UIView.transition(with: view, duration: 0.4, options: .transitionCrossDissolve, animations: { [weak self] in
             self?.updateViewBasedOnSession()
             }, completion: nil)
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if(textField == usernameField) {
             passwordField.becomeFirstResponder()
         } else {
@@ -68,26 +68,26 @@ class LastfmLoginViewController: CustomPopableViewController, UITextFieldDelegat
 		let internetAvailable = KyoozUtils.internetConnectionAvailable
 		let validSessionObtained = lastFmScrobbler.validSessionObtained
 		
-		usernameField.enabled = internetAvailable
-		passwordField.enabled = internetAvailable
-		logoutButton.enabled = internetAvailable
-		submitButton.enabled = internetAvailable
+		usernameField.isEnabled = internetAvailable
+		passwordField.isEnabled = internetAvailable
+		logoutButton.isEnabled = internetAvailable
+		submitButton.isEnabled = internetAvailable
 		
 		if usernameField.text == nil || usernameField.text!.isEmpty{
 			usernameField.text = lastFmScrobbler.username_value
 		}
 		let message = lastFmScrobbler.currentStateDetails
 		errorLabel.text = message
-		errorLabel.hidden = message == nil
+		errorLabel.isHidden = message == nil
 		
-        loginStackView.hidden = validSessionObtained
-        loggedInAsLabel.hidden = !validSessionObtained
-        logoutButton.hidden = !validSessionObtained
+        loginStackView.isHidden = validSessionObtained
+        loggedInAsLabel.isHidden = !validSessionObtained
+        logoutButton.isHidden = !validSessionObtained
         
         if lastFmScrobbler.validSessionObtained {
             usernameField.resignFirstResponder()
             passwordField.resignFirstResponder()
-            loggedInAsLabel.text = "Logged in as \(lastFmScrobbler.username_value ?? "Unknown User")".uppercaseString
+            loggedInAsLabel.text = "Logged in as \(lastFmScrobbler.username_value ?? "Unknown User")".uppercased()
 		}
     }
     

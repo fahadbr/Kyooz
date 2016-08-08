@@ -12,7 +12,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
     
     private let shortNotificationManager = ShortNotificationManager.instance
     
-	func audioQueuePlayerDidChangeContext(audioQueuePlayer:AudioQueuePlayer, previousSnapshot: PlaybackStateSnapshot) {
+	func audioQueuePlayerDidChangeContext(_ audioQueuePlayer:AudioQueuePlayer, previousSnapshot: PlaybackStateSnapshot) {
 		KyoozUtils.doInMainQueueAsync() {
 			self.registerUndoAndShowNotification(audioQueuePlayer, snapshot: previousSnapshot)
 		}
@@ -24,7 +24,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
 		}
     }
 	
-    private func registerUndoAndShowNotification(audioQueuePlayer:AudioQueuePlayer, snapshot:PlaybackStateSnapshot) {
+    private func registerUndoAndShowNotification(_ audioQueuePlayer:AudioQueuePlayer, snapshot:PlaybackStateSnapshot) {
 		guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else {
 			return
 		}
@@ -32,7 +32,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
         let message = "Now Playing:\n\(nowPlayingItem.trackTitle) by \(nowPlayingItem.artist).  Shake to Undo/Redo!"
 		if !snapshot.nowPlayingQueueContext.currentQueue.isEmpty {
             if let undoManager = ContainerViewController.instance.undoManager {
-                undoManager.registerUndoWithTarget(self, selector: #selector(AudioQueuePlayerDelegateImpl.restorePlaybackState(_:)), object: snapshot.persistableSnapshot)
+                undoManager.registerUndo(withTarget: self, selector: #selector(AudioQueuePlayerDelegateImpl.restorePlaybackState(_:)), object: snapshot.persistableSnapshot)
                 undoManager.setActionName("Queue Change")
             }
 		}
@@ -40,7 +40,7 @@ final class AudioQueuePlayerDelegateImpl : NSObject, AudioQueuePlayerDelegate {
         shortNotificationManager.presentShortNotification(withMessage:message)
 	}
 	
-	func restorePlaybackState(stateToRestore:PlaybackStatePersistableSnapshot) {
+	func restorePlaybackState(_ stateToRestore:PlaybackStatePersistableSnapshot) {
         let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
         let currentSnapshot = audioQueuePlayer.playbackStateSnapshot
         audioQueuePlayer.playbackStateSnapshot = stateToRestore.snapshot

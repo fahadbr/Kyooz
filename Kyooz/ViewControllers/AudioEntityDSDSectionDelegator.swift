@@ -36,51 +36,51 @@ class AudioEntityDSDSectionDelegator: NSObject, AudioEntityDSDProtocol {
 	
     //MARK: - Table View Datasource
     
-	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+	func numberOfSections(in tableView: UITableView) -> Int {
 		let count = dsdSections.count
         tableView.sectionHeaderHeight = count > 1 ? ThemeHelper.tableViewSectionHeaderHeight : 0
         return count
 	}
 	
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return dsdSections[section].tableView(tableView, numberOfRowsInSection: 0)
 	}
 	
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		return dsdSections[indexPath.section].tableView(tableView, cellForRowAtIndexPath: indexPath)
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		return dsdSections[(indexPath as NSIndexPath).section].tableView(tableView, cellForRowAt: indexPath)
 	}
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         tableView.beginUpdates()
-        let datasourceDelegate = dsdSections[indexPath.section]
-        datasourceDelegate.tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: indexPath)
+        let datasourceDelegate = dsdSections[(indexPath as NSIndexPath).section]
+        datasourceDelegate.tableView?(tableView, commit: editingStyle, forRowAt: indexPath)
         if !datasourceDelegate.hasData {
-            tableView.deleteSections(NSIndexSet(index: indexPath.section), withRowAnimation: .Automatic)
+            tableView.deleteSections(IndexSet(integer: (indexPath as NSIndexPath).section), with: .automatic)
         }
         reloadSections()
         tableView.endUpdates()
     }
     
-    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return dsdSections[indexPath.section].tableView?(tableView, editingStyleForRowAtIndexPath: indexPath) ?? .None
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return dsdSections[(indexPath as NSIndexPath).section].tableView?(tableView, editingStyleForRowAt: indexPath) ?? .none
     }
     
     //MARK: - Table View Delegate
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return dsdSections[section].tableView?(tableView, viewForHeaderInSection: 0)
     }
     
-    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return dsdSections[section].tableView?(tableView, viewForFooterInSection: 0)
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return dsdSections[section].tableView?(tableView, heightForFooterInSection: 0) ?? 0
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        dsdSections[indexPath.section].tableView?(tableView, didSelectRowAtIndexPath:indexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dsdSections[(indexPath as NSIndexPath).section].tableView?(tableView, didSelectRowAt:indexPath)
     }
 	
     func reloadSections() {
@@ -128,28 +128,28 @@ extension AudioEntityDSDSectionDelegator : AudioEntitySourceData {
         reloadSections()
     }
     
-    func flattenedIndex(indexPath: NSIndexPath) -> Int {
+    func flattenedIndex(_ indexPath: IndexPath) -> Int {
         var offset = 0
-        for i in 0...indexPath.section {
+        for i in 0...(indexPath as NSIndexPath).section {
             offset += dsdSections[i].sourceData.sections.first?.count ?? 0
         }
-        return offset + indexPath.row
+        return offset + (indexPath as NSIndexPath).row
     }
     
-    func getTracksAtIndex(indexPath: NSIndexPath) -> [AudioTrack] {
-        return dsdSections[indexPath.section].sourceData.getTracksAtIndex(convertIndexPath(indexPath))
+    func getTracksAtIndex(_ indexPath: IndexPath) -> [AudioTrack] {
+        return dsdSections[(indexPath as NSIndexPath).section].sourceData.getTracksAtIndex(convertIndexPath(indexPath))
     }
     
-    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
-        return dsdSections[indexPath.section].sourceData.sourceDataForIndex(convertIndexPath(indexPath))
+    func sourceDataForIndex(_ indexPath: IndexPath) -> AudioEntitySourceData? {
+        return dsdSections[(indexPath as NSIndexPath).section].sourceData.sourceDataForIndex(convertIndexPath(indexPath))
     }
     
-    subscript(i:NSIndexPath) -> AudioEntity {
-        return dsdSections[i.section].sourceData[convertIndexPath(i)]
+    subscript(i:IndexPath) -> AudioEntity {
+        return dsdSections[(i as NSIndexPath).section].sourceData[convertIndexPath(i)]
     }
     
-    private func convertIndexPath(indexPath:NSIndexPath) -> NSIndexPath {
-        return NSIndexPath(forRow: indexPath.row, inSection: 0)
+    private func convertIndexPath(_ indexPath:IndexPath) -> IndexPath {
+        return IndexPath(row: (indexPath as NSIndexPath).row, section: 0)
     }
     
 }

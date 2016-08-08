@@ -14,8 +14,8 @@ final class PlainHeaderView : UIVisualEffectView {
 	private var accentLayer:CAShapeLayer = CAShapeLayer()
     
 	init() {
-        super.init(effect: UIBlurEffect(style: .Dark))
-		accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
+        super.init(effect: UIBlurEffect(style: .dark))
+		accentLayer.strokeColor = ThemeHelper.defaultVividColor.cgColor
 		accentLayer.lineWidth = 0.75
 		layer.addSublayer(accentLayer)
     }
@@ -26,9 +26,9 @@ final class PlainHeaderView : UIVisualEffectView {
     
     override func layoutSubviews() {
 		path = UIBezierPath()
-		path.moveToPoint(CGPoint(x: bounds.origin.x, y: bounds.height))
-		path.addLineToPoint(CGPoint(x: bounds.width, y: bounds.height))
-		accentLayer.path = path.CGPath
+		path.move(to: CGPoint(x: bounds.origin.x, y: bounds.height))
+		path.addLine(to: CGPoint(x: bounds.width, y: bounds.height))
+		accentLayer.path = path.cgPath
     }
 	
 }

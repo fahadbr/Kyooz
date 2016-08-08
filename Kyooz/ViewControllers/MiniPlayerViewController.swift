@@ -12,7 +12,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
 	
 	private let menuButton = MenuDotsView()
 	private let progressView = UIProgressView()
-    private let labelPageVC = LabelPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+    private let labelPageVC = LabelPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -23,27 +23,27 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
 		playPauseButton.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
 		
 		//progressBarConfig
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: progressView, parentView: view)
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.left, .right, .top], subView: progressView, parentView: view)
 		progressView.progressTintColor = ThemeHelper.defaultVividColor
-		progressView.trackTintColor = UIColor.darkGrayColor()
+		progressView.trackTintColor = UIColor.darkGray
 		
 		
 		//playPauseButton config
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Bottom], subView: playPauseButton, parentView: view)
-		playPauseButton.widthAnchor.constraintEqualToAnchor(playPauseButton.heightAnchor).active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.left, .top, .bottom], subView: playPauseButton, parentView: view)
+		playPauseButton.widthAnchor.constraint(equalTo: playPauseButton.heightAnchor).isActive = true
 		playPauseButton.scale = 0.7
 		playPauseButton.hasOuterFrame = false
 		
 		//menuButton config
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Right, .Top, .Bottom], subView: menuButton, parentView: view)
-		menuButton.widthAnchor.constraintEqualToAnchor(menuButton.heightAnchor).active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.right, .top, .bottom], subView: menuButton, parentView: view)
+		menuButton.widthAnchor.constraint(equalTo: menuButton.heightAnchor).isActive = true
 		menuButton.position = 0.6
-		menuButton.color = UIColor.whiteColor()
-		menuButton.addTarget(self, action: #selector(self.menuButtonPressed(_:)), forControlEvents: .TouchUpInside)
+		menuButton.color = UIColor.white
+		menuButton.addTarget(self, action: #selector(self.menuButtonPressed(_:)), for: .touchUpInside)
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Bottom], subView: labelPageVC.view, parentView: view)
-        labelPageVC.view.leftAnchor.constraintEqualToAnchor(playPauseButton.rightAnchor).active = true
-        labelPageVC.view.rightAnchor.constraintEqualToAnchor(menuButton.leftAnchor).active = true
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.top, .bottom], subView: labelPageVC.view, parentView: view)
+        labelPageVC.view.leftAnchor.constraint(equalTo: playPauseButton.rightAnchor).isActive = true
+        labelPageVC.view.rightAnchor.constraint(equalTo: menuButton.leftAnchor).isActive = true
         labelPageVC.view.isAccessibilityElement = true
 		labelPageVC.view.accessibilityLabel = "miniPlayerTrackDetails"
 		labelPageVC.view.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
@@ -53,17 +53,17 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
         }
 	}
 	
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		PlaybackProgressViewController.instance.addProgressObserver(self)
 	}
 	
-	override func viewDidDisappear(animated: Bool) {
+	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		PlaybackProgressViewController.instance.removeProgressObserver(self)
 	}
 	
-	func updateProgress(percentComplete: Float) {
+	func updateProgress(_ percentComplete: Float) {
 		progressView.setProgress(percentComplete, animated: true)
 	}
     
@@ -74,11 +74,11 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
             let index = audioQueuePlayer.indexOfNowPlayingItem
             let labelWrapper = LabelStackWrapperViewController(track: nowPlayingItem, isPresentedVC: true, representingIndex: index)
             labelPageVC.refreshNeeded = false
-            labelPageVC.setViewControllers([labelWrapper], direction: .Forward, animated: false, completion: nil)
+            labelPageVC.setViewControllers([labelWrapper], direction: .forward, animated: false, completion: nil)
         }
     }
 	
-	func menuButtonPressed(sender: AnyObject) {
+	func menuButtonPressed(_ sender: AnyObject) {
 		guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else {
 			return
 		}
@@ -86,7 +86,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
 		let b = MenuBuilder()
             .with(title: nowPlayingItem.trackTitle)
             .with(details: "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")")
-            .with(originatingCenter: menuButton.superview?.convertPoint(menuButton.center, toCoordinateSpace: UIScreen.mainScreen().coordinateSpace))
+            .with(originatingCenter: menuButton.superview?.convert(menuButton.center, to: UIScreen.main.coordinateSpace))
 		
         b.with(options:
             KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
@@ -104,7 +104,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
 		KyoozUtils.showMenuViewController(b.viewController)
 	}
 	
-	private func goToVCWithGrouping(libraryGrouping:LibraryGrouping, nowPlayingItem:AudioTrack) {
+	private func goToVCWithGrouping(_ libraryGrouping:LibraryGrouping, nowPlayingItem:AudioTrack) {
 		if let sourceData = MediaQuerySourceData(filterEntity: nowPlayingItem, parentLibraryGroup: libraryGrouping, baseQuery: nil) {
 			ContainerViewController.instance.pushNewMediaEntityControllerWithProperties(sourceData, parentGroup: libraryGrouping, entity: nowPlayingItem)
 		}
@@ -112,12 +112,12 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
     
     override func registerForNotifications() {
         super.registerForNotifications()
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue), object: audioQueuePlayer)
         //this is for refreshing the page views
         notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-                                       name: AudioQueuePlayerUpdate.queueUpdate.rawValue, object: audioQueuePlayer)
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.queueUpdate.rawValue), object: audioQueuePlayer)
         
     }
 }

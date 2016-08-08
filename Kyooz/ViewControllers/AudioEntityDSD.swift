@@ -27,7 +27,7 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
     
 	
 	private let reuseIdentifier:String
-	private lazy var smallFont = ThemeHelper.smallFontForStyle(.Bold)
+	private lazy var smallFont = ThemeHelper.smallFontForStyle(.bold)
     
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, audioCellDelegate:AudioTableCellDelegate?) {
         self.reuseIdentifier = reuseIdentifier
@@ -39,27 +39,27 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
     
     //MARK: - TableView Datasource Methods
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         let sections = sourceData.sections.count
         tableView.sectionHeaderHeight = sections > 1 ? ThemeHelper.tableViewSectionHeaderHeight : 0
 		return sections
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = sourceData.sections[section].count
 
         return rowLimitActive ? min(count, rowLimit) : count
     }
 	
-	func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
+	func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         if !sourceData.sectionNamesCanBeUsedAsIndexTitles {
             return nil
         }
         return sourceData.sections.map() { $0.name }
 	}
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) else {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) else {
             return UITableViewCell()
         }
         
@@ -82,7 +82,7 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
         
     }
     
-    func entityIsNowPlaying(entity:AudioEntity, libraryGrouping:LibraryGrouping, indexPath:NSIndexPath) -> Bool {
+    func entityIsNowPlaying(_ entity:AudioEntity, libraryGrouping:LibraryGrouping, indexPath:IndexPath) -> Bool {
         if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping),
             let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping)
             where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
@@ -92,8 +92,8 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
         return false
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(KyoozSectionHeaderView.reuseIdentifier) as? KyoozSectionHeaderView else {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: KyoozSectionHeaderView.reuseIdentifier) as? KyoozSectionHeaderView else {
             return nil
         }
         
@@ -101,11 +101,11 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
         return headerView
     }
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollViewDelegate?.scrollViewDidScroll?(scrollView)
     }
     
-    override func isEqual(object: AnyObject?) -> Bool {
+    override func isEqual(_ object: AnyObject?) -> Bool {
         guard object == nil else {
             return false
         }

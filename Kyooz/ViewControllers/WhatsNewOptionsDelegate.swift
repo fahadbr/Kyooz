@@ -10,19 +10,19 @@ import UIKit
 
 private let appString = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=1115959967&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"
 
-func whatsNewViewController(completion: (()->Void)? = nil) throws -> KyoozOptionsViewController {
+func whatsNewViewController(_ completion: (()->Void)? = nil) throws -> KyoozOptionsViewController {
     
 	let op = BasicKyoozOptionsProvider(options:
         KyoozMenuAction(title: "Rate us in the AppStore", highlighted: true) {
             
-            guard let url = NSURL(string: appString) else {
+            guard let url = URL(string: appString) else {
                 KyoozUtils.showPopupError(withTitle: "Unable to open AppStore page for Kyooz",
                     withMessage: nil,
                     presentationVC: nil)
                 return
             }
             
-            UIApplication.sharedApplication().openURL(url)
+            UIApplication.shared.openURL(url)
 			completion?()
 			return
             
@@ -40,8 +40,8 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     
     private static var sizeConstraint: SizeConstraint {
-        let height = UIScreen.mainScreen().bounds.height * 0.90
-        let width = UIScreen.mainScreen().bounds.width * 0.85
+        let height = UIScreen.main.bounds.height * 0.90
+        let width = UIScreen.main.bounds.width * 0.85
         return SizeConstraint(maxHeight: height,
                               maxWidth: width,
                               minHeight: height,
@@ -82,7 +82,7 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
                                            font: This.bigFont)
         
         let pleaseRateLabel = self.initLabel(text: "Please tell us how we're doing",
-                                             font: ThemeHelper.defaultFont(forStyle: .Normal))
+                                             font: ThemeHelper.defaultFont(forStyle: .normal))
         let heightMargin:CGFloat = 15
         return self.stackView(forSubviews: [enjoyingLabel, pleaseRateLabel],
                               height: enjoyingLabel.frame.size.height + pleaseRateLabel.frame.size.height + heightMargin * 2,
@@ -92,7 +92,7 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     init() throws {
         textView = try UITextView(fileName: "ChangeLog", documentType: .html)
-        textView.indicatorStyle = .White
+        textView.indicatorStyle = .white
     }
     
     
@@ -116,15 +116,15 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
     
     //MARK: - Private funcs
     
-    private func initLabel(text text:String, font:UIFont?) -> UILabel {
+    private func initLabel(text:String, font:UIFont?) -> UILabel {
         let label = UILabel()
         label.textColor = ThemeHelper.defaultFontColor
         label.font = font
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.numberOfLines = 0
-        label.lineBreakMode = .ByWordWrapping
-        let size = label.intrinsicContentSize()
+        label.lineBreakMode = .byWordWrapping
+        let size = label.intrinsicContentSize
         label.frame.size = CGSize(width: sizeConstraint.maxWidth, height: size.height)
         return label
     }
@@ -135,9 +135,9 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
                                        heightMargin: CGFloat) -> UIStackView {
         
         let stackView = UIStackView(arrangedSubviews: subViews)
-        stackView.axis = .Vertical
+        stackView.axis = .vertical
         stackView.spacing = 5
-        stackView.layoutMarginsRelativeArrangement = true
+        stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: heightMargin,
                                                left: widthMargin,
                                                bottom: heightMargin,

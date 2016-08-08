@@ -15,7 +15,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
     private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
     
     override var defaultHeight:CGFloat {
-        return UIScreen.mainScreen().bounds.width
+        return UIScreen.main.bounds.width
     }
     
     override var minimumHeight:CGFloat {
@@ -34,8 +34,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
 	private lazy var headerTitleLabel: UILabel = {
 		$0.textColor = ThemeHelper.defaultFontColor
-		$0.font = ThemeHelper.defaultFont(forStyle: .Bold)
-		$0.textAlignment = .Center
+		$0.font = ThemeHelper.defaultFont(forStyle: .bold)
+		$0.textAlignment = .center
 		$0.numberOfLines = 3
 		return $0
 	}(UILabel())
@@ -55,7 +55,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         let gradiant = CAGradientLayer()
         gradiant.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
-        gradiant.colors = [ThemeHelper.defaultTableCellColor.CGColor, UIColor.clearColor().CGColor, UIColor.clearColor().CGColor, ThemeHelper.defaultTableCellColor.CGColor]
+        gradiant.colors = [ThemeHelper.defaultTableCellColor.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor, ThemeHelper.defaultTableCellColor.cgColor]
 		
         gradiant.locations = [0.0,
             ArtworkHeaderViewController.clearGradiantDefaultLocations.start,
@@ -75,29 +75,29 @@ final class ArtworkHeaderViewController : HeaderViewController {
         imageView.clipsToBounds = true
         imageViewContainer.clipsToBounds = true
         ConstraintUtils.applyStandardConstraintsToView(subView: imageViewContainer, parentView: view)
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Right, .Top], subView: imageView, parentView: imageViewContainer)
-        imageView.heightAnchor.constraintEqualToAnchor(imageView.widthAnchor).active = true
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.left, .right, .top], subView: imageView, parentView: imageViewContainer)
+        imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
         
-        ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Width], subView: headerTitleLabel, parentView: view)[.Width]!.constant = -100
-        headerTitleLabel.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 25).active = true
-        headerTitleLabel.heightAnchor.constraintEqualToConstant(42).active = true
+        ConstraintUtils.applyConstraintsToView(withAnchors: [.centerX, .width], subView: headerTitleLabel, parentView: view)[.width]!.constant = -100
+        headerTitleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 25).isActive = true
+        headerTitleLabel.heightAnchor.constraint(equalToConstant: 42).isActive = true
         
 
 		addChildViewController(blurViewController)
-		blurViewController.didMoveToParentViewController(self)
+		blurViewController.didMove(toParentViewController: self)
         
 		
 		let blurView = blurViewController.view
-        imageViewContainer.insertSubview(blurView, aboveSubview: imageView)
-        blurView.translatesAutoresizingMaskIntoConstraints = false
-        blurView.topAnchor.constraintEqualToAnchor(imageView.topAnchor).active = true
-        blurView.bottomAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
-        blurView.rightAnchor.constraintEqualToAnchor(imageView.rightAnchor).active = true
-        blurView.leftAnchor.constraintEqualToAnchor(imageView.leftAnchor).active = true
+        imageViewContainer.insertSubview(blurView!, aboveSubview: imageView)
+        blurView?.translatesAutoresizingMaskIntoConstraints = false
+        blurView?.topAnchor.constraint(equalTo: imageView.topAnchor).isActive = true
+        blurView?.bottomAnchor.constraint(equalTo: imageView.bottomAnchor).isActive = true
+        blurView?.rightAnchor.constraint(equalTo: imageView.rightAnchor).isActive = true
+        blurView?.leftAnchor.constraint(equalTo: imageView.leftAnchor).isActive = true
 		blurViewController.blurRadius = 0
 		
         view.backgroundColor = ThemeHelper.defaultTableCellColor
-        view.addObserver(self, forKeyPath: observationKey, options: .New, context: &kvoContext)
+        view.addObserver(self, forKeyPath: observationKey, options: .new, context: &kvoContext)
         observingViewBounds = true //this is to ensure we dont remove the observer before adding one
 		
         view.layer.shadowOffset = CGSize(width: 0, height: 3)
@@ -112,8 +112,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
 		(centerViewController as? HeaderLabelStackController)?.labelStackView.layer.transform = CATransform3DMakeTranslation(0, expandedFraction * 8, 0)
 	}
     
-    override func didMoveToParentViewController(parent: UIViewController?) {
-        super.didMoveToParentViewController(parent)
+    override func didMove(toParentViewController parent: UIViewController?) {
+        super.didMove(toParentViewController: parent)
         guard let vc = parent as? AudioEntityLibraryViewController else { return }
         KyoozUtils.doInMainQueueAsync() {
             self.configureViewWithCollection(vc.sourceData)
@@ -122,7 +122,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
 	
     //MARK: - class functions
     
-    func configureViewWithCollection(sourceData:AudioEntitySourceData) {
+    func configureViewWithCollection(_ sourceData:AudioEntitySourceData) {
         guard let track = sourceData.entities.first?.representativeTrack else {
             Logger.debug("couldnt get representative item for album collection")
             return
@@ -132,23 +132,23 @@ final class ArtworkHeaderViewController : HeaderViewController {
         gradiantLayer.frame = view.bounds
         view.layer.insertSublayer(gradiantLayer, above: imageViewContainer.layer)
         
-        headerTitleLabel.text = presentedEntity.titleForGrouping(sourceData.parentGroup ?? LibraryGrouping.Albums)?.uppercaseString
+        headerTitleLabel.text = presentedEntity.titleForGrouping(sourceData.parentGroup ?? LibraryGrouping.Albums)?.uppercased()
         headerTitleLabel.layer.shouldRasterize = true
-        headerTitleLabel.layer.rasterizationScale = UIScreen.mainScreen().scale
+        headerTitleLabel.layer.rasterizationScale = UIScreen.main.scale
         
         //fade in the artwork
         presentedEntity.artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
             imageView.image = image
-            imageView.layer.addAnimation(fadeInAnimation, forKey: nil)
+            imageView.layer.add(fadeInAnimation, forKey: nil)
         }
 
     }
     
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
         guard keyPath != nil && keyPath! == observationKey else { return }
 		
-		func adjustGradientLocation(expandedFraction expandedFraction:CGFloat, invertedFraction:CGFloat) {
+		func adjustGradientLocation(expandedFraction:CGFloat, invertedFraction:CGFloat) {
 			let locations = self.dynamicType.clearGradiantDefaultLocations
 			
 			//ranges from 25 -> 0 as view collapses

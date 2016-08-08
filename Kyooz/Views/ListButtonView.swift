@@ -37,17 +37,17 @@ final class ListButtonView: UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
             colorToUse = color
@@ -64,45 +64,45 @@ final class ListButtonView: UIButton {
         let xScale = (1 - scale)/2
         let insetX = rectToUse.width * xScale
         let insetY = rectToUse.height * (xScale * 1.2)
-        let insetRect = CGRectInset(rectToUse, insetX, insetY)
+        let insetRect = rectToUse.insetBy(dx: insetX, dy: insetY)
         
         let minX = insetRect.origin.x
         let maxX = insetRect.maxX
         
         let path = UIBezierPath()
         let minY = insetRect.origin.y
-        path.moveToPoint(insetRect.origin)
-        path.addLineToPoint(CGPoint(x: maxX, y: minY))
+        path.move(to: insetRect.origin)
+        path.addLine(to: CGPoint(x: maxX, y: minY))
         
         let midY = insetRect.midY
-        path.moveToPoint(CGPoint(x: minX, y: midY))
-        path.addLineToPoint(CGPoint(x: maxX, y: midY))
+        path.move(to: CGPoint(x: minX, y: midY))
+        path.addLine(to: CGPoint(x: maxX, y: midY))
         
         let maxY = insetRect.maxY
-        path.moveToPoint(CGPoint(x: minX, y: maxY))
-        path.addLineToPoint(CGPoint(x: maxX, y: maxY))
+        path.move(to: CGPoint(x: minX, y: maxY))
+        path.addLine(to: CGPoint(x: maxX, y: maxY))
         path.lineWidth = insetRect.height * 0.15
         
         if showBullets {
-            path.applyTransform(CGAffineTransformMakeTranslation(insetRect.width * 0.15, 0))
+            path.apply(CGAffineTransform(translationX: insetRect.width * 0.15, y: 0))
             let size = insetRect.height * 0.3
             let circlePath = UIBezierPath()
-            circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: minY, width: size, height: size)))
+            circlePath.append(UIBezierPath(ovalIn: CGRect(x: minX, y: minY, width: size, height: size)))
             
-            circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: midY, width: size, height: size)))
+            circlePath.append(UIBezierPath(ovalIn: CGRect(x: minX, y: midY, width: size, height: size)))
             
-            circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: maxY, width: size, height: size)))
+            circlePath.append(UIBezierPath(ovalIn: CGRect(x: minX, y: maxY, width: size, height: size)))
             
             let translationAmount = -size/2
-            circlePath.applyTransform(CGAffineTransformMakeTranslation(translationAmount, translationAmount))
+            circlePath.apply(CGAffineTransform(translationX: translationAmount, y: translationAmount))
             if let t = pathTransform {
-                circlePath.applyTransform(t)
+                circlePath.apply(t)
             }
             circlePath.fill()
         }
         
         if let t = pathTransform {
-            path.applyTransform(t)
+            path.apply(t)
         }
         
         path.stroke()

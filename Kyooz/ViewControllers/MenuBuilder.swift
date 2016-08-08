@@ -26,32 +26,32 @@ final class MenuBuilder {
 		
 	}
 	
-	func with(title title: String?) -> MenuBuilder {
+	func with(title: String?) -> MenuBuilder {
 		self.title = title
 		return self
 	}
 	
-	func with(details details: String?) -> MenuBuilder {
+	func with(details: String?) -> MenuBuilder {
 		self.details = details
 		return self
 	}
 	
-	func with(originatingCenter originatingCenter: CGPoint?) -> MenuBuilder {
+	func with(originatingCenter: CGPoint?) -> MenuBuilder {
 		self.originatingCenter = originatingCenter
 		return self
 	}
 	
 	func with(optionsProviders providers: KyoozOptionsProvider...) -> MenuBuilder {
-		optionsProviders.appendContentsOf(providers)
+		optionsProviders.append(contentsOf: providers)
 		return self
 	}
 	
-	func with(options options:KyoozOption...) -> MenuBuilder {
+	func with(options:KyoozOption...) -> MenuBuilder {
 		optionsProviders.append(BasicKyoozOptionsProvider(options: options))
 		return self
 	}
     
-    func with(options options:[KyoozOption]) -> MenuBuilder {
+    func with(options:[KyoozOption]) -> MenuBuilder {
         optionsProviders.append(BasicKyoozOptionsProvider(options: options))
         return self
     }

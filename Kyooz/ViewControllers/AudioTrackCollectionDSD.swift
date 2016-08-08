@@ -12,10 +12,10 @@ import MediaPlayer
 
 class AudioTrackCollectionDSD : AudioEntityDSD {
 	
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		guard !tableView.editing else { return }
+	func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+		guard !tableView.isEditing else { return }
 		
-		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+		tableView.deselectRow(at: indexPath, animated: true)
 		let entity = sourceData[indexPath]
 		
 		guard let nextSourceData = sourceData.sourceDataForIndex(indexPath) else {
@@ -31,23 +31,23 @@ class AudioTrackCollectionDSD : AudioEntityDSD {
 
 final class KyoozPlaylistManagerDSD : AudioTrackCollectionDSD {
     
-    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .Delete
+    func tableView(_ tableView: UITableView, editingStyleForRowAtIndexPath indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
     }
     
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    func tableView(_ tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: IndexPath) {
+        if editingStyle == .delete {
             guard let mutableSourceData = sourceData as? MutableAudioEntitySourceData else {
                 return
             }
             do {
                 let indexPaths = [indexPath]
                 try mutableSourceData.deleteEntitiesAtIndexPaths(indexPaths)
-                tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+                tableView.deleteRows(at: indexPaths, with: .automatic)
             } catch let error {
                 KyoozUtils.showPopupError(withTitle: "Could not delete playlist: \((sourceData[indexPath] as? KyoozPlaylist)?.name ?? "Unknown Playlist")", withThrownError: error, presentationVC: nil)
-                tableView.editing = false
+                tableView.isEditing = false
             }
 
         }
@@ -68,11 +68,11 @@ class AddToPlaylistDSD : AudioTrackCollectionDSD {
 		super.init(sourceData: sourceData, reuseIdentifier: reuseIdentifier, audioCellDelegate: nil)
 	}
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let libraryCell = cell as? MediaLibraryTableViewCell {
-            libraryCell.accessoryStack.hidden = true
-            libraryCell.menuButton.hidden = true
+            libraryCell.accessoryStack.isHidden = true
+            libraryCell.menuButton.isHidden = true
         }
         return cell
     }
@@ -82,10 +82,10 @@ class AddToPlaylistDSD : AudioTrackCollectionDSD {
 
 final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
 	
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
 		guard let playlist = sourceData[indexPath] as? KyoozPlaylist else { return }
 		var playlistTracks = playlist.tracks
-		playlistTracks.appendContentsOf(tracksToAdd)
+		playlistTracks.append(contentsOf: tracksToAdd)
 		do {
 			try KyoozPlaylistManager.instance.update(playlist:playlist, withTracks: playlistTracks)
 		} catch let error {
@@ -99,8 +99,8 @@ final class AddToKyoozPlaylistDSD : AddToPlaylistDSD {
 @available(iOS 9.3, *)
 final class AddToAppleMusicPlaylistDSD : AddToPlaylistDSD {
 	
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let playlist = sourceData[indexPath] as? MPMediaPlaylist, items = tracksToAdd as? [MPMediaItem] else { return }
+	override func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+        guard let playlist = sourceData[indexPath] as? MPMediaPlaylist, let items = tracksToAdd as? [MPMediaItem] else { return }
         
         IPodLibraryDAO.addTracksToPlaylist(playlist, tracks: items)
         completion?()

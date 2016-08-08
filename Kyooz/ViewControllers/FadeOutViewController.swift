@@ -26,7 +26,7 @@ extension FadeOutViewController where Self : UIViewController {
             self.removeFromParentViewController()
         }
         
-        view.layer.addAnimation(KyoozUtils.fadeOutAnimationWithDuration(animationDuration), forKey: nil)
+        view.layer.add(KyoozUtils.fadeOutAnimationWithDuration(animationDuration), forKey: nil)
         
         CATransaction.commit()
     }

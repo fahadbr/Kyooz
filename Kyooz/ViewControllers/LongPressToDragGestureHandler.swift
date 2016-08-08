@@ -21,12 +21,12 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     private var beginningAnimationEnded = false
     private var gestureActivated = false
 
-    var indexPathOfMovingItem:NSIndexPath! {
+    var indexPathOfMovingItem:IndexPath! {
         didSet {
             wrapperDSD?.indexPathOfMovingItem = indexPathOfMovingItem
         }
     }
-    var originalIndexPathOfMovingItem:NSIndexPath!
+    var originalIndexPathOfMovingItem:IndexPath!
     var delegate:GestureHandlerDelegate?
     
     var shouldHideSourceView = true
@@ -54,14 +54,14 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         Logger.debug("deinitializing long press to drag gesture handler")
     }
     
-    final func handleGesture(sender: UILongPressGestureRecognizer) {
+    final func handleGesture(_ sender: UILongPressGestureRecognizer) {
         let state:UIGestureRecognizerState = sender.state
         switch(state) {
-        case .Began:
+        case .began:
             guard let sourceTableView = self.sourceTableView else { return }
             
-            let location = sender.locationInView(sourceTableView)
-            guard let initialIndexPath = sourceTableView.indexPathForRowAtPoint(location) else {
+            let location = sender.location(in: sourceTableView)
+            guard let initialIndexPath = sourceTableView.indexPathForRow(at: location) else {
                 return
             }
             indexPathOfMovingItem = initialIndexPath
@@ -75,7 +75,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
             createSnapshotFromView(viewForSnapshot, sender: sender)
             gestureDidBegin(sender)
             gestureActivated = wrapperDSD != nil
-        case .Changed:
+        case .changed:
             if(!gestureActivated) { return }
             let location = handlePositionChange(sender)
             if let locationInsideTableView = location {
@@ -87,7 +87,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
             if(!beginningAnimationEnded) {
                 //if the beginning animation hasnt ended yet, we must wait until it is
                 //so we call the method again to retry
-                dispatch_async(dispatch_get_main_queue()) { [weak self]() in
+                DispatchQueue.main.async { [weak self]() in
                     self?.handleGesture(sender)
                 }
                 return
@@ -112,7 +112,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
                 KyoozUtils.showPopupError(withTitle: "Couldn't Complete the Gesture", withThrownError: error, presentationVC: nil)
             }
             
-            let cell = destinationTableView.cellForRowAtIndexPath(indexPathOfMovingItem)
+            let cell = destinationTableView.cellForRow(at: indexPathOfMovingItem)
             removeSnapshotFromView(cell, viewToFadeOut: snapshotContainer, completionHandler: { (finished:Bool) -> Void in
                 self.snapshotContainer.removeFromSuperview()
                 self.gestureDidEnd(sender)
@@ -120,11 +120,11 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         }
     }
     
-    func createWrapperDSD(tableView: UITableView, sourceDSD:AudioEntityDSDProtocol, originalIndexPath:NSIndexPath) -> DragToRearrangeDSDWrapper? {
+    func createWrapperDSD(_ tableView: UITableView, sourceDSD:AudioEntityDSDProtocol, originalIndexPath:IndexPath) -> DragToRearrangeDSDWrapper? {
         return DragToRearrangeDSDWrapper(tableView: tableView, datasourceDelegate: sourceDSD, originalIndexPath: originalIndexPath)
     }
     
-    func gestureDidBegin(sender:UIGestureRecognizer) {
+    func gestureDidBegin(_ sender:UIGestureRecognizer) {
         delegate?.gestureDidBegin?(sender)
         originalDSD = (destinationTableView.dataSource, destinationTableView.delegate)
         if let datasourceDelegate = destinationTableView.dataSource as? AudioEntityDSDProtocol {
@@ -136,19 +136,19 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
     }
     
     
-    func gestureDidEnd(sender:UIGestureRecognizer) {
+    func gestureDidEnd(_ sender:UIGestureRecognizer) {
         delegate?.gestureDidEnd?(sender)
     }
     
-    final func handlePositionChange(sender: UILongPressGestureRecognizer) -> CGPoint? {
-        let location = sender.locationInView(destinationTableView)
-        locationInDestinationTableView = destinationTableView.pointInside(location, withEvent: nil)
+    final func handlePositionChange(_ sender: UILongPressGestureRecognizer) -> CGPoint? {
+        let location = sender.location(in: destinationTableView)
+        locationInDestinationTableView = destinationTableView.point(inside: location, with: nil)
         
-        updateSnapshotPosition(sender.locationInView(sender.view))
+        updateSnapshotPosition(sender.location(in: sender.view))
         let point = locationInDestinationTableView ? location : CGPoint(x: 0, y: location.y)
-        if let indexPath = destinationTableView.indexPathForRowAtPoint(point) where indexPathOfMovingItem != indexPath {
-            if let canMove = destinationTableView.dataSource?.tableView?(destinationTableView, canMoveRowAtIndexPath: indexPathOfMovingItem) where canMove {
-                destinationTableView.moveRowAtIndexPath(indexPathOfMovingItem, toIndexPath: indexPath)
+        if let indexPath = destinationTableView.indexPathForRow(at: point) where indexPathOfMovingItem != indexPath {
+            if let canMove = destinationTableView.dataSource?.tableView?(destinationTableView, canMoveRowAt: indexPathOfMovingItem) where canMove {
+                destinationTableView.moveRow(at: indexPathOfMovingItem, to: indexPath)
                 indexPathOfMovingItem = indexPath
             }
         }
@@ -160,15 +160,15 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         }
     }
     
-    func getViewForSnapshot(sender:UIGestureRecognizer) -> UIView? {
+    func getViewForSnapshot(_ sender:UIGestureRecognizer) -> UIView? {
         guard let indexPathOfMovingItem = self.indexPathOfMovingItem else { return nil }
         
-        let cell = sourceTableView?.cellForRowAtIndexPath(indexPathOfMovingItem)
-        cell?.highlighted = false
+        let cell = sourceTableView?.cellForRow(at: indexPathOfMovingItem)
+        cell?.isHighlighted = false
         return cell
     }
     
-    func createSnapshotFromView(viewForSnapshot:UIView, sender:UIGestureRecognizer) {
+    func createSnapshotFromView(_ viewForSnapshot:UIView, sender:UIGestureRecognizer) {
         viewForSnapshot.layer.masksToBounds = true
         viewForSnapshot.layer.cornerRadius = cornerRadiusForSnapshot
         
@@ -179,33 +179,33 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         viewForSnapshot.layer.masksToBounds = false
         
         //add the snapshot as a subview, centered at cell's center
-        let locationInView = sender.locationInView(sender.view)
+        let locationInView = sender.location(in: sender.view)
 //        updateSnapshotPosition(shouldHideSourceView ? viewForSnapshot.center : locationInView)
-        let p = viewForSnapshot.convertPoint(CGPoint(x: viewForSnapshot.bounds.midX, y: viewForSnapshot.bounds.midY), toView: sender.view)
+        let p = viewForSnapshot.convert(CGPoint(x: viewForSnapshot.bounds.midX, y: viewForSnapshot.bounds.midY), to: sender.view)
         updateSnapshotPosition(p)
         sender.view?.addSubview(snapshotContainer)
         beginningAnimationEnded = false
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
+        UIView.animate(withDuration: 0.25, animations: { () -> Void in
             
             //Offest for gesture location
             self.updateSnapshotPosition(locationInView)
-            self.snapshotContainer.transform = CGAffineTransformMakeScale(self.snapshotScale, self.snapshotScale)
+            self.snapshotContainer.transform = CGAffineTransform(scaleX: self.snapshotScale, y: self.snapshotScale)
             self.snapshot.alpha = 0.80
-            self.snapshot.layer.shadowColor = UIColor.whiteColor().CGColor
+            self.snapshot.layer.shadowColor = UIColor.white.cgColor
             }, completion: {_ in
                 if(self.shouldHideSourceView) {
-                    viewForSnapshot.hidden = true
+                    viewForSnapshot.isHidden = true
                 }
                 self.beginningAnimationEnded = true
         } )
 
     }
     
-    func removeSnapshotFromView(viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
-        UIView.animateWithDuration(0.25, animations: { () -> Void in
+    func removeSnapshotFromView(_ viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
+        UIView.animate(withDuration: 0.25, animations: { () -> Void in
             if(viewToFadeIn != nil) {
                 viewToFadeOut.center = viewToFadeIn!.center
-                viewToFadeOut.transform = CGAffineTransformIdentity
+                viewToFadeOut.transform = CGAffineTransform.identity
                 viewToFadeOut.layer.shadowOpacity = 0
             } else {
                 viewToFadeOut.alpha = 0.0
@@ -213,7 +213,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         },completion: completionHandler)
     }
     
-    final func updateSnapshotPosition(location:CGPoint) {
+    final func updateSnapshotPosition(_ location:CGPoint) {
         if updateSnapshotXPosition {
             snapshotContainer.center = location
         } else {

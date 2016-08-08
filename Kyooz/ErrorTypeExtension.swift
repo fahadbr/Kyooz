@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension ErrorType  {
+extension Error  {
 	
 	var description : String {
 		return "\(self.dynamicType)"
@@ -16,7 +16,7 @@ extension ErrorType  {
 	
 }
 
-extension ErrorType where Self : KyoozErrorProtocol {
+extension Error where Self : KyoozErrorProtocol {
 	var description : String {
 		return errorDescription
 	}

@@ -10,11 +10,11 @@ import UIKit
 
 class DragToRearrangeDSDWrapper : AudioEntityDSDWrapper {
 
-    let originalIndexPath:NSIndexPath
+    let originalIndexPath:IndexPath
     let tableView:UITableView
-    var indexPathOfMovingItem:NSIndexPath
+    var indexPathOfMovingItem:IndexPath
     
-    init(tableView:UITableView, datasourceDelegate:AudioEntityDSDProtocol, originalIndexPath:NSIndexPath) {
+    init(tableView:UITableView, datasourceDelegate:AudioEntityDSDProtocol, originalIndexPath:IndexPath) {
         self.tableView = tableView
         self.originalIndexPath = originalIndexPath
         self.indexPathOfMovingItem = originalIndexPath
@@ -23,22 +23,22 @@ class DragToRearrangeDSDWrapper : AudioEntityDSDWrapper {
     
     //MARK: - table view datasource methods
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //since the datasource is not updated while we're rearranging, we need to remap the index path of items moved in the
         //tableView itself to the original source data that is containded within the dataSource
         
-        let moddedIndexPath:NSIndexPath
-        if indexPath.row > indexPathOfMovingItem.row && indexPath.row <= originalIndexPath.row {
-            moddedIndexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
-        } else if indexPath.row < indexPathOfMovingItem.row && indexPath.row >= originalIndexPath.row {
-            moddedIndexPath = NSIndexPath(forRow: indexPath.row + 1, inSection: indexPath.section)
+        let moddedIndexPath:IndexPath
+        if (indexPath as NSIndexPath).row > indexPathOfMovingItem.row && (indexPath as NSIndexPath).row <= (originalIndexPath as NSIndexPath).row {
+            moddedIndexPath = IndexPath(row: (indexPath as NSIndexPath).row - 1, section: (indexPath as NSIndexPath).section)
+        } else if (indexPath as NSIndexPath).row < indexPathOfMovingItem.row && (indexPath as NSIndexPath).row >= (originalIndexPath as NSIndexPath).row {
+            moddedIndexPath = IndexPath(row: (indexPath as NSIndexPath).row + 1, section: (indexPath as NSIndexPath).section)
         } else {
             moddedIndexPath = indexPath
         }
         
-        let cell = datasourceDelegate.tableView(tableView, cellForRowAtIndexPath: moddedIndexPath)
+        let cell = datasourceDelegate.tableView(tableView, cellForRowAt: moddedIndexPath)
         if indexPath == indexPathOfMovingItem {
-            cell.hidden = true
+            cell.isHidden = true
         }
         return cell
     }
@@ -46,7 +46,7 @@ class DragToRearrangeDSDWrapper : AudioEntityDSDWrapper {
     
     func persistChanges() throws {        
         if originalIndexPath != indexPathOfMovingItem {
-            datasourceDelegate.tableView?(tableView, moveRowAtIndexPath: originalIndexPath, toIndexPath: indexPathOfMovingItem)
+            datasourceDelegate.tableView?(tableView, moveRowAt: originalIndexPath, to: indexPathOfMovingItem)
         }
     }
     

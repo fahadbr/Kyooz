@@ -22,7 +22,7 @@ class PanTutorialViewController : TutorialViewController {
         groupAnimation.duration = delay + animationTime
         groupAnimation.repeatCount = Float.infinity
         
-        func createKeyframeAnimation(keyPath:String) -> CAKeyframeAnimation {
+        func createKeyframeAnimation(_ keyPath:String) -> CAKeyframeAnimation {
             
             let animation = CAKeyframeAnimation(keyPath: keyPath)
             animation.keyTimes = times
@@ -45,7 +45,7 @@ class PanTutorialViewController : TutorialViewController {
         opacityAnimation.values = [0, 1, 1, 0]
         
         let fillAnimation = createKeyframeAnimation("fillColor")
-        fillAnimation.values = [UIColor.clearColor().CGColor, ThemeHelper.defaultFontColor.CGColor, UIColor.clearColor().CGColor]
+        fillAnimation.values = [UIColor.clear.cgColor, ThemeHelper.defaultFontColor.cgColor, UIColor.clear.cgColor]
         fillAnimation.calculationMode = kCAAnimationDiscrete
         
         
@@ -70,7 +70,7 @@ class PanTutorialViewController : TutorialViewController {
     
     override func applyAnimation() {
         super.applyAnimation()
-        circleLayer.addAnimation(panAnimation, forKey: "tutorial")
+        circleLayer.add(panAnimation, forKey: "tutorial")
     }
     
 }

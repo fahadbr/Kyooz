@@ -11,16 +11,16 @@ import Foundation
 
 enum Tutorial : Int , EnumNameDescriptable {
 	
-    case GestureActivatedSearch
-    case GestureToViewQueue
-    case DragAndDrop
-    case InsertOrCancel
-    case DragToRearrange
+    case gestureActivatedSearch
+    case gestureToViewQueue
+    case dragAndDrop
+    case insertOrCancel
+    case dragToRearrange
 	
 }
 
 enum TutorialAction : Int {
-    case Fulfill, DismissUnfulfilled, DismissFulfilled
+    case fulfill, dismissUnfulfilled, dismissFulfilled
 }
 
 struct TutorialDTO {

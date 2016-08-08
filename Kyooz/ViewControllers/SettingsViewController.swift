@@ -18,13 +18,13 @@ final class SettingsViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-		let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(self.dismiss))
+		let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.dismissVC))
 		doneButton.tintColor = ThemeHelper.defaultTintColor
 		navigationItem.rightBarButtonItem = doneButton
-        let value = NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)
-        enableAppleMusicSwitch.on = value == AudioQueuePlayerType.AppleDRM.rawValue
+        let value = UserDefaults.standard.integer(forKey: UserDefaultKeys.AudioQueuePlayer)
+        enableAppleMusicSwitch.isOn = value == AudioQueuePlayerType.appleDRM.rawValue
         
-        reduceAnimationSwitch.on = NSUserDefaults.standardUserDefaults().boolForKey(UserDefaultKeys.ReduceAnimations)
+        reduceAnimationSwitch.isOn = UserDefaults.standard.bool(forKey: UserDefaultKeys.ReduceAnimations)
         // Do any additional setup after loading the view.
     }
 
@@ -33,25 +33,25 @@ final class SettingsViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func switchValueChanged(sender: UISwitch) {
-        let value = enableAppleMusicSwitch.on ? AudioQueuePlayerType.AppleDRM.rawValue : AudioQueuePlayerType.Default.rawValue
-        NSUserDefaults.standardUserDefaults().setInteger(value, forKey: UserDefaultKeys.AudioQueuePlayer)
+    @IBAction func switchValueChanged(_ sender: UISwitch) {
+        let value = enableAppleMusicSwitch.isOn ? AudioQueuePlayerType.appleDRM.rawValue : AudioQueuePlayerType.default.rawValue
+        UserDefaults.standard.set(value, forKey: UserDefaultKeys.AudioQueuePlayer)
 		
 		KyoozUtils.showPopupError(withTitle: "Requires Restart", withMessage: "Enabling/Disabling Apple Music won't take effect until Kyooz is restarted.  Please close and then reopen the app", presentationVC: self)
     }
     
-    @IBAction func reduceAnimationSwitchChanged(sender:UISwitch) {
-        NSUserDefaults.standardUserDefaults().setBool(sender.on, forKey: UserDefaultKeys.ReduceAnimations)
+    @IBAction func reduceAnimationSwitchChanged(_ sender:UISwitch) {
+        UserDefaults.standard.set(sender.isOn, forKey: UserDefaultKeys.ReduceAnimations)
         RootViewController.instance.setNavigationDelegate()
     }
 	
-	func dismiss() {
-		dismissViewControllerAnimated(true, completion: nil)
+	func dismissVC() {
+		self.dismiss(animated: true, completion: nil)
 	}
 	
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
+        guard let cell = tableView.cellForRow(at: indexPath) else {
 			return
 		}
         do {
@@ -86,7 +86,7 @@ final class SettingsViewController: UITableViewController {
         mfvc.setToRecipients([self.dynamicType.emailAddress])
         mfvc.setSubject("Kyooz Feedback")
         
-        presentViewController(mfvc, animated: true, completion: nil)
+        present(mfvc, animated: true, completion: nil)
         
     }
 	
@@ -109,7 +109,7 @@ final class SettingsViewController: UITableViewController {
 
 extension SettingsViewController : MFMailComposeViewControllerDelegate {
     
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        controller.dismissViewControllerAnimated(true, completion: nil)
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: NSError?) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }

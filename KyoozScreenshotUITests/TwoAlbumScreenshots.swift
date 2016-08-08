@@ -29,17 +29,17 @@ class TwoAlbumScreenshots : XCTestCase {
         
         let app = XCUIApplication()
         let tablesQuery = app.tables
-        tablesQuery.cells.elementBoundByIndex(1).tap()
+        tablesQuery.cells.element(boundBy: 1).tap()
         
-        tablesQuery.cells.elementBoundByIndex(0).tap()
-        let firstTableElement = tablesQuery.cells.elementBoundByIndex(0)
+        tablesQuery.cells.element(boundBy: 0).tap()
+        let firstTableElement = tablesQuery.cells.element(boundBy: 0)
         firstTableElement.tap()
         
         app.buttons["miniPlayerPlayButton"].tap()
         app.buttons["miniPlayerTrackDetails"].tap()
         
         let playbackprogresssliderSlider = app.sliders["playbackProgressSlider"]
-        playbackprogresssliderSlider.adjustToNormalizedSliderPosition(0.48)
+        playbackprogresssliderSlider.adjust(toNormalizedSliderPosition: 0.48)
         
         snapshot("nowPlayingScreen")
         
@@ -50,16 +50,16 @@ class TwoAlbumScreenshots : XCTestCase {
         
         app.buttons["HIDE"].tap()
         
-        let startCoordinate = firstTableElement.coordinateWithNormalizedOffset(CGVector(dx: 0.3, dy: 0))
-        let endCoordinate = firstTableElement.coordinateWithNormalizedOffset(CGVector(dx: 0.8, dy: 0))
-        startCoordinate.pressForDuration(0, thenDragToCoordinate: endCoordinate)
+        let startCoordinate = firstTableElement.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0))
+        let endCoordinate = firstTableElement.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0))
+        startCoordinate.press(forDuration: 0, thenDragTo: endCoordinate)
         
         app.typeText("carlie")
         
-        startCoordinate.pressForDuration(0, thenDragToCoordinate: endCoordinate)
+        startCoordinate.press(forDuration: 0, thenDragTo: endCoordinate)
         
-        let dragDownCoordinate = firstTableElement.coordinateWithNormalizedOffset(CGVector(dx: 0.3, dy: 1))
-        startCoordinate.pressForDuration(0, thenDragToCoordinate: dragDownCoordinate)
+        let dragDownCoordinate = firstTableElement.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 1))
+        startCoordinate.press(forDuration: 0, thenDragTo: dragDownCoordinate)
         
         snapshot("searchScreen")
         
@@ -70,7 +70,7 @@ class TwoAlbumScreenshots : XCTestCase {
         
         //multiSelect screen snapshot
         
-        firstTableElement.coordinateWithNormalizedOffset(CGVector(dx: 1.15, dy: 0)).tap()
+        firstTableElement.coordinate(withNormalizedOffset: CGVector(dx: 1.15, dy: 0)).tap()
         app.buttons["Cornmeal Limelight Carlie Calnan-librarySelectEditButton"].tap()
 
         app.tables.cells.staticTexts["Hazing Pestered Keener Cornmeal Limelight Carlie Calnan Carlie Calnan"].tap()

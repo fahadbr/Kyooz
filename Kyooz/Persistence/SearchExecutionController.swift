@@ -12,8 +12,8 @@ import MediaPlayer
 private let fatalErrorAbstractClassMessage = "this is an abstract class, subclass must override and implement this method"
 
 protocol SearchExecutionControllerDelegate: class {
-    func searchResultsDidGetUpdated(searchExecutionController:SearchExecutionController)
-    func searchDidComplete(searchExecutionController:SearchExecutionController)
+    func searchResultsDidGetUpdated(_ searchExecutionController:SearchExecutionController)
+    func searchDidComplete(_ searchExecutionController:SearchExecutionController)
 }
 
 class SearchExecutionController : NSObject {
@@ -36,7 +36,7 @@ class SearchExecutionController : NSObject {
         }
     }
     let searchKeys:[String]
-    private let defaultSearchQueue:NSOperationQueue
+    private let defaultSearchQueue:OperationQueue
     
     private var previousSearchParams:(searchString:String, stringComponents:[String])?
     weak var delegate:SearchExecutionControllerDelegate?
@@ -44,17 +44,17 @@ class SearchExecutionController : NSObject {
     init(libraryGroup:LibraryGrouping, searchKeys:[String]) {
         self.libraryGroup = libraryGroup
         self.searchKeys = searchKeys
-        self.defaultSearchQueue = NSOperationQueue()
+        self.defaultSearchQueue = OperationQueue()
         super.init()
         
         defaultSearchQueue.name = "Kyooz.SearchQueue.\(description)"
-        defaultSearchQueue.qualityOfService = NSQualityOfService.UserInitiated
+        defaultSearchQueue.qualityOfService = QualityOfService.userInitiated
         defaultSearchQueue.maxConcurrentOperationCount = 1
         rebuildSearchIndex()
     }
     
 
-    func executeSearchForStringComponents(searchString:String, stringComponents:[String]) {
+    func executeSearchForStringComponents(_ searchString:String, stringComponents:[String]) {
         defaultSearchQueue.cancelAllOperations()
 
         let finalPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: stringComponents.map { searchStringComponent in
@@ -64,8 +64,8 @@ class SearchExecutionController : NSObject {
             var searchPredicates = [NSPredicate]()
             for searchKey in self.searchKeys {
                 let keyExpression = NSExpression(forKeyPath: searchKey)
-                let keySearchComparisonPredicate = NSComparisonPredicate(leftExpression: keyExpression, rightExpression: searchStringExpression, modifier: .DirectPredicateModifier, type: NSPredicateOperatorType.ContainsPredicateOperatorType,
-                    options: NSComparisonPredicateOptions.NormalizedPredicateOption)
+                let keySearchComparisonPredicate = NSComparisonPredicate(leftExpression: keyExpression, rightExpression: searchStringExpression, modifier: .direct, type: NSComparisonPredicate.Operator.contains,
+                    options: NSComparisonPredicate.Options.normalized)
                 searchPredicates.append(keySearchComparisonPredicate)
             }
             
@@ -96,7 +96,7 @@ class SearchExecutionController : NSObject {
         
         defaultSearchQueue.addOperation(searchOperation)
         searchInProgress = true
-        defaultSearchQueue.addOperationWithBlock() {
+        defaultSearchQueue.addOperation() {
             KyoozUtils.doInMainQueue() {
                 self.searchInProgress = false
                 self.delegate?.searchDidComplete(self)
@@ -110,8 +110,8 @@ class SearchExecutionController : NSObject {
         searchResults = [AudioEntity]()
     }
     
-    func performAfterSearch(block:()->()) {
-        defaultSearchQueue.addOperationWithBlock(block)
+    func performAfterSearch(_ block:()->()) {
+        defaultSearchQueue.addOperation(block)
     }
     
     final func rebuildSearchIndex() {
@@ -134,7 +134,7 @@ class SearchExecutionController : NSObject {
         fatalError(fatalErrorAbstractClassMessage)
     }
     
-    func createAdHocSearchOperation(searchPredicate:NSPredicate, searchString:String) -> AbstractResultOperation<[AudioEntity]>? {
+    func createAdHocSearchOperation(_ searchPredicate:NSPredicate, searchString:String) -> AbstractResultOperation<[AudioEntity]>? {
         return nil
     }
     
@@ -147,7 +147,7 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController {
             return nil
         }
         
-        let titlePropertyName = MPMediaItem.titlePropertyForGroupingType(libraryGroup.groupingType)
+        let titlePropertyName = MPMediaItem.titleProperty(forGroupingType: libraryGroup.groupingType)
         let indexBuildingOp = IndexBuildingOperation(parentIndexName: libraryGroup.name, valuesToIndex: values, maxValuesAmount: 200, keyExtractingBlock: { (entity:AudioEntity) -> (String, String) in
             if let primaryKey = entity.titleForGrouping(self.libraryGroup)?.normalizedString {
                 return (titlePropertyName, primaryKey)
@@ -158,7 +158,7 @@ final class IPodLibrarySearchExecutionController : SearchExecutionController {
 
     }
     
-    override func createAdHocSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]>? {
+    override func createAdHocSearchOperation(_ searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]>? {
         return AdHocIPodLibrarySearchOperation(group: libraryGroup, searchString: searchString, searchPredicate: searchPredicate)
     }
 }
@@ -167,11 +167,11 @@ final class KyoozPlaylistSearchExecutionController : SearchExecutionController {
     
     init() {
         super.init(libraryGroup: LibraryGrouping.Playlists, searchKeys: ["name"])
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(super.rebuildSearchIndex), name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
+        NotificationCenter.default.addObserver(self, selector: #selector(super.rebuildSearchIndex), name: NSNotification.Name(rawValue: KyoozPlaylistManager.PlaylistSetUpdate), object: KyoozPlaylistManager.instance)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override var description: String {
@@ -193,7 +193,7 @@ final class KyoozPlaylistSearchExecutionController : SearchExecutionController {
         return indexBuildingOp
     }
     
-    override func createAdHocSearchOperation(searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
+    override func createAdHocSearchOperation(_ searchPredicate: NSPredicate, searchString: String) -> AbstractResultOperation<[AudioEntity]> {
         return AdHocKyoozPlaylistSearchOperation(primaryKeyName: searchKeys.first!, searchPredicate: searchPredicate, searchString: searchString)
     }
 }

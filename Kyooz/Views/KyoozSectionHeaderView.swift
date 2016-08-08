@@ -26,19 +26,19 @@ class KyoozSectionHeaderView : UITableViewHeaderFooterView {
         contentView.backgroundColor = ThemeHelper.defaultTableCellColor
         
         headerTitleLabel.textColor = ThemeHelper.defaultFontColor
-        headerTitleLabel.font = ThemeHelper.smallFontForStyle(.Medium)
+        headerTitleLabel.font = ThemeHelper.smallFontForStyle(.medium)
         
-        let constraints = add(subView: stackView, with: [.Left, .Bottom])
-        constraints[.Left]!.constant = 15
-        constraints[.Bottom]!.constant = -8
+        let constraints = add(subView: stackView, with: [.left, .bottom])
+        constraints[.left]!.constant = 15
+        constraints[.bottom]!.constant = -8
         
         stackView.addArrangedSubview(headerTitleLabel)
-        stackView.axis = .Horizontal
+        stackView.axis = .horizontal
         stackView.spacing = 8
         
         layer.addSublayer(strokeLayer)
         strokeLayer.lineWidth = 0.5
-        strokeLayer.strokeColor = UIColor.lightGrayColor().CGColor
+        strokeLayer.strokeColor = UIColor.lightGray.cgColor
         
     }
     
@@ -51,11 +51,11 @@ class KyoozSectionHeaderView : UITableViewHeaderFooterView {
         let rect = bounds
         let yPosition = rect.maxY - 5
         let path = UIBezierPath()
-        path.moveToPoint(CGPoint(x: rect.minX + 12, y: yPosition))
-        path.addLineToPoint(CGPoint(x: rect.maxX, y: yPosition))
+        path.move(to: CGPoint(x: rect.minX + 12, y: yPosition))
+        path.addLine(to: CGPoint(x: rect.maxX, y: yPosition))
         
         strokeLayer.frame = bounds
-        strokeLayer.path = path.CGPath
+        strokeLayer.path = path.cgPath
     }
 }
 
@@ -67,9 +67,9 @@ class RowLimitedSectionHeaderView : KyoozSectionHeaderView {
     
     var expanded: Bool = false {
         didSet {
-            let rotation = CGAffineTransformMakeRotation(expanded ? CGFloat(M_PI_2) : 0)
-            let translation = CGAffineTransformMakeTranslation(0, expanded ? 3 : 0)
-            self.disclosureView.transform = CGAffineTransformConcat(rotation, translation)
+            let rotation = CGAffineTransform(rotationAngle: expanded ? CGFloat(M_PI_2) : 0)
+            let translation = CGAffineTransform(translationX: 0, y: expanded ? 3 : 0)
+            self.disclosureView.transform = rotation.concatenating(translation)
         }
     }
     
@@ -93,10 +93,10 @@ class RowLimitedSectionHeaderView : KyoozSectionHeaderView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setExpanded(expanded expanded:Bool, animated:Bool) {
+    func setExpanded(expanded:Bool, animated:Bool) {
         if animated {
             KyoozUtils.doInMainQueue() {
-                UIView.animateWithDuration(0.2) {
+                UIView.animate(withDuration: 0.2) {
                     self.expanded = expanded
                 }
             }
@@ -105,12 +105,12 @@ class RowLimitedSectionHeaderView : KyoozSectionHeaderView {
         }
     }
     
-    func setLabelText(mainText:String, subText:String) {
+    func setLabelText(_ mainText:String, subText:String) {
         let mainTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : ThemeHelper.defaultFontColor]
-        let subTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : UIColor.darkGrayColor()]
+        let subTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : UIColor.darkGray]
         
         let mainAttributedText = NSMutableAttributedString(string: mainText, attributes: mainTextAttributes)
-        mainAttributedText.appendAttributedString(NSAttributedString(string: "   " + subText, attributes: subTextAttributes))
+        mainAttributedText.append(NSAttributedString(string: "   " + subText, attributes: subTextAttributes))
         
         headerTitleLabel.attributedText = mainAttributedText
     }

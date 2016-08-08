@@ -56,8 +56,8 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
             return nil
         }
 		
-        let propertyName = MPMediaItem.persistentIDPropertyForGroupingType(parentLibraryGroup.groupingType)
-        let propertyValue = NSNumber(unsignedLongLong: filterEntity.persistentIdForGrouping(parentLibraryGroup))
+        let propertyName = MPMediaItem.persistentIDProperty(forGroupingType: parentLibraryGroup.groupingType)
+        let propertyValue = NSNumber(value: filterEntity.persistentIdForGrouping(parentLibraryGroup))
         
         let filterQuery = MPMediaQuery(filterPredicates: baseQuery?.filterPredicates ?? parentLibraryGroup.baseQuery.filterPredicates)
         filterQuery.addFilterPredicate(MPMediaPropertyPredicate(value: propertyValue, forProperty: propertyName))
@@ -70,7 +70,7 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
     
     func reloadSourceData() {
         let isSongGrouping = libraryGrouping == LibraryGrouping.Songs
-        entities = (isSongGrouping ? filterQuery.items : filterQuery.collections) ?? [AudioEntity]()
+        entities = (isSongGrouping ? filterQuery.items as [AudioEntity]? : filterQuery.collections as [AudioEntity]?) ?? [AudioEntity]()
         
         if entities.count < 15 {
             self._sections = nil
@@ -83,19 +83,19 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
         }
 	}
     
-    func sourceDataForIndex(indexPath: NSIndexPath) -> AudioEntitySourceData? {
+    func sourceDataForIndex(_ indexPath: IndexPath) -> AudioEntitySourceData? {
         let entity = self[indexPath]
         
 		return MediaQuerySourceData(filterEntity: entity, parentLibraryGroup: libraryGrouping, baseQuery: filterQuery)
     }
     
-    func flattenedIndex(indexPath: NSIndexPath) -> Int {
+    func flattenedIndex(_ indexPath: IndexPath) -> Int {
         guard let sections = self._sections else {
-            return indexPath.row
+            return (indexPath as NSIndexPath).row
         }
         
-        let offset =  sections[indexPath.section].range.location
-        let index = indexPath.row
+        let offset =  sections[(indexPath as NSIndexPath).section].range.location
+        let index = (indexPath as NSIndexPath).row
         let absoluteIndex = offset + index
         
         return absoluteIndex

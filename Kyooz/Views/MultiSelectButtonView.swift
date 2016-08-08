@@ -35,31 +35,31 @@ final class MultiSelectButtonView : UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    override var enabled:Bool {
+    override var isEnabled:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    var pathTransform:CGAffineTransform = CGAffineTransformIdentity {
+    var pathTransform:CGAffineTransform = CGAffineTransform.identity {
         didSet {
             setNeedsDisplay()
         }
     }
     
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
-            colorToUse = UIColor.redColor()
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
+            colorToUse = UIColor.red
         } else if isActive {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
@@ -72,29 +72,29 @@ final class MultiSelectButtonView : UIButton {
         
         
         let inset:CGFloat = (1 - scale)/2 * min(rect.height, rect.width)
-        let rectToUse = CGRectInset(rect, inset, inset)
+        let rectToUse = rect.insetBy(dx: inset, dy: inset)
         
-        let path = UIBezierPath(ovalInRect: rectToUse)
+        let path = UIBezierPath(ovalIn: rectToUse)
         
-        path.applyTransform(pathTransform)
+        path.apply(pathTransform)
         if isActive {
             path.fill()
         }
         path.stroke()
         
         let checkInset =  0.2 * min(rectToUse.height, rectToUse.width)
-        let checkRect = CGRectInset(rectToUse, checkInset, checkInset)
+        let checkRect = rectToUse.insetBy(dx: checkInset, dy: checkInset)
         
         let midY = checkRect.midY
         let checkPath = UIBezierPath()
-        checkPath.moveToPoint(CGPoint(x: checkRect.origin.x, y: midY))
-        checkPath.addLineToPoint(CGPoint(x: checkRect.origin.x + checkInset, y: midY + checkInset))
-        checkPath.addLineToPoint(CGPoint(x: checkRect.maxX, y: checkRect.minY + checkInset/2))
+        checkPath.move(to: CGPoint(x: checkRect.origin.x, y: midY))
+        checkPath.addLine(to: CGPoint(x: checkRect.origin.x + checkInset, y: midY + checkInset))
+        checkPath.addLine(to: CGPoint(x: checkRect.maxX, y: checkRect.minY + checkInset/2))
  
         checkPath.lineWidth = 1.5
-        checkPath.applyTransform(pathTransform)
+        checkPath.apply(pathTransform)
         if isActive {
-            checkPath.strokeWithBlendMode(.Clear, alpha: 1.0)
+            checkPath.stroke(with: .clear, alpha: 1.0)
         } else {
             checkPath.stroke()
         }

@@ -15,13 +15,13 @@ class UtilHeaderViewController: HeaderViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         
-        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         ConstraintUtils.applyStandardConstraintsToView(subView: blurView, parentView: view)
-        view.sendSubviewToBack(blurView)
+        view.sendSubview(toBack: blurView)
         
-        accentLayer.strokeColor = ThemeHelper.defaultVividColor.CGColor
+        accentLayer.strokeColor = ThemeHelper.defaultVividColor.cgColor
         accentLayer.lineWidth = 0.75
         view.layer.addSublayer(accentLayer)
     }
@@ -29,9 +29,9 @@ class UtilHeaderViewController: HeaderViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 		path = UIBezierPath()
-		path.moveToPoint(CGPoint(x: view.bounds.origin.x, y: view.bounds.height))
-		path.addLineToPoint(CGPoint(x: view.bounds.width, y: view.bounds.height))
-		accentLayer.path = path.CGPath
+		path.move(to: CGPoint(x: view.bounds.origin.x, y: view.bounds.height))
+		path.addLine(to: CGPoint(x: view.bounds.width, y: view.bounds.height))
+		accentLayer.path = path.cgPath
     }
     
 }

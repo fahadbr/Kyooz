@@ -13,12 +13,12 @@ import MediaPlayer
 struct ApplicationDefaults {
     
     static let audioQueuePlayer:AudioQueuePlayer = {
-        let value = AudioQueuePlayerType(rawValue: NSUserDefaults.standardUserDefaults().integerForKey(UserDefaultKeys.AudioQueuePlayer)) ?? AudioQueuePlayerType.Default
+        let value = AudioQueuePlayerType(rawValue: UserDefaults.standard.integer(forKey: UserDefaultKeys.AudioQueuePlayer)) ?? AudioQueuePlayerType.default
         let player:AudioQueuePlayer
         switch value {
-        case .AppleDRM:
+        case .appleDRM:
             player = DRMAudioQueuePlayer.instance
-        case .Default:
+        case .default:
             player = AudioQueuePlayerImpl.instance
         }
         Logger.debug("Loading \(player.dynamicType) as the application audio player")
@@ -30,10 +30,10 @@ struct ApplicationDefaults {
 		
         if audioQueuePlayer is DRMAudioQueuePlayer && LastFmScrobbler.instance.validSessionObtained {
             Logger.debug("FETCH INTERVAL: setting minimum fetch interval")
-            UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         } else {
             Logger.debug("FETCH INTERVAL: setting fetch interval of NEVER")
-            UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
     }
 	

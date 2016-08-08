@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PlaybackProgressObserver : class {
-    func updateProgress(percentComplete:Float)
+    func updateProgress(_ percentComplete:Float)
 }
 
 final class PlaybackProgressViewController: UIViewController {
@@ -22,38 +22,38 @@ final class PlaybackProgressViewController: UIViewController {
 	private let timeProgressedLabel = UILabel()
 	private let timeRemainingLabel = UILabel()
 	
-	private var playbackProgressTimer:NSTimer?
+	private var playbackProgressTimer:Timer?
     private var observers = [PlaybackProgressObserver]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-		func configureLabel(label:UILabel) {
-			label.font = ThemeHelper.defaultFont?.fontWithSize(ThemeHelper.smallFontSize - 1)
+		func configureLabel(_ label:UILabel) {
+			label.font = ThemeHelper.defaultFont?.withSize(ThemeHelper.smallFontSize - 1)
 			label.textColor = ThemeHelper.defaultFontColor
-            label.textAlignment = .Center
+            label.textAlignment = .center
 			label.text = "000:00"
             label.alpha = 0.6
-            label.frame.size = label.textRectForBounds(UIScreen.mainScreen().bounds, limitedToNumberOfLines: 1).size
+            label.frame.size = label.textRect(forBounds: UIScreen.main.bounds, limitedToNumberOfLines: 1).size
             
             view.addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.heightAnchor.constraintEqualToConstant(label.frame.height).active = true
-            label.widthAnchor.constraintEqualToConstant(label.frame.width).active = true
-            label.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
+            label.heightAnchor.constraint(equalToConstant: label.frame.height).isActive = true
+            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 		}
 		
         let margin:CGFloat = 4
         configureLabel(timeProgressedLabel)
-        timeProgressedLabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: margin).active = true
+        timeProgressedLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: margin).isActive = true
         configureLabel(timeRemainingLabel)
-        timeRemainingLabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor, constant: -margin).active = true
+        timeRemainingLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -margin).isActive = true
         
         view.addSubview(progressSlider)
         progressSlider.translatesAutoresizingMaskIntoConstraints = false
-        progressSlider.leftAnchor.constraintEqualToAnchor(timeProgressedLabel.rightAnchor, constant: margin).active = true
-        progressSlider.rightAnchor.constraintEqualToAnchor(timeRemainingLabel.leftAnchor, constant: -margin).active = true
-        progressSlider.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
+        progressSlider.leftAnchor.constraint(equalTo: timeProgressedLabel.rightAnchor, constant: margin).isActive = true
+        progressSlider.rightAnchor.constraint(equalTo: timeRemainingLabel.leftAnchor, constant: -margin).isActive = true
+        progressSlider.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         let trackAlpha:CGFloat = 0.4
 //        progressSlider.maximumTrackTintColor = UIColor(white: 0.8, alpha: trackAlpha)
 		progressSlider.minimumTrackTintColor = ThemeHelper.defaultVividColor
@@ -61,45 +61,45 @@ final class PlaybackProgressViewController: UIViewController {
 		progressSlider.accessibilityLabel = "playbackProgressSlider"
 
         let thumbView = UIView(frame: CGRect(x: 0, y: 0, width: 7, height: 20))
-        thumbView.backgroundColor = UIColor.lightGrayColor()
+        thumbView.backgroundColor = UIColor.lightGray
         thumbView.layer.cornerRadius = 2
         thumbView.layer.masksToBounds = true
         let thumbImage = ImageUtils.imageForView(thumbView, opaque: false)
-        progressSlider.setThumbImage(thumbImage, forState: .Normal)
-        progressSlider.setThumbImage(thumbImage, forState: .Selected)
-        progressSlider.setThumbImage(thumbImage, forState: .Highlighted)
+        progressSlider.setThumbImage(thumbImage, for: UIControlState())
+        progressSlider.setThumbImage(thumbImage, for: .selected)
+        progressSlider.setThumbImage(thumbImage, for: .highlighted)
 
-		progressSlider.addTarget(self, action: #selector(self.resetTimer), forControlEvents: .TouchCancel)
-		progressSlider.addTarget(self, action: #selector(self.updateLabelsWithSlider(_:)), forControlEvents: .ValueChanged)
-		let touchUpEvents = UIControlEvents.TouchUpOutside.union(.TouchUpInside)
-		progressSlider.addTarget(self, action: #selector(self.commitUpdateOfPlaybackTime(_:)), forControlEvents: touchUpEvents)
+		progressSlider.addTarget(self, action: #selector(self.resetTimer), for: .touchCancel)
+		progressSlider.addTarget(self, action: #selector(self.updateLabelsWithSlider(_:)), for: .valueChanged)
+		let touchUpEvents = UIControlEvents.touchUpOutside.union(.touchUpInside)
+		progressSlider.addTarget(self, action: #selector(self.commitUpdateOfPlaybackTime(_:)), for: touchUpEvents)
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         resetTimer()
         registerForNotifications()
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         invalidateTimer()
         unregisterForNotifications()
     }
     
-    func addProgressObserver(observer:PlaybackProgressObserver) {
-        guard !observers.contains({ $0 === observer }) else { return }
+    func addProgressObserver(_ observer:PlaybackProgressObserver) {
+        guard !observers.contains(where: { $0 === observer }) else { return }
         observers.append(observer)
     }
     
-    func removeProgressObserver(observer:PlaybackProgressObserver) {
-        guard let index = observers.indexOf( { $0 === observer }) else { return }
-        observers.removeAtIndex(index)
+    func removeProgressObserver(_ observer:PlaybackProgressObserver) {
+        guard let index = observers.index( where: { $0 === observer }) else { return }
+        observers.remove(at: index)
     }
     
 	
-	func commitUpdateOfPlaybackTime(sender: UISlider) {
+	func commitUpdateOfPlaybackTime(_ sender: UISlider) {
         //leave the timer invalidated because changing the value will trigger a notification from the music player
         //causing the view to reload and the timer to be reinitialized
         //this is preferred because we dont want the timer to start until after the seeking to the time has completed
@@ -108,7 +108,7 @@ final class PlaybackProgressViewController: UIViewController {
         updateObservers()
 	}
 	
-	func updateLabelsWithSlider(sender: UISlider) {
+	func updateLabelsWithSlider(_ sender: UISlider) {
 		invalidateTimer()
 		let sliderValue = sender.value
 		let remainingPlaybackTime = sender.maximumValue - sliderValue
@@ -116,7 +116,7 @@ final class PlaybackProgressViewController: UIViewController {
 	}
     
     func resetProgressBar() {
-		guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else {
+		guard UIApplication.shared.applicationState == UIApplicationState.active else {
 			invalidateTimer()
 			return
 		}
@@ -130,7 +130,7 @@ final class PlaybackProgressViewController: UIViewController {
 	func resetTimer() {
 		if audioQueuePlayer.musicIsPlaying && playbackProgressTimer == nil {
 			KyoozUtils.doInMainQueue() {
-				self.playbackProgressTimer = NSTimer.scheduledTimerWithTimeInterval(1.0,
+				self.playbackProgressTimer = Timer.scheduledTimer(timeInterval: 1.0,
 					target: self,
 					selector: #selector(self.refreshProgressSlider),
 					userInfo: nil,
@@ -169,29 +169,29 @@ final class PlaybackProgressViewController: UIViewController {
         observers.forEach() { $0.updateProgress(percentComplete) }
     }
     
-	private func updateLabels(currentPlaybackTime currentPlaybackTime:Float, remainingPlaybackTime:Float) {
+	private func updateLabels(currentPlaybackTime:Float, remainingPlaybackTime:Float) {
 		timeRemainingLabel.text = "-\(MediaItemUtils.getTimeRepresentation(remainingPlaybackTime))"
 		timeProgressedLabel.text = MediaItemUtils.getTimeRepresentation(currentPlaybackTime)
 	}
 
     private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
+        let notificationCenter = NotificationCenter.default
+        let application = UIApplication.shared
         notificationCenter.addObserver(self, selector: #selector(self.resetProgressBar),
-                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue, object: audioQueuePlayer)
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue), object: audioQueuePlayer)
         notificationCenter.addObserver(self, selector: #selector(self.resetProgressBar),
-                                       name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue, object: audioQueuePlayer)
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue), object: audioQueuePlayer)
         
         notificationCenter.addObserver(self, selector: #selector(self.invalidateTimer),
-                                       name: UIApplicationDidEnterBackgroundNotification, object: application)
+                                       name: NSNotification.Name.UIApplicationDidEnterBackground, object: application)
         notificationCenter.addObserver(self, selector: #selector(self.invalidateTimer),
-                                       name: UIApplicationWillResignActiveNotification, object: application)
+                                       name: NSNotification.Name.UIApplicationWillResignActive, object: application)
         notificationCenter.addObserver(self, selector: #selector(self.resetProgressBar),
-                                       name: UIApplicationDidBecomeActiveNotification, object: application)
+                                       name: NSNotification.Name.UIApplicationDidBecomeActive, object: application)
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
 }

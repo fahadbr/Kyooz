@@ -40,17 +40,17 @@ class TextViewController: UIViewController {
         
 
         let dismissButton = UIBarButtonItem(title: "DISMISS",
-                                            style: .Done,
+                                            style: .done,
                                             target: self,
-                                            action: #selector(self.dismiss))
+                                            action: #selector(self.dismissVC))
 		
         dismissButton.tintColor = ThemeHelper.defaultTintColor
         toolbarItems = [UIBarButtonItem.flexibleSpace(), dismissButton, UIBarButtonItem.flexibleSpace()]
-        navigationController?.toolbarHidden = false
+        navigationController?.isToolbarHidden = false
     }
     
-    func dismiss() {
-        dismissViewControllerAnimated(true, completion: completionAction)
+    func dismissVC() {
+        self.dismiss(animated: true, completion: completionAction)
     }
 	
 }

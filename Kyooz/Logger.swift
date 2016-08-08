@@ -10,10 +10,10 @@ import Foundation
 
 final class Logger {
     
-    static let loggerQueue = dispatch_queue_create("com.riaz.fahad.Kyooz.Logger", DISPATCH_QUEUE_SERIAL)
+    static let loggerQueue = DispatchQueue(label: "com.riaz.fahad.Kyooz.Logger")
     
-    static let dateFormatter:NSDateFormatter = {
-        let formatter = NSDateFormatter()
+    static let dateFormatter:DateFormatter = {
+        let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd-yy hh:mm:ss:SSS a"
         return formatter
     }()
@@ -22,28 +22,28 @@ final class Logger {
     
     
     private static var threadName:String {
-        var t =  NSOperationQueue.currentQueue()?.name ?? "null"
+        var t =  OperationQueue.current?.name ?? "null"
         t.removeSubstring("NSOperationQueue ")
         return t
     }
     
-    static func debug(@autoclosure messageBlock: ()->String) {
+    static func debug(_ messageBlock: @autoclosure ()->String) {
         guard debugEnabled else { return }
         
-        let date = NSDate()
+        let date = Date()
         let threadId = threadName
         let message = messageBlock()
-        dispatch_async(loggerQueue) {
-            let dateString = dateFormatter.stringFromDate(date)
+        loggerQueue.async {
+            let dateString = dateFormatter.string(from: date)
             print("\(dateString) DEBUG [\(threadId)]:  \(message)")
         }
     }
     
-    static func error(message:String) {
-        let date = NSDate()
+    static func error(_ message:String) {
+        let date = Date()
         let threadId = threadName
-        dispatch_async(loggerQueue) {
-            let dateString = dateFormatter.stringFromDate(date)
+        loggerQueue.async {
+            let dateString = dateFormatter.string(from: date)
             let message = "\(dateString) ERROR [\(threadId)]:  \(message)"
             print(message)
         }

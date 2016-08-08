@@ -10,15 +10,15 @@ import UIKit
 
 final class ShortNotificationViewController : UIViewController, FadeOutViewController {
     
-    private let maxWidth = UIScreen.mainScreen().bounds.width * 0.85
-    private let maxHeight = UIScreen.mainScreen().bounds.height * 0.50
+    private let maxWidth = UIScreen.main.bounds.width * 0.85
+    private let maxHeight = UIScreen.main.bounds.height * 0.50
     
     private let messageLabel:UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textAlignment = .Center
-        label.lineBreakMode = .ByWordWrapping
-        label.font = ThemeHelper.smallFontForStyle(.Medium)
+        label.textAlignment = .center
+        label.lineBreakMode = .byWordWrapping
+        label.font = ThemeHelper.smallFontForStyle(.medium)
         label.textColor = ThemeHelper.defaultFontColor
         return label
     }()
@@ -30,7 +30,7 @@ final class ShortNotificationViewController : UIViewController, FadeOutViewContr
 	var message:String! {
 		didSet {
 			messageLabel.text = message
-            messageLabel.bounds = messageLabel.textRectForBounds(CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight), limitedToNumberOfLines: 0)
+            messageLabel.bounds = messageLabel.textRect(forBounds: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight), limitedToNumberOfLines: 0)
 		}
 	}
     
@@ -42,7 +42,7 @@ final class ShortNotificationViewController : UIViewController, FadeOutViewContr
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.userInteractionEnabled = false
+        view.isUserInteractionEnabled = false
         let containerView = UIView()
         ConstraintUtils.applyStandardConstraintsToView(subView: containerView, parentView: view)
         ConstraintUtils.applyStandardConstraintsToView(subView: messageLabel, parentView: containerView)
@@ -50,13 +50,13 @@ final class ShortNotificationViewController : UIViewController, FadeOutViewContr
         containerView.alpha = 0.9
         containerView.layer.cornerRadius = 10
         
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize.zero
-        view.layer.shadowColor = UIColor.whiteColor().CGColor
+        view.layer.shadowColor = UIColor.white.cgColor
 
 		//fade away after 4 seconds
-		dispatch_after(KyoozUtils.getDispatchTimeForSeconds(3), dispatch_get_main_queue()) { [weak self] in
+		DispatchQueue.main.asyncAfter(deadline: KyoozUtils.getDispatchTimeForSeconds(3)) { [weak self] in
 			self?.transitionOut()
 		}
     }

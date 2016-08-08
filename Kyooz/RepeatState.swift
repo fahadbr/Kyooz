@@ -9,12 +9,12 @@
 import Foundation
 
 enum RepeatState:Int, EnumNameDescriptable {
-    case Off
-    case All
-    case One
+    case off
+    case all
+    case one
     
     var nextState:RepeatState {
-        return RepeatState(rawValue: self.rawValue + 1) ?? .Off
+        return RepeatState(rawValue: self.rawValue + 1) ?? .off
     }
     
 }

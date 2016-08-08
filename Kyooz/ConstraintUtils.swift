@@ -10,8 +10,8 @@ import UIKit
 
 struct ConstraintUtils {
 	
-	static func applyStandardConstraintsToView(subView subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
-		return applyConstraintsToView(withAnchors: [.Top, .Bottom, .Left, .Right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
+	static func applyStandardConstraintsToView(subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
+		return applyConstraintsToView(withAnchors: [.top, .bottom, .left, .right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
 	}
     
     static func applyConstraintsToView(withAnchors anchors:[Anchor], subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
@@ -24,30 +24,30 @@ struct ConstraintUtils {
         return constraintDict
     }
 	
-	static func activeConstraintForAnchor(anchor:Anchor, subView:UIView, parentView:UIView) -> NSLayoutConstraint {
+	static func activeConstraintForAnchor(_ anchor:Anchor, subView:UIView, parentView:UIView) -> NSLayoutConstraint {
 		let constraint = constraintForAnchor(anchor, subView: subView, parentView: parentView)
-		constraint.active = true
+		constraint.isActive = true
 		return constraint
 	}
 	
-	static func constraintForAnchor(anchor:Anchor, subView:UIView, parentView:UIView) -> NSLayoutConstraint {
+	static func constraintForAnchor(_ anchor:Anchor, subView:UIView, parentView:UIView) -> NSLayoutConstraint {
 		switch anchor {
-		case .Top:
-			return subView.topAnchor.constraintEqualToAnchor(parentView.topAnchor)
-		case .Bottom:
-			return subView.bottomAnchor.constraintEqualToAnchor(parentView.bottomAnchor)
-		case .Left:
-			return subView.leftAnchor.constraintEqualToAnchor(parentView.leftAnchor)
-		case .Right:
-			return subView.rightAnchor.constraintEqualToAnchor(parentView.rightAnchor)
-        case .CenterX:
-            return subView.centerXAnchor.constraintEqualToAnchor(parentView.centerXAnchor)
-        case .CenterY:
-            return subView.centerYAnchor.constraintEqualToAnchor(parentView.centerYAnchor)
-		case .Height:
-			return subView.heightAnchor.constraintEqualToAnchor(parentView.heightAnchor)
-		case .Width:
-			return subView.widthAnchor.constraintEqualToAnchor(parentView.widthAnchor)
+		case .top:
+			return subView.topAnchor.constraint(equalTo: parentView.topAnchor)
+		case .bottom:
+			return subView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
+		case .left:
+			return subView.leftAnchor.constraint(equalTo: parentView.leftAnchor)
+		case .right:
+			return subView.rightAnchor.constraint(equalTo: parentView.rightAnchor)
+        case .centerX:
+            return subView.centerXAnchor.constraint(equalTo: parentView.centerXAnchor)
+        case .centerY:
+            return subView.centerYAnchor.constraint(equalTo: parentView.centerYAnchor)
+		case .height:
+			return subView.heightAnchor.constraint(equalTo: parentView.heightAnchor)
+		case .width:
+			return subView.widthAnchor.constraint(equalTo: parentView.widthAnchor)
 		}
 		
 	}

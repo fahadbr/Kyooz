@@ -25,7 +25,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                     RootViewController.instance.presentWarningView(outOfSyncMessage, handler: { () -> () in
                         let vc = UIStoryboard.systemQueueResyncWorkflowController()
                         vc.completionBlock = self.resyncWithSystemQueueUsingIndex
-                        ContainerViewController.instance.presentViewController(vc, animated: true, completion: nil)
+                        ContainerViewController.instance.present(vc, animated: true, completion: nil)
                     })
                 }
             } else {
@@ -46,7 +46,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private let lowestIndexPersistedKey = "lowestIndexPersistedKey"
     private var lowestIndexPersisted:Int = 0 {
         didSet {
-            TempDataDAO.instance.addPersistentValue(key: lowestIndexPersistedKey, value: NSNumber(integer: lowestIndexPersisted))
+            TempDataDAO.instance.addPersistentValue(key: lowestIndexPersistedKey, value: NSNumber(value: lowestIndexPersisted))
         }
     }
     
@@ -60,7 +60,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
         
         if let indexBeforeMod = TempDataDAO.instance.getPersistentValue(key: lowestIndexPersistedKey) as? NSNumber {
-            lowestIndexPersisted = indexBeforeMod.longValue
+            lowestIndexPersisted = indexBeforeMod.intValue
         }
         
         super.init()
@@ -73,7 +73,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
     
     //MARK: AudioQueuePlayer - Properties
-    let type = AudioQueuePlayerType.AppleDRM
+    let type = AudioQueuePlayerType.appleDRM
     
 	var playbackStateSnapshot:PlaybackStateSnapshot {
 		get {
@@ -113,7 +113,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 if newValue == 0.0 {
                     musicPlayer.skipToBeginning()
                 } else {
-                    musicPlayer.currentPlaybackTime = NSTimeInterval(newValue)
+                    musicPlayer.currentPlaybackTime = TimeInterval(newValue)
                 }
                 publishNotification(for: .playbackStateUpdate)
             }
@@ -141,27 +141,27 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     var repeatMode:RepeatState {
         get {
             if nowPlayingItem == nil {
-                return .Off
+                return .off
             }
             
             switch(musicPlayer.repeatMode) {
-            case .None:
-                return .Off
-            case .All, .Default:
-                return .All
-            case .One:
-                return .One
+            case .none:
+                return .off
+            case .all, .default:
+                return .all
+            case .one:
+                return .one
             }
         }
         set {
             switch(newValue) {
-            case .Off:
-                musicPlayer.repeatMode = .None
+            case .off:
+                musicPlayer.repeatMode = .none
                 persistToSystemQueue(nowPlayingQueueContext)
-            case .One:
-                musicPlayer.repeatMode = .One
-            case .All:
-                musicPlayer.repeatMode = .All
+            case .one:
+                musicPlayer.repeatMode = .one
+            case .all:
+                musicPlayer.repeatMode = .all
                 persistToSystemQueue(nowPlayingQueueContext)
             }
             publishNotification(for: .systematicQueueUpdate)
@@ -187,7 +187,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         playbackStateManager.correctPlaybackState()
     }
     
-    func skipBackwards(forcePreviousTrack: Bool) {
+    func skipBackwards(_ forcePreviousTrack: Bool) {
         if(currentPlaybackTime > 2.0 && !forcePreviousTrack) {
             currentPlaybackTime = 0.0
         } else if lowestIndexPersisted > 0  && !queueStateInconsistent {
@@ -274,13 +274,13 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     //MARK: - Class functions
     
-	private func playNowInternal(mediaItems:[MPMediaItem], index:Int, shouldPlay:Bool = true) {
+	private func playNowInternal(_ mediaItems:[MPMediaItem], index:Int, shouldPlay:Bool = true) {
         guard index >= 0 else {
             resetQueueStateToBeginning()
             return
         }
         
-        musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: mediaItems))
+        musicPlayer.setQueue(with: MPMediaItemCollection(items: mediaItems))
         musicPlayer.nowPlayingItem = mediaItems[index]
 		if shouldPlay {
 			musicPlayer.play()
@@ -292,7 +292,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         refreshIndexOfNowPlayingItem()
     }
     
-    private func persistToSystemQueue(oldContext:NowPlayingQueueContext) {
+    private func persistToSystemQueue(_ oldContext:NowPlayingQueueContext) {
         if queueStateInconsistent {
             queueStateInconsistent = true //doing this to retrigger the warning view if its not currently showing
             Logger.debug("queue state is inconsistent. will not persist changes")
@@ -306,7 +306,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         
         lowestIndexPersisted = indexOfNowPlayingItem
         var truncatedQueue = [MPMediaItem]()
-        let repeatAllEnabled = repeatMode == .All
+        let repeatAllEnabled = repeatMode == .all
         truncatedQueue.reserveCapacity(repeatAllEnabled ? queue.count : queue.count - indexOfNowPlayingItem)
         for i in indexOfNowPlayingItem..<queue.count {
             truncatedQueue.append(queue[i])
@@ -318,7 +318,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             }
         }
         
-        musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: truncatedQueue))
+        musicPlayer.setQueue(with: MPMediaItemCollection(items: truncatedQueue))
         let item = musicPlayer.nowPlayingItem //only doing this because compiler wont allow assigning an object to itself directly
         musicPlayer.nowPlayingItem = item //need to invoke the setter so that the queue changes take place
 		
@@ -338,7 +338,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         nowPlayingQueueContext.indexOfNowPlayingItem = 0
         lowestIndexPersisted = 0
         queueStateInconsistent = false
-        musicPlayer.setQueueWithItemCollection(MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
+        musicPlayer.setQueue(with: MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
         musicPlayer.nowPlayingItem = nowPlayingQueue[indexOfNowPlayingItem] as? MPMediaItem
         playbackStateManager.correctPlaybackState()
 
@@ -386,65 +386,65 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     //MARK: - Notification handling functions
     
-    func handleNowPlayingItemChanged(notification:NSNotification) {
+    func handleNowPlayingItemChanged(_ notification:Notification) {
         refreshIndexOfNowPlayingItem()
         publishNotification(for: .nowPlayingItemChanged)
     }
     
-    func handlePlaybackStateChanged(notification:NSNotification) {
+    func handlePlaybackStateChanged(_ notification:Notification) {
         publishNotification(for: .playbackStateUpdate)
     }
     
-    func handleApplicationDidResignActive(notification:NSNotification) {
+    func handleApplicationDidResignActive(_ notification:Notification) {
         
     }
     
-    func handleApplicationDidBecomeActive(notification:NSNotification) {
+    func handleApplicationDidBecomeActive(_ notification:Notification) {
         playbackStateManager.correctPlaybackState()
         refreshIndexOfNowPlayingItem()
-        if musicPlayer.shuffleMode != .Off && nowPlayingItem != nil {
-            let ac = UIAlertController(title: "Do you want to turn on Shuffle in Kyooz?", message: "Kyooz has noticed that you turned on shuffle mode in the system music player.  Would you like to use the shuffle mode in Kyooz instead?  Using the shuffle mode in Kyooz allows you to queue up items within the app however you like", preferredStyle: .Alert)
-            let turnOnShuffleAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-                self.musicPlayer.shuffleMode = .Off
+        if musicPlayer.shuffleMode != .off && nowPlayingItem != nil {
+            let ac = UIAlertController(title: "Do you want to turn on Shuffle in Kyooz?", message: "Kyooz has noticed that you turned on shuffle mode in the system music player.  Would you like to use the shuffle mode in Kyooz instead?  Using the shuffle mode in Kyooz allows you to queue up items within the app however you like", preferredStyle: .alert)
+            let turnOnShuffleAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { (action) -> Void in
+                self.musicPlayer.shuffleMode = .off
                 self.shuffleActive = true
             })
             ac.addAction(turnOnShuffleAction)
             ac.preferredAction = turnOnShuffleAction
-            ac.addAction(UIAlertAction(title: "No", style: .Cancel, handler: nil))
-            ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+            ac.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+            ContainerViewController.instance.present(ac, animated: true, completion: nil)
         }
     }
     
-    func handleApplicationWillTerminate(notification:NSNotification) {
+    func handleApplicationWillTerminate(_ notification:Notification) {
         
     }
     
     private func registerForMediaPlayerNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleNowPlayingItemChanged(_:)),
-            name:MPMusicPlayerControllerNowPlayingItemDidChangeNotification,
+            name:NSNotification.Name.MPMusicPlayerControllerNowPlayingItemDidChange,
             object: musicPlayer)
         notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handlePlaybackStateChanged(_:)),
-            name:MPMusicPlayerControllerPlaybackStateDidChangeNotification,
+            name:NSNotification.Name.MPMusicPlayerControllerPlaybackStateDidChange,
             object: musicPlayer)
         notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handlePlaybackStateChanged(_:)),
-            name:PlaybackStateManager.PlaybackStateCorrectedNotification,
+            name:NSNotification.Name(rawValue: PlaybackStateManager.PlaybackStateCorrectedNotification),
             object: playbackStateManager)
         
         musicPlayer.beginGeneratingPlaybackNotifications()
         
-        let application = UIApplication.sharedApplication()
+        let application = UIApplication.shared
         notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleApplicationDidResignActive(_:)),
-            name: UIApplicationWillResignActiveNotification, object: application)
+            name: NSNotification.Name.UIApplicationWillResignActive, object: application)
         notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleApplicationDidBecomeActive(_:)),
-            name: UIApplicationDidBecomeActiveNotification, object: application)
+            name: NSNotification.Name.UIApplicationDidBecomeActive, object: application)
         notificationCenter.addObserver(self, selector: #selector(DRMAudioQueuePlayer.handleApplicationWillTerminate(_:)),
-            name: UIApplicationWillTerminateNotification, object: application)
+            name: NSNotification.Name.UIApplicationWillTerminate, object: application)
         
     }
     
     private func unregisterForMediaPlayerNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.removeObserver(self)
     }
     

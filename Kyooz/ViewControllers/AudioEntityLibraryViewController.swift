@@ -12,10 +12,10 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     
     static let navigationMenuButton:UIButton = {
         $0.showBullets = false
-        $0.pathTransform = CGAffineTransformMakeTranslation(10, 0)
+        $0.pathTransform = CGAffineTransform(translationX: 10, y: 0)
         $0.color = ThemeHelper.defaultFontColor
         $0.alignRight = true
-        $0.addTarget(ContainerViewController.instance, action: #selector(ContainerViewController.presentKyoozNavigationController), forControlEvents: .TouchUpInside)
+        $0.addTarget(ContainerViewController.instance, action: #selector(ContainerViewController.presentKyoozNavigationController), for: .touchUpInside)
         return $0
     }(ListButtonView(frame: CGRect(x: 0, y: 0, width: 40, height: 40)))
     
@@ -54,7 +54,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.dynamicType.navigationMenuButton)
         
-		tableView.registerNib(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
+		tableView.register(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
         
         KyoozUtils.doInMainQueueAsync() {
             self.applyDataSourceAndDelegate()
@@ -71,11 +71,11 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		updateFooterView()
 	}
 	
-    override func addCustomMenuActions(indexPath: NSIndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
+    override func addCustomMenuActions(_ indexPath: IndexPath, tracks:[AudioTrack], menuBuilder:MenuBuilder) {
 		if sourceData is MutableAudioEntitySourceData || (LibraryGrouping.Playlists == sourceData.libraryGrouping && sourceData[indexPath] is KyoozPlaylist) {
-			menuBuilder.with(options: KyoozMenuAction(title: "DELETE"){[sourceData = self.sourceData] in
+			_ = menuBuilder.with(options: KyoozMenuAction(title: "DELETE"){[sourceData = self.sourceData] in
 				KyoozUtils.confirmAction("Are you sure you want to delete \(sourceData[indexPath].titleForGrouping(sourceData.libraryGrouping) ?? "this item")?") {
-					self.datasourceDelegate?.tableView?(self.tableView, commitEditingStyle: .Delete, forRowAtIndexPath: indexPath)
+					self.datasourceDelegate?.tableView?(self.tableView, commit: .delete, forRowAt: indexPath)
 				}
 			})
 		}
@@ -93,18 +93,18 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
     }
 	
 	
-	func groupingTypeDidChange(selectedGroup:LibraryGrouping) {
+	func groupingTypeDidChange(_ selectedGroup:LibraryGrouping) {
 		guard !subGroups.isEmpty else { return }
 		
 		if isBaseLevel {
-            NSUserDefaults.standardUserDefaults().setInteger(subGroups.indexOf(selectedGroup) ?? 0, forKey: UserDefaultKeys.AllMusicBaseGroup)
+            UserDefaults.standard.set(subGroups.index(of: selectedGroup) ?? 0, forKey: UserDefaultKeys.AllMusicBaseGroup)
 		}
 		
 		if let groupMutableSourceData = sourceData as? GroupMutableAudioEntitySourceData {
 			groupMutableSourceData.libraryGrouping = selectedGroup
 		}
         
-        if tableView.editing {
+        if tableView.isEditing {
             toggleSelectMode()
         }
         
@@ -134,14 +134,14 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		default:
 			datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
 		}
-        tableView.layer.addAnimation(self.dynamicType.fadeInAnimation, forKey: nil)
+        tableView.layer.add(self.dynamicType.fadeInAnimation, forKey: nil)
 	}
     
     override func registerForNotifications() {
         super.registerForNotifications()
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
                                                          selector: #selector(self.reloadAllData),
-                                                         name: KyoozPlaylistManager.PlaylistSetUpdate,
+                                                         name: NSNotification.Name(rawValue: KyoozPlaylistManager.PlaylistSetUpdate),
                                                          object: KyoozPlaylistManager.instance)
     }
 	

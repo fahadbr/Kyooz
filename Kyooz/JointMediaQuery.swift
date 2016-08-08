@@ -16,10 +16,10 @@ final class JointMediaQuery : MPMediaQuery {
     override var items: [MPMediaItem]? {
         var returnItems = [MPMediaItem]()
         if let items1 = query1.items {
-            returnItems.appendContentsOf(items1)
+            returnItems.append(contentsOf: items1)
         }
         if let items2 = query2.items {
-            returnItems.appendContentsOf(items2)
+            returnItems.append(contentsOf: items2)
         }
         return returnItems
     }
@@ -27,10 +27,10 @@ final class JointMediaQuery : MPMediaQuery {
     override var collections: [MPMediaItemCollection]? {
         var returnCollections = [MPMediaItemCollection]()
         if let collections1 = query1.collections {
-            returnCollections.appendContentsOf(collections1)
+            returnCollections.append(contentsOf: collections1)
         }
         if let collections2 = query2.collections {
-            returnCollections.appendContentsOf(collections2)
+            returnCollections.append(contentsOf: collections2)
         }
         return returnCollections
     }

@@ -13,7 +13,7 @@ final class MediaCollectionTableViewCell: MediaLibraryTableViewCell {
 
     static let reuseIdentifier = "mediaEntityCellIdentifier"
     
-    override func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    override func configureCellForItems(_ entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         
         titleLabel.text =  entity.titleForGrouping(libraryGrouping)
         if let mediaItem = entity as? AudioTrack {

@@ -40,7 +40,7 @@ struct NowPlayingQueueContext {
         self.type = type
     }
     
-    mutating func setShuffleActive(shuffleActive:Bool) {
+    mutating func setShuffleActive(_ shuffleActive:Bool) {
         if shuffleActive {
             shuffleQueue()
         } else {
@@ -49,7 +49,7 @@ struct NowPlayingQueueContext {
         self.shuffleActive = shuffleActive
     }
     
-    mutating func overrideShuffleQueue(overrideQueue:[AudioTrack]) {
+    mutating func overrideShuffleQueue(_ overrideQueue:[AudioTrack]) {
         shuffledQueue = overrideQueue
         shuffleActive = true
     }
@@ -58,38 +58,36 @@ struct NowPlayingQueueContext {
         let index = currentQueue.isEmpty ? 0 : indexOfNowPlayingItem + 1
         switch(position) {
         case .next:
-            currentQueue.insertContentsOf(itemsToEnqueue, at: index)
+            currentQueue.insert(contentsOf: itemsToEnqueue, at: index)
         case .last:
-            currentQueue.appendContentsOf(itemsToEnqueue)
+            currentQueue.append(contentsOf: itemsToEnqueue)
         case .random:
             var queue = self.currentQueue
             itemsToEnqueue.forEach() {
-                queue.insert($0, atIndex: KyoozUtils.randomNumberInRange(index..<queue.count))
+                queue.insert($0, at: KyoozUtils.randomNumberInRange(index..<queue.count))
             }
             self.currentQueue = queue
             
             if shuffleActive {
-                KyoozUtils.doInMainQueueAsync() {
-                    self.originalQueue.appendContentsOf(itemsToEnqueue)
-                }
+                originalQueue.append(contentsOf: itemsToEnqueue)
             }
         }
     }
     
-    mutating func insertItemsAtIndex(itemsToInsert:[AudioTrack], index:Int) {
+    mutating func insertItemsAtIndex(_ itemsToInsert:[AudioTrack], index:Int) {
         if(index <= indexOfNowPlayingItem) {
             indexOfNowPlayingItem += itemsToInsert.count
         }
-        currentQueue.insertContentsOf(itemsToInsert, at: index)
+        currentQueue.insert(contentsOf: itemsToInsert, at: index)
     }
     
-    mutating func deleteItemsAtIndices(indiciesToRemove:[Int]) -> Bool {
+    mutating func deleteItemsAtIndices(_ indiciesToRemove:[Int]) -> Bool {
         var currentQueue = self.currentQueue
-        let indicies = indiciesToRemove.sort(>)
+        let indicies = indiciesToRemove.sorted(by: >)
 
         var nowPlayingItemRemoved = false
         for index in indicies {
-            currentQueue.removeAtIndex(index)
+            currentQueue.remove(at: index)
             if(index < indexOfNowPlayingItem) {
                 indexOfNowPlayingItem -= 1
             } else if (index == indexOfNowPlayingItem) {
@@ -103,10 +101,10 @@ struct NowPlayingQueueContext {
         return nowPlayingItemRemoved
     }
     
-    mutating func moveMediaItem(fromIndexPath fromIndexPath:Int, toIndexPath:Int) {
+    mutating func moveMediaItem(fromIndexPath:Int, toIndexPath:Int) {
         var currentQueue = self.currentQueue
-        let tempMediaItem = currentQueue.removeAtIndex(fromIndexPath)
-        currentQueue.insert(tempMediaItem, atIndex: toIndexPath)
+        let tempMediaItem = currentQueue.remove(at: fromIndexPath)
+        currentQueue.insert(tempMediaItem, at: toIndexPath)
         
         if fromIndexPath == indexOfNowPlayingItem {
             indexOfNowPlayingItem = toIndexPath
@@ -124,7 +122,7 @@ struct NowPlayingQueueContext {
         switch(direction) {
         case .above:
             let oldCount = currentQueue.count
-            currentQueue.removeRange(0..<index)
+            currentQueue.removeSubrange(0..<index)
             let newCount = currentQueue.count
             if index > indexOfNowPlayingItem {
                 indexOfNowPlayingItem = 0
@@ -133,7 +131,7 @@ struct NowPlayingQueueContext {
                 indexOfNowPlayingItem -= (oldCount - newCount)
             }
         case .below:
-            currentQueue.removeRange((index + 1)..<currentQueue.count)
+            currentQueue.removeSubrange((index + 1)..<currentQueue.count)
             if index < indexOfNowPlayingItem {
                 indexOfNowPlayingItem = 0
                 nowPlayingItemRemoved = true
@@ -156,16 +154,16 @@ struct NowPlayingQueueContext {
         var tempOriginalQueue = originalQueue
         
         //by doing this we are ensuring that the currently playing item is always on top
-        shuffledQueue = [tempOriginalQueue.removeAtIndex(indexOfNowPlayingItem)]
+        shuffledQueue = [tempOriginalQueue.remove(at: indexOfNowPlayingItem)]
         var tempShuffledQueue = tempOriginalQueue
-        for (index, item) in tempOriginalQueue.enumerate() {
+        for (index, item) in tempOriginalQueue.enumerated() {
             let randomIndex = KyoozUtils.randomNumber(belowValue: index)
             if randomIndex != index {
                 tempShuffledQueue[index] = tempShuffledQueue[randomIndex]
             }
             tempShuffledQueue[randomIndex] = item
         }
-        shuffledQueue.appendContentsOf(tempShuffledQueue)
+        shuffledQueue.append(contentsOf: tempShuffledQueue)
         indexOfNowPlayingItem = 0
     }
     
@@ -176,14 +174,14 @@ struct NowPlayingQueueContext {
         
         let shufSet = NSMutableSet(array: shuffledQueue)
         let origSet = NSSet(array: originalQueue)
-        shufSet.minusSet(origSet as Set<NSObject>)
+        shufSet.minus(origSet as Set<NSObject>)
         if let objs = shufSet.allObjects as? [AudioTrack] {
-            originalQueue.appendContentsOf(objs)
+            originalQueue.append(contentsOf: objs)
         }
 
         
         let item = shuffledQueue[indexOfNowPlayingItem]
-        if let index = originalQueue.indexOf({ return item.id == $0.id }) {
+        if let index = originalQueue.index(where: { return item.id == $0.id }) {
             indexOfNowPlayingItem = index
         }
     }
@@ -198,7 +196,7 @@ final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
     
     private typealias This = NowPlayingQueuePersistableContext
     
-    static func supportsSecureCoding() -> Bool {
+    static var supportsSecureCoding: Bool {
         return true
     }
     
@@ -209,17 +207,17 @@ final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        let type = AudioQueuePlayerType(rawValue: aDecoder.decodeIntegerForKey(This.typeKey)) ?? .Default
-        guard let originalQueue = aDecoder.decodeObjectOfClass(NSArray.self, forKey: This.originalQueueKey) as? [AudioTrack] else {
+        let type = AudioQueuePlayerType(rawValue: aDecoder.decodeInteger(forKey: This.typeKey)) ?? .default
+        guard let originalQueue = aDecoder.decodeObject(of: NSArray.self, forKey: This.originalQueueKey) as? [AudioTrack] else {
             self.context = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type)
             return
         }
         var context = NowPlayingQueueContext(originalQueue: originalQueue, forType: type)
         
-        let shuffleActive = aDecoder.decodeBoolForKey(This.shuffleActiveKey)
+        let shuffleActive = aDecoder.decodeBool(forKey: This.shuffleActiveKey)
         
         if shuffleActive {
-            if let shuffledQueue = aDecoder.decodeObjectOfClass(NSArray.self, forKey: This.shuffledQueueKey) as? [AudioTrack] {
+            if let shuffledQueue = aDecoder.decodeObject(of: NSArray.self, forKey: This.shuffledQueueKey) as? [AudioTrack] {
                 context.shuffledQueue = shuffledQueue
                 context.shuffleActive = shuffleActive
             }
@@ -228,13 +226,13 @@ final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
         self.context = context
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(context.originalQueue as NSArray, forKey: This.originalQueueKey)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(context.originalQueue as NSArray, forKey: This.originalQueueKey)
         if context.shuffleActive {
-            aCoder.encodeBool(context.shuffleActive, forKey: This.shuffleActiveKey)
-            aCoder.encodeObject(context.shuffledQueue as NSArray, forKey: This.shuffledQueueKey)
+            aCoder.encode(context.shuffleActive, forKey: This.shuffleActiveKey)
+            aCoder.encode(context.shuffledQueue as NSArray, forKey: This.shuffledQueueKey)
         }
-        aCoder.encodeInteger(context.type.rawValue, forKey: This.typeKey)
+        aCoder.encode(context.type.rawValue, forKey: This.typeKey)
     }
 }
 

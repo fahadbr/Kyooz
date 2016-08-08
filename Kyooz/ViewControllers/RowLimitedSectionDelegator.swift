@@ -35,12 +35,12 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 		super.init(datasources: datasourceDelegates)
 	}
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return dsdSections.count
     }
 	
-	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		guard let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(RowLimitedSectionHeaderView.reuseIdentifier) as? RowLimitedSectionHeaderView else {
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RowLimitedSectionHeaderView.reuseIdentifier) as? RowLimitedSectionHeaderView else {
 			return nil
 		}
 		
@@ -49,8 +49,8 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 		if dsdSections.count > 1 || (expandedSection != nil && otherSectionsHaveData){
 			let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTapHeaderView(_:)))
 			headerView.addGestureRecognizer(tapGestureRecognizer)
-			headerView.disclosureView.hidden = false
-            headerView.userInteractionEnabled = true
+			headerView.disclosureView.isHidden = false
+            headerView.isUserInteractionEnabled = true
             if tapGestureRecognizers.count - 1 < section {
                 tapGestureRecognizers.append(tapGestureRecognizer)
             } else {
@@ -58,18 +58,18 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
             }
             
 		} else {
-			headerView.disclosureView.hidden = true
-            headerView.userInteractionEnabled = false
+			headerView.disclosureView.isHidden = true
+            headerView.isUserInteractionEnabled = false
 		}
         
         if let sourceData = datasourceDelegate.sourceData as? SearchResultsSourceData
             where sourceData.searchExecutionController.searchInProgress {
             
-            if !headerView.activityIndicator.isAnimating() {
+            if !headerView.activityIndicator.isAnimating {
                 headerView.activityIndicator.startAnimating()
             }
         } else {
-            if headerView.activityIndicator.isAnimating() {
+            if headerView.activityIndicator.isAnimating {
                 headerView.activityIndicator.stopAnimating()
             }
         }
@@ -100,7 +100,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 	}
     
     
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         delegate?.willExpandOrCollapseSection()
     }
     
@@ -109,19 +109,19 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
     }
 	
 	//MARK: tap gesture handler
-	func didTapHeaderView(sender:UITapGestureRecognizer) {
+	func didTapHeaderView(_ sender:UITapGestureRecognizer) {
 		delegate?.willExpandOrCollapseSection()
 		
 		if let expandedSection = self.expandedSection {
 			collapseSection(sender, dsdToCollapse: expandedSection)
-		} else if let selectedSection = tapGestureRecognizers.indexOf(sender) {
+		} else if let selectedSection = tapGestureRecognizers.index(of: sender) {
 			expandSection(sender, dsdToExpand: dsdSections[selectedSection])
 		}
         
         delegate?.didExpandOrCollapseSection()
 	}
     
-    private func collapseSection(sender:UITapGestureRecognizer, dsdToCollapse:AudioEntityDSDProtocol) {
+    private func collapseSection(_ sender:UITapGestureRecognizer, dsdToCollapse:AudioEntityDSDProtocol) {
         (sender.view as? RowLimitedSectionHeaderView)?.setExpanded(expanded: false, animated: true)
         expandedSection = nil
         
@@ -135,61 +135,61 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
             if sourceDataCount > 300 {
                 reloadAllSections = true
             } else {
-                var indexPaths = [NSIndexPath]()
+                var indexPaths = [IndexPath]()
                 indexPaths.reserveCapacity(sourceDataCount - maxRows)
                 for i in maxRows..<sourceDataCount {
-                    indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+                    indexPaths.append(IndexPath(row: i, section: 0))
                 }
                 
-                tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+                tableView.deleteRows(at: indexPaths, with: .automatic)
             }
         }
         
         reloadSections()
         
         let indexSet = NSMutableIndexSet()
-        for (i, dsd) in dsdSections.enumerate() {
+        for (i, dsd) in dsdSections.enumerated() {
             if dsd !== dsdToCollapse || reloadAllSections {
-                indexSet.addIndex(i)
+                indexSet.add(i)
             }
         }
         
 
         if indexSet.count >= self.dsdSections.count {
-            tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+            tableView.deleteSections(IndexSet(integer: 0), with: .automatic)
         }
-        tableView.insertSections(indexSet, withRowAnimation: .Automatic)
+        tableView.insertSections(indexSet as IndexSet, with: .automatic)
         tableView.endUpdates()
     }
 	
-    private func expandSection(sender:UITapGestureRecognizer, dsdToExpand:AudioEntityDSDProtocol) {
+    private func expandSection(_ sender:UITapGestureRecognizer, dsdToExpand:AudioEntityDSDProtocol) {
         (sender.view as? RowLimitedSectionHeaderView)?.setExpanded(expanded: true, animated: true)
         tableView.setContentOffset(CGPoint(x: tableView.contentOffset.x, y: 0 - tableView.contentInset.top), animated: true)
         tableView.beginUpdates()
         
         let indexSet = NSMutableIndexSet()
         
-        for (i, dsd) in dsdSections.enumerate() {
+        for (i, dsd) in dsdSections.enumerated() {
             if dsdToExpand !== dsd {
-                indexSet.addIndex(i)
+                indexSet.add(i)
             }
         }
         expandedSection = dsdToExpand
         reloadSections()
     
-        tableView.deleteSections(indexSet, withRowAnimation: .Automatic)
+        tableView.deleteSections(indexSet as IndexSet, with: .automatic)
         
         dsdToExpand.rowLimitActive = false
         let maxRows = dsdToExpand.rowLimit
         
         let sourceDataCount = dsdToExpand.sourceData.entities.count
         if maxRows < sourceDataCount {
-            var indexPaths = [NSIndexPath]()
+            var indexPaths = [IndexPath]()
             indexPaths.reserveCapacity(sourceDataCount - maxRows)
             for i in maxRows..<sourceDataCount {
-                indexPaths.append(NSIndexPath(forRow: i, inSection: 0))
+                indexPaths.append(IndexPath(row: i, section: 0))
             }
-            tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+            tableView.insertRows(at: indexPaths, with: .automatic)
         }
         
         tableView.endUpdates()

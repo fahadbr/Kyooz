@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable
 final class SkipTrackButtonView: UIButton {
 
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
@@ -39,12 +39,12 @@ final class SkipTrackButtonView: UIButton {
     
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
             colorToUse = color
@@ -66,18 +66,18 @@ final class SkipTrackButtonView: UIButton {
         
         
         let path = UIBezierPath()
-        path.appendPath(CGUtils.drawTriangleWithCurvedEdges(rightRect, isPointingRight: isForwardButton))
-        path.appendPath(CGUtils.drawTriangleWithCurvedEdges(leftRect, isPointingRight: isForwardButton))
+        path.append(CGUtils.drawTriangleWithCurvedEdges(rightRect, isPointingRight: isForwardButton))
+        path.append(CGUtils.drawTriangleWithCurvedEdges(leftRect, isPointingRight: isForwardButton))
         
         let centerOffset = rect.midX - path.bounds.midX
-        path.applyTransform(CGAffineTransformMakeTranslation(centerOffset, 0))
+        path.apply(CGAffineTransform(translationX: centerOffset, y: 0))
         
         let strokePath = UIBezierPath()
-        strokePath.lineCapStyle = CGLineCap.Round
+        strokePath.lineCapStyle = CGLineCap.round
         strokePath.lineWidth = sideLength * 0.10
         let strokeEndX = isForwardButton ? path.bounds.maxX : path.bounds.minX
-        strokePath.moveToPoint(CGPoint(x: strokeEndX, y: path.bounds.minY))
-        strokePath.addLineToPoint(CGPoint(x: strokeEndX, y: path.bounds.maxY))
+        strokePath.move(to: CGPoint(x: strokeEndX, y: path.bounds.minY))
+        strokePath.addLine(to: CGPoint(x: strokeEndX, y: path.bounds.maxY))
         
             
         strokePath.stroke()

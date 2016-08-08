@@ -28,7 +28,7 @@ protocol AudioQueuePlayer:class {
     
     func pause()
     
-    func skipBackwards(forcePreviousTrack:Bool)
+    func skipBackwards(_ forcePreviousTrack:Bool)
     
     func skipForwards()
     
@@ -53,21 +53,21 @@ protocol AudioQueuePlayer:class {
 extension AudioQueuePlayer {
     func publishNotification(for updateType:AudioQueuePlayerUpdate) {
         KyoozUtils.doInMainQueueAsync() {
-            let notification = NSNotification(name: updateType.rawValue, object: self)
-            NSNotificationCenter.defaultCenter().postNotification(notification)
+            let notification = Notification(name: Notification.Name(rawValue: updateType.rawValue), object: self)
+            NotificationCenter.default.post(notification)
         }
     }
     
     func presentNotificationsIfNecessary() {
-        if repeatMode == .One {
-            let ac = UIAlertController(title: "Turn off Repeat One Mode?", message: "The tracks you just queued won't play until Repeat One Mode is turned off", preferredStyle: .Alert)
-            let yesAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: {_ -> Void in
-                self.repeatMode = .Off
+        if repeatMode == .one {
+            let ac = UIAlertController(title: "Turn off Repeat One Mode?", message: "The tracks you just queued won't play until Repeat One Mode is turned off", preferredStyle: .alert)
+            let yesAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: {_ -> Void in
+                self.repeatMode = .off
             })
             ac.addAction(yesAction)
             ac.preferredAction = yesAction
-            ac.addAction(UIAlertAction(title: "No", style: .Cancel, handler: nil))
-            ContainerViewController.instance.presentViewController(ac, animated: true, completion: nil)
+            ac.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+            ContainerViewController.instance.present(ac, animated: true, completion: nil)
             return
         }
     }
@@ -75,7 +75,7 @@ extension AudioQueuePlayer {
 
 protocol AudioQueuePlayerDelegate {
     
-	func audioQueuePlayerDidChangeContext(audioQueuePlayer: AudioQueuePlayer, previousSnapshot:PlaybackStateSnapshot)
+	func audioQueuePlayerDidChangeContext(_ audioQueuePlayer: AudioQueuePlayer, previousSnapshot:PlaybackStateSnapshot)
     
     func audioQueuePlayerDidEnqueueItems(tracks tracksToEnqueue:[AudioTrack], at enqueueAction:EnqueueAction)
     

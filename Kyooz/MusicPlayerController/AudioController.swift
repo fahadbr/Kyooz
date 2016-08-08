@@ -19,17 +19,17 @@ protocol AudioController : class {
     
     func pause() -> Bool
     
-    func loadItem(url:NSURL) throws
+    func loadItem(_ url:URL) throws
 
 }
 
 protocol AudioControllerDelegate {
     
-    func audioPlayerDidFinishPlaying(player:AudioController, successfully flag:Bool)
+    func audioPlayerDidFinishPlaying(_ player:AudioController, successfully flag:Bool)
     
-    func audioPlayerDidRequestNextItemToBuffer(player:AudioController) -> NSURL?
+    func audioPlayerDidRequestNextItemToBuffer(_ player:AudioController) -> URL?
     
-    func audioPlayerDidAdvanceToNextItem(player:AudioController)
+    func audioPlayerDidAdvanceToNextItem(_ player:AudioController)
     
 }
 

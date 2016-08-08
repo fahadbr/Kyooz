@@ -11,10 +11,10 @@ import MediaPlayer
 
 class TempDataDAO : NSObject {
     //MARK: STATIC PROPERTIES
-    static let tempDirectory = NSURL(fileURLWithPath: NSTemporaryDirectory())
-    private static let playbackStateSnapshotFileName = tempDirectory.URLByAppendingPathComponent("playbackStateSnapshot.archive").path!
-    private static let lastFmScrobbleCacheFileName = tempDirectory.URLByAppendingPathComponent("lastFmScrobbleCache.txt").path!
-    private static let miscValuesFileName = tempDirectory.URLByAppendingPathComponent("miscValues.txt").path!
+    static let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
+    private static let playbackStateSnapshotFileName = tempDirectory.appendingPathComponent("playbackStateSnapshot.archive").path
+    private static let lastFmScrobbleCacheFileName = tempDirectory.appendingPathComponent("lastFmScrobbleCache.txt").path
+    private static let miscValuesFileName = tempDirectory.appendingPathComponent("miscValues.txt").path
     
     
     private var miscellaneousValues:NSMutableDictionary;
@@ -25,7 +25,7 @@ class TempDataDAO : NSObject {
     override init() {
         
         miscellaneousValues = NSMutableDictionary()
-        if NSFileManager.defaultManager().fileExistsAtPath(TempDataDAO.miscValuesFileName) {
+        if FileManager.default.fileExists(atPath: TempDataDAO.miscValuesFileName) {
             if let storedValues = NSMutableDictionary(contentsOfFile: TempDataDAO.miscValuesFileName) {
                 miscellaneousValues = storedValues
             }
@@ -42,22 +42,22 @@ class TempDataDAO : NSObject {
 
     //MARK:CLASS FUNCTIONS
     
-    func addPersistentValue(key key:String, value:AnyObject) {
+    func addPersistentValue(key:String, value:AnyObject) {
         miscellaneousValues.setValue(value, forKey: key)
     }
     
-    func getPersistentValue(key key:String) -> AnyObject? {
-        return miscellaneousValues.valueForKey(key)
+    func getPersistentValue(key:String) -> AnyObject? {
+        return miscellaneousValues.value(forKey: key)
     }
     
-    func getPersistentNumber(key key:String) -> NSNumber? {
+    func getPersistentNumber(key:String) -> NSNumber? {
         return getPersistentValue(key: key) as? NSNumber
     }
     
-    func persistData(notification:NSNotification) {
+    func persistData(_ notification:Notification) {
         persistLastFmScrobbleCache()
         persistPlaybackStateSnapshotToTempStorage()
-        if !miscellaneousValues.writeToFile(TempDataDAO.miscValuesFileName, atomically: true) {
+        if !miscellaneousValues.write(toFile: TempDataDAO.miscValuesFileName, atomically: true) {
             Logger.debug("failed to write all misc values to temp dir")
         }
     }
@@ -73,15 +73,15 @@ class TempDataDAO : NSObject {
         guard !KyoozUtils.usingMockData else { return nil }
         
         let filename = TempDataDAO.playbackStateSnapshotFileName
-        if !NSFileManager.defaultManager().fileExistsAtPath(filename) {
+        if !FileManager.default.fileExists(atPath: filename) {
             return nil
         }
         
-        return (NSKeyedUnarchiver.unarchiveObjectWithFile(filename) as? PlaybackStatePersistableSnapshot)?.snapshot
+        return (NSKeyedUnarchiver.unarchiveObject(withFile: filename) as? PlaybackStatePersistableSnapshot)?.snapshot
     }
     
     
-    func persistMediaItemsToTempStorageFile(fileName:String, mediaItems:[AudioTrack]?) {
+    func persistMediaItemsToTempStorageFile(_ fileName:String, mediaItems:[AudioTrack]?) {
         if(mediaItems == nil || mediaItems!.count == 0) {
             removeFile(fileName)
             return
@@ -93,14 +93,14 @@ class TempDataDAO : NSObject {
     }
     
     
-    func getMediaItemsFromTempStorage(fileName:String) -> [AudioTrack]? {
-        if(!NSFileManager.defaultManager().fileExistsAtPath(fileName)) {
+    func getMediaItemsFromTempStorage(_ fileName:String) -> [AudioTrack]? {
+        if(!FileManager.default.fileExists(atPath: fileName)) {
             return nil
         }
         
         var obj:AnyObject?
         KyoozUtils.performWithMetrics(blockDescription: "unarchive media items") {
-            obj = NSKeyedUnarchiver.unarchiveObjectWithFile(fileName)
+            obj = NSKeyedUnarchiver.unarchiveObject(withFile: fileName)
         }
         guard let array = obj as? NSArray else {
             return nil
@@ -117,7 +117,7 @@ class TempDataDAO : NSObject {
         }
         let nsCacheItems = cacheItems as NSArray
         
-        if(nsCacheItems.writeToFile(TempDataDAO.lastFmScrobbleCacheFileName, atomically: true)) {
+        if(nsCacheItems.write(toFile: TempDataDAO.lastFmScrobbleCacheFileName, atomically: true)) {
             Logger.debug("saved \(nsCacheItems.count) last.fm cached scrobbles to temp data");
         } else {
             Logger.debug("failed to save \(nsCacheItems.count) last.fm cached scrobbles to temp data");
@@ -125,7 +125,7 @@ class TempDataDAO : NSObject {
     }
     
     func getLastFmScrobbleCacheFromFile() -> [[String:String]]? {
-        if(!NSFileManager.defaultManager().fileExistsAtPath(TempDataDAO.lastFmScrobbleCacheFileName)) {
+        if(!FileManager.default.fileExists(atPath: TempDataDAO.lastFmScrobbleCacheFileName)) {
             return nil
         }
         
@@ -134,10 +134,10 @@ class TempDataDAO : NSObject {
         return persistedCache as? [[String:String]]
     }
     
-    private func removeFile(filePath:String) {
-        if(NSFileManager.defaultManager().fileExistsAtPath(filePath)) {
+    private func removeFile(_ filePath:String) {
+        if(FileManager.default.fileExists(atPath: filePath)) {
             do {
-                try NSFileManager.defaultManager().removeItemAtPath(filePath)
+                try FileManager.default.removeItem(atPath: filePath)
             } catch let error as NSError {
                 Logger.error("could not remove file for reason: \(error.description)")
             }
@@ -147,16 +147,16 @@ class TempDataDAO : NSObject {
     //MARK:Notification Registration
     
     private func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        let application = UIApplication.sharedApplication()
+        let notificationCenter = NotificationCenter.default
+        let application = UIApplication.shared
         
         notificationCenter.addObserver(self, selector: #selector(TempDataDAO.persistData(_:)),
-            name: UIApplicationWillResignActiveNotification, object: application)
+            name: NSNotification.Name.UIApplicationWillResignActive, object: application)
         notificationCenter.addObserver(self, selector: #selector(TempDataDAO.persistData(_:)),
-            name: UIApplicationWillTerminateNotification, object: application)
+            name: NSNotification.Name.UIApplicationWillTerminate, object: application)
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 }

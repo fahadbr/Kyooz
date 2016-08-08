@@ -12,7 +12,7 @@ extension UITextView {
 	
 	convenience init(fileName:String, documentType:DocumentType) throws {
 		self.init()
-		editable = false
+		isEditable = false
         backgroundColor = ThemeHelper.defaultTableCellColor
 		attributedText = try NSAttributedString(fileName: fileName, documentType: documentType)
         textColor = ThemeHelper.defaultFontColor

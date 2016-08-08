@@ -35,32 +35,32 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerNib(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
-        tableView.registerNib(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
-        tableView.registerClass(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
+        tableView.register(NibContainer.mediaCollectionTableViewCellNib, forCellReuseIdentifier: MediaCollectionTableViewCell.reuseIdentifier)
+        tableView.register(NibContainer.imageTableViewCellNib, forCellReuseIdentifier: ImageTableViewCell.reuseIdentifier)
+        tableView.register(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
 		
-		view.add(subView: tableView, with: .Top, .Left, .Right)
-		tableView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
+		view.add(subView: tableView, with: .top, .left, .right)
+		tableView.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor).isActive = true
 		
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         tableView.rowHeight = ThemeHelper.tableViewRowHeight
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.showsVerticalScrollIndicator = true
-        tableView.indicatorStyle = .White
+        tableView.indicatorStyle = .white
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         reloadTableViewUnanimated()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         registerForNotifications()
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         unregisterForNotifications()
     }
@@ -94,9 +94,9 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
 
     //MARK: - AudioCellDelegate
     
-    func presentActionsForCell(cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint) {
-        guard !tableView.editing  else { return }
-        guard let indexPath = tableView.indexPathForCell(cell) else {
+    func presentActionsForCell(_ cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint) {
+        guard !tableView.isEditing  else { return }
+        guard let indexPath = tableView.indexPath(for: cell) else {
             Logger.error("no index path found for cell with tile \(title)")
             return
         }
@@ -121,31 +121,31 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     }
 
     
-	func addCustomMenuActions(indexPath:NSIndexPath, tracks:[AudioTrack], menuBuilder: MenuBuilder) {
+	func addCustomMenuActions(_ indexPath:IndexPath, tracks:[AudioTrack], menuBuilder: MenuBuilder) {
         //empty implementation
     }
     
     
     func registerForNotifications() {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadTableViewUnanimated),
-                                       name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue,
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue),
                                        object: audioQueuePlayer)
         //TODO: Why does this class need to know about playback state updates?
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadTableViewUnanimated),
-                                       name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue,
+                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue),
                                        object: audioQueuePlayer)
         
         notificationCenter.addObserver(self,
                                        selector: #selector(self.reloadAllData),
-                                       name: MPMediaLibraryDidChangeNotification,
-                                       object: MPMediaLibrary.defaultMediaLibrary())
+                                       name: NSNotification.Name.MPMediaLibraryDidChange,
+                                       object: MPMediaLibrary.default())
     }
     
     private func unregisterForNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
 }

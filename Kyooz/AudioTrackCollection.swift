@@ -15,7 +15,7 @@ import UIKit
 }
 
 class AudioTrackCollectionDTO : NSObject, AudioTrackCollection {
-    static func supportsSecureCoding() -> Bool {
+    static var supportsSecureCoding: Bool {
         return false
     }
     
@@ -37,16 +37,16 @@ class AudioTrackCollectionDTO : NSObject, AudioTrackCollection {
         fatalError("initWithCoder is not implemented")
     }
     
-    func titleForGrouping(libraryGrouping: LibraryGrouping) -> String? {
+    func titleForGrouping(_ libraryGrouping: LibraryGrouping) -> String? {
         return representativeTrack?.titleForGrouping(libraryGrouping)
     }
     
     
-    func persistentIdForGrouping(libraryGrouping:LibraryGrouping) -> UInt64 {
+    func persistentIdForGrouping(_ libraryGrouping:LibraryGrouping) -> UInt64 {
         return representativeTrack?.persistentIdForGrouping(libraryGrouping) ?? 0
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         fatalError("encodeWithCoder is not implemented")
     }
     
@@ -54,12 +54,12 @@ class AudioTrackCollectionDTO : NSObject, AudioTrackCollection {
         return self.representativeTrack?.artworkImage(forSize: size)
     }
     
-    override func valueForKey(key: String) -> AnyObject? {
+    override func value(forKey key: String) -> AnyObject? {
         return self.representativeTrack?.valueForKey(key)
     }
     
     //overriding this so that collections can be searched by their underlying track properties
-    override func valueForUndefinedKey(key: String) -> AnyObject? {
+    override func value(forUndefinedKey key: String) -> AnyObject? {
         return self.representativeTrack?.valueForKey(key)
     }
     

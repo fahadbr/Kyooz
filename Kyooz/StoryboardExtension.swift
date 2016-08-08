@@ -13,25 +13,25 @@ extension UIStoryboard {
 
     static func mainStoryboard() -> UIStoryboard {
         struct Static {
-            static let instance = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+            static let instance = UIStoryboard(name: "Main", bundle: Bundle.main)
         }
         return Static.instance
     }
     
     static func settingsStoryboard() -> UIStoryboard {
         struct Static {
-            static let instance = UIStoryboard(name: "Settings", bundle:NSBundle.mainBundle())
+            static let instance = UIStoryboard(name: "Settings", bundle:Bundle.main)
         }
         return Static.instance
     }
 
     
     static func warningViewController() -> WarningViewController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("warningViewController") as! WarningViewController
+        return mainStoryboard().instantiateViewController(withIdentifier: "warningViewController") as! WarningViewController
     }
     
     static func systemQueueResyncWorkflowController() -> SystemQueueResyncWorkflowController {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("systemQueueResyncWorkflowController") as! SystemQueueResyncWorkflowController
+        return mainStoryboard().instantiateViewController(withIdentifier: "systemQueueResyncWorkflowController") as! SystemQueueResyncWorkflowController
     }
     
     static func settingsViewController() -> UIViewController {

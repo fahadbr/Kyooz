@@ -10,16 +10,16 @@ import UIKit
 
 class TutorialViewControllerFactory {
     
-    func viewControllerForTutorial(dto:TutorialDTO) -> TutorialViewController {
+    func viewControllerForTutorial(_ dto:TutorialDTO) -> TutorialViewController {
         
         switch dto.tutorial {
-        case .GestureActivatedSearch:
+        case .gestureActivatedSearch:
             return PanTutorialViewController(tutorialDTO: dto, isPanningRight: true)
-        case .GestureToViewQueue:
+        case .gestureToViewQueue:
             return PanTutorialViewController(tutorialDTO: dto, isPanningRight: false)
-		case .DragAndDrop:
+		case .dragAndDrop:
 			return LongPressTutorialViewController(tutorialDTO: dto)
-        case .DragToRearrange:
+        case .dragToRearrange:
             return DragToRearrangeTutorialViewController(tutorialDTO: dto)
         default:
             return NoAnimationTutorialViewController(tutorialDTO: dto)

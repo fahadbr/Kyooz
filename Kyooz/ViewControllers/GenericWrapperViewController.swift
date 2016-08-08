@@ -16,6 +16,10 @@ final class GenericWrapperViewController<T:UIView> : UIViewController {
         self.wrappedView = viewToWrap
         super.init(nibName: nil, bundle: nil)
     }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         self.view = wrappedView

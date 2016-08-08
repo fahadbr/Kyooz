@@ -13,10 +13,10 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProto
 
     static let reuseIdentifier = "songDetailsTableViewCell"
     
-    private static let normalFont = ThemeHelper.smallFontForStyle(.Normal)
-    private static let boldFont = ThemeHelper.smallFontForStyle(.Medium)
+    private static let normalFont = ThemeHelper.smallFontForStyle(.normal)
+    private static let boldFont = ThemeHelper.smallFontForStyle(.medium)
     
-    private static let albumImageCache:NSCache = NSCache()
+    private static let albumImageCache = NSCache<NSNumber, UIImage>()
     
     
     @IBOutlet var albumArtImageView: UIImageView!
@@ -42,17 +42,17 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProto
         songTitleLabel.accessibilityTraits = UIAccessibilityTraitButton | UIAccessibilityTraitAllowsDirectInteraction
         songTitleLabel.font = SongDetailsTableViewCell.boldFont
         albumArtistAndAlbumLabel.font =  SongDetailsTableViewCell.normalFont
-        albumArtistAndAlbumLabel.textColor = UIColor.lightGrayColor()
+        albumArtistAndAlbumLabel.textColor = UIColor.lightGray
     }
     
-    @IBAction func menuButtonPressed(sender:UIButton!) {
+    @IBAction func menuButtonPressed(_ sender:UIButton!) {
         let point = CGPoint(x: bounds.maxX, y: bounds.midY)
 //        let convertedPoint = convertPoint(point, fromCoordinateSpace: window!.screen.fixedCoordinateSpace)
-        let convertedPoint = convertPoint(point, toView: ContainerViewController.instance.view)
+        let convertedPoint = convert(point, to: ContainerViewController.instance.view)
         delegate?.presentActionsForCell(self, title: songTitleLabel.text, details: albumArtistAndAlbumLabel.text, originatingCenter: convertedPoint)
     }
     
-    func configureCellForItems(entity:AudioEntity, libraryGrouping:LibraryGrouping) {
+    func configureCellForItems(_ entity:AudioEntity, libraryGrouping:LibraryGrouping) {
         guard let track = entity as? AudioTrack else { return }
         songTitleLabel.text = track.trackTitle
         songTitleLabel.accessibilityLabel = songTitleLabel.text
@@ -66,23 +66,23 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProto
             details.append(albumTitle)
         }
         
-        albumArtistAndAlbumLabel.text = details.joinWithSeparator(" - ")
+        albumArtistAndAlbumLabel.text = details.joined(separator: " - ")
         totalPlaybackTImeLabel.text = MediaItemUtils.getTimeRepresentation(track.playbackDuration)
         albumArtImageView.image = SongDetailsTableViewCell.getAlbumImageForTrack(track, imageSize: albumArtImageView.frame.size)
     }
     
-    static func getAlbumImageForTrack(track:AudioTrack, imageSize:CGSize) -> UIImage {
+    static func getAlbumImageForTrack(_ track:AudioTrack, imageSize:CGSize) -> UIImage {
         
-        let key = NSNumber(unsignedLongLong: track.albumId)
-        if let albumArtImage = SongDetailsTableViewCell.albumImageCache.objectForKey(key) as? UIImage {
+        let key = NSNumber(value: track.albumId)
+        if let albumArtImage = SongDetailsTableViewCell.albumImageCache.object(forKey: key) {
             return albumArtImage
         } else if let albumArtwork = track.artworkImage(forSize: imageSize) {
             SongDetailsTableViewCell.albumImageCache.setObject(albumArtwork, forKey: key)
             return albumArtwork
         }
         
-        let defaultKey = "defaultAlbumArtImage"
-        guard let defaultAlbumArtImage = SongDetailsTableViewCell.albumImageCache.objectForKey(defaultKey) as? UIImage else {
+        let defaultKey = -1
+        guard let defaultAlbumArtImage = SongDetailsTableViewCell.albumImageCache.object(forKey: defaultKey) else {
             let noAlbumArtCellImage = ImageUtils.resizeImage(ImageContainer.smallDefaultArtworkImage, toSize: imageSize)
             SongDetailsTableViewCell.albumImageCache.setObject(noAlbumArtCellImage, forKey: defaultKey)
             return noAlbumArtCellImage

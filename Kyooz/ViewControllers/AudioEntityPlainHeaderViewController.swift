@@ -14,8 +14,8 @@ class AudioEntityPlainHeaderViewController: AudioEntityViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Left, .Top, .Right], subView: headerView, parentView: view)
-		headerView.heightAnchor.constraintEqualToConstant(ThemeHelper.plainHeaderHight).active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.left, .top, .right], subView: headerView, parentView: view)
+		headerView.heightAnchor.constraint(equalToConstant: ThemeHelper.plainHeaderHight).isActive = true
 		
 		tableView.contentInset.top = ThemeHelper.plainHeaderHight
         tableView.scrollIndicatorInsets.top = ThemeHelper.plainHeaderHight

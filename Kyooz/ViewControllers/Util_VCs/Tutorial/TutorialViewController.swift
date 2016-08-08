@@ -8,9 +8,9 @@
 
 import UIKit
 
-class TutorialViewController : UIViewController {
+class TutorialViewController : UIViewController, CAAnimationDelegate {
 	
-	private static let unfulfilledColor = UIColor.blueColor()
+	private static let unfulfilledColor = UIColor.blue
     private static let fulfilledColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
     private static let headerHeight = ThemeHelper.plainHeaderHight + 20
     
@@ -25,7 +25,7 @@ class TutorialViewController : UIViewController {
         let label = UILabel()
         label.font = ThemeHelper.defaultFont
         label.numberOfLines = 0
-        label.lineBreakMode = .ByWordWrapping
+        label.lineBreakMode = .byWordWrapping
         label.textColor = ThemeHelper.defaultFontColor
         label.text = self.tutorialDTO.instructionText
         return label
@@ -33,14 +33,14 @@ class TutorialViewController : UIViewController {
 	
 	private lazy var stackView:UIView = {
 		let cancelButton = CrossButtonView()
-		cancelButton.addTarget(self, action: #selector(self.dismissTutorial), forControlEvents: .TouchUpInside)
+		cancelButton.addTarget(self, action: #selector(self.dismissTutorial), for: .touchUpInside)
 		cancelButton.translatesAutoresizingMaskIntoConstraints = false
-		cancelButton.heightAnchor.constraintEqualToConstant(45).active = true
-		cancelButton.widthAnchor.constraintEqualToAnchor(cancelButton.heightAnchor).active = true
+		cancelButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
+		cancelButton.widthAnchor.constraint(equalTo: cancelButton.heightAnchor).isActive = true
 		
 		let stackView = UIStackView(arrangedSubviews: [self.instructionLabel, cancelButton])
-		stackView.axis = .Horizontal
-		stackView.alignment = .Center
+		stackView.axis = .horizontal
+		stackView.alignment = .center
 		return stackView
 	}()
 	
@@ -66,10 +66,10 @@ class TutorialViewController : UIViewController {
 	func createCircleLayer() -> CAShapeLayer {
 		let size = self.dynamicType.circleSize
 		let layer = CAShapeLayer()
-		let path = UIBezierPath(ovalInRect: CGRect(x: 0, y: 0, width: size, height: size))
-		layer.path = path.CGPath
-		layer.strokeColor = ThemeHelper.defaultFontColor.CGColor
-		layer.fillColor = UIColor.clearColor().CGColor
+		let path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: size, height: size))
+		layer.path = path.cgPath
+		layer.strokeColor = ThemeHelper.defaultFontColor.cgColor
+		layer.fillColor = UIColor.clear.cgColor
 		layer.lineWidth = 2
 		layer.frame = CGRect(x: self.view.bounds.midX - size/2, y: self.view.bounds.midY + size/2, width: size, height: size)
 		return layer
@@ -82,65 +82,65 @@ class TutorialViewController : UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = UIColor.clearColor()
+		view.backgroundColor = UIColor.clear
 
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.Top, .Left, .Right], subView: instructionView, parentView: view)
-		instructionView.heightAnchor.constraintEqualToConstant(TutorialViewController.headerHeight).active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.top, .left, .right], subView: instructionView, parentView: view)
+		instructionView.heightAnchor.constraint(equalToConstant: TutorialViewController.headerHeight).isActive = true
 		
 		instructionView.backgroundColor = self.dynamicType.unfulfilledColor
-		ConstraintUtils.applyConstraintsToView(withAnchors: [.CenterX, .Bottom], subView: stackView, parentView: instructionView)
-		stackView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
-		stackView.widthAnchor.constraintEqualToAnchor(instructionView.widthAnchor, multiplier: 0.9).active = true
+		ConstraintUtils.applyConstraintsToView(withAnchors: [.centerX, .bottom], subView: stackView, parentView: instructionView)
+		stackView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
+		stackView.widthAnchor.constraint(equalTo: instructionView.widthAnchor, multiplier: 0.9).isActive = true
         
         let slideDownAnimation = CABasicAnimation(keyPath: "transform.translation.y")
         slideDownAnimation.duration = 0.5
         slideDownAnimation.fromValue = -TutorialViewController.headerHeight
         slideDownAnimation.fillMode = kCAFillModeBackwards
         slideDownAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        instructionView.layer.addAnimation(slideDownAnimation, forKey: nil)
+        instructionView.layer.add(slideDownAnimation, forKey: nil)
 	}
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(self.removeAnimations), name: UIApplicationDidEnterBackgroundNotification, object: UIApplication.sharedApplication())
-        notificationCenter.addObserver(self, selector: #selector(self.applyAnimation), name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(self.removeAnimations), name: NSNotification.Name.UIApplicationDidEnterBackground, object: UIApplication.shared)
+        notificationCenter.addObserver(self, selector: #selector(self.applyAnimation), name: NSNotification.Name.UIApplicationDidBecomeActive, object: UIApplication.shared)
         
         applyAnimation()
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeAnimations()
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     
-    func transitionOut(action:TutorialAction) {
+    func transitionOut(_ action:TutorialAction) {
         guard dismissalAction == nil else { return }
         dismissalAction = action
         
         removeAnimations()
         
         switch action {
-        case .Fulfill where tutorialDTO.nextTutorial != nil:
+        case .fulfill where tutorialDTO.nextTutorial != nil:
             doFadeOutAnimation()
-        case .Fulfill:
+        case .fulfill:
             doFulfillAnimation()
-        case .DismissFulfilled:
+        case .dismissFulfilled:
             doSlideUpAnimation()
-        case .DismissUnfulfilled:
+        case .dismissUnfulfilled:
             doFadeOutAnimation()
         }
     }
 	
 	func dismissTutorial() {
-		tutorialManager.dismissTutorial(tutorialDTO.tutorial, action: .DismissFulfilled)
+		tutorialManager.dismissTutorial(tutorialDTO.tutorial, action: .dismissFulfilled)
 	}
     
     private func doFulfillAnimation() {
         instructionLabel.text = "Great!"
-        UIView.animateWithDuration(0.5, animations: {
+        UIView.animate(withDuration: 0.5, animations: {
             self.instructionView.backgroundColor = self.dynamicType.fulfilledColor
         }, completion: { _ in
             KyoozUtils.doInMainQueueAfterDelay(0.5) {
@@ -165,7 +165,7 @@ class TutorialViewController : UIViewController {
     private func doFadeOutAnimation() {
         let fadeOutAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.2)
         fadeOutAnimation.delegate = self
-        view.layer.addAnimation(fadeOutAnimation, forKey: nil)
+        view.layer.add(fadeOutAnimation, forKey: nil)
     }
     
     private func doSlideUpAnimation() {
@@ -173,17 +173,17 @@ class TutorialViewController : UIViewController {
         slideUpAnimation.duration = 0.2
         slideUpAnimation.toValue = -TutorialViewController.headerHeight
         slideUpAnimation.fillMode = kCAFillModeForwards
-        slideUpAnimation.removedOnCompletion = false
+        slideUpAnimation.isRemovedOnCompletion = false
         slideUpAnimation.delegate = self
-        instructionView.layer.addAnimation(slideUpAnimation, forKey: nil)
+        instructionView.layer.add(slideUpAnimation, forKey: nil)
     }
 	
-	override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         view.layer.removeAllAnimations()
         instructionView.layer.removeAllAnimations()
 		view.removeFromSuperview()
 		removeFromParentViewController()
-        if let nextTutorial = tutorialDTO.nextTutorial, let action = dismissalAction where action == .Fulfill {
+        if let nextTutorial = tutorialDTO.nextTutorial, let action = dismissalAction, action == .fulfill {
             tutorialManager.presentTutorialIfUnfulfilled(nextTutorial)
         }
 	}
@@ -191,8 +191,8 @@ class TutorialViewController : UIViewController {
 }
 
 class OverlayView : UIView {
-	override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
-		let view = super.hitTest(point, withEvent: event)
+	override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+		let view = super.hitTest(point, with: event)
 		if view == self {
 			return nil
 		}

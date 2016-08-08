@@ -15,15 +15,15 @@ class AbstractPlaybackViewController : UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		playPauseButton.addTarget(self, action: #selector(self.togglePlayPause), forControlEvents: .TouchUpInside)
+		playPauseButton.addTarget(self, action: #selector(self.togglePlayPause), for: .touchUpInside)
 	}
 	
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		registerForNotifications()
 	}
 	
-	override func viewDidDisappear(animated: Bool) {
+	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		unregisterForNotifications()
 	}
@@ -41,17 +41,17 @@ class AbstractPlaybackViewController : UIViewController {
 	}
 	
 	func registerForNotifications() {
-		let notificationCenter = NSNotificationCenter.defaultCenter()
-		let application = UIApplication.sharedApplication()
+		let notificationCenter = NotificationCenter.default
+		let application = UIApplication.shared
 		notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-		                               name: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue, object: audioQueuePlayer)
+		                               name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue), object: audioQueuePlayer)
 		
 		notificationCenter.addObserver(self, selector: #selector(self.updateButtonStates),
-		                               name: UIApplicationDidBecomeActiveNotification, object: application)
+		                               name: NSNotification.Name.UIApplicationDidBecomeActive, object: application)
 	}
 	
 	func unregisterForNotifications() {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }
 

@@ -27,17 +27,17 @@ final class MenuDotsView: UIButton {
         }
     }
     
-    override var highlighted:Bool {
+    override var isHighlighted:Bool {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let colorToUse:UIColor
-        if !enabled {
-            colorToUse = UIColor.darkGrayColor()
-        } else if highlighted {
+        if !isEnabled {
+            colorToUse = UIColor.darkGray
+        } else if isHighlighted {
             colorToUse = ThemeHelper.defaultVividColor
         } else {
             colorToUse = color
@@ -46,20 +46,20 @@ final class MenuDotsView: UIButton {
         colorToUse.setStroke()
         colorToUse.setFill()
         
-        let rectToUse = CGRectInset(rect, 0, ((1 - scale)/2) * rect.height)
+        let rectToUse = rect.insetBy(dx: 0, dy: ((1 - scale)/2) * rect.height)
         
         let minX = rect.origin.x
 
         let size = rectToUse.height * 0.35
         let circlePath = UIBezierPath()
-        circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: rectToUse.minY, width: size, height: size)))
+        circlePath.append(UIBezierPath(ovalIn: CGRect(x: minX, y: rectToUse.minY, width: size, height: size)))
         
-        circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: rectToUse.midY, width: size, height: size)))
+        circlePath.append(UIBezierPath(ovalIn: CGRect(x: minX, y: rectToUse.midY, width: size, height: size)))
         
-        circlePath.appendPath(UIBezierPath(ovalInRect: CGRect(x: minX, y: rectToUse.maxY, width: size, height: size)))
+        circlePath.append(UIBezierPath(ovalIn: CGRect(x: minX, y: rectToUse.maxY, width: size, height: size)))
         
         let translationAmount = -size/2
-        circlePath.applyTransform(CGAffineTransformMakeTranslation(translationAmount + rect.width * position, translationAmount))
+        circlePath.apply(CGAffineTransform(translationX: translationAmount + rect.width * position, y: translationAmount))
         circlePath.fill()
     }
 

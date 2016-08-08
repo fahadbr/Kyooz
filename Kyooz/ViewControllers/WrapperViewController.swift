@@ -31,20 +31,20 @@ class WrapperViewController : UIViewController {
         super.init(nibName:nil, bundle:nil)
 		
 		if isPresentedVC {
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
-				name: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue, object: audioQueuePlayer)
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
-			                                                 name: AudioQueuePlayerUpdate.queueUpdate.rawValue, object: audioQueuePlayer)
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
-			                                                 name: AudioQueuePlayerUpdate.systematicQueueUpdate.rawValue, object: audioQueuePlayer)
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshIndexAndViews),
-			    name: UIApplicationDidBecomeActiveNotification, object: UIApplication.sharedApplication())
+			NotificationCenter.default.addObserver(self, selector: #selector(self.refreshIndexAndViews),
+				name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue), object: audioQueuePlayer)
+			NotificationCenter.default.addObserver(self, selector: #selector(self.refreshIndexAndViews),
+			                                                 name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.queueUpdate.rawValue), object: audioQueuePlayer)
+			NotificationCenter.default.addObserver(self, selector: #selector(self.refreshIndexAndViews),
+			                                                 name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.systematicQueueUpdate.rawValue), object: audioQueuePlayer)
+			NotificationCenter.default.addObserver(self, selector: #selector(self.refreshIndexAndViews),
+			    name: NSNotification.Name.UIApplicationDidBecomeActive, object: UIApplication.shared)
 		}
     }
 	
 	deinit {
 		if isPresentedVC {
-			NSNotificationCenter.defaultCenter().removeObserver(self)
+			NotificationCenter.default.removeObserver(self)
 		}
 	}
     
@@ -57,13 +57,13 @@ class WrapperViewController : UIViewController {
     }
 	
 	func refreshIndexAndViews() {
-		guard UIApplication.sharedApplication().applicationState == UIApplicationState.Active else { return }
+		guard UIApplication.shared.applicationState == UIApplicationState.active else { return }
 		
 		representingIndex = audioQueuePlayer.indexOfNowPlayingItem
 		refreshViews(audioQueuePlayer.nowPlayingItem)
 	}
 	
-	private func refreshViews(track:AudioTrack?) {
+	private func refreshViews(_ track:AudioTrack?) {
 		//empty imp
 	}
 	
@@ -82,12 +82,12 @@ final class ImageWrapperViewController : WrapperViewController {
 		let albumArtImage = ImageWrapperViewController.albumArtForTrack(track, size: size)
 		imageID = track?.albumId ?? 0
 		imageView = UIImageView(image: albumArtImage)
-		imageView.contentMode = .ScaleAspectFit
+		imageView.contentMode = .scaleAspectFit
 		super.init(wrappedView: imageView, isPresentedVC: isPresentedVC, representingIndex: representingIndex)
         
         if isPresentedVC {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.clearImageIdAndRefreshViews),
-                                                             name: MPMediaLibraryDidChangeNotification, object: MPMediaLibrary.defaultMediaLibrary())
+            NotificationCenter.default.addObserver(self, selector: #selector(self.clearImageIdAndRefreshViews),
+                                                             name: NSNotification.Name.MPMediaLibraryDidChange, object: MPMediaLibrary.default())
         }
 	}
 	
@@ -97,7 +97,7 @@ final class ImageWrapperViewController : WrapperViewController {
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
-		wrappedView.frame = CGRectInset(view.bounds, frameInset, frameInset)
+		wrappedView.frame = view.bounds.insetBy(dx: frameInset, dy: frameInset)
 	}
     
     func clearImageIdAndRefreshViews() {
@@ -105,20 +105,20 @@ final class ImageWrapperViewController : WrapperViewController {
         refreshIndexAndViews()
     }
 	
-	private static func albumArtForTrack(track:AudioTrack?, size:CGSize) -> UIImage {
+	private static func albumArtForTrack(_ track:AudioTrack?, size:CGSize) -> UIImage {
         return track?.artworkImage(forSize:size) ?? {
             let smallerSide = min(size.height, size.width)
             return ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: CGSize(width: smallerSide, height: smallerSide))
         }()
 	}
 	
-	private override func refreshViews(track: AudioTrack?) {
+	private override func refreshViews(_ track: AudioTrack?) {
 		let newImageID = track?.albumId ?? 0
 		guard newImageID != imageID else { return }
 		
 		let albumArtImage = ImageWrapperViewController.albumArtForTrack(track, size: imageSize)
 		imageID = newImageID
-		UIView.transitionWithView(imageView, duration: 0.5, options: .TransitionCrossDissolve, animations: {
+		UIView.transition(with: imageView, duration: 0.5, options: .transitionCrossDissolve, animations: {
 				self.imageView.image = albumArtImage
 			}, completion: nil)
 	}
@@ -132,9 +132,9 @@ final class LabelStackWrapperViewController : WrapperViewController {
 	
     init(track:AudioTrack?, isPresentedVC:Bool, representingIndex:Int, useSmallFont:Bool = true) {
 		
-		func configureLabel(label:UILabel, font:UIFont?) {
+		func configureLabel(_ label:UILabel, font:UIFont?) {
 			label.textColor = ThemeHelper.defaultFontColor
-			label.textAlignment = .Center
+			label.textAlignment = .center
 			label.font = font
 		}
 		self.useSmallFont = useSmallFont
@@ -151,13 +151,13 @@ final class LabelStackWrapperViewController : WrapperViewController {
 		trackTitleMarqueeLabel.text = labelStrings.titleText
 		trackDetailsMarqueeLabel.text = labelStrings.detailsText
 		
-		let height = trackTitleMarqueeLabel.intrinsicContentSize().height + trackDetailsMarqueeLabel.intrinsicContentSize().height
+		let height = trackTitleMarqueeLabel.intrinsicContentSize.height + trackDetailsMarqueeLabel.intrinsicContentSize.height
 		
 		let labelStackView = UIStackView(arrangedSubviews: [trackTitleMarqueeLabel, trackDetailsMarqueeLabel])
-		labelStackView.axis = .Vertical
-		labelStackView.distribution = .FillProportionally
+		labelStackView.axis = .vertical
+		labelStackView.distribution = .fillProportionally
 		
-		labelStackView.frame = CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width, height: height)
+		labelStackView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: height)
 		
 		super.init(wrappedView: labelStackView, isPresentedVC:isPresentedVC, representingIndex:representingIndex)
 	}
@@ -169,21 +169,21 @@ final class LabelStackWrapperViewController : WrapperViewController {
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
         if useSmallFont {
-            wrappedView.frame = CGRectInset(view.bounds, 0, 5)
+            wrappedView.frame = view.bounds.insetBy(dx: 0, dy: 5)
         } else {
             wrappedView.frame = view.bounds
         }
 	}
 	
-	private static func getLabelStringsFromTrack(track:AudioTrack?) -> (titleText:String, detailsText:String) {
+	private static func getLabelStringsFromTrack(_ track:AudioTrack?) -> (titleText:String, detailsText:String) {
 		let titleText = track?.trackTitle ?? "Nothing"
 		let detailsText = "\(track?.albumArtist ?? "To")  —  \(track?.albumTitle ?? "Play")"
 		return (titleText, detailsText)
 	}
 	
-	private override func refreshViews(track: AudioTrack?) {
+	private override func refreshViews(_ track: AudioTrack?) {
 		let labelStrings = LabelStackWrapperViewController.getLabelStringsFromTrack(track)
-		func updateLabel(label:MarqueeLabel, text:String) {
+		func updateLabel(_ label:MarqueeLabel, text:String) {
 			if label.text == nil || label.text! != text {
 				label.setText(text, animated: true)
 			}

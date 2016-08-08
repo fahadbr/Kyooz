@@ -31,15 +31,15 @@ internal extension TweakStore {
 }
 
 extension TweakStoreActivityItemSource: UIActivityItemSource {
-	@objc func activityViewControllerPlaceholderItem(activityViewController: UIActivityViewController) -> AnyObject {
+	@objc func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> AnyObject {
 		return textRepresentation
 	}
 
-	@objc func activityViewController(activityViewController: UIActivityViewController, subjectForActivityType activityType: String?) -> String {
+	@objc func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: String?) -> String {
 		return "SwiftTweaks Backup"
 	}
 
-	@objc func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
+	@objc func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
 		return textRepresentation
 	}
 }

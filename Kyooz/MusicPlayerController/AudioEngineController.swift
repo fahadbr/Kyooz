@@ -12,7 +12,7 @@ import AVFoundation
 final class AudioEngineController : AudioController {
     
     static let instance = AudioEngineController()
-    static let AUDIO_BUFFER_QUEUE = dispatch_queue_create("com.riaz.fahad.Kyooz.AudioBuffer", DISPATCH_QUEUE_SERIAL)
+    static let AUDIO_BUFFER_QUEUE = DispatchQueue(label: "com.riaz.fahad.Kyooz.AudioBuffer")
     
     var currentPlaybackTime:Double {
         get {
@@ -52,12 +52,12 @@ final class AudioEngineController : AudioController {
     }
     
     private func initializeAudioEngine() {
-        audioEngine.attachNode(playerNode)
+        audioEngine.attach(playerNode)
         let mixer = audioEngine.mainMixerNode
-        audioEngine.connect(playerNode, to: mixer, format: mixer.outputFormatForBus(0))
+        audioEngine.connect(playerNode, to: mixer, format: mixer.outputFormat(forBus: 0))
         audioEngine.prepare()
         
-        playerNode.installTapOnBus(0, bufferSize: currentlyPlayingAudio.defaultBufferCapacity, format: nil) { (buffer, time) -> Void in
+        playerNode.installTap(onBus: 0, bufferSize: currentlyPlayingAudio.defaultBufferCapacity, format: nil) { (buffer, time) -> Void in
             self.currentlyPlayingAudio.advanceFramesByAmount(AVAudioFramePosition(buffer.frameLength))
             if(self.currentlyPlayingAudio.playedToEndOfFile) {
                 self.audioPlayerDidAdvanceToNextItem()
@@ -66,7 +66,7 @@ final class AudioEngineController : AudioController {
     }
     
     func play() -> Bool {
-        if(!audioEngine.running) {
+        if(!audioEngine.isRunning) {
             do {
                 try audioEngine.start()
             } catch let error as NSError {
@@ -83,29 +83,29 @@ final class AudioEngineController : AudioController {
     }
     
     func pause() -> Bool {
-        if(audioEngine.running) {
+        if(audioEngine.isRunning) {
             playerNode.pause()
             audioEngine.pause()
         }
         return true
     }
     
-    func loadItem(url:NSURL) throws {
+    func loadItem(_ url:URL) throws {
         let audioFile = try getAudioFile(url)
         currentlyPlayingAudio = AudioFileWrapper(audioFile:audioFile)
         audioToBuffer = currentlyPlayingAudio
         scheduleBuffers(AudioEngineController.NO_OF_INITIAL_BUFFERS, shouldInterrupt: true, validationCode:validationCode)
     }
     
-    private func getAudioFile(url:NSURL) throws -> AVAudioFile {
+    private func getAudioFile(_ url:URL) throws -> AVAudioFile {
        return try AVAudioFile(forReading: url)
     }
     
-    private func readNextFramesIntoBuffer(validationCode:UInt8) {
+    private func readNextFramesIntoBuffer(_ validationCode:UInt8) {
         scheduleBuffers(1, validationCode:validationCode)
     }
     
-    private func scheduleBuffers(numberOfBuffersToSchedule:Int, shouldInterrupt:Bool = false, validationCode:UInt8) {
+    private func scheduleBuffers(_ numberOfBuffersToSchedule:Int, shouldInterrupt:Bool = false, validationCode:UInt8) {
         if(self.validationCode != validationCode) {
             return
         } else if(shouldInterrupt) {
@@ -117,7 +117,7 @@ final class AudioEngineController : AudioController {
         }
         let newValidationCode = self.validationCode
         
-        dispatch_async(AudioEngineController.AUDIO_BUFFER_QUEUE) {
+        AudioEngineController.AUDIO_BUFFER_QUEUE.async {
             if(self.audioToBuffer.sourceAudioFile == nil) { return }
             
             for i in 0..<numberOfBuffersToSchedule {
@@ -126,10 +126,10 @@ final class AudioEngineController : AudioController {
         }
     }
     
-    private func scheduleBuffer(newValidationCode:UInt8, shouldInterrupt:Bool) {
-        let bufferToUse = AVAudioPCMBuffer(PCMFormat: audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: audioToBuffer.defaultBufferCapacity)
+    private func scheduleBuffer(_ newValidationCode:UInt8, shouldInterrupt:Bool) {
+        let bufferToUse = AVAudioPCMBuffer(pcmFormat: audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: audioToBuffer.defaultBufferCapacity)
         do {
-            try audioToBuffer.sourceAudioFile.readIntoBuffer(bufferToUse)
+            try audioToBuffer.sourceAudioFile.read(into: bufferToUse)
         } catch let error1 as NSError {
             Logger.error("Error with reading audio file into buffer: \(error1.localizedDescription)")
             return
@@ -143,7 +143,7 @@ final class AudioEngineController : AudioController {
         
         if(audioToBuffer.bufferedToEndOfFile) {
             Logger.debug("reached end of audio file")
-            if let url = delegate.audioPlayerDidRequestNextItemToBuffer(self), nextAudioFile = try? getAudioFile(url) {
+            if let url = delegate.audioPlayerDidRequestNextItemToBuffer(self), let nextAudioFile = try? getAudioFile(url) {
                 audioToBuffer = AudioFileWrapper(audioFile: nextAudioFile)
                 Logger.debug("loaded next audio file")
             } else {
@@ -152,15 +152,15 @@ final class AudioEngineController : AudioController {
             }
         }
         
-        if playerNode.outputFormatForBus(0).channelCount != bufferToUse.format.channelCount {
+        if playerNode.outputFormat(forBus: 0).channelCount != bufferToUse.format.channelCount {
             Logger.debug("Reconnecting player node for new channel count \(bufferToUse.format.channelCount)")
             audioEngine.disconnectNodeOutput(playerNode)
             audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: bufferToUse.format)
-            play()
+            _ = play()
         }
         
         if(shouldInterrupt) {
-            playerNode.scheduleBuffer(bufferToUse, atTime: nil, options: AVAudioPlayerNodeBufferOptions.Interrupts, completionHandler: completionHandler)
+            playerNode.scheduleBuffer(bufferToUse, at: nil, options: AVAudioPlayerNodeBufferOptions.interrupts, completionHandler: completionHandler)
         } else {
             playerNode.scheduleBuffer(bufferToUse, completionHandler: completionHandler)
         }
@@ -223,7 +223,7 @@ final class AudioEngineController : AudioController {
             defaultBufferCapacity = AVAudioFrameCount(sampleRate * AudioEngineController.SECONDS_PER_BUFFER)
         }
         
-        func advanceFramesByAmount(frameAmount:AVAudioFramePosition) {
+        func advanceFramesByAmount(_ frameAmount:AVAudioFramePosition) {
             lastPlayedFrame += frameAmount
             numberOfFramesPlayed += frameAmount
         }

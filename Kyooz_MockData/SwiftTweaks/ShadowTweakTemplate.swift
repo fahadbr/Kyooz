@@ -42,36 +42,36 @@ public struct ShadowTweakTemplate: TweakGroupTemplateType {
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Opacity",
-			defaultParameters: ShadowTweakTemplate.opacityDefaults,
-			customDefaultValue: opacity
+			defaultValue: ShadowTweakTemplate.opacityDefaults,
+			minimumValue: opacity
 		)
 
 		self.offsetY = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Offset Y",
-			defaultParameters: ShadowTweakTemplate.offsetYDefaults,
-			customDefaultValue: offsetY
+			defaultValue: ShadowTweakTemplate.offsetYDefaults,
+			minimumValue: offsetY
 		)
 
 		self.offsetX = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Offset X",
-			defaultParameters: ShadowTweakTemplate.offsetXDefaults,
-			customDefaultValue: offsetX
+			defaultValue: ShadowTweakTemplate.offsetXDefaults,
+			minimumValue: offsetX
 		)
 
 		self.radius = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Radius",
-			defaultParameters: ShadowTweakTemplate.radiusDefaults,
-			customDefaultValue: radius
+			defaultValue: ShadowTweakTemplate.radiusDefaults,
+			minimumValue: radius
 		)
 	}
 
-	private static let colorDefault = UIColor.blackColor()
+	private static let colorDefault = UIColor.black
 
 	private static let opacityDefaults = SignedNumberTweakDefaultParameters<CGFloat>(
 		defaultValue: 0.2,

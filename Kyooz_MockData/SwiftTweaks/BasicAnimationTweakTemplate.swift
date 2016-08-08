@@ -35,16 +35,16 @@ public struct BasicAnimationTweakTemplate: TweakGroupTemplateType {
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Duration",
-			defaultParameters: BasicAnimationTweakTemplate.durationDefaults,
-			customDefaultValue: duration
+			defaultValue: BasicAnimationTweakTemplate.durationDefaults,
+			minimumValue: duration
 		)
 
 		self.delay = Tweak(
 			collectionName: collectionName,
 			groupName: groupName,
 			tweakName: "Delay",
-			defaultParameters: BasicAnimationTweakTemplate.delayDefaults,
-			customDefaultValue: delay
+			defaultValue: BasicAnimationTweakTemplate.delayDefaults,
+			minimumValue: delay
 		)
 	}
 

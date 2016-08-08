@@ -32,7 +32,7 @@ class StringNormalizationTest: XCTestCase {
     func testOldNormalizationMethod() {
         // This is an example of a performance test case.
         let numberOfIterations = 100000
-        self.measureBlock {
+        self.measure {
             for _ in 0...numberOfIterations {
                 XCTAssertEqual(self.expectedString, self.normalizeStringOld(self.testString))
             }
@@ -43,7 +43,7 @@ class StringNormalizationTest: XCTestCase {
     func testCurrentNormalizationMethod() {
         // This is an example of a performance test case.
         let numberOfIterations = 100000
-        self.measureBlock {
+        self.measure {
             for _ in 0...numberOfIterations {
                 XCTAssertEqual(self.expectedString, self.testString.normalizedString)
             }
@@ -55,14 +55,14 @@ class StringNormalizationTest: XCTestCase {
         XCTAssertEqual("", "".normalizedString)
     }
     
-    private func normalizeStringOld(s:String) -> String {
+    private func normalizeStringOld(_ s:String) -> String {
         var stringToNormalize = s
         if stringToNormalize.characters.count > 1 {
-            let charsToRemove = NSCharacterSet.punctuationCharacterSet()
-            stringToNormalize = stringToNormalize.componentsSeparatedByCharactersInSet(charsToRemove).joinWithSeparator("")
+            let charsToRemove = CharacterSet.punctuation
+            stringToNormalize = stringToNormalize.components(separatedBy: charsToRemove).joined(separator: "")
         }
-        stringToNormalize = stringToNormalize.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        return stringToNormalize.stringByFoldingWithOptions(.DiacriticInsensitiveSearch, locale: NSLocale.currentLocale())
+        stringToNormalize = stringToNormalize.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return stringToNormalize.folding(options: .diacriticInsensitive, locale: Locale.current)
     }
     
 }

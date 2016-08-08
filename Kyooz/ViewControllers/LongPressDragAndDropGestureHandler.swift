@@ -11,7 +11,7 @@ import UIKit
 import MediaPlayer
 
 
-final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
+final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler, CAAnimationDelegate {
     
     private var dragSource:DragSource
     private var dropDestination:DropDestination
@@ -24,7 +24,7 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         let layer = CALayer()
         layer.frame = CGRect(origin: CGPoint.zero, size: self.snapshot.bounds.size ?? CGSize.zero)
         layer.cornerRadius = self.cornerRadiusForSnapshot
-        layer.backgroundColor = UIColor.redColor().CGColor
+        layer.backgroundColor = UIColor.red.cgColor
         layer.opacity = 0.3
         return layer
     }()
@@ -53,16 +53,16 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         cornerRadiusForSnapshot = 10
     }
     
-    override func removeSnapshotFromView(viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
+    override func removeSnapshotFromView(_ viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
         guard locationInDestinationTableView else {
-            UIView.animateWithDuration(0.4, animations: { () -> Void in
+            UIView.animate(withDuration: 0.4, animations: { () -> Void in
                 viewToFadeOut.alpha = 0.0
             }, completion: completionHandler)
             return
         }
         
-        let newPosition = viewToFadeIn?.convertPoint(CGPoint(x: viewToFadeIn!.bounds.midX, y: viewToFadeIn!.bounds.midY), toView: viewToFadeOut.superview)
-        UIView.animateWithDuration(0.15, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+        let newPosition = viewToFadeIn?.convert(CGPoint(x: viewToFadeIn!.bounds.midX, y: viewToFadeIn!.bounds.midY), to: viewToFadeOut.superview)
+        UIView.animate(withDuration: 0.15, delay: 0, options: UIViewAnimationOptions(), animations: { () -> Void in
             if(newPosition != nil) {
                 viewToFadeOut.center = newPosition!
             }
@@ -72,18 +72,18 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         
     }
     
-    override func gestureDidBegin(sender: UIGestureRecognizer) {
+    override func gestureDidBegin(_ sender: UIGestureRecognizer) {
         super.gestureDidBegin(sender)
 
         let tableView = dropDestination.destinationTableView
-        let location = sender.locationInView(tableView)
-        let destinationIndexPath = tableView.indexPathForRowAtPoint(CGPoint(x: 0, y: location.y)) ?? NSIndexPath(forRow: tableView.dataSource!.tableView(tableView, numberOfRowsInSection: 0) - 1, inSection: 0)
+        let location = sender.location(in: tableView)
+        let destinationIndexPath = tableView.indexPathForRow(at: CGPoint(x: 0, y: location.y)) ?? IndexPath(row: tableView.dataSource!.tableView(tableView, numberOfRowsInSection: 0) - 1, section: 0)
         indexPathOfMovingItem = destinationIndexPath
 
-        tableView.insertRowsAtIndexPaths([destinationIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        tableView.insertRows(at: [destinationIndexPath], with: UITableViewRowAnimation.automatic)
     }
     
-    override func createWrapperDSD(tableView:UITableView, sourceDSD:AudioEntityDSDProtocol, originalIndexPath:NSIndexPath) -> DragToRearrangeDSDWrapper? {
+    override func createWrapperDSD(_ tableView:UITableView, sourceDSD:AudioEntityDSDProtocol, originalIndexPath:IndexPath) -> DragToRearrangeDSDWrapper? {
         guard let entities = dragSource.getSourceData()?.getTracksAtIndex(originalIndexPath) else {
             return nil
         }
@@ -96,8 +96,8 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         snapshotContainer.addSubview(cancelView)
         snapshot.layer.addSublayer(redLayer)
         
-        cancelView.layer.addAnimation(getScaleAnimation(forShrinking: false, scale: 0.01), forKey: nil)
-        snapshot.layer.addAnimation(getScaleAnimation(forShrinking: true, scale: 0.5), forKey: nil)
+        cancelView.layer.add(getScaleAnimation(forShrinking: false, scale: 0.01), forKey: nil)
+        snapshot.layer.add(getScaleAnimation(forShrinking: true, scale: 0.5), forKey: nil)
         
         cancelViewVisible = true
     }
@@ -109,12 +109,12 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         let shrinkAnimation = getScaleAnimation(forShrinking: true, scale: 0.01)
         shrinkAnimation.delegate = self
         
-        cancelView.layer.addAnimation(shrinkAnimation, forKey: nil)
-        snapshot.layer.addAnimation(getScaleAnimation(forShrinking: false, scale: 0.5), forKey: nil)
+        cancelView.layer.add(shrinkAnimation, forKey: nil)
+        snapshot.layer.add(getScaleAnimation(forShrinking: false, scale: 0.5), forKey: nil)
         cancelViewVisible = false
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         cancelView.removeFromSuperview()
         cancelView.layer.removeAllAnimations()
         snapshot.layer.removeAllAnimations()
@@ -124,8 +124,8 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         let animation = CABasicAnimation(keyPath: "transform")
         animation.duration = 0.20
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
-        let smallValue = NSValue(CATransform3D: CATransform3DMakeScale(scale, scale, scale))
-        let fullValue = NSValue(CATransform3D: CATransform3DIdentity)
+        let smallValue = NSValue(caTransform3D: CATransform3DMakeScale(scale, scale, scale))
+        let fullValue = NSValue(caTransform3D: CATransform3DIdentity)
         
         if animationIsToShrink {
             animation.fromValue = fullValue
@@ -136,7 +136,7 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler{
         }
 
         animation.fillMode = kCAFillModeBoth
-        animation.removedOnCompletion = false
+        animation.isRemovedOnCompletion = false
         return animation
     }
 }
@@ -153,6 +153,6 @@ protocol DropDestination {
     
     var destinationTableView:UITableView { get }
     
-    func setDropItems(dropItems:[AudioTrack], atIndex:NSIndexPath) -> Int
+    func setDropItems(_ dropItems:[AudioTrack], atIndex:IndexPath) -> Int
     
 }

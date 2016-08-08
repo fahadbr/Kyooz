@@ -20,18 +20,18 @@ final class CancelView : UIView {
         cancelLabel = UILabel()
         cancelLabel.text = "CANCEL"
         cancelLabel.font = UIFont(name: ThemeHelper.defaultFontNameBold, size: 20)
-        cancelLabel.textColor = UIColor.whiteColor()
-        cancelLabel.textAlignment = NSTextAlignment.Center
-        cancelLabel.frame.size = cancelLabel.textRectForBounds(boundsRect, limitedToNumberOfLines: 1).size
+        cancelLabel.textColor = UIColor.white
+        cancelLabel.textAlignment = NSTextAlignment.center
+        cancelLabel.frame.size = cancelLabel.textRect(forBounds: boundsRect, limitedToNumberOfLines: 1).size
         
         xLabel = UILabel()
         xLabel.text = "❌"
-        xLabel.font = UIFont.boldSystemFontOfSize(60)
-        xLabel.textAlignment = .Center
-        xLabel.frame.size = xLabel.textRectForBounds(boundsRect, limitedToNumberOfLines: 1).size
+        xLabel.font = UIFont.boldSystemFont(ofSize: 60)
+        xLabel.textAlignment = .center
+        xLabel.frame.size = xLabel.textRect(forBounds: boundsRect, limitedToNumberOfLines: 1).size
         
         let stackView = UIStackView(arrangedSubviews: [xLabel, cancelLabel])
-        stackView.axis = .Vertical
+        stackView.axis = .vertical
         
         super.init(frame: frame)
         

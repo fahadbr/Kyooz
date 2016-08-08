@@ -33,8 +33,8 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
         let path = UIBezierPath()
         let inset:CGFloat = 12
         let midLine = self.delegate.sectionHeight * self.delegate.sectionDividerPosition
-        path.moveToPoint(CGPoint(x: inset, y: midLine))
-        path.addLineToPoint(CGPoint(x: self.tableView.frame.width - inset, y: midLine))
+        path.move(to: CGPoint(x: inset, y: midLine))
+        path.addLine(to: CGPoint(x: self.tableView.frame.width - inset, y: midLine))
         return path
     }()
     
@@ -76,7 +76,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
 		let estimatedSize = CGSize(width: width, height: height)
 		
         let tableContainerView = UIView()
-		view.add(subView: tableContainerView, with: [.CenterX, .CenterY])
+		view.add(subView: tableContainerView, with: [.centerX, .centerY])
 		tableContainerView.constrain(height: min(estimatedSize.height, maxHeight),
 		                             width: estimatedSize.width)
 
@@ -88,78 +88,78 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
         tableView.delegate = self
         tableView.dataSource = self
 		tableView.layer.cornerRadius = 10
-		tableView.registerClass(KyoozMenuCell.self, forCellReuseIdentifier: KyoozMenuCell.reuseIdentifier)
-        tableView.separatorStyle = .None
+		tableView.register(KyoozMenuCell.self, forCellReuseIdentifier: KyoozMenuCell.reuseIdentifier)
+        tableView.separatorStyle = .none
         tableView.tableHeaderView = tableHeaderView
-        tableView.indicatorStyle = .White
-        tableView.scrollEnabled = estimatedSize.height > maxHeight
+        tableView.indicatorStyle = .white
+        tableView.isScrollEnabled = estimatedSize.height > maxHeight
         
         tableContainerView.layer.shadowOpacity = 0.8
         tableContainerView.layer.shadowOffset = CGSize(width: 0, height: 0)
         tableContainerView.layer.shadowRadius = 4.0
-        tableContainerView.layer.shadowColor = UIColor.whiteColor().CGColor
+        tableContainerView.layer.shadowColor = UIColor.white.cgColor
         
-        view.layer.backgroundColor = UIColor(white: 0, alpha: 0.4).CGColor
+        view.layer.backgroundColor = UIColor(white: 0, alpha: 0.4).cgColor
         automaticallyAdjustsScrollViewInsets = false
         
         let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
-        colorAnimation.fromValue = UIColor.clearColor().CGColor
+        colorAnimation.fromValue = UIColor.clear.cgColor
         colorAnimation.duration = 0.2
         colorAnimation.fillMode = kCAFillModeBackwards
         
         
         CATransaction.begin()
         CATransaction.setCompletionBlock() { [tableView = self.tableView] in
-            if tableView.scrollEnabled {
+            if tableView.isScrollEnabled {
                 tableView.flashScrollIndicators()
             }
         }
-        view.layer.addAnimation(colorAnimation, forKey: nil)
-        tableContainerView.layer.addAnimation(delegate.animation(forView: view), forKey: nil)
+        view.layer.add(colorAnimation, forKey: nil)
+        tableContainerView.layer.add(delegate.animation(forView: view), forKey: nil)
         CATransaction.commit()
     }
 	
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return optionsProviders.count
     }
 	
 	
-	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return optionsProviders[section].options.count
 	}
 	
-	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCellWithIdentifier(KyoozMenuCell.reuseIdentifier) as? KyoozMenuCell else {
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: KyoozMenuCell.reuseIdentifier) as? KyoozMenuCell else {
             return UITableViewCell()
         }
-		let action = optionsProviders[indexPath.section].options[indexPath.row]
+		let action = optionsProviders[(indexPath as NSIndexPath).section].options[(indexPath as NSIndexPath).row]
         
         cell.textLabel?.text = action.title
         
         if action.highlighted {
             let highlightLayer = CALayer()
-            highlightLayer.backgroundColor = ThemeHelper.defaultVividColor.CGColor
+            highlightLayer.backgroundColor = ThemeHelper.defaultVividColor.cgColor
             highlightLayer.cornerRadius = 5
             highlightLayer.frame = CGRect(x: 10, y: 5, width: delegate.sizeConstraint.maxWidth - 20, height: This.cellHeight - 10)
             cell.layer.insertSublayer(highlightLayer, below: cell.contentView.layer)
-            cell.textLabel?.font = ThemeHelper.defaultFont(forStyle: .Bold)
+            cell.textLabel?.font = ThemeHelper.defaultFont(forStyle: .bold)
         }
         return cell
 	}
 	
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        ContainerViewController.instance.longPressGestureRecognizer?.enabled = true
-		optionsProviders[indexPath.section].options[indexPath.row].action?()
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        ContainerViewController.instance.longPressGestureRecognizer?.isEnabled = true
+		optionsProviders[(indexPath as NSIndexPath).section].options[(indexPath as NSIndexPath).row].action?()
         transitionOut()
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = delegate.headerView(forSection: section)
 
         let dividerPathLayer = CAShapeLayer()
-        dividerPathLayer.path = dividerPath.CGPath
-        dividerPathLayer.strokeColor = UIColor.darkGrayColor().CGColor
+        dividerPathLayer.path = dividerPath.cgPath
+        dividerPathLayer.strokeColor = UIColor.darkGray.cgColor
         dividerPathLayer.lineWidth = 0.5
         
         dividerPathLayer.frame = view.bounds
@@ -174,14 +174,14 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
 private final class KyoozMenuCell : AbstractTableViewCell {
 	
 	static let reuseIdentifier = "\(KyoozMenuCell.self)"
-    static let font = ThemeHelper.defaultFont(forStyle: .Normal)
+    static let font = ThemeHelper.defaultFont(forStyle: .normal)
     
 	override func initialize() {
 		super.initialize()
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
 		textLabel?.font = KyoozMenuCell.font
         textLabel?.textColor = ThemeHelper.defaultFontColor
-        textLabel?.textAlignment = NSTextAlignment.Center
+        textLabel?.textAlignment = NSTextAlignment.center
 	}
 	
 }

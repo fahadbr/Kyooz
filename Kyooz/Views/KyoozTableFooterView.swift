@@ -17,7 +17,7 @@ final class KyoozTableFooterView: UIView {
 			return label.text
 		} set {
 			label.text = newValue
-			label.frame.size = label.intrinsicContentSize()
+			label.frame.size = label.intrinsicContentSize
 			frame.size = CGSize(width: label.frame.width, height: label.frame.height + 25)
 			layoutSubviews()
 		}
@@ -28,10 +28,10 @@ final class KyoozTableFooterView: UIView {
 	init() {
 		super.init(frame: CGRect.zero)
 		addSubview(label)
-		label.textColor = UIColor.darkGrayColor()
-		label.textAlignment = .Center
+		label.textColor = UIColor.darkGray
+		label.textAlignment = .center
 		label.numberOfLines = 0
-		label.lineBreakMode = .ByWordWrapping
+		label.lineBreakMode = .byWordWrapping
 		label.font = self.dynamicType.font
 		
 	}
