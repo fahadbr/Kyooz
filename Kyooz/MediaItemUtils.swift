@@ -67,7 +67,7 @@ struct MediaItemUtils {
     }
     
     static func getReleaseDateString(_ mediaItem:MPMediaItem) -> String? {
-        if let releaseDate = mediaItem.value(forKey: "year") as? NSNumber where !releaseDate.isEqual(to: NSNumber(value: 0)) {
+        if let releaseDate = mediaItem.value(forKey: "year") as? NSNumber, !releaseDate.isEqual(to: NSNumber(value: 0)) {
             return "\(releaseDate)"
         }
         return nil

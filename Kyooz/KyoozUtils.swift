@@ -124,10 +124,10 @@ struct KyoozUtils {
 	
 	//MARK: - random number functions
     static func randomNumber(belowValue value:Int) -> Int {
-        return Int(arc4random_uniform(UInt32(value)))
+        return Int(arc4random_uniform(UInt32(abs(value))))
     }
     
-    static func randomNumberInRange(_ range:Range<Int>) -> Int {
+    static func randomNumber(in range:Range<Int>) -> Int {
         let startIndex = range.lowerBound
         let endIndex = range.upperBound
         return randomNumber(belowValue: endIndex - startIndex) + startIndex

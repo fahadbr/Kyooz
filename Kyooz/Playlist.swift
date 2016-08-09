@@ -122,7 +122,7 @@ struct Playlists {
 
         
         let kyoozOption = UIAlertAction(title: "Kyooz Playlist", style: .default, handler: { (action) -> Void in
-            guard let text = ac.textFields?.first?.text where !text.isEmpty else {
+            guard let text = ac.textFields?.first?.text, !text.isEmpty else {
                 Logger.error("No name found")
                 return
             }
@@ -132,7 +132,7 @@ struct Playlists {
         
         if #available(iOS 9.3, *) {
             let itunesOption = UIAlertAction(title: "iTunes Playlist", style: .default, handler: { (action) -> Void in
-                guard let text = ac.textFields?.first?.text where !text.isEmpty else {
+                guard let text = ac.textFields?.first?.text, !text.isEmpty else {
                     Logger.error("No name found")
                     return
                 }

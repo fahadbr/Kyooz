@@ -12,7 +12,7 @@ class CustomPopableViewController: UIViewController {
 
     var transitionAnimator = ViewControllerFadeAnimator.instance
     lazy var popGestureRecognizer:UIScreenEdgePanGestureRecognizer = {
-        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(CustomPopableViewController.handlePan(_:)))
+        let popGestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
         popGestureRecognizer.edges = UIRectEdge.left
         return popGestureRecognizer
     }()
@@ -37,7 +37,7 @@ class CustomPopableViewController: UIViewController {
     final func handlePan(_ recognizer:UIPanGestureRecognizer) {
         if recognizer.state == .began {
             transitionAnimator.interactive = true
-            navigationController?.popViewController(animated: true)
+            _ = navigationController?.popViewController(animated: true)
         }
         transitionAnimator.handlePan(recognizer)
     }

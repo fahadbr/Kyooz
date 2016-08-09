@@ -15,13 +15,13 @@ class TestDataGenerator {
     static func generateData() {
 		
         let bundle = Bundle(for: TestDataGenerator.self)
-        let testDataDict = NSDictionary(contentsOf: bundle.urlForResource("TestData", withExtension: "plist")!)!
+		let testDataDict = NSDictionary(contentsOf: bundle.url(forResource: "TestData", withExtension: "plist")!)!
         
         let artistNames = (testDataDict.object(forKey: "ArtistNames")! as! [String]).sorted()
         let albumNames = testDataDict.object(forKey: "AlbumNames")! as! [String]
         let trackNames = testDataDict.object(forKey: "TrackNames")! as! [String]
         
-        let trackAssetURL = bundle.urlForResource("foreword", withExtension: "mp3")!
+		let trackAssetURL = bundle.url(forResource: "foreword", withExtension: "mp3")!
         
         var images = [UIImage]()
         for i in 1...4 {
@@ -34,12 +34,12 @@ class TestDataGenerator {
         var totalNumberOfAlbums = 0
         
         for (k,artistName) in artistNames.enumerated() {
-            let noOfAlbums = numberOfAlbumsToUse ?? KyoozUtils.randomNumberInRange(1...5)
+			let noOfAlbums = numberOfAlbumsToUse ?? KyoozUtils.randomNumber(in: 1..<6)
             for j in 1...noOfAlbums {
                 let albumName = albumNames[(k + j) % albumNames.count] + " \(artistName)"
                 
-                let noOfTracksInAlbum = KyoozUtils.randomNumberInRange(5...16)
-                
+				let noOfTracksInAlbum = KyoozUtils.randomNumber(in: 5..<17)
+				
                 for i in 1...noOfTracksInAlbum {
                     let dto = AudioTrackDTO()
                     dto.trackTitle = trackNames[i - 1].capitalized + " \(albumName) \(artistName)"
@@ -52,8 +52,8 @@ class TestDataGenerator {
                     dto.albumArtistId = getRandomId()
                     dto.artwork = artworks[totalNumberOfAlbums % artworks.count]
                     dto.assetURL = trackAssetURL
-                    dto.releaseYear = "\(KyoozUtils.randomNumberInRange(1990...2016))"
-                    dto.playbackDuration = Double(KyoozUtils.randomNumberInRange(150...360))
+					dto.releaseYear = "\(KyoozUtils.randomNumber(in: 1990..<2017))"
+					dto.playbackDuration = Double(KyoozUtils.randomNumber(in: 150..<361))
                     tracks.append(dto)
                 }
                 

@@ -146,8 +146,8 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
         
         updateSnapshotPosition(sender.location(in: sender.view))
         let point = locationInDestinationTableView ? location : CGPoint(x: 0, y: location.y)
-        if let indexPath = destinationTableView.indexPathForRow(at: point) where indexPathOfMovingItem != indexPath {
-            if let canMove = destinationTableView.dataSource?.tableView?(destinationTableView, canMoveRowAt: indexPathOfMovingItem) where canMove {
+        if let indexPath = destinationTableView.indexPathForRow(at: point), indexPathOfMovingItem != indexPath {
+            if let canMove = destinationTableView.dataSource?.tableView?(destinationTableView, canMoveRowAt: indexPathOfMovingItem), canMove {
                 destinationTableView.moveRow(at: indexPathOfMovingItem, to: indexPath)
                 indexPathOfMovingItem = indexPath
             }

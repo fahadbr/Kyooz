@@ -76,7 +76,7 @@ extension MPMediaItem : AudioTrack {
     var hasArtwork:Bool { return artwork != nil }
     
     var releaseYear:String? {
-        if let releaseDate = value(forKey: "year") as? NSNumber where releaseDate.intValue != 0 {
+        if let releaseDate = value(forKey: "year") as? NSNumber, releaseDate.intValue != 0 {
             return "\(releaseDate)"
         }
         return nil
