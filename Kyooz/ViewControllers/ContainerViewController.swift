@@ -249,7 +249,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     func presentKyoozNavigationController() {
         let nc = kyoozNavigationViewController
-        ConstraintUtils.applyStandardConstraintsToView(subView: nc.view, parentView: view)
+        _ = ConstraintUtils.applyStandardConstraintsToView(subView: nc.view, parentView: view)
         addChildViewController(nc)
         nc.didMove(toParentViewController: self)
         longPressGestureRecognizer.isEnabled = false
@@ -386,14 +386,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 
     func gestureDidBegin(_ sender: UIGestureRecognizer) {
         if(sender == longPressGestureRecognizer) {
-			TutorialManager.instance.dismissTutorial(.dragAndDrop, action: .fulfill)
+			_ = TutorialManager.instance.dismissTutorial(.dragAndDrop, action: .fulfill)
             playQueueViewController.insertMode = true
             animateCenterPanel(toPosition: .left)
         }
     }
     
     func gestureDidEnd(_ sender: UIGestureRecognizer) {
-        TutorialManager.instance.dismissTutorial(Tutorial.insertOrCancel, action: .fulfill)
+        _ = TutorialManager.instance.dismissTutorial(Tutorial.insertOrCancel, action: .fulfill)
         playQueueViewController.insertMode = false
         KyoozUtils.doInMainQueueAfterDelay(0.3) { [unowned self]() in
             self.animateCenterPanel(toPosition: .center)

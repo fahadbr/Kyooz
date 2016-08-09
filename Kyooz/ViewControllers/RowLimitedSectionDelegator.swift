@@ -63,7 +63,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
 		}
         
         if let sourceData = datasourceDelegate.sourceData as? SearchResultsSourceData
-            where sourceData.searchExecutionController.searchInProgress {
+            , sourceData.searchExecutionController.searchInProgress {
             
             if !headerView.activityIndicator.isAnimating {
                 headerView.activityIndicator.startAnimating()

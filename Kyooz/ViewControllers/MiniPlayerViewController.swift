@@ -88,7 +88,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
             .with(details: "\(nowPlayingItem.albumArtist ?? "")  —  \(nowPlayingItem.albumTitle ?? "")")
             .with(originatingCenter: menuButton.superview?.convert(menuButton.center, to: UIScreen.main.coordinateSpace))
 		
-        b.with(options:
+        .with(options:
             KyoozMenuAction(title: KyoozConstants.JUMP_TO_ALBUM) {
                 self.goToVCWithGrouping(LibraryGrouping.Albums, nowPlayingItem: nowPlayingItem)
             },
@@ -97,7 +97,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
             }
         )
         
-        b.with(options: KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST) {
+        .with(options: KyoozMenuAction(title: KyoozConstants.ADD_TO_PLAYLIST) {
             Playlists.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
             })
 

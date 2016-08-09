@@ -23,10 +23,10 @@ class AudioTrackDTO : NSObject, AudioTrack {
         }
     }
     
-    static func supportsSecureCoding() -> Bool {
-        return false
-    }
-    
+	static var supportsSecureCoding: Bool {
+		return false
+	}
+		
     var albumArtist:String!
     var albumArtistId:UInt64 = 0
     var albumId:UInt64 = 0

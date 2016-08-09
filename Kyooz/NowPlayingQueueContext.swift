@@ -64,7 +64,7 @@ struct NowPlayingQueueContext {
         case .random:
             var queue = self.currentQueue
             itemsToEnqueue.forEach() {
-                queue.insert($0, at: KyoozUtils.randomNumberInRange(index..<queue.count))
+				queue.insert($0, at: KyoozUtils.randomNumber(in: index..<queue.count))
             }
             self.currentQueue = queue
             

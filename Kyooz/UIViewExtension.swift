@@ -17,10 +17,12 @@ enum Anchor:Int {
 
 extension UIView {
 	
+	@discardableResult
 	func add(subView:UIView, with anchors: Anchor...) -> [Anchor : NSLayoutConstraint] {
 		return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
 	}
-    
+	
+	@discardableResult
     func add(subView:UIView, with anchors: [Anchor]) -> [Anchor : NSLayoutConstraint] {
         return ConstraintUtils.applyConstraintsToView(withAnchors: anchors, subView: subView, parentView: self)
     }
@@ -30,6 +32,7 @@ extension UIView {
 		widthAnchor.constraint(equalTo: heightAnchor, multiplier: multiplier).isActive = true
 	}
 	
+	@discardableResult
 	func constrain(height:CGFloat, widthRatio multiplier:CGFloat = 1) -> [Anchor : NSLayoutConstraint]{
 		translatesAutoresizingMaskIntoConstraints = false
 		return [
@@ -38,6 +41,7 @@ extension UIView {
 		]
 	}
 	
+	@discardableResult
 	func constrain(width:CGFloat, heightRatio multiplier:CGFloat = 1) -> [Anchor : NSLayoutConstraint]{
 		translatesAutoresizingMaskIntoConstraints = false
 		return [
@@ -46,6 +50,7 @@ extension UIView {
 		]
 	}
 	
+	@discardableResult
 	func constrain(height:CGFloat, width:CGFloat) -> [Anchor : NSLayoutConstraint] {
 		translatesAutoresizingMaskIntoConstraints = false
 		return [

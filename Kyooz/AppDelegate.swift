@@ -49,19 +49,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate {
 	
 	func createWindow() -> UIWindow {
-		#if MOCK_DATA
-			Logger.debug("starting app with tweaks window")
-			let tweaksGestureRecognizer = UIPinchGestureRecognizer()
-			let window = TweakWindow(frame: UIScreen.main.bounds,
-			                         gestureType: .gesture(tweaksGestureRecognizer),
-			                         tweakStore: KyoozTweaks.defaultStore)
-			KyoozUtils.doInMainQueueAsync() {
-				ContainerViewController.instance.view.addGestureRecognizer(tweaksGestureRecognizer)
-			}
-			return window
-		#else
+//		#if MOCK_DATA
+//			Logger.debug("starting app with tweaks window")
+//			let tweaksGestureRecognizer = UIPinchGestureRecognizer()
+//			let window = TweakWindow(frame: UIScreen.main.bounds,
+//			                         gestureType: .gesture(tweaksGestureRecognizer),
+//			                         tweakStore: KyoozTweaks.defaultStore)
+//			KyoozUtils.doInMainQueueAsync() {
+//				ContainerViewController.instance.view.addGestureRecognizer(tweaksGestureRecognizer)
+//			}
+//			return window
+//		#else
 			return UIWindow(frame: UIScreen.main.bounds)
-		#endif
+//		#endif
 	}
 	
 	

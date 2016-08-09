@@ -85,7 +85,7 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
     func entityIsNowPlaying(_ entity:AudioEntity, libraryGrouping:LibraryGrouping, indexPath:IndexPath) -> Bool {
         if let nowPlayingItemId = audioQueuePlayer.nowPlayingItem?.persistentIdForGrouping(libraryGrouping),
             let trackId = entity.representativeTrack?.persistentIdForGrouping(libraryGrouping)
-            where nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
+            , nowPlayingItemId != 0 && trackId != 0 && nowPlayingItemId == trackId {
             
             return true
         }

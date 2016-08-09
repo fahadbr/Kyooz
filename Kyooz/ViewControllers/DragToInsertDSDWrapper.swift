@@ -68,7 +68,7 @@ final class DragToInsertDSDWrapper: DragToRearrangeDSDWrapper {
         
         tableView.deleteRows(at: [indexPathOfMovingItem], with: .none)
         
-        guard let destinationSourceData = self.sourceData as? MutableAudioEntitySourceData where locationInDestinationTableView else {
+        guard let destinationSourceData = self.sourceData as? MutableAudioEntitySourceData, locationInDestinationTableView else {
             return
         }
         

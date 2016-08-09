@@ -82,7 +82,7 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         let indexToUse = (indexPath as NSIndexPath).row
         var isNowPlayingItem = false
         
-        if let index = indexOfNewItem where index == (indexPath as NSIndexPath).row {
+        if let index = indexOfNewItem, index == (indexPath as NSIndexPath).row {
             isNowPlayingItem = true
         }
         
