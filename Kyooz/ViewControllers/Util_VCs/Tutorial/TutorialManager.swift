@@ -49,7 +49,8 @@ class TutorialManager {
     }()
     
     weak var presentedTutorial:TutorialViewController?
-    
+	
+	@discardableResult
     func dimissTutorials(_ tutorials:[Tutorial], action:TutorialAction) {
         for tutorial in tutorials {
             if dismissTutorial(tutorial, action: action){
@@ -57,7 +58,8 @@ class TutorialManager {
             }
         }
     }
-    
+	
+	@discardableResult
     func dismissTutorial(_ tutorial:Tutorial, action:TutorialAction) -> Bool {
         guard let tvc = presentedTutorial , tvc.tutorialDTO.tutorial == tutorial else {
             return false
@@ -87,6 +89,7 @@ class TutorialManager {
     
     //use this function when the intention is to present one of many
     //unfulfilled tutorials in the same invocation
+	@discardableResult
     func presentUnfulfilledTutorials(_ tutorials:[Tutorial]) -> Bool {
         for tutorial in tutorials {
             if presentTutorialIfUnfulfilled(tutorial) {
@@ -96,6 +99,7 @@ class TutorialManager {
 		return false
     }
 	
+	@discardableResult
 	func presentTutorialIfUnfulfilled(_ tutorial:Tutorial) -> Bool {
         guard !tutorialIsFulfilled(tutorial)
             && !KyoozUtils.screenshotUITesting else {

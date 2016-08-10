@@ -10,10 +10,12 @@ import UIKit
 
 struct ConstraintUtils {
 	
+	@discardableResult
 	static func applyStandardConstraintsToView(subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
 		return applyConstraintsToView(withAnchors: [.top, .bottom, .left, .right], subView: subView, parentView: parentView, shouldActivate: shouldActivate)
 	}
-    
+	
+	@discardableResult
     static func applyConstraintsToView(withAnchors anchors:[Anchor], subView:UIView, parentView:UIView, shouldActivate:Bool = true) -> [Anchor:NSLayoutConstraint] {
         parentView.addSubview(subView)
         subView.translatesAutoresizingMaskIntoConstraints = false

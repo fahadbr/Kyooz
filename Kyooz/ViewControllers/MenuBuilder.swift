@@ -26,31 +26,37 @@ final class MenuBuilder {
 		
 	}
 	
+	@discardableResult
 	func with(title: String?) -> MenuBuilder {
 		self.title = title
 		return self
 	}
 	
+	@discardableResult
 	func with(details: String?) -> MenuBuilder {
 		self.details = details
 		return self
 	}
 	
+	@discardableResult
 	func with(originatingCenter: CGPoint?) -> MenuBuilder {
 		self.originatingCenter = originatingCenter
 		return self
 	}
 	
+	@discardableResult
 	func with(optionsProviders providers: KyoozOptionsProvider...) -> MenuBuilder {
 		optionsProviders.append(contentsOf: providers)
 		return self
 	}
 	
+	@discardableResult
 	func with(options:KyoozOption...) -> MenuBuilder {
 		optionsProviders.append(BasicKyoozOptionsProvider(options: options))
 		return self
 	}
-    
+	
+	@discardableResult
     func with(options:[KyoozOption]) -> MenuBuilder {
         optionsProviders.append(BasicKyoozOptionsProvider(options: options))
         return self
