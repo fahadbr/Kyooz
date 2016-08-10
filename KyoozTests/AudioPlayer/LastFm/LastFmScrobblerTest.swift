@@ -29,6 +29,7 @@ class LastFmScrobblerTest: XCTestCase {
         lastFmScrobbler.tempDataDAO = mockTempDataDao
         lastFmScrobbler.simpleWsClient = mockSimpleWsClient
         lastFmScrobbler.userDefaults = mockUserDefaults
+		lastFmScrobbler.internetConnectionAvailable = { true }
         
         mockUserDefaults.setObject("username", forKey: UserDefaultKeys.LastFmUsernameKey)
         mockUserDefaults.setObject("session", forKey: UserDefaultKeys.LastFmSessionKey)
@@ -85,7 +86,26 @@ class LastFmScrobblerTest: XCTestCase {
         }
         
     }
-    
+	
+	func testURL() {
+		mockTempDataDao.persistentNumberToReturn = 0
+		lastFmScrobbler.initialize()
+		
+		let initializedExpectation = expectationWithDescription("lastFm initialized")
+		
+		lastFmScrobbler.initializeScrobbler() {
+			Logger.debug(self.mockSimpleWsClient.url!)
+			Logger.debug(self.mockSimpleWsClient.params!.description)
+			XCTAssertEqual(self.mockSimpleWsClient.params!.last!, "api_sig=550a84d40bd73366a3d96f5ef0faba34")
+			initializedExpectation.fulfill()
+		}
+		
+		waitForExpectationsWithTimeout(2) { (error) in
+			XCTAssertNil(error, error?.errorDescription ?? "Timed out with unknown error")
+		}
+		
+	}
+	
     func testGetOrderedParamKeys() {
         let unorderedParams:[String:String] = [
             "sk" : "session",
@@ -145,7 +165,15 @@ class LastFmScrobblerTest: XCTestCase {
     }
     
     class MockSimpleWsClient : SimpleWSClient {
-        override func executeHTTPSPOSTCall(baseURL baseURL: String, params: [String], successHandler: ([String : String]) -> Void, failureHandler: () -> ()) {
+		var url: String?
+		var params: [String]?
+        override func executeHTTPSPOSTCall(baseURL baseURL: String,
+                                                   params: [String],
+                                                   successHandler: ([String : String]) -> Void,
+                                                   failureHandler: () -> ()) {
+			
+			self.url = baseURL
+			self.params = params
             successHandler(["info":"i", "session":"s", "username":"U", "lfm.status":"ok"])
         }
     }

@@ -58,6 +58,7 @@ final class LastFmScrobbler {
     lazy var userDefaults:NSUserDefaults = NSUserDefaults.standardUserDefaults()
 	lazy var shortNotificationManager = ShortNotificationManager.instance
     lazy var simpleWsClient:SimpleWSClient = SimpleWSClient.instance
+	lazy var internetConnectionAvailable: ()->Bool = { KyoozUtils.internetConnectionAvailable }
     
     //MARK: - initializers
     func initialize() -> LastFmScrobbler {
@@ -303,7 +304,7 @@ final class LastFmScrobbler {
     }
     
     private func buildApiSigAndCallWS(params:[String:String], successHandler lastFmSuccessHandler:([String:String]) -> Void, failureHandler lastFmFailureHandler: ([String:String]) -> ()) {
-		guard KyoozUtils.internetConnectionAvailable else {
+		guard internetConnectionAvailable() else {
 			Logger.debug("no internet connection available")
 			lastFmFailureHandler([error_key:httpFailure])
 			return
