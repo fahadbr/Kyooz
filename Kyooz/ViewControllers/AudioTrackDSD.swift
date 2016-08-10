@@ -60,7 +60,7 @@ class EditableAudioTrackDSD : AudioTrackDSD {
     }
     
     func tableView(_ tableView: UITableView, moveRowAtIndexPath sourceIndexPath: IndexPath, toIndexPath destinationIndexPath: IndexPath) {
-        executeSourceDataUpdate {
+        _ = executeSourceDataUpdate {
             guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData else {
                 throw KyoozError(errorDescription:"Source Data is not Mutable")
             }

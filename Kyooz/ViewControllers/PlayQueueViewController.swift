@@ -370,7 +370,7 @@ extension PlayQueueViewController {
 	}
 	
 	func addSelectedToPlaylist() {
-		guard let tracks = getOrderedTracks() where tableView.isEditing else { return }
+		guard let tracks = getOrderedTracks(), tableView.isEditing else { return }
 
         Playlists.showAvailablePlaylists(forAddingTracks:tracks,
                                           usingTitle: "ADD \(tracks.count) TRACKS TO PLAYLIST",
@@ -401,7 +401,7 @@ extension PlayQueueViewController {
             audioQueuePlayer.delete(at: indexPathsToDelete.map { ($0 as NSIndexPath).row })
 			deleteIndexPaths(indexPathsToDelete)
 		}
-		guard let indexPathsToDelete = tableView.indexPathsForSelectedRows where tableView.isEditing else {
+		guard let indexPathsToDelete = tableView.indexPathsForSelectedRows, tableView.isEditing else {
 			return
 		}
 		

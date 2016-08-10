@@ -101,7 +101,7 @@ final class DragGestureScrollingController :NSObject {
         
         //THIS ORDER MATTERS FOR DRAG AND DROP
         //(When scrolling fast the tableview datasource may sometimes return the placeholder cell because of the updated indexPathOfMovingItem)
-        delegate.handlePositionChange(gestureRecognizer)
+        _ = delegate.handlePositionChange(gestureRecognizer)
         scrollView.contentOffset.y = newOffset
         
     }
