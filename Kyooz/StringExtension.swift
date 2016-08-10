@@ -29,8 +29,8 @@ extension String {
         return String(format:hash as String)
     }
     
-    var urlEncodedString:String! {
-        return addingPercentEncoding(withAllowedCharacters: legalCharacters)
+    var urlEncodedString:String {
+        return addingPercentEncoding(withAllowedCharacters: legalCharacters)!
     }
     
     var normalizedString:String {

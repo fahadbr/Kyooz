@@ -62,8 +62,8 @@ class TutorialManagerTest: XCTestCase {
 		XCTAssertTrue(tutorialManager.presentTutorialIfUnfulfilled(overrideTutorial))
         ensureTutorialIsPresented(overrideTutorial)
         XCTAssertEqual(overrideTutorial, mockVCFactory.tutorialVC.tutorialDTO.tutorial)
-        XCTAssertEqual(1, originalTutorialVC.transitionOutInvocations.count)
-        XCTAssertEqual(TutorialAction.dismissUnfulfilled, originalTutorialVC.transitionOutInvocations[0])
+        XCTAssertEqual(1, originalTutorialVC!.transitionOutInvocations.count)
+        XCTAssertEqual(TutorialAction.dismissUnfulfilled, originalTutorialVC!.transitionOutInvocations[0])
     }
     
     func testPresentTutorialThatsAlreadyPresented() {
