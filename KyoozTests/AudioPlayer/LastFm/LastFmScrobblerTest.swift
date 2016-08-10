@@ -29,12 +29,13 @@ class LastFmScrobblerTest: XCTestCase {
         lastFmScrobbler.tempDataDAO = mockTempDataDao
         lastFmScrobbler.simpleWsClient = mockSimpleWsClient
         lastFmScrobbler.userDefaults = mockUserDefaults
+		lastFmScrobbler.internetConnectionAvailable = { true }
         
         mockUserDefaults.set("username", forKey: UserDefaultKeys.LastFmUsernameKey)
         mockUserDefaults.set("session", forKey: UserDefaultKeys.LastFmSessionKey)
         mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent()
         
-        lastFmScrobbler.initialize()
+        _ = lastFmScrobbler.initialize()
     }
     
     override func tearDown() {
@@ -47,7 +48,7 @@ class LastFmScrobblerTest: XCTestCase {
         
 
         mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent() - (KyoozConstants.ONE_DAY_IN_SECONDS * 2)
-        lastFmScrobbler.initialize()
+        _ = lastFmScrobbler.initialize()
         
         lastFmScrobbler.addToScrobbleCache(MPMediaItem(), timeStampToScrobble: Date().timeIntervalSince1970)
         
@@ -66,7 +67,7 @@ class LastFmScrobblerTest: XCTestCase {
     
     func testLastSessionValidationTimeUpdated() {
         mockTempDataDao.persistentNumberToReturn = 0
-        lastFmScrobbler.initialize()
+        _ = lastFmScrobbler.initialize()
         
         XCTAssertFalse(lastFmScrobbler.validSessionObtained)
         XCTAssertEqual(0, lastFmScrobbler.lastSessionValidationTime)
@@ -81,11 +82,30 @@ class LastFmScrobblerTest: XCTestCase {
         }
         
         waitForExpectations(timeout: 2) { (error) in
-            XCTAssertNil(error, error?.errorDescription ?? "Timed out with unknown error")
+            XCTAssertNil(error, "Timed out with unknown error: \(error)")
         }
         
     }
-    
+	
+	func testURL() {
+		mockTempDataDao.persistentNumberToReturn = 0
+		_ = lastFmScrobbler.initialize()
+		
+		let initializedExpectation = expectation(description: "lastFm initialized")
+		
+		lastFmScrobbler.initializeScrobbler() {
+			Logger.debug(self.mockSimpleWsClient.url!)
+			Logger.debug(self.mockSimpleWsClient.params!.description)
+			XCTAssertEqual(self.mockSimpleWsClient.params!.last!, "api_sig=550a84d40bd73366a3d96f5ef0faba34")
+			initializedExpectation.fulfill()
+		}
+		
+		waitForExpectations(timeout: 2) { (error) in
+			XCTAssertNil(error, "Timed out with unknown error: \(error)")
+		}
+		
+	}
+	
     func testGetOrderedParamKeys() {
         let unorderedParams:[String:String] = [
             "sk" : "session",
@@ -145,7 +165,15 @@ class LastFmScrobblerTest: XCTestCase {
     }
     
     class MockSimpleWsClient : SimpleWSClient {
-        override func executeHTTPSPOSTCall(baseURL: String, params: [String], successHandler: ([String : String]) -> Void, failureHandler: () -> ()) {
+		var url: String?
+		var params: [String]?
+        override func executeHTTPSPOSTCall(baseURL: String,
+                                           params: [String],
+                                           successHandler: ([String : String]) -> Void,
+                                           failureHandler: () -> ()) {
+			
+			self.url = baseURL
+			self.params = params
             successHandler(["info":"i", "session":"s", "username":"U", "lfm.status":"ok"])
         }
     }
