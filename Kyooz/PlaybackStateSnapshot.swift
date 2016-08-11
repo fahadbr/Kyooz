@@ -9,7 +9,7 @@
 import Foundation
 
 struct PlaybackStateSnapshot {
-    let nowPlayingQueueContext:NowPlayingQueueContext
+    let playQueue:PlayQueue
     let currentPlaybackTime:Float
     
     var persistableSnapshot:PlaybackStatePersistableSnapshot {
@@ -20,7 +20,9 @@ struct PlaybackStateSnapshot {
 final class PlaybackStatePersistableSnapshot : NSObject, NSSecureCoding {
     private static let contextKey = "contextKey"
     private static let timeKey = "timeKey"
-    
+	
+	private typealias This = PlaybackStatePersistableSnapshot
+	
     static var supportsSecureCoding: Bool {
         return true
     }
@@ -32,18 +34,21 @@ final class PlaybackStatePersistableSnapshot : NSObject, NSSecureCoding {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        guard let persistedContext = aDecoder.decodeObject(of: NowPlayingQueuePersistableContext.self, forKey: PlaybackStatePersistableSnapshot.contextKey) else {
+		NSKeyedUnarchiver.setClass(PlayQueuePersistableWrapper.self, forClassName: "Kyooz.NowPlayingQueuePersistableContext")
+        guard let persistedContext = aDecoder.decodeObject(of: PlayQueuePersistableWrapper.self, forKey: This.contextKey) else {
 			let type = ApplicationDefaults.audioQueuePlayer.type
-            self.snapshot = PlaybackStateSnapshot(nowPlayingQueueContext: NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type), currentPlaybackTime: 0)
+            self.snapshot = PlaybackStateSnapshot(playQueue: PlayQueue(originalQueue: [AudioTrack](),
+                                                                       forType: type),
+                                                  currentPlaybackTime: 0)
             return
         }
         
-        let playbackTime = aDecoder.decodeFloat(forKey: PlaybackStatePersistableSnapshot.timeKey)
-        self.snapshot = PlaybackStateSnapshot(nowPlayingQueueContext: persistedContext.context, currentPlaybackTime: playbackTime)
+        let playbackTime = aDecoder.decodeFloat(forKey: This.timeKey)
+        self.snapshot = PlaybackStateSnapshot(playQueue: persistedContext.context, currentPlaybackTime: playbackTime)
     }
     
     func encode(with aCoder: NSCoder) {
-        aCoder.encode(snapshot.nowPlayingQueueContext.persistableContext, forKey: PlaybackStatePersistableSnapshot.contextKey)
+        aCoder.encode(snapshot.playQueue.persistableContext, forKey: PlaybackStatePersistableSnapshot.contextKey)
         aCoder.encode(snapshot.currentPlaybackTime, forKey: PlaybackStatePersistableSnapshot.timeKey)
     }
 }
