@@ -37,7 +37,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
 
     
-    private var nowPlayingQueueContext:NowPlayingQueueContext {
+    private var playQueue:PlayQueue {
         didSet {
             publishNotification(for: .queueUpdate)
         }
@@ -52,11 +52,11 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     override init() {
         playbackStateManager = PlaybackStateManager(musicPlayer: musicPlayer)
-        if let nowPlayingQueueContext = TempDataDAO.instance.getPlaybackStateSnapshotFromTempStorage()?.nowPlayingQueueContext {
-            self.nowPlayingQueueContext = nowPlayingQueueContext
+        if let playQueue = TempDataDAO.instance.getPlaybackStateSnapshotFromTempStorage()?.playQueue {
+            self.playQueue = playQueue
         } else {
             Logger.error("couldnt get queue from temp storage. starting with empty queue")
-            nowPlayingQueueContext = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type)
+            playQueue = PlayQueue(originalQueue: [AudioTrack](), forType: type)
         }
         
         if let indexBeforeMod = TempDataDAO.instance.getPersistentValue(key: lowestIndexPersistedKey) as? NSNumber {
@@ -77,16 +77,16 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
 	var playbackStateSnapshot:PlaybackStateSnapshot {
 		get {
-			return PlaybackStateSnapshot(nowPlayingQueueContext: nowPlayingQueueContext, currentPlaybackTime: currentPlaybackTime)
+			return PlaybackStateSnapshot(playQueue: playQueue, currentPlaybackTime: currentPlaybackTime)
 		} set(newSnapshot) {
             let musicWasPlaying = musicIsPlaying
 			musicPlayer.stop()
-			guard let items = newSnapshot.nowPlayingQueueContext.currentQueue as? [MPMediaItem] else {
+			guard let items = newSnapshot.playQueue.currentQueue as? [MPMediaItem] else {
 				Logger.error("trying to restore a queue with objects that are not MPMediaItem")
 				return
 			}
-			nowPlayingQueueContext = newSnapshot.nowPlayingQueueContext
-			playNowInternal(items, index: nowPlayingQueueContext.indexOfNowPlayingItem, shouldPlay: false)
+			playQueue = newSnapshot.playQueue
+			playNowInternal(items, index: playQueue.indexOfNowPlayingItem, shouldPlay: false)
 			currentPlaybackTime = newSnapshot.currentPlaybackTime
             if musicWasPlaying {
                 play()
@@ -95,7 +95,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     var nowPlayingQueue:[AudioTrack] {
-        return nowPlayingQueueContext.currentQueue
+        return playQueue.currentQueue
     }
     
     var nowPlayingItem:AudioTrack? {
@@ -122,18 +122,18 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     private (set) var indexOfNowPlayingItem:Int {
         get {
-            return nowPlayingQueueContext.indexOfNowPlayingItem
+            return playQueue.indexOfNowPlayingItem
         } set {
-            nowPlayingQueueContext.indexOfNowPlayingItem = newValue
+            playQueue.indexOfNowPlayingItem = newValue
         }
     }
     
     var shuffleActive:Bool {
         get {
-            return nowPlayingQueueContext.shuffleActive && nowPlayingItem != nil
+            return playQueue.shuffleActive && nowPlayingItem != nil
         } set {
-            nowPlayingQueueContext.setShuffleActive(newValue)
-            persistToSystemQueue(nowPlayingQueueContext)
+            playQueue.setShuffleActive(newValue)
+            persistToSystemQueue(playQueue)
             publishNotification(for: .systematicQueueUpdate)
         }
     }
@@ -157,12 +157,12 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             switch(newValue) {
             case .off:
                 musicPlayer.repeatMode = .none
-                persistToSystemQueue(nowPlayingQueueContext)
+                persistToSystemQueue(playQueue)
             case .one:
                 musicPlayer.repeatMode = .one
             case .all:
                 musicPlayer.repeatMode = .all
-                persistToSystemQueue(nowPlayingQueueContext)
+                persistToSystemQueue(playQueue)
             }
             publishNotification(for: .systematicQueueUpdate)
         }
@@ -202,7 +202,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         KyoozUtils.doInMainQueueAsync() {
 			let oldSnapshot = self.playbackStateSnapshot
 			
-            var newContext = NowPlayingQueueContext(originalQueue: tracks, forType: self.type)
+            var newContext = PlayQueue(originalQueue: tracks, forType: self.type)
             newContext.indexOfNowPlayingItem = index >= tracks.count ? 0 : index
             newContext.setShuffleActive(self.shuffleActive || shouldShuffleIfOff)
             
@@ -211,7 +211,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 return
             }
             
-            self.nowPlayingQueueContext = newContext
+            self.playQueue = newContext
             self.playNowInternal(mediaItems, index: newContext.indexOfNowPlayingItem)
 			
 			self.delegate?.audioQueuePlayerDidChangeContext(self, previousSnapshot:oldSnapshot)
@@ -233,22 +233,22 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func enqueue(tracks tracksToEnqueue: [AudioTrack], at enqueueAction: EnqueueAction) {
-        let oldContext = nowPlayingQueueContext
-        nowPlayingQueueContext.enqueue(items: tracksToEnqueue, at: enqueueAction)
+        let oldContext = playQueue
+        playQueue.enqueue(items: tracksToEnqueue, at: enqueueAction)
         persistToSystemQueue(oldContext)
 		delegate?.audioQueuePlayerDidEnqueueItems(tracks: tracksToEnqueue, at: enqueueAction)
     }
     
     func insert(tracks tracksToInsert: [AudioTrack], at index: Int) -> Int {
-        let oldContext = nowPlayingQueueContext
-        nowPlayingQueueContext.insertItemsAtIndex(tracksToInsert, index: index)
+        let oldContext = playQueue
+        playQueue.insertItemsAtIndex(tracksToInsert, index: index)
         persistToSystemQueue(oldContext)
         return tracksToInsert.count
     }
     
     func delete(at indicies: [Int]) {
-        let oldContext = nowPlayingQueueContext
-        let nowPlayingItemRemoved = nowPlayingQueueContext.deleteItemsAtIndices(indicies)
+        let oldContext = playQueue
+        let nowPlayingItemRemoved = playQueue.deleteItemsAtIndices(indicies)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
@@ -257,14 +257,14 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func move(from sourceIndex: Int, to destinationIndex: Int) {
-        let oldContext = nowPlayingQueueContext
-        nowPlayingQueueContext.moveMediaItem(fromIndexPath: sourceIndex, toIndexPath: destinationIndex)
+        let oldContext = playQueue
+        playQueue.moveMediaItem(fromIndexPath: sourceIndex, toIndexPath: destinationIndex)
         persistToSystemQueue(oldContext)
     }
     
     func clear(from direction: ClearDirection, at index: Int) {
-        let oldContext = nowPlayingQueueContext
-        let nowPlayingItemRemoved = nowPlayingQueueContext.clearItems(towardsDirection: direction, atIndex: index)
+        let oldContext = playQueue
+        let nowPlayingItemRemoved = playQueue.clearItems(towardsDirection: direction, atIndex: index)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
@@ -292,7 +292,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         refreshIndexOfNowPlayingItem()
     }
     
-    private func persistToSystemQueue(_ oldContext:NowPlayingQueueContext) {
+    private func persistToSystemQueue(_ oldContext:PlayQueue) {
         if queueStateInconsistent {
             queueStateInconsistent = true //doing this to retrigger the warning view if its not currently showing
             Logger.debug("queue state is inconsistent. will not persist changes")
@@ -335,7 +335,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             return
         }
         
-        nowPlayingQueueContext.indexOfNowPlayingItem = 0
+        playQueue.indexOfNowPlayingItem = 0
         lowestIndexPersisted = 0
         queueStateInconsistent = false
         musicPlayer.setQueue(with: MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
@@ -374,9 +374,9 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
         
         queueStateInconsistent = false
-        let oldContext = nowPlayingQueueContext
+        let oldContext = playQueue
         if itemToPlay.id != queue[index].id {
-            nowPlayingQueueContext.insertItemsAtIndex([itemToPlay], index: index)
+            playQueue.insertItemsAtIndex([itemToPlay], index: index)
         }
         indexOfNowPlayingItem = index
         persistToSystemQueue(oldContext)

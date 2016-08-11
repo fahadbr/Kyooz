@@ -1,5 +1,5 @@
 //
-//  NowPlayingQueue.swift
+//  PlayQueue.swift
 //  Kyooz
 //
 //  Created by FAHAD RIAZ on 12/28/15.
@@ -9,10 +9,10 @@
 import Foundation
 import MediaPlayer
 
-struct NowPlayingQueueContext {
+struct PlayQueue {
     
-    var persistableContext:NowPlayingQueuePersistableContext {
-        return NowPlayingQueuePersistableContext(context: self)
+    var persistableContext:PlayQueuePersistableWrapper {
+        return PlayQueuePersistableWrapper(context: self)
     }
 
     let type:AudioQueuePlayerType
@@ -139,7 +139,7 @@ struct NowPlayingQueueContext {
         case .bothDirections:
             let shuffleWasActive = shuffleActive
             let item = currentQueue[index]
-            self = NowPlayingQueueContext(originalQueue: [item], forType: type)
+            self = PlayQueue(originalQueue: [item], forType: type)
             setShuffleActive(shuffleWasActive)
         }
         return nowPlayingItemRemoved
@@ -188,31 +188,31 @@ struct NowPlayingQueueContext {
     
 }
 
-final class NowPlayingQueuePersistableContext : NSObject, NSSecureCoding {
+final class PlayQueuePersistableWrapper : NSObject, NSSecureCoding {
     private static let originalQueueKey = "originalQueue"
     private static let shuffledQueueKey = "shuffledQueue"
     private static let shuffleActiveKey = "shuffleActiveKey"
     private static let typeKey = "typeKey"
     
-    private typealias This = NowPlayingQueuePersistableContext
+    private typealias This = PlayQueuePersistableWrapper
     
     static var supportsSecureCoding: Bool {
         return true
     }
     
-    let context:NowPlayingQueueContext
+    let context:PlayQueue
     
-    init(context:NowPlayingQueueContext) {
+    init(context:PlayQueue) {
         self.context = context
     }
     
     required init?(coder aDecoder: NSCoder) {
         let type = AudioQueuePlayerType(rawValue: aDecoder.decodeInteger(forKey: This.typeKey)) ?? .default
         guard let originalQueue = aDecoder.decodeObject(of: NSArray.self, forKey: This.originalQueueKey) as? [AudioTrack] else {
-            self.context = NowPlayingQueueContext(originalQueue: [AudioTrack](), forType: type)
+            self.context = PlayQueue(originalQueue: [AudioTrack](), forType: type)
             return
         }
-        var context = NowPlayingQueueContext(originalQueue: originalQueue, forType: type)
+        var context = PlayQueue(originalQueue: originalQueue, forType: type)
         
         let shuffleActive = aDecoder.decodeBool(forKey: This.shuffleActiveKey)
         
