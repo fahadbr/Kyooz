@@ -59,7 +59,7 @@ class AudioTrackDTO : NSObject, AudioTrack {
         
     }
     
-    override func value(forKey key: String) -> AnyObject? {
+    override func value(forKey key: String) -> Any? {
         switch key {
         case "albumArtist": return albumArtist
         case "albumTitle": return albumTitle
@@ -88,10 +88,11 @@ class AudioTrackDTO : NSObject, AudioTrack {
         }
         return 0
     }
-    
-    func enumerateValuesForProperties(_ properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void)) {
-        
-    }
+	
+	func queryValues(forProperties properties: Set<String>, using block: @escaping (String, Any, UnsafeMutablePointer<ObjCBool>) -> Void) {
+		
+	}
+	
 	
 	func artworkImage(forSize size: CGSize) -> UIImage? {
 		return artwork?.image(at: size)

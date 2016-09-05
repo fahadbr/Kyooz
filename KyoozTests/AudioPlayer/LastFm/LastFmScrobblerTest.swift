@@ -33,7 +33,7 @@ class LastFmScrobblerTest: XCTestCase {
         
         mockUserDefaults.set("username", forKey: UserDefaultKeys.LastFmUsernameKey)
         mockUserDefaults.set("session", forKey: UserDefaultKeys.LastFmSessionKey)
-        mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent()
+		mockTempDataDao.persistentNumberToReturn = CFAbsoluteTimeGetCurrent()
         
         _ = lastFmScrobbler.initialize()
     }
@@ -77,7 +77,7 @@ class LastFmScrobblerTest: XCTestCase {
         lastFmScrobbler.initializeScrobbler() {
             XCTAssertTrue(self.lastFmScrobbler.validSessionObtained)
             XCTAssertNotEqual(0, self.lastFmScrobbler.lastSessionValidationTime)
-            XCTAssertEqual(self.mockTempDataDao.persistentNumberToReturn.doubleValue, self.lastFmScrobbler.lastSessionValidationTime)
+            XCTAssertEqual(self.mockTempDataDao.persistentNumberToReturn, self.lastFmScrobbler.lastSessionValidationTime)
             initializedExpectation.fulfill()
         }
         
@@ -152,14 +152,14 @@ class LastFmScrobblerTest: XCTestCase {
     //MARK: - Mocked classes
     
     class MockTempDataDAO : TempDataDAO {
-        var persistentNumberToReturn:NSNumber!
+        var persistentNumberToReturn:Double!
         
         override func getPersistentNumber(key:String) -> NSNumber? {
-            return persistentNumberToReturn
+			return NSNumber(value: persistentNumberToReturn)
         }
-        override func addPersistentValue(key: String, value: AnyObject) {
+        override func addPersistentValue(key: String, value: Any) {
             if let num = value as? NSNumber {
-                persistentNumberToReturn = num
+                persistentNumberToReturn = num.doubleValue
             }
         }
     }
@@ -169,8 +169,8 @@ class LastFmScrobblerTest: XCTestCase {
 		var params: [String]?
         override func executeHTTPSPOSTCall(baseURL: String,
                                            params: [String],
-                                           successHandler: ([String : String]) -> Void,
-                                           failureHandler: () -> ()) {
+                                           successHandler: @escaping ([String : String]) -> Void,
+                                           failureHandler: @escaping () -> ()) {
 			
 			self.url = baseURL
 			self.params = params
@@ -179,17 +179,17 @@ class LastFmScrobblerTest: XCTestCase {
     }
     
     class MockUserDefaults : UserDefaults {
-        let values = NSMutableDictionary()
-        override func set(_ value: AnyObject?, forKey defaultName: String) {
+		var values = [String:Any]()
+        override func set(_ value: Any?, forKey defaultName: String) {
             if let v = value {
-                values.setObject(v, forKey: defaultName)
+                values[defaultName] = v
             } else {
-                values.removeObject(forKey: defaultName)
+                values[defaultName] = nil
             }
         }
         
-        override func object(forKey defaultName: String) -> AnyObject? {
-            return values.object(forKey: defaultName)
+        override func object(forKey defaultName: String) -> Any? {
+            return values[defaultName]
         }
     }
     
