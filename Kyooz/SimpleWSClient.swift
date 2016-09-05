@@ -18,7 +18,9 @@ class SimpleWSClient {
     private let timeoutInSeconds = 15.0
     
     
-    func executeHTTPSPOSTCall(baseURL:String, params:[String], successHandler:([String:String]) -> Void, failureHandler: () -> ()) {
+    func executeHTTPSPOSTCall(baseURL:String, params:[String],
+                              successHandler:@escaping ([String:String]) -> Void,
+                              failureHandler: @escaping () -> ()) {
         let urlAsString = baseURL
        
         

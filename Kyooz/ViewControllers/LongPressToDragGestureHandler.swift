@@ -201,7 +201,7 @@ class LongPressToDragGestureHandler : NSObject, GestureHandler{
 
     }
     
-    func removeSnapshotFromView(_ viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
+    func removeSnapshotFromView(_ viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:@escaping (Bool)->()) {
         UIView.animate(withDuration: 0.25, animations: { () -> Void in
             if(viewToFadeIn != nil) {
                 viewToFadeOut.center = viewToFadeIn!.center

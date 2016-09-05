@@ -37,7 +37,7 @@ extension String {
         guard startIndex != endIndex else { return self }
         var stringToNormalize = self
         if index(after: startIndex) != endIndex {
-            let charsToRemove = CharacterSet.punctuation
+            let charsToRemove = CharacterSet.punctuationCharacters
             stringToNormalize = stringToNormalize.components(separatedBy: charsToRemove).joined(separator: "")
         }
         stringToNormalize = stringToNormalize.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

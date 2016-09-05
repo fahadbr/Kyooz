@@ -24,7 +24,7 @@ import UIKit
 
 extension AudioEntity {
 	
-	func artworkImage(forSize size:CGSize, completion:(UIImage)->()) {
+	func artworkImage(forSize size:CGSize, completion:@escaping (UIImage)->()) {
 		DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
 			let image = self.artworkImage(forSize: size) ?? ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: size)
 			KyoozUtils.doInMainQueueAsync() {

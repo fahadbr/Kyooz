@@ -36,7 +36,7 @@ final class ViewControllerFadeAnimator: UIPercentDrivenInteractiveTransition, UI
         storedContext = transitionContext
         let isPushOperation = operation == .push
 
-        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextFromViewControllerKey), let toVC = transitionContext.viewController(forKey: UITransitionContextToViewControllerKey) else {
+        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from), let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else {
             return
         }
         

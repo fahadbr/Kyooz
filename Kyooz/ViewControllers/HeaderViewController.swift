@@ -56,7 +56,7 @@ class HeaderViewController : UIViewController {
         var multiplier:CGFloat = 0.9
         
         
-        switch centerViewController.dynamicType {
+        switch type(of: centerViewController) {
         case is HeaderLabelStackController.Type:
             stackView.distribution = .fill
             stackView.alignment = UIStackViewAlignment.bottom

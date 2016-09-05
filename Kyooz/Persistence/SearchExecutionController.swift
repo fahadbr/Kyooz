@@ -110,7 +110,7 @@ class SearchExecutionController : NSObject {
         searchResults = [AudioEntity]()
     }
     
-    func performAfterSearch(_ block:()->()) {
+    func performAfterSearch(_ block:@escaping ()->()) {
         defaultSearchQueue.addOperation(block)
     }
     

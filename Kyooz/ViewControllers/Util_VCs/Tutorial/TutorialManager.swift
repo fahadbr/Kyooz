@@ -84,7 +84,7 @@ class TutorialManager {
     }
 	
     private func setFulfulled(_ tutorial:Tutorial, fulfilled:Bool) {
-		userDefaults.set(fulfilled, forKey: self.dynamicType.keyForTutorial(tutorial))
+		userDefaults.set(fulfilled, forKey: type(of: self).keyForTutorial(tutorial))
 	}
     
     //use this function when the intention is to present one of many
@@ -128,7 +128,7 @@ class TutorialManager {
 	}
 	
 	private func tutorialIsFulfilled(_ tutorial:Tutorial) -> Bool {
-		return userDefaults.bool(forKey: self.dynamicType.keyForTutorial(tutorial))
+		return userDefaults.bool(forKey: type(of: self).keyForTutorial(tutorial))
 	}
 	
     static func keyForTutorial(_ tutorial:Tutorial) -> String {

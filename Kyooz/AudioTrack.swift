@@ -26,7 +26,8 @@ import Foundation
     var releaseYear:String? { get }
     var hasArtwork:Bool { get }
     
-    func enumerateValuesForProperties(_ properties: Set<String>!, usingBlock block: ((String, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void))
+    func queryValues(forProperties properties: Set<String>,
+                     using block: @escaping (String, Any, UnsafeMutablePointer<ObjCBool>) -> Void)
     
 }
 

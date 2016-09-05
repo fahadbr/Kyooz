@@ -27,7 +27,7 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
 		}
 	}
 	
-	lazy var shouldAnimateInArtwork:Bool = self.dynamicType.shouldAnimateInArtworkDefault
+	lazy var shouldAnimateInArtwork:Bool = type(of: self).shouldAnimateInArtworkDefault
     
 	
 	//MARK: - View Lifecycle functions
@@ -83,7 +83,7 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
         shouldAnimateInArtwork = false
         reloadTableViewData()
         KyoozUtils.doInMainQueueAsync {
-            self.shouldAnimateInArtwork = self.dynamicType.shouldAnimateInArtworkDefault
+            self.shouldAnimateInArtwork = type(of: self).shouldAnimateInArtworkDefault
         }
     }
     

@@ -8,17 +8,17 @@
 
 import UIKit
 
-private protocol CellConfiguration {
+fileprivate protocol CellConfiguration {
     var name:String { get }
     var action:()->() { get }
 }
 
-private struct BasicCellConfiguration : CellConfiguration {
+fileprivate struct BasicCellConfiguration : CellConfiguration {
     let name:String
     let action:()->()
 }
 
-private struct SectionConfiguration {
+fileprivate struct SectionConfiguration {
 	let sectionName:String
 	let cellConfigurations:[CellConfiguration]
 	var count:Int { return cellConfigurations.count }
@@ -30,19 +30,19 @@ private struct SectionConfiguration {
 
 final class KyoozNavigationViewController : UIViewController, UITableViewDataSource, UITableViewDelegate {
 	
-    private static let reuseIdentifier = "kyoozNavigationViewControllerCell"
+    fileprivate static let reuseIdentifier = "kyoozNavigationViewControllerCell"
     
-    private let fadeOutAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.4)
+    fileprivate let fadeOutAnimation = KyoozUtils.fadeOutAnimationWithDuration(0.4)
     
-	private let tableView = UITableView(frame: CGRect.zero, style: .grouped)
+	fileprivate let tableView = UITableView(frame: CGRect.zero, style: .grouped)
     
-    private var sectionConfigurations = [SectionConfiguration]()
+    fileprivate var sectionConfigurations = [SectionConfiguration]()
 
-    private var blurView:UIVisualEffectView?
-	private var sectionHeaderFont = UIFont(name: ThemeHelper.defaultFontNameMedium, size: ThemeHelper.smallFontSize - 1)
-    private var initialLoadComplete = false
+    fileprivate var blurView:UIVisualEffectView?
+	fileprivate var sectionHeaderFont = UIFont(name: ThemeHelper.defaultFontNameMedium, size: ThemeHelper.smallFontSize - 1)
+    fileprivate var initialLoadComplete = false
 	
-	private lazy var allMusicCellConfiguration:CellConfiguration = {
+	fileprivate lazy var allMusicCellConfiguration:CellConfiguration = {
         let title = "ALL MUSIC"
 		let action = { () -> () in
 			RootViewController.instance.libraryNavigationController.popToRootViewController(animated: true)
@@ -50,7 +50,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         return BasicCellConfiguration(name:title, action: action)
 	}()
 	
-	private lazy var settingsCellConfiguration:CellConfiguration = {
+	fileprivate lazy var settingsCellConfiguration:CellConfiguration = {
 		let action = {
 			ContainerViewController.instance.present(UIStoryboard.settingsViewController(), animated: true, completion: nil)
 		}
@@ -141,7 +141,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
 		}
     }
     
-    private func animateCells() {
+    fileprivate func animateCells() {
         var delay:Double = 0
         for cell in tableView.visibleCells {
             cell.alpha = 0

@@ -118,7 +118,7 @@ final class PlayCountIterator : NSObject {
         }
     }
     
-    func performBackgroundIteration(_ completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func performBackgroundIteration(_ completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard playCountIteratorOperation == nil else {
             Logger.debug("already performing background fetch")
             completionHandler(.noData)

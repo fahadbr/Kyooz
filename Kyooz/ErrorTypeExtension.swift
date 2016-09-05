@@ -11,7 +11,7 @@ import Foundation
 extension Error  {
 	
 	var description : String {
-		return "\(self.dynamicType)"
+		return "\(type(of: self))"
 	}
 	
 }

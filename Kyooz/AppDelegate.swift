@@ -15,21 +15,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var lastFmScrobbler = LastFmScrobbler.instance
 	
 	var window: UIWindow?
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-        ThemeHelper.applyGlobalAppearanceSettings()
+	
+	func application(_ application: UIApplication,
+	                 didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+		ThemeHelper.applyGlobalAppearanceSettings()
 		
-        window = createWindow()
-        window!.rootViewController = ContainerViewController.instance
-        window!.makeKeyAndVisible()
+		window = createWindow()
+		window!.rootViewController = ContainerViewController.instance
+		window!.makeKeyAndVisible()
 		
-        MPMediaLibrary.default().beginGeneratingLibraryChangeNotifications()
-        initMainQueueChecking()
+		MPMediaLibrary.default().beginGeneratingLibraryChangeNotifications()
+		initMainQueueChecking()
 		ApplicationDefaults.initializeData()
-        return true
-    }
-    
+		return true
+	}
+
+	
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         lastFmScrobbler.initializeScrobbler()
@@ -39,8 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         MPMediaLibrary.default().endGeneratingLibraryChangeNotifications()
     }
+	
     
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication,
+                     performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         BackgroundFetchController.instance.performFetchWithCompletionHandler(completionHandler)
     }
 

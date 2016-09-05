@@ -17,33 +17,33 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 	var collapsedTargetOffset:CGFloat!
 	
 	var useCollapsableHeader:Bool = false
-	private var headerCollapsed:Bool = false
+	fileprivate var headerCollapsed:Bool = false
 	
-    private lazy var headerVC:HeaderViewController = self.createHeaderView()
+    fileprivate lazy var headerVC:HeaderViewController = self.createHeaderView()
 	
 	//MARK: - Multi Select Toolbar Buttons
-    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO..",
+    fileprivate lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO..",
                                                                    style: .plain,
 	                                                               target: self,
 	                                                               action: #selector(self.showAddToOptions(_:)))
     
     
-	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString,
+	fileprivate lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString,
 	                                                                   style: .plain,
 	                                                                   target: self,
 	                                                                   action: #selector(self.selectOrDeselectAll))
     
-    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
+    fileprivate lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
                                                                     style: .plain,
 	                                                                target: self,
 	                                                                action: #selector(self.deleteSelectedItems))
     
-    private lazy var playButton:UIBarButtonItem = UIBarButtonItem(title: "PLAY",
+    fileprivate lazy var playButton:UIBarButtonItem = UIBarButtonItem(title: "PLAY",
                                                                   style: .plain,
                                                                   target: self,
                                                                   action: #selector(self.playSelectedTracks(_:)))
     
-    private lazy var shuffleToolbarButton:UIBarButtonItem = UIBarButtonItem(title: "SHUFFLE",
+    fileprivate lazy var shuffleToolbarButton:UIBarButtonItem = UIBarButtonItem(title: "SHUFFLE",
                                                                             style: .plain,
                                                                             target: self,
                                                                             action: #selector(self.playSelectedTracks(_:)))
@@ -159,14 +159,14 @@ extension AudioEntityHeaderViewController {
 		playAllItems(sender, shouldShuffle: true)
 	}
 	
-	private func playAllItems(_ sender:UIButton?, shouldShuffle:Bool) {
+	fileprivate func playAllItems(_ sender:UIButton?, shouldShuffle:Bool) {
         let items = sourceData.tracks
 		if !items.isEmpty {
 			self.playTracks(items, shouldShuffle: shouldShuffle)
 		}
 	}
 	
-	private func playTracks(_ tracks:[AudioTrack], shouldShuffle:Bool) {
+	fileprivate func playTracks(_ tracks:[AudioTrack], shouldShuffle:Bool) {
 		audioQueuePlayer.playNow(withTracks: tracks,
 		                         startingAtIndex: shouldShuffle ? KyoozUtils.randomNumber(belowValue: tracks.count):0,
 		                         shouldShuffleIfOff: shouldShuffle)
@@ -190,7 +190,7 @@ extension AudioEntityHeaderViewController {
 		refreshButtonStates()
 	}
 	
-	private func getOrderedTracks() -> [AudioTrack]? {
+	fileprivate func getOrderedTracks() -> [AudioTrack]? {
         return tableView.indexPathsForSelectedRows?.sorted(by: <).flatMap() { self.sourceData.getTracksAtIndex($0) }
 	}
 	

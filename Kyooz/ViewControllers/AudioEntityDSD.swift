@@ -104,12 +104,11 @@ class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollViewDelegate?.scrollViewDidScroll?(scrollView)
     }
-    
-    override func isEqual(_ object: AnyObject?) -> Bool {
-        guard object == nil else {
-            return false
-        }
-        return self === object!
-    }
+	override func isEqual(_ object: Any?) -> Bool {
+		guard let o = object as? AudioEntityDSD else {
+			return false
+		}
+		return self === o
+	}
 
 }

@@ -16,7 +16,7 @@ class KyoozSectionHeaderView : UITableViewHeaderFooterView {
     
     let headerTitleLabel = UILabel()
     
-    private let stackView = UIStackView()
+    fileprivate let stackView = UIStackView()
     
     let strokeLayer = CAShapeLayer()
     

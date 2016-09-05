@@ -22,7 +22,7 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler, 
     
     private lazy var redLayer:CALayer = {
         let layer = CALayer()
-        layer.frame = CGRect(origin: CGPoint.zero, size: self.snapshot.bounds.size ?? CGSize.zero)
+        layer.frame = CGRect(origin: CGPoint.zero, size: self.snapshot?.bounds.size ?? CGSize.zero)
         layer.cornerRadius = self.cornerRadiusForSnapshot
         layer.backgroundColor = UIColor.red.cgColor
         layer.opacity = 0.3
@@ -53,7 +53,7 @@ final class LongPressDragAndDropGestureHandler : LongPressToDragGestureHandler, 
         cornerRadiusForSnapshot = 10
     }
     
-    override func removeSnapshotFromView(_ viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:(Bool)->()) {
+    override func removeSnapshotFromView(_ viewToFadeIn:UIView?, viewToFadeOut:UIView, completionHandler:@escaping (Bool)->()) {
         guard locationInDestinationTableView else {
             UIView.animate(withDuration: 0.4, animations: { () -> Void in
                 viewToFadeOut.alpha = 0.0

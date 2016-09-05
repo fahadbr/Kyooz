@@ -16,14 +16,14 @@ struct PlayQueue {
     }
 
     let type:AudioQueuePlayerType
-    private (set) var shuffleActive:Bool = false
+    fileprivate (set) var shuffleActive:Bool = false
     
     var indexOfNowPlayingItem:Int = 0
     
-    private var originalQueue:[AudioTrack]
-    private var shuffledQueue:[AudioTrack]!
+    fileprivate var originalQueue:[AudioTrack]
+    fileprivate var shuffledQueue:[AudioTrack]!
     
-    private (set) var currentQueue:[AudioTrack] {
+    fileprivate (set) var currentQueue:[AudioTrack] {
         get {
             return shuffleActive ? shuffledQueue : originalQueue
         } set {
@@ -145,7 +145,7 @@ struct PlayQueue {
         return nowPlayingItemRemoved
     }
     
-    private mutating func shuffleQueue() {
+    fileprivate mutating func shuffleQueue() {
         if originalQueue.isEmpty {
             shuffledQueue = originalQueue
             return
@@ -167,7 +167,7 @@ struct PlayQueue {
         indexOfNowPlayingItem = 0
     }
     
-    private mutating func restoreOriginalQueue() {
+    fileprivate mutating func restoreOriginalQueue() {
         guard shuffledQueue != nil && !shuffledQueue.isEmpty else {
             return
         }
@@ -189,12 +189,12 @@ struct PlayQueue {
 }
 
 final class PlayQueuePersistableWrapper : NSObject, NSSecureCoding {
-    private static let originalQueueKey = "originalQueue"
-    private static let shuffledQueueKey = "shuffledQueue"
-    private static let shuffleActiveKey = "shuffleActiveKey"
-    private static let typeKey = "typeKey"
+    fileprivate static let originalQueueKey = "originalQueue"
+    fileprivate static let shuffledQueueKey = "shuffledQueue"
+    fileprivate static let shuffleActiveKey = "shuffleActiveKey"
+    fileprivate static let typeKey = "typeKey"
     
-    private typealias This = PlayQueuePersistableWrapper
+    fileprivate typealias This = PlayQueuePersistableWrapper
     
     static var supportsSecureCoding: Bool {
         return true

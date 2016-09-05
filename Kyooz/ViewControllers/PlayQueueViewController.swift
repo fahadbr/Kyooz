@@ -13,12 +13,12 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
 
     static let instance = PlayQueueViewController()
     
-    private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
-    private let tableFooterView = KyoozTableFooterView()
-    private var longPressGestureRecognizer:UILongPressGestureRecognizer!
+    fileprivate let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    fileprivate let tableFooterView = KyoozTableFooterView()
+    fileprivate var longPressGestureRecognizer:UILongPressGestureRecognizer!
     
-    private (set) var laidOutSubviews:Bool = false
-    private var multipleDeleteButton:UIBarButtonItem!
+    fileprivate (set) var laidOutSubviews:Bool = false
+    fileprivate var multipleDeleteButton:UIBarButtonItem!
 	
 	var shouldAnimateInArtwork: Bool { return false }
     var menuButtonTouched:Bool = false
@@ -54,44 +54,44 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
     
 	
 	//MARK: - Multi Select Toolbar Buttons
-    private lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO PLAYLIST",
+    fileprivate lazy var addToButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO PLAYLIST",
                                                                    style: .plain,
 	                                                               target: self,
 	                                                               action: #selector(self.addSelectedToPlaylist))
     
-	private lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString.uppercased(),
+	fileprivate lazy var selectAllButton:UIBarButtonItem = UIBarButtonItem(title: KyoozConstants.selectAllString.uppercased(),
 	                                                                   style: .plain,
 	                                                                   target: self,
 	                                                                   action: #selector(self.selectOrDeselectAll))
     
-    private lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
+    fileprivate lazy var deleteButton:UIBarButtonItem = UIBarButtonItem(title: "REMOVE",
                                                                     style: .plain,
                                                                     target: self,
                                                                     action: #selector(self.deleteSelectedIndexPaths))
     
     //MARK: - Header Buttons
-    private lazy var clearQueueButton:UIBarButtonItem = UIBarButtonItem(title: "CLEAR QUEUE",
+    fileprivate lazy var clearQueueButton:UIBarButtonItem = UIBarButtonItem(title: "CLEAR QUEUE",
                                                                         style: .plain,
                                                                         target: self,
                                                                         action: #selector(self.deleteWholeQueue))
     
-    private lazy var addQueueToPlaylistButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO PLAYLIST",
+    fileprivate lazy var addQueueToPlaylistButton:UIBarButtonItem = UIBarButtonItem(title: "ADD TO PLAYLIST",
                                                                                 style: .plain,
                                                                                 target: self,
                                                                                 action: #selector(self.addWholeQueueToPlaylist))
     
-    private lazy var selectButton:MultiSelectButtonView = {
+    fileprivate lazy var selectButton:MultiSelectButtonView = {
         let s = MultiSelectButtonView(frame:CGRect(origin: CGPoint.zero, size: CGSize(width: 40, height: 40)))
         s.addTarget(self, action: #selector(self.toggleSelectMode), for: .touchUpInside)
         return s
     }()
     
-    private lazy var standardToolbarItems:[UIBarButtonItem] = [UIBarButtonItem.flexibleSpace(),
+    fileprivate lazy var standardToolbarItems:[UIBarButtonItem] = [UIBarButtonItem.flexibleSpace(),
                                                                self.addQueueToPlaylistButton,
                                                                UIBarButtonItem.flexibleSpace(),
                                                                self.clearQueueButton,
                                                                UIBarButtonItem.flexibleSpace()]
-    private lazy var editingToolbarItems:[UIBarButtonItem] = {
+    fileprivate lazy var editingToolbarItems:[UIBarButtonItem] = {
         let items = [self.addToButton,
                      UIBarButtonItem.flexibleSpace(),
                      self.deleteButton,
@@ -105,10 +105,10 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
         return items
     }()
     
-    private let headerView = PlainHeaderView()
+    fileprivate let headerView = PlainHeaderView()
     
     //MARK: GESTURE PROPERTIES
-    private var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
+    fileprivate var dragToRearrangeGestureHandler:LongPressToDragGestureHandler!
     var insertMode:Bool = false {
         didSet {
             longPressGestureRecognizer.isEnabled = !insertMode
@@ -178,7 +178,7 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
     }
 	
 
-    private func resetDSD() {
+    fileprivate func resetDSD() {
         datasourceDelegate = NowPlayingQueueDSD(reuseIdentifier: SongDetailsTableViewCell.reuseIdentifier, audioCellDelegate: self)
     }
 
@@ -231,7 +231,7 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
 		}
     }
     
-    private func registerForNotifications() {
+    fileprivate func registerForNotifications() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.reloadTableData),
             name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue), object: audioQueuePlayer)
@@ -245,11 +245,11 @@ final class PlayQueueViewController: UIViewController, DropDestination, AudioTab
             name: NSNotification.Name.UIApplicationDidBecomeActive, object: UIApplication.shared)
     }
     
-    private func unregisterForNotifications() {
+    fileprivate func unregisterForNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
     
-    private func deleteIndexPaths(_ indiciesToDelete:[IndexPath]) {
+    fileprivate func deleteIndexPaths(_ indiciesToDelete:[IndexPath]) {
         if indiciesToDelete.isEmpty { return }
         
         if indiciesToDelete.count < 250 {
@@ -391,7 +391,7 @@ extension PlayQueueViewController {
 		refreshButtonStates()
 	}
 	
-	private func getOrderedTracks() -> [AudioTrack]? {
+	fileprivate func getOrderedTracks() -> [AudioTrack]? {
         let queue = audioQueuePlayer.nowPlayingQueue
 		return tableView.indexPathsForSelectedRows?.sorted(by: <).map() { return queue[($0 as NSIndexPath).row] }
 	}
