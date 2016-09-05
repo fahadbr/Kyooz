@@ -28,6 +28,7 @@ final class MediaQuerySourceData : GroupMutableAudioEntitySourceData {
     var libraryGrouping:LibraryGrouping {
         didSet {
             filterQuery.groupingType = libraryGrouping.groupingType
+			reloadSourceData()
         }
     }
 	
