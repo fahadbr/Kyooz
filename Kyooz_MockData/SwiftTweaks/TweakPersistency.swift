@@ -187,7 +187,7 @@ private extension TweakViewDataType {
 private extension TweakableType {
 	/// Gets the underlying value from a Tweakable Type
 	var nsCoding: AnyObject {
-		switch self.dynamicType.tweakViewDataType {
+		switch type(of: self).tweakViewDataType {
 			case .boolean: return self as! Bool
 			case .integer: return self as! Int
 			case .cgFloat: return self as! CGFloat

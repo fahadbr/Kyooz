@@ -64,7 +64,7 @@ class TutorialViewController : UIViewController, CAAnimationDelegate {
     }
 	
 	func createCircleLayer() -> CAShapeLayer {
-		let size = self.dynamicType.circleSize
+		let size = type(of: self).circleSize
 		let layer = CAShapeLayer()
 		let path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: size, height: size))
 		layer.path = path.cgPath
@@ -87,7 +87,7 @@ class TutorialViewController : UIViewController, CAAnimationDelegate {
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.top, .left, .right], subView: instructionView, parentView: view)
 		instructionView.heightAnchor.constraint(equalToConstant: TutorialViewController.headerHeight).isActive = true
 		
-		instructionView.backgroundColor = self.dynamicType.unfulfilledColor
+		instructionView.backgroundColor = type(of: self).unfulfilledColor
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.centerX, .bottom], subView: stackView, parentView: instructionView)
 		stackView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
 		stackView.widthAnchor.constraint(equalTo: instructionView.widthAnchor, multiplier: 0.9).isActive = true
@@ -141,7 +141,7 @@ class TutorialViewController : UIViewController, CAAnimationDelegate {
     private func doFulfillAnimation() {
         instructionLabel.text = "Great!"
         UIView.animate(withDuration: 0.5, animations: {
-            self.instructionView.backgroundColor = self.dynamicType.fulfilledColor
+            self.instructionView.backgroundColor = type(of: self).fulfilledColor
         }, completion: { _ in
             KyoozUtils.doInMainQueueAfterDelay(0.5) {
                 self.doSlideUpAnimation()

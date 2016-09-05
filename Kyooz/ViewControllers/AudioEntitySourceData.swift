@@ -53,7 +53,7 @@ extension AudioEntitySourceData {
         } else if let collections = entities as? [AudioTrackCollection] {
             return collections.flatMap() { return $0.tracks }
         }
-        Logger.error("couldn't get all tracks from entities of source data with type \(self.dynamicType)")
+        Logger.error("couldn't get all tracks from entities of source data with type \(type(of: self))")
         return []
     }
     

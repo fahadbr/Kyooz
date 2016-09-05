@@ -18,7 +18,7 @@ extension MPMediaItemCollection : AudioTrackCollection {
     var tracks:[AudioTrack] { return self.items }
     
     //overriding this so that collections can be searched by their underlying track properties
-    override public func value(forUndefinedKey key: String) -> AnyObject? {
+    override open func value(forUndefinedKey key: String) -> Any? {
         return self.representativeItem?.value(forProperty: key)
     }
     
@@ -66,6 +66,8 @@ extension MPMediaPlaylist {
 }
 
 extension MPMediaItem : AudioTrack {
+
+
     
     var trackTitle:String { return title ?? "Error: track not found" }
     var id:UInt64 { return persistentID }
@@ -102,6 +104,11 @@ extension MPMediaItem : AudioTrack {
 	
 	func artworkImage(forSize size: CGSize) -> UIImage? {
 		return artwork?.image(at: size)
+	}
+	
+	func queryValues(forProperties properties: Set<String>,
+	                 using block: @escaping (String, Any, UnsafeMutablePointer<ObjCBool>) -> Void) {
+		enumerateValues(forProperties: properties, using: block)
 	}
 
 }

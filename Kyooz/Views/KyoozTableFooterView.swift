@@ -32,7 +32,7 @@ final class KyoozTableFooterView: UIView {
 		label.textAlignment = .center
 		label.numberOfLines = 0
 		label.lineBreakMode = .byWordWrapping
-		label.font = self.dynamicType.font
+		label.font = type(of: self).font
 		
 	}
 	

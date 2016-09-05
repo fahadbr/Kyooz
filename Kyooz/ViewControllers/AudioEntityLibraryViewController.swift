@@ -45,14 +45,16 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         //if there is only one song for the current group then change the grouping type to be songs
         //must be done before call to super.viewDidLoad() bc the Util Header VC will be configured in that call
         let entities = sourceData.entities
-        if sourceData.libraryGrouping !== LibraryGrouping.Songs && entities.count == 1 && ((entities.first as? AudioTrackCollection)?.tracks.count == 1) ?? false {
+        if sourceData.libraryGrouping !== LibraryGrouping.Songs
+			&& entities.count == 1
+			&& ((entities.first as? AudioTrackCollection)?.tracks.count ?? 0) == 1 {
             if let sd = sourceData as? GroupMutableAudioEntitySourceData {
                 sd.libraryGrouping = LibraryGrouping.Songs
             }
         }
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.dynamicType.navigationMenuButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: type(of: self).navigationMenuButton)
         
 		tableView.register(NibContainer.albumTrackTableViewCellNib, forCellReuseIdentifier: AlbumTrackTableViewCell.reuseIdentifier)
         
@@ -134,7 +136,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 		default:
 			datasourceDelegate = AudioTrackCollectionDSD(sourceData:sourceData, reuseIdentifier:reuseIdentifier, audioCellDelegate:self)
 		}
-        tableView.layer.add(self.dynamicType.fadeInAnimation, forKey: nil)
+        tableView.layer.add(type(of: self).fadeInAnimation, forKey: nil)
 	}
     
     override func registerForNotifications() {

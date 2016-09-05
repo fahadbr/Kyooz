@@ -21,7 +21,7 @@ struct ApplicationDefaults {
         case .default:
             player = AudioQueuePlayerImpl.instance
         }
-        Logger.debug("Loading \(player.dynamicType) as the application audio player")
+        Logger.debug("Loading \(type(of: player)) as the application audio player")
         player.delegate = AudioQueuePlayerDelegateImpl()
         return player
     }()

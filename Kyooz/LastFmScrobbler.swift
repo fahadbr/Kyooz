@@ -143,7 +143,7 @@ final class LastFmScrobbler {
 	
 
 	
-    func initializeSession(usernameForSession:String, password:String, completionHandler:() -> Void) {
+    func initializeSession(usernameForSession:String, password:String, completionHandler:@escaping () -> Void) {
         Logger.debug("attempting to log in as \(usernameForSession)")
         let params:[String:String] = [
             api_key:api_key_value,
@@ -220,7 +220,7 @@ final class LastFmScrobbler {
             return
         }
         
-        func submitBatchOfScrobbles(_ scrobbleBatch:ArraySlice<([String:String])>, completionHandler:((shouldRemove:Bool)->())? = nil) {
+        func submitBatchOfScrobbles(_ scrobbleBatch:ArraySlice<([String:String])>, completionHandler:((Bool)->())? = nil) {
             Logger.debug("submitting the scrobble batch of size \(scrobbleBatch.count)")
             var params = [String:String]()
             for scrobbleDict in scrobbleBatch {
@@ -236,11 +236,11 @@ final class LastFmScrobbler {
 					let message = "Successfully scrobbled \(scrobbleBatch.count) tracks to last.fm"
                     Logger.debug(message)
 					self?.shortNotificationManager.presentShortNotification(withMessage:message)
-                    completionHandler?(shouldRemove:true)
+                    completionHandler?(true)
                 }, failureHandler: { (info:[String : String]) -> () in
                     Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[error_key])")
                     let removeSlice = (info[error_key] != nil && info[error_key]! != httpFailure)
-                    completionHandler?(shouldRemove:removeSlice)
+                    completionHandler?(removeSlice)
                 })
         }
         
@@ -301,7 +301,7 @@ final class LastFmScrobbler {
     }
     
 
-    private func buildApiSigAndCallWS(_ params:[String:String], successHandler lastFmSuccessHandler:([String:String]) -> Void, failureHandler lastFmFailureHandler: ([String:String]) -> ()) {
+    private func buildApiSigAndCallWS(_ params:[String:String], successHandler lastFmSuccessHandler:@escaping ([String:String]) -> Void, failureHandler lastFmFailureHandler: @escaping ([String:String]) -> ()) {
 		guard internetConnectionAvailable() else {
 			Logger.debug("no internet connection available")
 			lastFmFailureHandler([error_key:httpFailure])

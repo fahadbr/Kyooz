@@ -10,14 +10,14 @@ import Foundation
 
 final class IndexBuildingOperation<T:SearchIndexValue> : AbstractResultOperation<SearchIndex<T>> {
     
-    private let stopWords = ["the ", "a "]
+    fileprivate let stopWords = ["the ", "a "]
     
-    private let valuesToIndex:[T]
-    private let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
-    private let maxValuesAmount:Int
-    private let parentIndexName:String
+    fileprivate let valuesToIndex:[T]
+    fileprivate let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
+    fileprivate let maxValuesAmount:Int
+    fileprivate let parentIndexName:String
     
-    init(parentIndexName:String, valuesToIndex:[T], maxValuesAmount:Int, keyExtractingBlock:(T)->(String, String)) {
+    init(parentIndexName:String, valuesToIndex:[T], maxValuesAmount:Int, keyExtractingBlock:@escaping (T)->(String, String)) {
         self.parentIndexName = parentIndexName
         self.valuesToIndex = valuesToIndex
         self.maxValuesAmount = maxValuesAmount
@@ -65,21 +65,21 @@ final class IndexBuildingOperation<T:SearchIndexValue> : AbstractResultOperation
     
 }
 
-private enum IndexBuildError : Error {
+fileprivate enum IndexBuildError : Error {
     case cancelled
 }
 
-private class IndexBuilder<BASE:SearchIndexValue,INPUT> {
+fileprivate class IndexBuilder<BASE:SearchIndexValue,INPUT> {
     
     weak var originatingOperation:Operation?
     
-    private let maxValuesAmount:Int
+    fileprivate let maxValuesAmount:Int
     
     init(maxValuesAmount:Int) {
         self.maxValuesAmount = maxValuesAmount
     }
     
-    private final func buildIndex(_ title:String, valuesToIndex:[INPUT], indexLevel:Int, nextIndexBuilder:IndexBuilder<BASE, SearchIndexEntry<BASE>>) throws -> SearchIndex<BASE> {
+    fileprivate final func buildIndex(_ title:String, valuesToIndex:[INPUT], indexLevel:Int, nextIndexBuilder:IndexBuilder<BASE, SearchIndexEntry<BASE>>) throws -> SearchIndex<BASE> {
         let isLastIndexLevel:Bool = valuesToIndex.count <= maxValuesAmount
         var valueDict = [String:[SearchIndexEntry<BASE>]]()
         var sameLevelValues = [SearchIndexEntry<BASE>]()
@@ -131,16 +131,16 @@ private class IndexBuilder<BASE:SearchIndexValue,INPUT> {
                            subIndex: subIndex)
     }
     
-    private func getSearchIndexEntry(_ value:INPUT) -> SearchIndexEntry<BASE> {
+    fileprivate func getSearchIndexEntry(_ value:INPUT) -> SearchIndexEntry<BASE> {
         fatalError()
     }
 }
 
-private class FromValuesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, T> {
+fileprivate class FromValuesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, T> {
     
-    private let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
+    fileprivate let keyExtractingBlock:(T)->(titleProperty:String,normalizedPrimaryKey:String)
     
-    init(maxValuesAmount: Int, keyExtractingBlock:(T)->(String,String)) {
+    init(maxValuesAmount: Int, keyExtractingBlock: @escaping (T)->(String,String)) {
         self.keyExtractingBlock = keyExtractingBlock
         super.init(maxValuesAmount: maxValuesAmount)
     }
@@ -150,7 +150,7 @@ private class FromValuesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, T> {
     }
 }
 
-private class FromEntriesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, SearchIndexEntry<T>> {
+fileprivate class FromEntriesIndexBuilder<T:SearchIndexValue> : IndexBuilder<T, SearchIndexEntry<T>> {
     
     override init(maxValuesAmount: Int) {
         super.init(maxValuesAmount: maxValuesAmount)

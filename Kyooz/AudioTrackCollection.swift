@@ -54,12 +54,12 @@ class AudioTrackCollectionDTO : NSObject, AudioTrackCollection {
         return self.representativeTrack?.artworkImage(forSize: size)
     }
     
-    override func value(forKey key: String) -> AnyObject? {
+    override func value(forKey key: String) -> Any? {
         return self.representativeTrack?.valueForKey(key)
     }
     
     //overriding this so that collections can be searched by their underlying track properties
-    override func value(forUndefinedKey key: String) -> AnyObject? {
+    override func value(forUndefinedKey key: String) -> Any? {
         return self.representativeTrack?.valueForKey(key)
     }
     

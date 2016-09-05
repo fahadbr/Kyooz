@@ -65,7 +65,7 @@ class KyoozOptionsViewController: UIViewController, FadeOutViewController, UITab
         let maxHeight = sizeConstraint.maxHeight
 		
 		let tableHeaderView = delegate.headerView
-		let tableHeaderSize = tableHeaderView.frame.size ?? CGSize.zero
+		let tableHeaderSize = tableHeaderView.frame.size
 		let height = This.cellHeight
 			* CGFloat(optionsProviders.reduce(0) { $0 + $1.options.count })
 			+ tableHeaderSize.height

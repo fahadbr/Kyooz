@@ -66,7 +66,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
 		
         collapsedBarLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(collapsedBarLayoutGuide)
-        collapsedBarLayoutGuide.heightAnchor.constraint(equalToConstant: self.dynamicType.miniPlayerHeight).isActive = true
+        collapsedBarLayoutGuide.heightAnchor.constraint(equalToConstant: type(of: self).miniPlayerHeight).isActive = true
         collapsedBarLayoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collapsedBarLayoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         collapsedBarLayoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
@@ -130,7 +130,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         (libraryNavigationController.topViewController as? CustomPopableViewController)?.enableCustomPopGestureRecognizer(reduceAnimations)
     }
     
-    func presentWarningView(_ message:String, handler:()->()) {
+    func presentWarningView(_ message:String, handler:@escaping ()->()) {
         if self.warningViewController != nil {
             Logger.debug("already displaying warning view")
             return

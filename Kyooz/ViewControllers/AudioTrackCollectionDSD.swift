@@ -59,8 +59,8 @@ final class KyoozPlaylistManagerDSD : AudioTrackCollectionDSD {
 */
 class AddToPlaylistDSD : AudioTrackCollectionDSD {
 	
-	private let tracksToAdd:[AudioTrack]
-	private let completion: ( () -> Void )?
+	fileprivate let tracksToAdd:[AudioTrack]
+	fileprivate let completion: ( () -> Void )?
 	
     init(sourceData:AudioEntitySourceData, reuseIdentifier:String, tracksToAdd:[AudioTrack], completion: ( () -> Void )?) {
 		self.tracksToAdd = tracksToAdd

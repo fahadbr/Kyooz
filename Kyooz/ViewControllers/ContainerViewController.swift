@@ -27,10 +27,10 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     private (set) lazy var rootViewController:RootViewController = RootViewController.instance
     
-    private let playQueueNavigationController = UINavigationController()
+    fileprivate let playQueueNavigationController = UINavigationController()
     private let playQueueViewController = PlayQueueViewController.instance
     private let searchViewController = AudioEntitySearchViewController.instance
-    private let searchNavigationController = UINavigationController()
+    fileprivate let searchNavigationController = UINavigationController()
     private let kyoozNavigationViewController = KyoozNavigationViewController()
     
     var centerPanelPosition:Position = .center {
@@ -363,7 +363,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         dragAndDropHandler?.handleGesture(recognizer)
     }
 	
-	override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 		if keyPath != nil && keyPath! == "center" {
             CATransaction.begin()
             CATransaction.setDisableActions(true)

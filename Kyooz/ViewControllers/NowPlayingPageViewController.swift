@@ -36,7 +36,7 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 		return vc
 	}
 	
-	private func getWrapperVCForTrack(_ track:AudioTrack, index:Int) -> WrapperViewController {
+	fileprivate func getWrapperVCForTrack(_ track:AudioTrack, index:Int) -> WrapperViewController {
 		fatalError("this method needs to be overridden")
 	}
 	
@@ -63,7 +63,7 @@ class NowPlayingPageViewController: UIPageViewController, UIPageViewControllerDa
 }
 
 final class LabelPageViewController : NowPlayingPageViewController {
-	private override func getWrapperVCForTrack(_ track: AudioTrack, index:Int) -> WrapperViewController {
+	fileprivate override func getWrapperVCForTrack(_ track: AudioTrack, index:Int) -> WrapperViewController {
 		return LabelStackWrapperViewController(track: track, isPresentedVC: false, representingIndex: index)
 	}
 }
@@ -78,7 +78,7 @@ final class ImagePageViewController : NowPlayingPageViewController {
         view.clipsToBounds = false
     }
     
-	private override func getWrapperVCForTrack(_ track: AudioTrack, index:Int) -> WrapperViewController {
+	fileprivate override func getWrapperVCForTrack(_ track: AudioTrack, index:Int) -> WrapperViewController {
 		return ImageWrapperViewController(track: track, isPresentedVC: false, representingIndex:index, size: view.frame.size)
 	}
 }

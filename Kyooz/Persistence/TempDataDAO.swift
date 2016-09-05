@@ -15,11 +15,9 @@ class TempDataDAO : NSObject {
     private static let playbackStateSnapshotFileName = tempDirectory.appendingPathComponent("playbackStateSnapshot.archive").path
     private static let lastFmScrobbleCacheFileName = tempDirectory.appendingPathComponent("lastFmScrobbleCache.txt").path
     private static let miscValuesFileName = tempDirectory.appendingPathComponent("miscValues.txt").path
-    
-    
-    private var miscellaneousValues:NSMutableDictionary;
-    
-    
+	
+    private var miscellaneousValues:NSMutableDictionary
+	
     static let instance:TempDataDAO = TempDataDAO()
 
     override init() {
@@ -42,11 +40,11 @@ class TempDataDAO : NSObject {
 
     //MARK:CLASS FUNCTIONS
     
-    func addPersistentValue(key:String, value:AnyObject) {
+    func addPersistentValue(key:String, value:Any) {
         miscellaneousValues.setValue(value, forKey: key)
     }
     
-    func getPersistentValue(key:String) -> AnyObject? {
+    func getPersistentValue(key:String) -> Any? {
         return miscellaneousValues.value(forKey: key)
     }
     
@@ -97,12 +95,8 @@ class TempDataDAO : NSObject {
         if(!FileManager.default.fileExists(atPath: fileName)) {
             return nil
         }
-        
-        var obj:AnyObject?
-        KyoozUtils.performWithMetrics(blockDescription: "unarchive media items") {
-            obj = NSKeyedUnarchiver.unarchiveObject(withFile: fileName)
-        }
-        guard let array = obj as? NSArray else {
+		
+        guard let array = NSKeyedUnarchiver.unarchiveObject(withFile: fileName) as? NSArray else {
             return nil
         }
         return array as? [AudioTrack]

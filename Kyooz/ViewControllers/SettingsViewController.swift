@@ -83,7 +83,7 @@ final class SettingsViewController: UITableViewController {
         }
         let mfvc = MFMailComposeViewController()
         mfvc.mailComposeDelegate = self
-        mfvc.setToRecipients([self.dynamicType.emailAddress])
+        mfvc.setToRecipients([type(of: self).emailAddress])
         mfvc.setSubject("Kyooz Feedback")
         
         present(mfvc, animated: true, completion: nil)

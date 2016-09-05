@@ -46,13 +46,12 @@ final class NowPlayingInfoHelper {
         nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
     }
     
-    private func getDictionaryForMediaItem(_ mediaItem:AudioTrack) -> [String:AnyObject] {
-        var mediaInfoToPublish = [String:AnyObject]()
-        mediaItem.enumerateValuesForProperties(mpMediaItemPropertyList) { (property:String, value:AnyObject?, UnsafeMutablePointer) -> Void in
-            mediaInfoToPublish[property] = value
-        }
-        
-//        Logger.debug("publishing now playing info for mediaItem: \(mediaInfoToPublish[MPMediaItemPropertyTitle])")
+    private func getDictionaryForMediaItem(_ mediaItem:AudioTrack) -> [String:Any] {
+        var mediaInfoToPublish = [String:Any]()
+		mediaItem.queryValues(forProperties: mpMediaItemPropertyList) { (property:String, value:Any?, _) -> Void in
+			mediaInfoToPublish[property] = value
+		}
+
         return mediaInfoToPublish
     }
 }

@@ -21,8 +21,8 @@ class WrapperViewController : UIViewController {
 	let isPresentedVC:Bool
 	
 	
-    private let wrappedView:UIView
-	private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
+    fileprivate let wrappedView:UIView
+	fileprivate let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
 	
 	init(wrappedView:UIView, isPresentedVC:Bool, representingIndex:Int) {
         self.wrappedView = wrappedView
@@ -63,7 +63,7 @@ class WrapperViewController : UIViewController {
 		refreshViews(audioQueuePlayer.nowPlayingItem)
 	}
 	
-	private func refreshViews(_ track:AudioTrack?) {
+	fileprivate func refreshViews(_ track:AudioTrack?) {
 		//empty imp
 	}
 	
@@ -105,14 +105,14 @@ final class ImageWrapperViewController : WrapperViewController {
         refreshIndexAndViews()
     }
 	
-	private static func albumArtForTrack(_ track:AudioTrack?, size:CGSize) -> UIImage {
+	fileprivate static func albumArtForTrack(_ track:AudioTrack?, size:CGSize) -> UIImage {
         return track?.artworkImage(forSize:size) ?? {
             let smallerSide = min(size.height, size.width)
             return ImageUtils.resizeImage(ImageContainer.defaultAlbumArtworkImage, toSize: CGSize(width: smallerSide, height: smallerSide))
         }()
 	}
 	
-	private override func refreshViews(_ track: AudioTrack?) {
+	fileprivate override func refreshViews(_ track: AudioTrack?) {
 		let newImageID = track?.albumId ?? 0
 		guard newImageID != imageID else { return }
 		
@@ -181,7 +181,7 @@ final class LabelStackWrapperViewController : WrapperViewController {
 		return (titleText, detailsText)
 	}
 	
-	private override func refreshViews(_ track: AudioTrack?) {
+	fileprivate override func refreshViews(_ track: AudioTrack?) {
 		let labelStrings = LabelStackWrapperViewController.getLabelStringsFromTrack(track)
 		func updateLabel(_ label:MarqueeLabel, text:String) {
 			if label.text == nil || label.text! != text {

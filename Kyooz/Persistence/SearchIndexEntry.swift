@@ -29,7 +29,7 @@ final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
         self.normalizedKeyValues[primaryKeyValue.0] = self.primaryKey
     }
     
-    override func value(forKey key: String) -> AnyObject? {
+    override func value(forKey key: String) -> Any? {
         if let value = normalizedKeyValues[key] {
             return value
         }
@@ -47,7 +47,7 @@ final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
         return normalizedString
     }
     
-    override func value(forUndefinedKey key: String) -> AnyObject? {
+    override func value(forUndefinedKey key: String) -> Any? {
         //overriding so it doesnt fail for unknown keys
         return nil
     }
@@ -56,6 +56,6 @@ final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
 
 @objc protocol SearchIndexValue {
 	var hashValue:Int { get }
-	func valueForKey(_ key:String) -> AnyObject?
+	func valueForKey(_ key:String) -> Any?
 }
 

@@ -49,7 +49,7 @@ final class ShortNotificationManager {
         
         vc.view.layer.rasterizationScale = UIScreen.main.scale
         vc.view.layer.shouldRasterize = true
-        vc.view.layer.add(self.dynamicType.fadeInAnimation, forKey: nil)
+        vc.view.layer.add(type(of: self).fadeInAnimation, forKey: nil)
 
     }
 	

@@ -276,15 +276,16 @@ final class NowPlayingViewController: UIViewController {
 
     
     //MARK: - FUNCTIONS: - KVOFunction
-    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
-        guard keyPath != nil else { return }
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+		guard keyPath != nil else { return }
 		if keyPath == "center"{
-            updateAlphaLevels()
-        } else {
-            Logger.error("non observed property has changed")
-        }
-    }
-    
+			updateAlphaLevels()
+		} else {
+			Logger.error("non observed property has changed")
+		}
+	}
+	
+	
     //MARK: - FUNCTIONS: - Private Functions
     
     private func updateAlphaLevels() {

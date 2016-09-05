@@ -13,6 +13,8 @@ final class ArtworkHeaderViewController : HeaderViewController {
     
     private static let clearGradiantDefaultLocations:(start:CGFloat, end:CGFloat) = (0.25, 0.75)
     private static let fadeInAnimation = KyoozUtils.fadeInAnimationWithDuration(0.4)
+	
+	private typealias This = ArtworkHeaderViewController
     
     override var defaultHeight:CGFloat {
         return UIScreen.main.bounds.width
@@ -57,10 +59,10 @@ final class ArtworkHeaderViewController : HeaderViewController {
         gradiant.endPoint = CGPoint(x: 0.5, y: 0)
         gradiant.colors = [ThemeHelper.defaultTableCellColor.cgColor, UIColor.clear.cgColor, UIColor.clear.cgColor, ThemeHelper.defaultTableCellColor.cgColor]
 		
-        gradiant.locations = [0.0,
-            ArtworkHeaderViewController.clearGradiantDefaultLocations.start,
-            ArtworkHeaderViewController.clearGradiantDefaultLocations.end,
-            1.0]
+		gradiant.locations = [0.0,
+		                      NSNumber(value: Float(This.clearGradiantDefaultLocations.start)),
+		                      NSNumber(value: Float(This.clearGradiantDefaultLocations.end)),
+		                      1.0]
         return gradiant
     }()
     
@@ -137,7 +139,7 @@ final class ArtworkHeaderViewController : HeaderViewController {
         headerTitleLabel.layer.rasterizationScale = UIScreen.main.scale
         
         //fade in the artwork
-        presentedEntity.artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = self.dynamicType.fadeInAnimation](image) in
+        presentedEntity.artworkImage(forSize: imageView.frame.size) { [imageView = self.imageView, fadeInAnimation = type(of: self).fadeInAnimation](image) in
             imageView.image = image
             imageView.layer.add(fadeInAnimation, forKey: nil)
         }
@@ -145,17 +147,21 @@ final class ArtworkHeaderViewController : HeaderViewController {
     }
     
     
-    override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
+    override func observeValue(forKeyPath keyPath: String?,
+                               of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?) {
+		
         guard keyPath != nil && keyPath! == observationKey else { return }
 		
 		func adjustGradientLocation(expandedFraction:CGFloat, invertedFraction:CGFloat) {
-			let locations = self.dynamicType.clearGradiantDefaultLocations
+			let locations = type(of: self).clearGradiantDefaultLocations
 			
 			//ranges from 25 -> 0 as view collapses
-			let clearGradiantStart = min(locations.start * expandedFraction, locations.start)
+			let clearGradiantStart = NSNumber(value: Float(min(locations.start * expandedFraction, locations.start)))
 			
 			//ranges from 75 -> 100 as view collapses
-			let clearGradiantEnd = max((0.25 * invertedFraction) + locations.end, locations.end)
+			let clearGradiantEnd = NSNumber(value: Float(max((0.25 * invertedFraction) + locations.end, locations.end)))
 			gradiantLayer.locations = [0.0, clearGradiantStart, clearGradiantEnd, 1.0]
 		}
 		

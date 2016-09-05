@@ -20,9 +20,9 @@ func initMainQueueChecking() {
 
 struct KyoozUtils {
 	
-	static let documentsDirectory:NSString = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first!
+	static let documentsDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first!, isDirectory: true)
 	
-	static let libraryDirectory:NSString = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first!
+	static let libraryDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.libraryDirectory, FileManager.SearchPathDomainMask.userDomainMask, true).first!, isDirectory: true)
     
     private static let fadeInAnimation:CABasicAnimation = {
         let animation = CABasicAnimation(keyPath: "opacity")
@@ -94,7 +94,7 @@ struct KyoozUtils {
 	
 	//MARK: - dispatch to main queue functions
 	
-    static func doInMainQueueAsync(_ block:()->()) {
+    static func doInMainQueueAsync(_ block:@escaping ()->()) {
         DispatchQueue.main.async(execute: block)
     }
     
@@ -110,7 +110,7 @@ struct KyoozUtils {
     //performs action in main queue with no regard to weather the caller wants it done asynchronously or synchronously.
     //most performant because if not in main queue then an async dispatch will not hold up the thread.  and if already in main queue
     //then it will be executed immediately
-    static func doInMainQueue(_ block:()->()) {
+    static func doInMainQueue(_ block:@escaping ()->()) {
         if DispatchQueue.getSpecific(key: mainQueueKey) == mainQueueValue {
             block()
         } else {
@@ -118,7 +118,7 @@ struct KyoozUtils {
         }
     }
     
-    static func doInMainQueueAfterDelay(_ delayInSeconds:Double, block:()->()) {
+    static func doInMainQueueAfterDelay(_ delayInSeconds:Double, block:@escaping ()->()) {
         DispatchQueue.main.asyncAfter(deadline: getDispatchTimeForSeconds(delayInSeconds), execute: block)
     }
 	
@@ -159,7 +159,7 @@ struct KyoozUtils {
     static func confirmAction(_ actionTitle:String,
                               actionDetails:String? = nil,
                               presentingVC:UIViewController = ContainerViewController.instance,
-                              action:()->()) {
+                              action: @escaping ()->()) {
 		let b = MenuBuilder()
 			.with(title: actionTitle)
 			.with(details: actionDetails)

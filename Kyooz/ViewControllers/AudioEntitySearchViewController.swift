@@ -40,7 +40,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         return tableView
     }
     
-    private lazy var textField:UITextField? = {
+    fileprivate lazy var textField:UITextField? = {
         for subView in self.searchBar.subviews {
             if subView.subviews.count < 2 { continue }
             if let textField = subView.subviews[1] as? UITextField {
@@ -80,13 +80,13 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
         return [artistSearchExecutor, albumSearchExecutor, kyoozPlaylistSearchExecutor, playlistSearchExecutor, compilationsSearchExecutor, songSearchExecutor, podcastSearchExecutor, audioBooksSearchExecutor]
     }()
     
-    private let defaultRowLimit = 3
-    private let rowLimitPerSection = [LibraryGrouping.Albums:4, LibraryGrouping.Songs:6]
+    fileprivate let defaultRowLimit = 3
+    fileprivate let rowLimitPerSection = [LibraryGrouping.Albums:4, LibraryGrouping.Songs:6]
 	
-    private (set) var searchText:String!
+    fileprivate (set) var searchText:String!
     
-    private let searchBar = UISearchBar()
-    private let tableFooterView = KyoozTableFooterView()
+    fileprivate let searchBar = UISearchBar()
+    fileprivate let tableFooterView = KyoozTableFooterView()
 	
     //MARK: - View life cycle
     override func viewDidLoad() {
@@ -175,7 +175,7 @@ final class AudioEntitySearchViewController : AudioEntityHeaderViewController, U
     }
     
     
-    private func reloadTableFooter(_ rowLimitedDSD:RowLimitedSectionDelegator) {
+    fileprivate func reloadTableFooter(_ rowLimitedDSD:RowLimitedSectionDelegator) {
         let count = rowLimitedDSD.dsdSections.reduce(0) {
             return $0 + $1.sourceData.entities.count
         }

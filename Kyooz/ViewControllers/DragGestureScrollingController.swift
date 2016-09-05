@@ -40,8 +40,8 @@ final class DragGestureScrollingController :NSObject {
         self.scrollView = scrollView
         self.delegate = delegate
         
-        scrollOffsetTop = scrollView.contentInset.top + self.dynamicType.offset
-        scrollOffsetBottom = scrollView.frame.height - self.dynamicType.offset - scrollView.contentInset.bottom
+        scrollOffsetTop = scrollView.contentInset.top + type(of: self).offset
+        scrollOffsetBottom = scrollView.frame.height - type(of: self).offset - scrollView.contentInset.bottom
         minContentOffset = -scrollView.contentInset.top
     }
     
@@ -63,12 +63,12 @@ final class DragGestureScrollingController :NSObject {
             isScrollingUp = false
         } else {
             invalidateDisplayLink()
-            scrollIncrement = self.dynamicType.minScrollIncrement
+            scrollIncrement = type(of: self).minScrollIncrement
             return
         }
         
-        let scrollIncrementForFraction:CGFloat = (max(positionOffset, 0.0)/scrollOffsetTop) * self.dynamicType.maxScrollIncrement
-        scrollIncrement = max(self.dynamicType.minScrollIncrement, scrollIncrementForFraction)
+        let scrollIncrementForFraction:CGFloat = (max(positionOffset, 0.0)/scrollOffsetTop) * type(of: self).maxScrollIncrement
+        scrollIncrement = max(type(of: self).minScrollIncrement, scrollIncrementForFraction)
         
         if(displayLink == nil) {
             let displayLink = CADisplayLink(target: self, selector: #selector(DragGestureScrollingController.adjustScrollOffset))

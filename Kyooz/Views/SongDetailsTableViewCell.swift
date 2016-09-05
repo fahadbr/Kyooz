@@ -81,8 +81,8 @@ final class SongDetailsTableViewCell: AbstractTableViewCell, AudioTableCellProto
             return albumArtwork
         }
         
-        let defaultKey = -1
-        guard let defaultAlbumArtImage = SongDetailsTableViewCell.albumImageCache.object(forKey: defaultKey) else {
+        let defaultKey = NSNumber(value: -1)
+		guard let defaultAlbumArtImage = SongDetailsTableViewCell.albumImageCache.object(forKey: defaultKey) else {
             let noAlbumArtCellImage = ImageUtils.resizeImage(ImageContainer.smallDefaultArtworkImage, toSize: imageSize)
             SongDetailsTableViewCell.albumImageCache.setObject(noAlbumArtCellImage, forKey: defaultKey)
             return noAlbumArtCellImage

@@ -80,7 +80,7 @@ class IPodLibraryDAO {
     }
     
     @available(iOS 9.3, *)
-    private static func validateAndExecute(_ block:()->()) {
+    private static func validateAndExecute(_ block: @escaping ()->()) {
         switch SKCloudServiceController.authorizationStatus() {
         case .notDetermined :
             SKCloudServiceController.requestAuthorization({ (status) in

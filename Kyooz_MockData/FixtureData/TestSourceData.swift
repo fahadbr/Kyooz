@@ -17,7 +17,7 @@ class TestSourceData: NSObject, GroupMutableAudioEntitySourceData {
     var libraryGrouping:LibraryGrouping {
         didSet {
             if libraryGrouping !== oldValue {
-                entities = self.dynamicType.getGroupedEntities(entities, libraryGrouping: libraryGrouping)
+                entities = type(of: self).getGroupedEntities(entities, libraryGrouping: libraryGrouping)
             }
         }
     }
