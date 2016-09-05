@@ -58,7 +58,7 @@ class StringNormalizationTest: XCTestCase {
     private func normalizeStringOld(_ s:String) -> String {
         var stringToNormalize = s
         if stringToNormalize.characters.count > 1 {
-            let charsToRemove = CharacterSet.punctuation
+            let charsToRemove = CharacterSet.punctuationCharacters
             stringToNormalize = stringToNormalize.components(separatedBy: charsToRemove).joined(separator: "")
         }
         stringToNormalize = stringToNormalize.lowercased().trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

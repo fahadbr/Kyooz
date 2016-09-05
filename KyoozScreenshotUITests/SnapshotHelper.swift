@@ -63,7 +63,7 @@ public class Snapshot: NSObject {
             print("Couldn't detect/set locale...")
         }
         if locale.isEmpty {
-            locale = Locale(localeIdentifier: deviceLanguage).identifier
+            locale = Locale(identifier: deviceLanguage).identifier
         }
         app.launchArguments += ["-AppleLocale", "\"\(locale)\""]
     }
@@ -78,7 +78,7 @@ public class Snapshot: NSObject {
 
         do {
             let launchArguments = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue) as String
-            let regex = try RegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
+            let regex = try NSRegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
             let matches = regex.matches(in: launchArguments, options: [], range: NSRange(location:0, length:launchArguments.characters.count))
             let results = matches.map { result -> String in
                 (launchArguments as NSString).substring(with: result.range)
@@ -111,7 +111,7 @@ public class Snapshot: NSObject {
 
     class func pathPrefix() -> NSString? {
         if let path = ProcessInfo().environment["SIMULATOR_HOST_HOME"] as NSString? {
-            return path.appendingPathComponent("Library/Caches/tools.fastlane")
+			return NSString(string: path.appendingPathComponent("Library/Caches/tools.fastlane"))
         }
         print("Couldn't find Snapshot configuration files at ~/Library/Caches/tools.fastlane")
         return nil
