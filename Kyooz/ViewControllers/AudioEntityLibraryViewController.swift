@@ -112,7 +112,6 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         
 		tableView.contentOffset.y = -tableView.contentInset.top
 		applyDataSourceAndDelegate()
-		reloadSourceData()
 		reloadTableViewData()
 	}
 	
