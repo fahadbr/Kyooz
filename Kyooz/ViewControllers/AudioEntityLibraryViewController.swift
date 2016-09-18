@@ -142,7 +142,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
         super.registerForNotifications()
         NotificationCenter.default.addObserver(self,
                                                          selector: #selector(self.reloadAllData),
-                                                         name: NSNotification.Name(rawValue: KyoozPlaylistManager.PlaylistSetUpdate),
+                                                         name: KyoozPlaylistManager.PlaylistSetUpdate,
                                                          object: KyoozPlaylistManager.instance)
     }
 	

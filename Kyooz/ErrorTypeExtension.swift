@@ -11,14 +11,7 @@ import Foundation
 extension Error  {
 	
 	var description : String {
-		return "\(type(of: self))"
-	}
-	
-}
-
-extension Error where Self : KyoozErrorProtocol {
-	var description : String {
-		return errorDescription
+		return (self as? KyoozErrorProtocol)?.errorDescription ?? "\(type(of: self))"
 	}
 	
 }

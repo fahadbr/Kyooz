@@ -13,8 +13,8 @@ final class KyoozPlaylistManager : NSObject {
 	
 	static let instance = KyoozPlaylistManager()
 	
-    static let PlaylistSetUpdate = "KyoozPlaylistManagerPlaylistSetUpdate"
-	fileprivate static let listDirectory:URL = KyoozUtils.libraryDirectory.appendingPathComponent("kyoozPlaylists")
+    static let PlaylistSetUpdate = Notification.Name(rawValue:"KyoozPlaylistManagerPlaylistSetUpdate")
+    fileprivate static let listDirectory: String = KyoozUtils.libraryDirectory.appendingPathComponent("kyoozPlaylists").path
 	
     fileprivate var playlistsSet:NSMutableOrderedSet = NSMutableOrderedSet()
 	
@@ -79,14 +79,14 @@ final class KyoozPlaylistManager : NSObject {
 			}
 		}
 		addOrRemove(actionIsDelete)
-		guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory.absoluteString) else {
+		guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory) else {
 			addOrRemove(!actionIsDelete)
 			throw DataPersistenceError(errorDescription: "Failed update playlist master file for playlist \(playlist.name)")
 		}
 		
 		Playlists.setMostRecentlyModified(playlist: playlist)
         DispatchQueue.main.asyncAfter(deadline: KyoozUtils.getDispatchTimeForSeconds(1.0)) {
-            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: KyoozPlaylistManager.PlaylistSetUpdate), object: self))
+            NotificationCenter.default.post(Notification(name: KyoozPlaylistManager.PlaylistSetUpdate, object: self))
         }
 	}
 }
@@ -114,9 +114,12 @@ extension KyoozPlaylistManager : MutableAudioEntitySourceData {
 	}
 	
     func reloadSourceData() {
-        guard let object = NSKeyedUnarchiver.unarchiveObject(withFile: KyoozPlaylistManager.listDirectory.absoluteString) else {
+        let urlString = KyoozPlaylistManager.listDirectory
+        Logger.debug("playlist url \(urlString)")
+        
+        guard let object = NSKeyedUnarchiver.unarchiveObject(withFile: urlString) else {
             Logger.debug("couldnt find playlist set in list directory")
-			guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: KyoozPlaylistManager.listDirectory.absoluteString) else {
+			guard NSKeyedArchiver.archiveRootObject(playlistsSet, toFile: urlString) else {
 				Logger.error("couldn't save kyooz playlist set")
 				return
 			}
@@ -195,9 +198,7 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
         }
     }
     
-    fileprivate var playlistTracksFileName : URL {
-        return KyoozUtils.libraryDirectory.appendingPathComponent(name)
-    }
+    fileprivate lazy var playlistTracksFileName : String = KyoozUtils.libraryDirectory.appendingPathComponent(self.name).path
 	
 	init(name:String) {
 		self.name = name
@@ -218,11 +219,11 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	
 	fileprivate func setTracks(_ tracks:[AudioTrack]?) throws {
 		guard let newTracks = tracks else {
-			try FileManager.default.removeItem(atPath: playlistTracksFileName.absoluteString)
+			try FileManager.default.removeItem(atPath: playlistTracksFileName)
 			return
 		}
 		
-		guard NSKeyedArchiver.archiveRootObject(newTracks as NSArray, toFile: playlistTracksFileName.absoluteString) else {
+		guard NSKeyedArchiver.archiveRootObject(newTracks as NSArray, toFile: playlistTracksFileName) else {
 			throw DataPersistenceError(errorDescription: "Failed to save the tracks for playlist \(name)")
 		}
         _tracks = tracks
@@ -253,7 +254,7 @@ extension KyoozPlaylist : AudioTrackCollection {
     
     var tracks:[AudioTrack] {
         if _tracks == nil {
-            _tracks = NSKeyedUnarchiver.unarchiveObject(withFile: playlistTracksFileName.absoluteString) as? [AudioTrack] ?? [AudioTrack]()
+            _tracks = NSKeyedUnarchiver.unarchiveObject(withFile: playlistTracksFileName) as? [AudioTrack] ?? [AudioTrack]()
         }
         return _tracks
     }
