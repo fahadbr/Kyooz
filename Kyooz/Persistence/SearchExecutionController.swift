@@ -167,7 +167,7 @@ final class KyoozPlaylistSearchExecutionController : SearchExecutionController {
     
     init() {
         super.init(libraryGroup: LibraryGrouping.Playlists, searchKeys: ["name"])
-        NotificationCenter.default.addObserver(self, selector: #selector(super.rebuildSearchIndex), name: NSNotification.Name(rawValue: KyoozPlaylistManager.PlaylistSetUpdate), object: KyoozPlaylistManager.instance)
+        NotificationCenter.default.addObserver(self, selector: #selector(super.rebuildSearchIndex), name: KyoozPlaylistManager.PlaylistSetUpdate, object: KyoozPlaylistManager.instance)
     }
     
     deinit {

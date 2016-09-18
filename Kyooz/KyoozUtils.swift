@@ -143,10 +143,12 @@ struct KyoozUtils {
     }
 	
 	static func showPopupError(withTitle title:String?, withMessage message:String?, presentationVC:UIViewController?) {
+        Logger.error("\(title) - \(message)")
 		let errorAC = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		errorAC.view.tintColor = ThemeHelper.defaultVividColor
 		errorAC.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: nil))
-        (presentationVC ?? ContainerViewController.instance).present(errorAC, animated: true, completion: {
+        
+        (presentationVC ?? UIApplication.shared.keyWindow?.visibleViewController)?.present(errorAC, animated: true, completion: {
             errorAC.view.tintColor = ThemeHelper.defaultVividColor
         })
 	}
