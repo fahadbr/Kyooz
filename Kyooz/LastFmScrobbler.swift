@@ -13,7 +13,7 @@ import SystemConfiguration
 //MARK: Key Constants
 private let API_URL = "https://ws.audioscrobbler.com/2.0/"
 private let api_key = "api_key"
-private let authToken = "authToken"
+private let password_key = "password"
 private let method = "method"
 private let api_sig = "api_sig"
 private let username = "username"
@@ -147,7 +147,7 @@ final class LastFmScrobbler {
         Logger.debug("attempting to log in as \(usernameForSession)")
         let params:[String:String] = [
             api_key:api_key_value,
-            authToken: "\(usernameForSession)\(password.md5)".md5,
+            password_key: password,
             method: method_getUserSession,
             username: usernameForSession
         ]
@@ -311,10 +311,8 @@ final class LastFmScrobbler {
         let orderedParamKeys = getOrderedParamKeys(params)
         let apiSig = buildApiSig(params, orderedParamKeys: orderedParamKeys)
         
-        var newParams = [String]()
-        
-        for paramKey in orderedParamKeys{
-            newParams.append("\(paramKey)=\(params[paramKey]!.urlEncodedString)")
+        var newParams = orderedParamKeys.map {
+            "\($0)=\(params[$0]!.urlEncodedString)"
         }
         
         newParams.append("\(api_sig)=\(apiSig)")
