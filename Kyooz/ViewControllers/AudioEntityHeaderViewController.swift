@@ -94,7 +94,7 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 		if !useCollapsableHeader { return }
 		let currentOffset = scrollView.contentOffset.y + scrollView.contentInset.top
 		
-		if  currentOffset < collapsedTargetOffset {
+		if  currentOffset < collapsedTargetOffset! {
 			headerHeightConstraint.constant = (maxHeight - currentOffset)
 			scrollView.scrollIndicatorInsets.top = collapsedTargetOffset - scrollView.contentOffset.y
 			headerCollapsed = false
