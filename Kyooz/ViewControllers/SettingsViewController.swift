@@ -37,7 +37,9 @@ final class SettingsViewController: UITableViewController {
         let value = enableAppleMusicSwitch.isOn ? AudioQueuePlayerType.appleDRM.rawValue : AudioQueuePlayerType.default.rawValue
         UserDefaults.standard.set(value, forKey: UserDefaultKeys.AudioQueuePlayer)
 		
-		KyoozUtils.showPopupError(withTitle: "Requires Restart", withMessage: "Enabling/Disabling Apple Music won't take effect until Kyooz is restarted.  Please close and then reopen the app", presentationVC: self)
+		KyoozUtils.showPopupError(withTitle: "Requires Restart",
+		                          withMessage: "Enabling/Disabling Apple Music won't take effect until Kyooz is restarted.  Please close and then reopen the app",
+		                          presentationVC: self)
     }
     
     @IBAction func reduceAnimationSwitchChanged(_ sender:UISwitch) {

@@ -11,12 +11,8 @@ import MediaPlayer
 
 final class NowPlayingInfoHelper {
     
-    class var instance : NowPlayingInfoHelper {
-        struct Static {
-            static let instance:NowPlayingInfoHelper = NowPlayingInfoHelper()
-        }
-        return Static.instance
-    }
+    static let instance = NowPlayingInfoHelper()
+    
     
     let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
     let mpMediaItemPropertyList = Set<String>(arrayLiteral:
@@ -31,25 +27,22 @@ final class NowPlayingInfoHelper {
         MPMediaItemPropertyGenre,
         MPMediaItemPropertyPersistentID,
         MPMediaItemPropertyPlaybackDuration,
-        MPMediaItemPropertyTitle,
-        MPNowPlayingInfoPropertyElapsedPlaybackTime
+        MPMediaItemPropertyTitle
         )
     
-    func publishNowPlayingInfo(_ mediaItem: AudioTrack) {
-        let mediaInfoToPublish = getDictionaryForMediaItem(mediaItem)
-        nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
-    }
-    
-    func updateElapsedPlaybackTime(_ mediaItem:AudioTrack, elapsedTime:Float) {
+    func publishNowPlayingInfo(_ mediaItem: AudioTrack, currentIndex: Int, queueCount: Int, elapsedTime: Float = 0) {
         var mediaInfoToPublish = getDictionaryForMediaItem(mediaItem)
         mediaInfoToPublish[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
+        mediaInfoToPublish[MPNowPlayingInfoPropertyPlaybackQueueIndex] = currentIndex
+        mediaInfoToPublish[MPNowPlayingInfoPropertyPlaybackQueueCount] = queueCount
         nowPlayingInfoCenter.nowPlayingInfo = mediaInfoToPublish
     }
     
-    private func getDictionaryForMediaItem(_ mediaItem:AudioTrack) -> [String:Any] {
-        var mediaInfoToPublish = [String:Any]()
+    private func getDictionaryForMediaItem(_ mediaItem:AudioTrack) -> [String : Any] {
+        var mediaInfoToPublish = [String : Any]()
 		mediaItem.queryValues(forProperties: mpMediaItemPropertyList) { (property:String, value:Any?, _) -> Void in
-			mediaInfoToPublish[property] = value
+            guard let v = value, !(v is NSNull) else { return }
+			mediaInfoToPublish[property] = v
 		}
 
         return mediaInfoToPublish
