@@ -144,7 +144,10 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             publishNotification(for: .playbackStateUpdate)
             TempDataDAO.instance.persistPlaybackStateSnapshotToTempStorage()
             if nowPlayingItem != nil {
-                nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem!, elapsedTime: currentPlaybackTime)
+                nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!,
+                                                           currentIndex: indexOfNowPlayingItem,
+                                                           queueCount: nowPlayingQueue.count,
+                                                           elapsedTime: currentPlaybackTime)
             }
             if audioController.canScrobble {
                 lastFmScrobbler.scrobbleMediaItem()
@@ -161,7 +164,10 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 					return
 				}
                 audioController.currentPlaybackTime = Double(newValue)
-                nowPlayingInfoHelper.updateElapsedPlaybackTime(nowPlayingItem, elapsedTime:newValue)
+                nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem,
+                                                           currentIndex: indexOfNowPlayingItem,
+                                                           queueCount: nowPlayingQueue.count,
+                                                           elapsedTime: newValue)
                 publishNotification(for: .playbackStateUpdate)
             }
         }
@@ -291,7 +297,7 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 		
         for (i, track) in tracks.enumerated() {
             if track.assetURL == nil {
-                unPlayableTrackNames.append("\(i + 1): \(track.trackTitle) - \(track.artist)")
+                unPlayableTrackNames.append("\(i + 1): \(track.trackTitle ?? "unknown title") - \(track.artist ?? "unknown artist")")
             } else {
                 filteredTracks.append(track)
             }
@@ -341,7 +347,9 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
             
             if(shouldPlayAfterLoading) {
                 play()
-                nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!)
+                nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem!,
+                                                           currentIndex: indexOfNowPlayingItem,
+                                                           queueCount: nowPlayingQueue.count)
             }
             publishNotification(for: .nowPlayingItemChanged)
         } catch let error as NSError {
@@ -432,7 +440,9 @@ final class AudioQueuePlayerImpl: NSObject,AudioQueuePlayer,AudioControllerDeleg
 			guard let nowPlayingItem = self.nowPlayingItem else {
 				return
 			}
-            self.nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem)
+            self.nowPlayingInfoHelper.publishNowPlayingInfo(nowPlayingItem,
+                                                            currentIndex: self.indexOfNowPlayingItem,
+                                                            queueCount: self.nowPlayingQueue.count)
         }
     }
 }
