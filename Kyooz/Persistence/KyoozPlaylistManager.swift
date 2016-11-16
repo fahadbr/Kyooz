@@ -31,7 +31,7 @@ final class KyoozPlaylistManager : NSObject {
 		if playlistsSet.contains(playlist) {
 			let b = MenuBuilder()
                 .with(title: "There's already a playlist with the name \(playlist.name). Would you like to overwrite?")
-                .with(options:KyoozMenuAction(title: "OVERWRITE,") {
+                .with(options:KyoozMenuAction(title: "OVERWRITE") {
                     do {
                         try self.createOrUpdatePlaylist(playlist, withTracks: tracks)
                     } catch let error {
