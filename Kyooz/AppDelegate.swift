@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window = createWindow()
 		window!.rootViewController = ContainerViewController.instance
 		window!.makeKeyAndVisible()
-		
+
 		MPMediaLibrary.default().beginGeneratingLibraryChangeNotifications()
 		initMainQueueChecking()
 		ApplicationDefaults.initializeData()
