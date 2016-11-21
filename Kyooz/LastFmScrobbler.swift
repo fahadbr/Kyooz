@@ -177,7 +177,7 @@ final class LastFmScrobbler {
         validSessionObtained = false
     }
     
-    func scrobbleMediaItem() {
+    func scrobbleMediaItem(_ callback: (()->())? = nil) {
         guard validSessionObtained, let mediaItem = mediaItemToScrobble, let session = self.session else {
             return
         }
@@ -186,16 +186,15 @@ final class LastFmScrobbler {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async { [unowned self]() -> Void in
             let timeStampToScrobble = Date().timeIntervalSince1970
             
-            var params:[String:String] = [
-                track : mediaItem.trackTitle,
-                artist : mediaItem.artist,
-                album : mediaItem.albumTitle,
-                duration : "\(Int(mediaItem.playbackDuration))",
-                timestamp : "\(Int(timeStampToScrobble))",
-                method : method_scrobble,
-                api_key : api_key_value,
-                sk : session
-            ]
+            var params = [String : String]()
+            params[track] = mediaItem.trackTitle
+            params[artist] = mediaItem.artist ?? "Artist Unknown"
+            params[album] = mediaItem.albumTitle
+            params[duration] = "\(Int(mediaItem.playbackDuration))"
+            params[timestamp] = "\(Int(timeStampToScrobble))"
+            params[method] = method_scrobble
+            params[api_key] = api_key_value
+            params[sk] = session
             
             if(mediaItem.albumArtist != mediaItem.artist) {
                 params[albumArtist] = mediaItem.albumArtist
@@ -203,13 +202,15 @@ final class LastFmScrobbler {
             
             self.buildApiSigAndCallWS(params, successHandler: { [weak self](info:[String:String]) in
 				let message = "Successfully scrobbled track \(mediaItem.trackTitle) to last.fm"
-                Logger.debug(message)
+                Logger.debug("\(message) info: \(info)")
 				self?.shortNotificationManager.presentShortNotification(withMessage:message)
+                callback?()
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
                 Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[error_key])")
                 if(info[error_key] != nil && info[error_key]! == httpFailure) {
                     self.addToScrobbleCache(mediaItem, timeStampToScrobble: timeStampToScrobble)
                 }
+                callback?()
             })
         }
     }
@@ -293,7 +294,8 @@ final class LastFmScrobbler {
         let i = "[\(scrobbleCache.count)]"
         var scrobbleDict = [String:String]()
         scrobbleDict[track + i] = mediaItemToScrobble.trackTitle
-        scrobbleDict[artist + i] = mediaItemToScrobble.albumArtist //this is different (using albumArtist) from the single api call above intentionally
+        //this is different (using albumArtist) from the single api call above intentionally
+        scrobbleDict[artist + i] = mediaItemToScrobble.albumArtist ?? "Artist Unknown"
         scrobbleDict[album + i] = mediaItemToScrobble.albumTitle
         scrobbleDict[duration + i] = "\(Int(mediaItemToScrobble.playbackDuration))"
         scrobbleDict[timestamp + i] = "\(Int(timeStampToScrobble))"
@@ -301,7 +303,9 @@ final class LastFmScrobbler {
     }
     
 
-    private func buildApiSigAndCallWS(_ params:[String:String], successHandler lastFmSuccessHandler:@escaping ([String:String]) -> Void, failureHandler lastFmFailureHandler: @escaping ([String:String]) -> ()) {
+    private func buildApiSigAndCallWS(_ params:[String:String],
+                                      successHandler lastFmSuccessHandler:@escaping ([String:String]) -> Void,
+                                      failureHandler lastFmFailureHandler: @escaping ([String:String]) -> ()) {
 		guard internetConnectionAvailable() else {
 			Logger.debug("no internet connection available")
 			lastFmFailureHandler([error_key:httpFailure])

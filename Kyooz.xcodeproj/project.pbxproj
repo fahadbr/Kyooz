@@ -61,6 +61,7 @@
 		0B476C741B2273E500626810 /* AudioEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C731B2273E500626810 /* AudioEntity.swift */; };
 		0B476C7A1B22921800626810 /* SpotifySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C791B22921800626810 /* SpotifySettingsViewController.swift */; };
 		0B476C7F1B2350FE00626810 /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B476C7E1B2350FE00626810 /* SpotifyController.swift */; };
+		0B4B1FD11DE1347A00987111 /* TestDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4B1FCF1DE1346400987111 /* TestDTOs.swift */; };
 		0B4B2D661D0DC89A0036F358 /* GenericWrapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4B2D651D0DC89A0036F358 /* GenericWrapperViewController.swift */; };
 		0B4E60041C2CBB5900BB9D77 /* ShuffleButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */; };
 		0B4E60061C2CBB7700BB9D77 /* ShuffleButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */; };
@@ -147,6 +148,7 @@
 		0BE20C6A1D205AF400A63770 /* KyoozSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */; };
 		0BE21C551BAF8915000509FD /* ApplicationIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE21C541BAF8915000509FD /* ApplicationIconView.swift */; };
 		0BE21C571BAF8925000509FD /* ApplicationIconView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BE21C561BAF8925000509FD /* ApplicationIconView.xib */; };
+		0BEB10951DE1114E00A597C6 /* LastFmScrobblerIT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEB10941DE1114E00A597C6 /* LastFmScrobblerIT.swift */; };
 		0BEB86AC1CE804050099A4F5 /* PanTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */; };
 		0BEBCCB51B92122200EFC47D /* PlayPauseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */; };
 		0BEBCCB71B92123700EFC47D /* PlayPauseButtonView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */; };
@@ -476,6 +478,7 @@
 		0B476C731B2273E500626810 /* AudioEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEntity.swift; sourceTree = "<group>"; };
 		0B476C791B22921800626810 /* SpotifySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifySettingsViewController.swift; sourceTree = "<group>"; };
 		0B476C7E1B2350FE00626810 /* SpotifyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
+		0B4B1FCF1DE1346400987111 /* TestDTOs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestDTOs.swift; path = KyoozTests/AudioPlayer/LastFm/TestDTOs.swift; sourceTree = SOURCE_ROOT; };
 		0B4B2D651D0DC89A0036F358 /* GenericWrapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericWrapperViewController.swift; sourceTree = "<group>"; };
 		0B4E60031C2CBB5900BB9D77 /* ShuffleButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShuffleButtonView.swift; sourceTree = "<group>"; };
 		0B4E60051C2CBB7700BB9D77 /* ShuffleButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShuffleButtonView.xib; sourceTree = "<group>"; };
@@ -563,6 +566,7 @@
 		0BE20C691D205AF400A63770 /* KyoozSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KyoozSectionHeaderView.swift; sourceTree = "<group>"; };
 		0BE21C541BAF8915000509FD /* ApplicationIconView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationIconView.swift; sourceTree = "<group>"; };
 		0BE21C561BAF8925000509FD /* ApplicationIconView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApplicationIconView.xib; sourceTree = "<group>"; };
+		0BEB10941DE1114E00A597C6 /* LastFmScrobblerIT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastFmScrobblerIT.swift; sourceTree = "<group>"; };
 		0BEB86AB1CE804050099A4F5 /* PanTutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanTutorialViewController.swift; sourceTree = "<group>"; };
 		0BEBCCB41B92122200EFC47D /* PlayPauseButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayPauseButtonView.swift; sourceTree = "<group>"; };
 		0BEBCCB61B92123700EFC47D /* PlayPauseButtonView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayPauseButtonView.xib; sourceTree = "<group>"; };
@@ -1050,7 +1054,9 @@
 		0BC2D7B21CDE5F05001BEC9B /* LastFm */ = {
 			isa = PBXGroup;
 			children = (
+				0B4B1FCF1DE1346400987111 /* TestDTOs.swift */,
 				0BC2D7B31CDE5F1A001BEC9B /* LastFmScrobblerTest.swift */,
+				0BEB10941DE1114E00A597C6 /* LastFmScrobblerIT.swift */,
 			);
 			name = LastFm;
 			path = KyoozTests/AudioPlayer/LastFm;
@@ -1910,6 +1916,8 @@
 			files = (
 				0B2B1E921CC43F1500D8A932 /* StringNormalizationTest.swift in Sources */,
 				0BC2D7B41CDE5F1A001BEC9B /* LastFmScrobblerTest.swift in Sources */,
+				0BEB10951DE1114E00A597C6 /* LastFmScrobblerIT.swift in Sources */,
+				0B4B1FD11DE1347A00987111 /* TestDTOs.swift in Sources */,
 				100A8BC51C54423B009FAB17 /* KyoozTests.swift in Sources */,
 				0B9D79CC1CE8DF7F0035E162 /* TutorialManagerTest.swift in Sources */,
 			);
