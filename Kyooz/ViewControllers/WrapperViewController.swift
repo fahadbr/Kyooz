@@ -176,8 +176,11 @@ final class LabelStackWrapperViewController : WrapperViewController {
 	}
 	
 	private static func getLabelStringsFromTrack(_ track:AudioTrack?) -> (titleText:String, detailsText:String) {
-		let titleText = track?.trackTitle ?? "Nothing"
-		let detailsText = "\(track?.albumArtist ?? "To")  —  \(track?.albumTitle ?? "Play")"
+		guard track != nil else {
+			return ("Nothing", "To - Play")
+		}
+		let titleText = track?.trackTitle ?? "Unknown Title"
+		let detailsText = "\(track?.albumArtist ?? track?.artist ?? "Unknown Artist")  —  \(track?.albumTitle ?? "Unknown Album")"
 		return (titleText, detailsText)
 	}
 	

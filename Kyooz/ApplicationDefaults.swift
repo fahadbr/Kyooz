@@ -11,7 +11,7 @@ import Foundation
 import MediaPlayer
 
 struct ApplicationDefaults {
-    
+
     static let audioQueuePlayer:AudioQueuePlayer = {
         let value = AudioQueuePlayerType(rawValue: UserDefaults.standard.integer(forKey: UserDefaultKeys.AudioQueuePlayer)) ?? AudioQueuePlayerType.default
         let player:AudioQueuePlayer
@@ -21,13 +21,14 @@ struct ApplicationDefaults {
         case .default:
             player = AudioQueuePlayerImpl.instance
         }
+        
         Logger.debug("Loading \(type(of: player)) as the application audio player")
         player.delegate = AudioQueuePlayerDelegateImpl()
         return player
     }()
-    
+
     static func evaluateMinimumFetchInterval() {
-		
+
         if audioQueuePlayer is DRMAudioQueuePlayer && LastFmScrobbler.instance.validSessionObtained {
             Logger.debug("FETCH INTERVAL: setting minimum fetch interval")
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
@@ -36,18 +37,13 @@ struct ApplicationDefaults {
             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
         }
     }
-	
+
 	static func initializeData() {
 		#if MOCK_DATA
 			Logger.debug("launching with test data")
 			TestDataGenerator.generateData()
 		#endif
 	}
-	
-	
+
+
 }
-
-
-
-
-

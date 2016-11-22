@@ -21,7 +21,7 @@ class LastFmScrobblerIT: XCTestCase {
 
     }
     
-    func testScrobbleMediaItem() {
+    func ignoreScrobbleMediaItem() {
 
         let expector = expectation(description: "callback")
         
