@@ -139,14 +139,6 @@ public class MarqueeLabel : UIView {
 	}
 	
 	private func resetLabelSizes() {
-        func animateLabelPosition(_ newPosition:CGFloat) {
-            guard newPosition != subLabel.frame.origin.x else { return }
-            
-//            UIView.animateWithDuration(1.0, delay: 0.5, options: .CurveEaseInOut, animations: { [weak self] in
-                self.subLabel.frame.origin.x = newPosition
-//                }, completion: nil)
-        }
-        
 		stopScrolling()
 		
 		let height = UIScreen.main.bounds.height
@@ -156,10 +148,10 @@ public class MarqueeLabel : UIView {
         if extendsPastBounds {
             replicatingLayer.instanceCount = 2
             replicatingLayer.instanceTransform = CATransform3DMakeTranslation(subLabel.frame.width + textGap, 0, 0)
-            animateLabelPosition(frame.width * 0.025)
+			subLabel.frame.origin.x = frame.width * 0.025
             layer.mask = gradientMaskLayer
         } else {
-            animateLabelPosition(0)
+			subLabel.frame.origin.x = 0
             replicatingLayer.instanceCount = 1
             layer.mask = nil
         }

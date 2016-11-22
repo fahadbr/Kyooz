@@ -295,7 +295,7 @@ final class LastFmScrobbler {
         var scrobbleDict = [String:String]()
         scrobbleDict[track + i] = mediaItemToScrobble.trackTitle
         //this is different (using albumArtist) from the single api call above intentionally
-        scrobbleDict[artist + i] = mediaItemToScrobble.albumArtist ?? "Artist Unknown"
+        scrobbleDict[artist + i] = mediaItemToScrobble.albumArtist ?? mediaItemToScrobble.artist ?? "Artist Unknown"
         scrobbleDict[album + i] = mediaItemToScrobble.albumTitle
         scrobbleDict[duration + i] = "\(Int(mediaItemToScrobble.playbackDuration))"
         scrobbleDict[timestamp + i] = "\(Int(timeStampToScrobble))"
