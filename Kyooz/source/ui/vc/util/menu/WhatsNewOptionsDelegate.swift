@@ -70,6 +70,9 @@ class WhatsNewOptionsDelegate : KyoozOptionsViewControllerDelegate {
         let stackViewHeight = self.sizeConstraint.maxHeight
             - (KyoozOptionsViewController.cellHeight * 2)
             - self.sectionHeight
+        
+        Logger.debug("some message \(10)")
+        
 
         return stackView(forSubviews: [whatsNewLabel, textView],
                          height: stackViewHeight,

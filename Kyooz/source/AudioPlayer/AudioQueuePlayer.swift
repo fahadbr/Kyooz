@@ -10,10 +10,10 @@ import Foundation
 import MediaPlayer
 
 protocol AudioQueuePlayer:class {
-    
+
     var type:AudioQueuePlayerType { get }
     var playbackStateSnapshot:PlaybackStateSnapshot { get set }
-    
+
     var nowPlayingItem:AudioTrack? { get }
     var musicIsPlaying:Bool { get }
     var currentPlaybackTime:Float { get set }
@@ -21,43 +21,43 @@ protocol AudioQueuePlayer:class {
     var nowPlayingQueue:[AudioTrack] { get }
     var shuffleActive:Bool { get set }
     var repeatMode:RepeatState { get set }
-    
+
     var delegate:AudioQueuePlayerDelegate? { get set }
-    
+
     func play()
-    
+
     func pause()
-    
+
     func skipBackwards(_ forcePreviousTrack:Bool)
-    
+
     func skipForwards()
-    
+
     func playNow(withTracks tracks:[AudioTrack], startingAtIndex index:Int, shouldShuffleIfOff:Bool)
-    
+
     func playTrack(at index:Int)
-    
+
     func enqueue(tracks tracksToEnqueue:[AudioTrack], at enqueueAction:EnqueueAction)
-    
+
     //returns the number of items inserted
     func insert(tracks tracksToInsert:[AudioTrack], at index:Int) -> Int
-    
+
     func delete(at indicies:[Int])
-    
+
     func move(from sourceIndex:Int, to destinationIndex:Int)
-    
+
     func clear(from direction:ClearDirection, at index:Int)
-    
-    
+
+
 }
 
 extension AudioQueuePlayer {
     func publishNotification(for updateType:AudioQueuePlayerUpdate) {
         KyoozUtils.doInMainQueueAsync() {
-            let notification = Notification(name: Notification.Name(rawValue: updateType.rawValue), object: self)
+            let notification = Notification(name: updateType.notification, object: self)
             NotificationCenter.default.post(notification)
         }
     }
-    
+
     func presentNotificationsIfNecessary() {
         if repeatMode == .one {
             let ac = UIAlertController(title: "Turn off Repeat One Mode?", message: "The tracks you just queued won't play until Repeat One Mode is turned off", preferredStyle: .alert)
@@ -74,11 +74,11 @@ extension AudioQueuePlayer {
 }
 
 protocol AudioQueuePlayerDelegate {
-    
+
 	func audioQueuePlayerDidChangeContext(_ audioQueuePlayer: AudioQueuePlayer, previousSnapshot:PlaybackStateSnapshot)
-    
+
     func audioQueuePlayerDidEnqueueItems(tracks tracksToEnqueue:[AudioTrack], at enqueueAction:EnqueueAction)
-    
+
 }
 
 enum AudioQueuePlayerUpdate : String, EnumNameDescriptable {
@@ -86,6 +86,10 @@ enum AudioQueuePlayerUpdate : String, EnumNameDescriptable {
     case systematicQueueUpdate
     case playbackStateUpdate
     case nowPlayingItemChanged
+
+    var notification: Notification.Name {
+        return Notification.Name(rawValue: self.rawValue)
+    }
 }
 
 enum ClearDirection : Int, EnumNameDescriptable {
@@ -99,4 +103,3 @@ enum EnqueueAction : Int, EnumNameDescriptable {
     case last
     case random
 }
-

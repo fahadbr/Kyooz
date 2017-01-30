@@ -9,7 +9,7 @@
 import Foundation
 
 extension Comparable {
-	
+
 	func cap(min:Self, max:Self) -> Self {
 		if self < min {
 			return min
@@ -18,5 +18,5 @@ extension Comparable {
 		}
 		return self
 	}
-	
+
 }

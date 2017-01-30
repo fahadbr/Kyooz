@@ -44,7 +44,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     private let lowestIndexPersistedKey = "lowestIndexPersistedKey"
-    private var lowestIndexPersisted:Int = 0 {
+    private (set) var lowestIndexPersisted:Int = 0 {
         didSet {
             TempDataDAO.instance.addPersistentValue(key: lowestIndexPersistedKey, value: NSNumber(value: lowestIndexPersisted))
         }
@@ -350,9 +350,10 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
             return
         }
         
-        let i = musicPlayer.indexOfNowPlayingItem + lowestIndexPersisted
         let count = nowPlayingQueue.count
-        let newIndex = count == 0 ? i : i%nowPlayingQueue.count
+        let newIndex = deriveQueueIndex(musicPlayer: musicPlayer,
+                                        lowestIndexPersisted: lowestIndexPersisted,
+                                        queueSize: count)
         
         if newIndex >= count || nowPlayingQueue[newIndex].id != nowPlayingItem.id {
             queueStateInconsistent = true

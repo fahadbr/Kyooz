@@ -9,9 +9,9 @@
 import Foundation
 
 final class Logger {
-    
-    static let loggerQueue = DispatchQueue(label: "com.riaz.fahad.Kyooz.Logger")
-    
+
+    private static let loggerQueue = DispatchQueue(label: "com.riaz.fahad.Kyooz.Logger")
+
     static let dateFormatter:DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd-yy hh:mm:ss:SSS a"
@@ -33,10 +33,10 @@ final class Logger {
         let date = Date()
         let threadId = threadName
         let message = messageBlock()
-        //loggerQueue.async {
+        loggerQueue.async {
             let dateString = dateFormatter.string(from: date)
             print("\(dateString) DEBUG [\(threadId)]:  \(message)")
-        //}
+        }
     }
     
     static func error(_ message:String) {

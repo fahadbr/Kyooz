@@ -34,36 +34,6 @@ class RemoteCommandHandler : NSObject {
         rcc.previousTrackCommand.addTarget(self, action: #selector(RemoteCommandHandler.previousTrack))
         rcc.playCommand.addTarget(self, action: #selector(RemoteCommandHandler.play))
         
-        
-//        rcc.playCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-//            self.audioQueuePlayer.play()
-//            return MPRemoteCommandHandlerStatus.Success
-//        }
-//        rcc.pauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-//            self.audioQueuePlayer.pause()
-//            return MPRemoteCommandHandlerStatus.Success
-//        }
-//        rcc.togglePlayPauseCommand.enabled = shouldEnable
-//        rcc.togglePlayPauseCommand.addTarget(self, action: "doNothing")
-////        rcc.togglePlayPauseCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-////            if(self.audioQueuePlayer.musicIsPlaying) {
-////                self.audioQueuePlayer.pause()
-////            } else {
-////                self.audioQueuePlayer.play()
-////            }
-////            return MPRemoteCommandHandlerStatus.Success
-////        }
-//        rcc.previousTrackCommand.enabled = shouldEnable
-//        rcc.previousTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-//            self.audioQueuePlayer.skipBackwards()
-//            return MPRemoteCommandHandlerStatus.Success
-//        }
-//        
-//        rcc.nextTrackCommand.enabled = shouldEnable
-//        rcc.nextTrackCommand.addTargetWithHandler { [unowned self](remoteCommandEvent:MPRemoteCommandEvent!) -> MPRemoteCommandHandlerStatus in
-//            self.audioQueuePlayer.skipForwards()
-//            return MPRemoteCommandHandlerStatus.Success
-//        }
     }
     
     func nextTrack() {

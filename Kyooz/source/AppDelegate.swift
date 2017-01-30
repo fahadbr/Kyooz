@@ -13,13 +13,14 @@ import MediaPlayer
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     lazy var lastFmScrobbler = LastFmScrobbler.instance
-	
+
 	var window: UIWindow?
-	
+    var queueChangeListener: QueueChangeListener!
+
 	func application(_ application: UIApplication,
 	                 didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
 		ThemeHelper.applyGlobalAppearanceSettings()
-		
+    
 		window = createWindow()
 		window!.rootViewController = ContainerViewController.instance
 		window!.makeKeyAndVisible()
@@ -27,10 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		MPMediaLibrary.default().beginGeneratingLibraryChangeNotifications()
 		initMainQueueChecking()
 		ApplicationDefaults.initializeData()
+    	queueChangeListener = QueueChangeListener.instance
 		return true
 	}
 
-	
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         lastFmScrobbler.initializeScrobbler()
@@ -40,8 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         MPMediaLibrary.default().endGeneratingLibraryChangeNotifications()
     }
-	
-    
+
+
     func application(_ application: UIApplication,
                      performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         BackgroundFetchController.instance.performFetchWithCompletionHandler(completionHandler)
@@ -50,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate {
-	
+
 	func createWindow() -> UIWindow {
 //		#if MOCK_DATA
 //			Logger.debug("starting app with tweaks window")
@@ -66,7 +67,6 @@ extension AppDelegate {
 			return UIWindow(frame: UIScreen.main.bounds)
 //		#endif
 	}
-	
-	
-}
 
+
+}

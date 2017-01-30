@@ -78,7 +78,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
                                                                  action: #selector(self.handlePanGesture(_:)))
         centerPanelPanGestureRecognizer.delegate = self
         rootViewController.view.addGestureRecognizer(centerPanelPanGestureRecognizer)
-		
+
 		if let popGR = rootViewController.libraryNavigationController.interactivePopGestureRecognizer {
             centerPanelPanGestureRecognizer.require(toFail: popGR)
         }
