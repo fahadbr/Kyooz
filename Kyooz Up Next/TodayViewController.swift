@@ -50,7 +50,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         
         self.queueIds = queueIds as? [NSNumber] ?? []
         self.lowestPersistedIndex = userDefaults?.integer(forKey: AudioPlayerCommon.lastPersistedIndexKey) ?? 0
-        self.currentIndex = deriveQueueIndex(musicPlayer: MPMusicPlayerController.systemMusicPlayer(),
+        self.currentIndex = deriveQueueIndex(musicPlayer: MPMusicPlayerController.systemMusicPlayer,
                                              lowestIndexPersisted: lowestPersistedIndex,
                                              queueSize: self.queueIds.count)
         tableView.reloadData()

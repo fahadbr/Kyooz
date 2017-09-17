@@ -96,8 +96,8 @@ struct ThemeHelper {
     
     
     static func applyGlobalAppearanceSettings() {
-        var titleTextAttributes = [String : AnyObject]()
-        titleTextAttributes[NSFontAttributeName] = UIFont(name:defaultFontNameBold, size:defaultFontSize)
+        var titleTextAttributes = [NSAttributedStringKey : Any]()
+        titleTextAttributes[.font] = UIFont(name:defaultFontNameBold, size:defaultFontSize)
         
         UINavigationBar.appearance().titleTextAttributes = titleTextAttributes
         UINavigationBar.appearance().tintColor = UIColor.white
@@ -107,10 +107,10 @@ struct ThemeHelper {
 
         
         let font = UIFont(name:defaultFontName, size: UIScreen.widthClass == .iPhone345 ? smallFontSize - 2 : smallFontSize + 1)
-        let uiBarButtonTextAttributes:[String:AnyObject] = [NSFontAttributeName:font ?? UIFont.systemFont(ofSize: smallFontSize)]
+        let uiBarButtonTextAttributes:[NSAttributedStringKey:Any] = [.font:font ?? UIFont.systemFont(ofSize: smallFontSize)]
         UIBarButtonItem.appearance().setTitleTextAttributes(uiBarButtonTextAttributes, for: UIControlState())
         var highlightedAttributes = uiBarButtonTextAttributes
-        highlightedAttributes[NSForegroundColorAttributeName] = ThemeHelper.defaultVividColor
+        highlightedAttributes[.foregroundColor] = ThemeHelper.defaultVividColor
         UIBarButtonItem.appearance().setTitleTextAttributes(highlightedAttributes, for: .highlighted)
         UIBarButtonItem.appearance().tintColor = defaultTintColor
         

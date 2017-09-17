@@ -11,7 +11,7 @@ import UIKit
 class TutorialViewController : UIViewController, CAAnimationDelegate {
 	
 	private static let unfulfilledColor = UIColor.blue
-    private static let fulfilledColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
+    private static let fulfilledColor = UIColor(red: 0, green: 0.4, blue: 0, alpha: 1)
     private static let headerHeight = ThemeHelper.plainHeaderHight + 20
     
     let tutorialDTO:TutorialDTO
@@ -134,7 +134,7 @@ class TutorialViewController : UIViewController, CAAnimationDelegate {
         }
     }
 	
-	func dismissTutorial() {
+    @objc func dismissTutorial() {
 		tutorialManager.dismissTutorial(tutorialDTO.tutorial, action: .dismissFulfilled)
 	}
     

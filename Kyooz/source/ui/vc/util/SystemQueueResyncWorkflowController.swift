@@ -11,7 +11,7 @@ import MediaPlayer
 
 final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    private static let greenHeaderColor = UIColor(colorLiteralRed: 0, green: 0.4, blue: 0, alpha: 1)
+    private static let greenHeaderColor = UIColor(red: 0, green: 0.4, blue: 0, alpha: 1)
     
     private let audioQueuePlayer = ApplicationDefaults.audioQueuePlayer
     private var previewQueue = ApplicationDefaults.audioQueuePlayer.nowPlayingQueue
@@ -60,11 +60,18 @@ final class SystemQueueResyncWorkflowController: UIViewController, UITableViewDe
         
         tableView.register(NibContainer.songTableViewCellNib, forCellReuseIdentifier: SongDetailsTableViewCell.reuseIdentifier)
         tableView.register(KyoozSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: KyoozSectionHeaderView.reuseIdentifier)
-        
-        NotificationCenter.default.addObserver(self,
-                                                         selector: #selector(self.handleNowPlayingItemChanged(_:)),
-                                                         name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue),
-                                                         object: audioQueuePlayer)
+        NotificationCenter.default.addObserver(
+            forName: AudioQueuePlayerUpdate.nowPlayingItemChanged.notification,
+            object: audioQueuePlayer,
+            queue: OperationQueue.main,
+            using: self.handleNowPlayingItemChanged(_:)
+        )
+
+//        NotificationCenter.default.addObserver(
+//            self,
+//            selector: #selector(self.handleNowPlayingItemChanged(_:)),
+//            name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue),
+//            object: audioQueuePlayer)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

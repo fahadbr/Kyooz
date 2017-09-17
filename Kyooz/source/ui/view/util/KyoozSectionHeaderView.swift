@@ -106,8 +106,8 @@ class RowLimitedSectionHeaderView : KyoozSectionHeaderView {
     }
     
     func setLabelText(_ mainText:String, subText:String) {
-        let mainTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : ThemeHelper.defaultFontColor]
-        let subTextAttributes:[String : AnyObject] = [NSForegroundColorAttributeName : UIColor.darkGray]
+        let mainTextAttributes:[NSAttributedStringKey : Any] = [.foregroundColor : ThemeHelper.defaultFontColor]
+        let subTextAttributes:[NSAttributedStringKey : Any] = [.foregroundColor : UIColor.darkGray]
         
         let mainAttributedText = NSMutableAttributedString(string: mainText, attributes: mainTextAttributes)
         mainAttributedText.append(NSAttributedString(string: "   " + subText, attributes: subTextAttributes))

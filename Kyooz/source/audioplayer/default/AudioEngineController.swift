@@ -127,7 +127,10 @@ final class AudioEngineController : AudioController {
     }
     
     private func scheduleBuffer(_ newValidationCode:UInt8, shouldInterrupt:Bool) {
-        let bufferToUse = AVAudioPCMBuffer(pcmFormat: audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: audioToBuffer.defaultBufferCapacity)
+        guard let bufferToUse = AVAudioPCMBuffer(pcmFormat: audioToBuffer.sourceAudioFile.processingFormat, frameCapacity: audioToBuffer.defaultBufferCapacity) else {
+            Logger.error("not sure why but couldnt instantiate class heree")
+            return
+        }
         do {
             try audioToBuffer.sourceAudioFile.read(into: bufferToUse)
         } catch let error1 as NSError {

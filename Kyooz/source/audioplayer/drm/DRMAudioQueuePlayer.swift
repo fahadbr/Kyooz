@@ -14,7 +14,7 @@ private let outOfSyncMessage = "Another app is using the iOS music player! Play 
 final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = DRMAudioQueuePlayer()
     
-    private let musicPlayer = MPMusicPlayerController.systemMusicPlayer()
+    private let musicPlayer = MPMusicPlayerController.systemMusicPlayer
     private let playbackStateManager:PlaybackStateManager
     private let playCountIterator = PlayCountIterator()
     

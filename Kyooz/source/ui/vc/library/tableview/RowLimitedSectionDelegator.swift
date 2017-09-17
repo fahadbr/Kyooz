@@ -109,7 +109,7 @@ final class RowLimitedSectionDelegator : AudioEntityDSDSectionDelegator {
     }
 	
 	//MARK: tap gesture handler
-	func didTapHeaderView(_ sender:UITapGestureRecognizer) {
+    @objc func didTapHeaderView(_ sender:UITapGestureRecognizer) {
 		delegate?.willExpandOrCollapseSection()
 		
 		if let expandedSection = self.expandedSection {

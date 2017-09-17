@@ -15,7 +15,7 @@ class TextViewController: UIViewController {
     let completionAction:(()->Void)?
 	
 	init(fileName:String,
-	     documentType:DocumentType,
+	     documentType:DocType,
 	     showDismissButton:Bool = false,
 	     completionAction:(()->Void)? = nil) throws {
 		self.textView = try UITextView(fileName: fileName, documentType: documentType)

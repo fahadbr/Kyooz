@@ -97,7 +97,7 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     func presentActionsForCell(_ cell:UITableViewCell, title:String?, details:String?, originatingCenter:CGPoint) {
         guard !tableView.isEditing  else { return }
         guard let indexPath = tableView.indexPath(for: cell) else {
-            Logger.error("no index path found for cell with tile \(title)")
+            Logger.error("no index path found for cell with tile \(String(describing: title))")
             return
         }
         
@@ -128,20 +128,25 @@ class AudioEntityViewController: CustomPopableViewController, AudioEntityViewCon
     
     func registerForNotifications() {
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self,
-                                       selector: #selector(self.reloadTableViewUnanimated),
-                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.nowPlayingItemChanged.rawValue),
-                                       object: audioQueuePlayer)
+        notificationCenter.addObserver(
+            forName: AudioQueuePlayerUpdate.nowPlayingItemChanged.notification,
+            object: audioQueuePlayer,
+            queue: OperationQueue.main,
+            using: { _ in self.reloadTableViewUnanimated() }
+        )
         //TODO: Why does this class need to know about playback state updates?
-        notificationCenter.addObserver(self,
-                                       selector: #selector(self.reloadTableViewUnanimated),
-                                       name: NSNotification.Name(rawValue: AudioQueuePlayerUpdate.playbackStateUpdate.rawValue),
-                                       object: audioQueuePlayer)
-        
-        notificationCenter.addObserver(self,
-                                       selector: #selector(self.reloadAllData),
-                                       name: NSNotification.Name.MPMediaLibraryDidChange,
-                                       object: MPMediaLibrary.default())
+        notificationCenter.addObserver(
+            forName: AudioQueuePlayerUpdate.playbackStateUpdate.notification,
+            object: audioQueuePlayer,
+            queue: OperationQueue.main,
+            using: { _ in self.reloadTableViewUnanimated() }
+        )
+        notificationCenter.addObserver(
+            forName: NSNotification.Name.MPMediaLibraryDidChange,
+            object: MPMediaLibrary.default(),
+            queue: OperationQueue.main,
+            using: { _ in self.reloadAllData() }
+        )
     }
     
     private func unregisterForNotifications() {

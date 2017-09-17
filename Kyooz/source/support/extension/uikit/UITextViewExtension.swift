@@ -10,7 +10,7 @@ import UIKit
 
 extension UITextView {
 	
-	convenience init(fileName:String, documentType:DocumentType) throws {
+	convenience init(fileName:String, documentType:DocType) throws {
 		self.init()
 		isEditable = false
         backgroundColor = ThemeHelper.defaultTableCellColor

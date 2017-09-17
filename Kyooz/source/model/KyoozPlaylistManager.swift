@@ -205,7 +205,7 @@ final class KyoozPlaylist : NSObject, NSSecureCoding {
 	}
 	
 	init?(coder aDecoder: NSCoder) {
-        guard let persistedName = aDecoder.decodeObject(of: NSString.self, forKey: KyoozPlaylist.nameKey) as? String else {
+        guard let persistedName = aDecoder.decodeObject(of: NSString.self, forKey: KyoozPlaylist.nameKey) as String? else {
 			name = "Unknown"
 			count = 0
 			return
@@ -262,7 +262,7 @@ extension KyoozPlaylist : AudioTrackCollection {
     func artworkImage(forSize size: CGSize) -> UIImage? {
         return ImageUtils.mergeArtwork(forTracks: tracks, usingSize: size)
     }
-    
+
 }
 
 func ==(lhs:KyoozPlaylist, rhs:KyoozPlaylist) -> Bool {

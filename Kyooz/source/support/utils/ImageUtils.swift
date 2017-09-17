@@ -42,7 +42,7 @@ struct ImageUtils {
 	}
     
     
-    static func mergeArtwork(forTracks tracks:[AudioTrack], usingSize size:CGSize) -> UIImage? {
+static func mergeArtwork(forTracks tracks:[AudioTrack], usingSize size:CGSize) -> UIImage? {
         guard !tracks.isEmpty else { return nil }
         
         var albumTrackMap = [UInt64:AudioTrack]()

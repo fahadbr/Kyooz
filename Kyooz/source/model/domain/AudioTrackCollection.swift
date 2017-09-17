@@ -55,12 +55,12 @@ class AudioTrackCollectionDTO : NSObject, AudioTrackCollection {
     }
     
     override func value(forKey key: String) -> Any? {
-        return self.representativeTrack?.valueForKey(key)
+        return self.representativeTrack?.value(forKey: key)
     }
     
     //overriding this so that collections can be searched by their underlying track properties
     override func value(forUndefinedKey key: String) -> Any? {
-        return self.representativeTrack?.valueForKey(key)
+        return self.representativeTrack?.value(forKey: key)
     }
     
 }

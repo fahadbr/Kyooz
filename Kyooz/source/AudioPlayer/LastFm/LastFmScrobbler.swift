@@ -129,7 +129,7 @@ final class LastFmScrobbler {
                 completionHandler?()
 				},  failureHandler: { [unowned self](info:[String:String]) -> () in
 					let error = info[error_key]
-					Logger.error("could not validate existing session because of error: \(error), will attempt to get a new one")
+                    Logger.error("could not validate existing session because of error: \(String(describing: error)), will attempt to get a new one")
 					self.currentStateDetails = error
                     completionHandler?()
 				})
@@ -159,7 +159,7 @@ final class LastFmScrobbler {
                 completionHandler()
             }
         },  failureHandler: { [unowned self](info:[String:String]) -> () in
-                Logger.debug("failed to retrieve session because of error: \(info[error_key])")
+            Logger.debug("failed to retrieve session because of error: \(String(describing: info[error_key]))")
 			let error = info[error_key]
 			self.currentStateDetails = "Failed to log in: \(error ?? "Unknown Error")"
 			completionHandler()
@@ -202,7 +202,7 @@ final class LastFmScrobbler {
 				self?.shortNotificationManager.presentShortNotification(withMessage:message)
                 callback?()
             },  failureHandler: { [unowned self](info:[String:String]) -> () in
-                Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(info[error_key])")
+                Logger.debug("scrobble failed for mediaItem: \(mediaItem.trackTitle) with error: \(String(describing: info[error_key]))")
                 if(info[error_key] != nil && info[error_key]! == httpFailure) {
                     self.addToScrobbleCache(mediaItem, timeStampToScrobble: timeStampToScrobble)
                 }
@@ -235,7 +235,7 @@ final class LastFmScrobbler {
 					self?.shortNotificationManager.presentShortNotification(withMessage:message)
                     completionHandler?(true)
                 }, failureHandler: { (info:[String : String]) -> () in
-                    Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(info[error_key])")
+                    Logger.error("failed to scrobble \(scrobbleBatch.count) mediaItems because of the following error: \(String(describing: info[error_key]))")
                     let removeSlice = (info[error_key] != nil && info[error_key]! != httpFailure)
                     completionHandler?(removeSlice)
                 })

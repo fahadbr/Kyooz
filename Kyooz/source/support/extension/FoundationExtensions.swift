@@ -12,7 +12,7 @@ import Foundation
 
 extension NSAttributedString {
 	
-	convenience init(fileName:String, documentType:DocumentType) throws {
+	convenience init(fileName:String, documentType:DocType) throws {
 		guard let fileURL = Bundle.main.url(forResource: fileName, withExtension: documentType.name) else {
 			throw KyoozError(errorDescription:"Couldn't locate resource \(fileName).\(documentType.name)")
 		}

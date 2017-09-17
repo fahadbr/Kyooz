@@ -38,7 +38,7 @@ final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
             return primaryKey
         }
         
-        guard let stringValue = object.valueForKey(key) as? String else {
+        guard let stringValue = object.value(forKey: key) as? String else {
             return nil
         }
         //lazy load the normalized string and store it
@@ -56,6 +56,6 @@ final class SearchIndexEntry<T:SearchIndexValue> : NSObject {
 
 @objc protocol SearchIndexValue {
 	var hashValue:Int { get }
-	func valueForKey(_ key:String) -> Any?
+    func value(forKey key: String) -> Any?
 }
 

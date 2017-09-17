@@ -49,8 +49,7 @@ class TutorialManager {
     }()
     
     weak var presentedTutorial:TutorialViewController?
-	
-	@discardableResult
+
     func dimissTutorials(_ tutorials:[Tutorial], action:TutorialAction) {
         for tutorial in tutorials {
             if dismissTutorial(tutorial, action: action){
