@@ -12,7 +12,7 @@ class AudioTrackDSD : AudioEntityDSD {
 	
     var playAllTracksOnSelection = true
     
-    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+    @objc func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
 		guard !tableView.isEditing else { return }
 		
         defer {

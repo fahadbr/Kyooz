@@ -8,6 +8,7 @@
 
 import UIKit
 
+@objc
 class AudioEntityDSD : NSObject, AudioEntityDSDProtocol, UITableViewDataSource, UITableViewDelegate {
     
     weak var audioCellDelegate:AudioTableCellDelegate?

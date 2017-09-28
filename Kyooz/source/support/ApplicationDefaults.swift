@@ -17,7 +17,12 @@ struct ApplicationDefaults {
         let player:AudioQueuePlayer
         switch value {
         case .appleDRM:
-            player = DRMAudioQueuePlayer.instance
+            if #available(iOS 10.3, *) {
+                player = ApplicationAudioQueuePlayer.instance
+            } else {
+                player = DRMAudioQueuePlayer.instance
+            }
+
         case .default:
             player = AudioQueuePlayerImpl.instance
         }

@@ -36,16 +36,16 @@ class RemoteCommandHandler : NSObject {
         
     }
     
-    func nextTrack() {
+    @objc func nextTrack() {
         audioQueuePlayer.skipForwards()
     }
     
-    func previousTrack() {
+    @objc func previousTrack() {
         audioQueuePlayer.skipBackwards(false)
     }
     
     
-    func play() {
+    @objc func play() {
         rcc.playCommand.isEnabled = true
         if audioQueuePlayer.musicIsPlaying {
             audioQueuePlayer.pause()
