@@ -143,14 +143,14 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
 	}
 	
 	func showTutorials() {
-		if centerPanelPosition == .center && !rootViewController.pullableViewExpanded {
-			TutorialManager.instance.presentUnfulfilledTutorials([
-				.gestureActivatedSearch,
-				.gestureToViewQueue,
-				.dragAndDrop
-			])
-			
-		}
+//        if centerPanelPosition == .center && !rootViewController.pullableViewExpanded {
+//            TutorialManager.instance.presentUnfulfilledTutorials([
+//                .gestureActivatedSearch,
+//                .gestureToViewQueue,
+//                .dragAndDrop
+//            ])
+//
+//        }
 	}
     
     func showWhatsNew() {

@@ -19,6 +19,7 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     private let playbackStateManager:PlaybackStateManager
     private let playCountIterator = PlayCountIterator()
     private let nowPlayingInfoHelper = NowPlayingInfoHelper.instance
+    private var remoteHandler: RemoteCommandHandler!
 
     
     private var playQueue:PlayQueue {
@@ -51,6 +52,9 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
 
         super.init()
         registerForMediaPlayerNotifications()
+        DispatchQueue.main.async {
+            self.remoteHandler = RemoteCommandHandler()
+        }
     }
     
     deinit {
@@ -234,12 +238,28 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
         let oldContext = playQueue
         playQueue.insertItemsAtIndex(tracksToInsert, index: index)
         let mediaItems = tracksToInsert as! [MPMediaItem]
-        let mediaItem = oldContext.currentQueue[index - 1] as! MPMediaItem
-        musicPlayer.perform(queueTransaction: { (queue) in
-            queue.insert((MPMusicPlayerMediaItemQueueDescriptor(itemCollection: MPMediaItemCollection(items: mediaItems))), after: mediaItem)
-        }, completionHandler: {_, error in
+//        let mediaItem = oldContext.currentQueue[index - 1] as! MPMediaItem
+        musicPlayer.perform(queueTransaction: { (mutableQueue) in
+            Logger.debug("performing queue txn with \(mediaItems.count) media items ")
+//            let c = MPMediaItemCollection(items: mediaItems)
+            for item in mediaItems.reversed() {
+                let query = MPMediaQuery()
+                query.addFilterPredicate(MPMediaPropertyPredicate(value: item.persistentID, forProperty: MPMediaItemPropertyPersistentID))
+
+                let qd = MPMusicPlayerMediaItemQueueDescriptor(query: query)
+                mutableQueue.insert(qd, after: mutableQueue.items[index - 1])
+            }
+
+
+        }, completionHandler: {queue, error in
             if let e = error {
                 Logger.error(e.description)
+            } else {
+                Logger.debug("\(queue.items.count) items after adjustment")
+                if queue.items.count != self.playQueue.currentQueue.count {
+                    self.playQueue = PlayQueue( originalQueue: queue.items, forType: .appleDRM)
+                    self.playQueue.indexOfNowPlayingItem = oldContext.indexOfNowPlayingItem
+                }
             }
         })
 //        persistToSystemQueue(oldContext)

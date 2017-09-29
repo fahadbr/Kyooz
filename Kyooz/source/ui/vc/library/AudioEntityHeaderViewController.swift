@@ -53,6 +53,7 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 	override func viewDidLoad() {
         super.viewDidLoad()
 		automaticallyAdjustsScrollViewInsets = false
+
 		view.backgroundColor = ThemeHelper.defaultTableCellColor
 		
 		ConstraintUtils.applyConstraintsToView(withAnchors: [.top, .left, .right], subView: headerVC.view, parentView: view)
@@ -74,7 +75,9 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 		tableView.contentInset.top = minHeight
         tableView.scrollIndicatorInsets.top = maxHeight
         tableView.contentOffset.y = -tableView.contentInset.top
-        
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        }
         tableView.panGestureRecognizer.require(toFail: popGestureRecognizer)
         tableView.panGestureRecognizer.require(toFail: ContainerViewController.instance.centerPanelPanGestureRecognizer)
 
