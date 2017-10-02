@@ -65,19 +65,19 @@ final class BlurViewController : UIViewController {
         unregisterForNotifications()
 	}
 	
-	func createSnapshotBlur() {
+    @objc func createSnapshotBlur() {
 		removeSnapshotBlur()
 		blurSnapshotView = view.superview?.snapshotView(afterScreenUpdates: false)
 	}
 	
-	func removeBlurAnimation() {
+    @objc func removeBlurAnimation() {
 		visualEffectView?.removeFromSuperview()
 		visualEffectView = nil
 	}
 	
 	
 	//the blur animation must be reset once it has been brought back on screen after being off screen
-	func resetBlurAnimation() {
+    @objc func resetBlurAnimation() {
 		//only reset if the view has not been removed from the view hierarchy and we know that the blur animation has already been removed
 		guard !removedFromViewHierarchy && self.visualEffectView == nil else { return }
 		
@@ -94,7 +94,7 @@ final class BlurViewController : UIViewController {
 		}
 	}
 	
-	func removeSnapshotBlur() {
+    @objc func removeSnapshotBlur() {
 		blurSnapshotView = nil
 	}
     

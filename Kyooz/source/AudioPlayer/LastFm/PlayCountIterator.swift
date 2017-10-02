@@ -137,14 +137,14 @@ final class PlayCountIterator : NSObject {
     
     //MARK: - App Notification Handlers
     
-    func handleApplicationWillEnterForeground(_ notification: Notification) {
+    @objc func handleApplicationWillEnterForeground(_ notification: Notification) {
         endBackgroundTask()
         PlayCountIterator.backgroundQueue.addOperation() {
             self.performOperationIfTimeWindowPassed()
         }
     }
     
-    func handleApplicationDidEnterBackground(_ notification: Notification) {
+    @objc func handleApplicationDidEnterBackground(_ notification: Notification) {
         if playCountIteratorOperation == nil { return }
         
         endBackgroundTask()
@@ -160,7 +160,7 @@ final class PlayCountIterator : NSObject {
         }
     }
     
-    func handleApplicationWillTerminateNotification(_ notification:Notification) {
+    @objc func handleApplicationWillTerminateNotification(_ notification:Notification) {
         PlayCountIterator.backgroundQueue.cancelAllOperations()
     }
     

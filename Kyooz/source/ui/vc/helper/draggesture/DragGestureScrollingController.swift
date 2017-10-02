@@ -83,7 +83,7 @@ final class DragGestureScrollingController :NSObject {
         displayLink = nil
     }
     
-    func adjustScrollOffset() {
+    @objc func adjustScrollOffset() {
         let currentOffset = scrollView.contentOffset.y
         let newOffset:CGFloat
         

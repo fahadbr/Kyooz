@@ -34,7 +34,7 @@ class CustomPopableViewController: UIViewController {
     }
 
     //MARK: - gesture recognizer handling methods
-    final func handlePan(_ recognizer:UIPanGestureRecognizer) {
+    @objc final func handlePan(_ recognizer:UIPanGestureRecognizer) {
         if recognizer.state == .began {
             transitionAnimator.interactive = true
             _ = navigationController?.popViewController(animated: true)

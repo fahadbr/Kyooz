@@ -47,9 +47,9 @@
 		0B596B771DB291D20051DDA0 /* Kyooz Up Next.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0B596B6C1DB291D20051DDA0 /* Kyooz Up Next.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0B596B7B1DB29F370051DDA0 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B13DA261AE6FB0400CC5C01 /* MediaPlayer.framework */; };
 		0B596B7D1DB2A9580051DDA0 /* AudioPlayerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B596B7C1DB2A9580051DDA0 /* AudioPlayerCommon.swift */; };
-		0B596B7E1DB2A9A30051DDA0 /* AudioPlayerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B596B7C1DB2A9580051DDA0 /* AudioPlayerCommon.swift */; };
 		0B596B831DB2AEC00051DDA0 /* QueueChangeListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B596B821DB2AEC00051DDA0 /* QueueChangeListener.swift */; };
 		0B63061D1CD6CEFC006CD211 /* JointMediaQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B63061C1CD6CEFC006CD211 /* JointMediaQuery.swift */; };
+		0B7461AF1F81735000CF5147 /* AudioPlayerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B596B7C1DB2A9580051DDA0 /* AudioPlayerCommon.swift */; };
 		0B7776851BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7776841BFEC98200B9A088 /* AdHocIPodLibrarySearchOperation.swift */; };
 		0B778B091B9388BD00004A1B /* CGUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B778B081B9388BD00004A1B /* CGUtils.swift */; };
 		0B7F48D51DFD0E26008B8242 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7F485E1DFD0E26008B8242 /* ContainerViewController.swift */; };
@@ -615,7 +615,6 @@
 				10BECBF11C4EFB04009D8B41 /* default */,
 				0BCE21901B120DE10074DA47 /* drm */,
 				0B1BFD491AF30A4C009838A5 /* lastfm */,
-				0B596B7C1DB2A9580051DDA0 /* AudioPlayerCommon.swift */,
 				0B13DA0E1AE6FA9A00CC5C01 /* AudioQueuePlayer.swift */,
 				10BECBF21C4EFC09009D8B41 /* AudioQueuePlayerDelegateImpl.swift */,
 				0B596B821DB2AEC00051DDA0 /* QueueChangeListener.swift */,
@@ -1068,6 +1067,7 @@
 			isa = PBXGroup;
 			children = (
 				0B849AE71B44DE7C00206512 /* DRMAudioQueuePlayer.swift */,
+				0B596B7C1DB2A9580051DDA0 /* AudioPlayerCommon.swift */,
 				0B13DA0D1AE6FA9A00CC5C01 /* PlaybackStateManager.swift */,
 			);
 			path = drm;
@@ -1611,7 +1611,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B596B7E1DB2A9A30051DDA0 /* AudioPlayerCommon.swift in Sources */,
+				0B7461AF1F81735000CF5147 /* AudioPlayerCommon.swift in Sources */,
 				0B596B701DB291D20051DDA0 /* TodayViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -189,7 +189,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         sourceTableView?.scrollsToTop = shouldEnable
     }
     
-    func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
         let isDraggingUpward = (recognizer.velocity(in: view).y < 0)
         let currenyYPos = recognizer.view!.frame.origin.y
         
@@ -227,7 +227,7 @@ final class RootViewController: UIViewController, DragSource, UINavigationContro
         return nil
     }
     
-    func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
+    @objc func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
         if(!pullableViewExpanded) {
             animatePullablePanel(shouldExpand: true)
         }

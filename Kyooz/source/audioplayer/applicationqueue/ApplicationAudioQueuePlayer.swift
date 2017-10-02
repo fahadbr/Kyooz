@@ -15,12 +15,11 @@ private let outOfSyncMessage = "Another app is using the iOS music player! Play 
 final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     static let instance = ApplicationAudioQueuePlayer()
     
-    private let musicPlayer = MPMusicPlayerController.applicationQueuePlayer
+    private let musicPlayer: MPMusicPlayerApplicationController
     private let playbackStateManager:PlaybackStateManager
     private let playCountIterator = PlayCountIterator()
     private let nowPlayingInfoHelper = NowPlayingInfoHelper.instance
-    private var remoteHandler: RemoteCommandHandler!
-
+    private let remoteCommandCenter = MPRemoteCommandCenter.shared()
     
     private var playQueue:PlayQueue {
         didSet {
@@ -28,33 +27,22 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
-    private let lowestIndexPersistedKey = "lowestIndexPersistedKey"
-    private (set) var lowestIndexPersisted:Int = 0 {
-        didSet {
-            TempDataDAO.instance.addPersistentValue(key: lowestIndexPersistedKey, value: NSNumber(value: lowestIndexPersisted))
-        }
-    }
-    
     override init() {
+
+        musicPlayer = MPMusicPlayerController.applicationQueuePlayer
+        _ = MPMusicPlayerController.systemMusicPlayer
+
         playbackStateManager = PlaybackStateManager(musicPlayer: musicPlayer)
         if let playQueue = TempDataDAO.instance.getPlaybackStateSnapshotFromTempStorage()?.playQueue {
+
             self.playQueue = playQueue
         } else {
             Logger.error("couldnt get queue from temp storage. starting with empty queue")
             playQueue = PlayQueue(originalQueue: [AudioTrack](), forType: type)
         }
-        
-        if let indexBeforeMod = TempDataDAO.instance.getPersistentValue(key: lowestIndexPersistedKey) as? NSNumber {
-            lowestIndexPersisted = indexBeforeMod.intValue
-        }
-
-//        AudioSessionManager.instance.initializeAudioSession()
 
         super.init()
         registerForMediaPlayerNotifications()
-        DispatchQueue.main.async {
-            self.remoteHandler = RemoteCommandHandler()
-        }
     }
     
     deinit {
@@ -180,8 +168,6 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     func skipBackwards(_ forcePreviousTrack: Bool) {
         if(currentPlaybackTime > 2.0 && !forcePreviousTrack) {
             currentPlaybackTime = 0.0
-        } else if lowestIndexPersisted > 0  {
-            playNowInternal(nowPlayingQueue as! [MPMediaItem], index: indexOfNowPlayingItem - 1, shouldPlay: musicIsPlaying)
         } else {
             musicPlayer.skipToPreviousItem()
         }
@@ -210,7 +196,7 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func playTrack(at index: Int) {
-        if nowPlayingItem == nil || lowestIndexPersisted > 0 {
+        if nowPlayingItem == nil {
             playNowInternal(nowPlayingQueue as! [MPMediaItem], index: index)
             return
         }
@@ -225,11 +211,26 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func enqueue(tracks tracksToEnqueue: [AudioTrack], at enqueueAction: EnqueueAction) {
-//        let oldContext = playQueue
         playQueue.enqueue(items: tracksToEnqueue, at: enqueueAction)
-//        persistToSystemQueue(oldContext)
         let mediaItems = tracksToEnqueue as! [MPMediaItem]
-        musicPlayer.append(MPMusicPlayerMediaItemQueueDescriptor(itemCollection: MPMediaItemCollection(items: mediaItems)))
+        let qd = MPMusicPlayerStoreQueueDescriptor(storeIDs: mediaItems.map({ (item) -> String in
+            let storeId = item.playbackStoreID
+            Logger.debug("storeId is \(storeId)")
+            return storeId
+        }))
+        switch enqueueAction {
+        case .last:
+            musicPlayer.append(qd)
+        case .next:
+            musicPlayer.prepend(qd)
+        case .random:
+            KyoozUtils.showPopupError(
+                withTitle: "Unsupported",
+                withMessage: "Queueing randomly is currently not supported",
+                presentationVC: nil
+            )
+        }
+
 
 		delegate?.audioQueuePlayerDidEnqueueItems(tracks: tracksToEnqueue, at: enqueueAction)
     }
@@ -238,18 +239,25 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
         let oldContext = playQueue
         playQueue.insertItemsAtIndex(tracksToInsert, index: index)
         let mediaItems = tracksToInsert as! [MPMediaItem]
-//        let mediaItem = oldContext.currentQueue[index - 1] as! MPMediaItem
         musicPlayer.perform(queueTransaction: { (mutableQueue) in
             Logger.debug("performing queue txn with \(mediaItems.count) media items ")
+//            for item in mediaItems.reversed() {
+//                let query = MPMediaQuery()
+//                query.addFilterPredicate(MPMediaPropertyPredicate(value: item.persistentID, forProperty: MPMediaItemPropertyPersistentID))
+//
+//                let qd = MPMusicPlayerMediaItemQueueDescriptor(query: query)
+//
+//                mutableQueue.insert(qd, after: mutableQueue.items[index - 1])
+//            }
+
+            let qd = MPMusicPlayerStoreQueueDescriptor(storeIDs: mediaItems.map({ (item) -> String in
+                let storeId = item.playbackStoreID
+                Logger.debug("storeId is \(storeId)")
+                return storeId
+            }))
 //            let c = MPMediaItemCollection(items: mediaItems)
-            for item in mediaItems.reversed() {
-                let query = MPMediaQuery()
-                query.addFilterPredicate(MPMediaPropertyPredicate(value: item.persistentID, forProperty: MPMediaItemPropertyPersistentID))
-
-                let qd = MPMusicPlayerMediaItemQueueDescriptor(query: query)
-                mutableQueue.insert(qd, after: mutableQueue.items[index - 1])
-            }
-
+//            let qd = MPMusicPlayerMediaItemQueueDescriptor(itemCollection: c)
+            mutableQueue.insert(qd, after: mutableQueue.items[index - 1])
 
         }, completionHandler: {queue, error in
             if let e = error {
@@ -262,19 +270,18 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
                 }
             }
         })
-//        persistToSystemQueue(oldContext)
         return tracksToInsert.count
     }
     
     func delete(at indicies: [Int]) {
-        let oldContext = playQueue
         let nowPlayingItemRemoved = playQueue.deleteItemsAtIndices(indicies)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
             musicPlayer.perform(queueTransaction: { (queue) in
-                for index in indicies {
-                    queue.remove(oldContext.currentQueue[index] as! MPMediaItem)
+                let indiciesToRemove = indicies.sorted(by: >)
+                for index in indiciesToRemove {
+                    queue.remove(queue.items[index])
                 }
 
             }, completionHandler: {_, _ in })
@@ -282,37 +289,40 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     func move(from sourceIndex: Int, to destinationIndex: Int) {
-        let oldContext = playQueue
         playQueue.moveMediaItem(fromIndexPath: sourceIndex, toIndexPath: destinationIndex)
-        let fromItem = oldContext.currentQueue[sourceIndex] as! MPMediaItem
-        let toItem = oldContext.currentQueue[destinationIndex - 1] as! MPMediaItem
 
-//        persistToSystemQueue(oldContext)
         musicPlayer.perform(queueTransaction: { (queue) in
-            queue.remove(fromItem)
-            queue.insert(MPMusicPlayerMediaItemQueueDescriptor(itemCollection: MPMediaItemCollection(items: [fromItem])), after: toItem)
+            let mediaItemToMove = queue.items[sourceIndex]
+            let toItem = queue.items[destinationIndex]
+            queue.remove(mediaItemToMove)
+            let qd = MPMusicPlayerStoreQueueDescriptor(storeIDs: [mediaItemToMove.playbackStoreID])
+            queue.insert(qd, after: toItem)
             
         }, completionHandler: {_, _ in })
     }
     
     func clear(from direction: ClearDirection, at index: Int) {
         let oldContext = playQueue
+        let ionpi = self.indexOfNowPlayingItem
         let nowPlayingItemRemoved = playQueue.clearItems(towardsDirection: direction, atIndex: index)
         if nowPlayingItemRemoved {
             resetQueueStateToBeginning()
         } else {
-//            persistToSystemQueue(oldContext)
             musicPlayer.perform(queueTransaction: { (queue) in
-                if direction == .above || direction == .bothDirections {
-                    for i in 0..<index {
-                        queue.remove(oldContext.currentQueue[i] as! MPMediaItem)
-                    }
-                }
                 if direction == .below || direction == .bothDirections {
-                    for i in index..<oldContext.currentQueue.count {
-                        queue.remove(oldContext.currentQueue[i] as! MPMediaItem)
+                    for i in (index..<oldContext.currentQueue.count).reversed() {
+                        guard i != ionpi else { continue }
+
+                        queue.remove(queue.items[i])
                     }
                 }
+                if direction == .above || direction == .bothDirections {
+                    for i in (0..<index).reversed() {
+                        guard i != ionpi else { continue }
+                        queue.remove(queue.items[i])
+                    }
+                }
+
             }, completionHandler: {_, _ in })
         }
     }
@@ -331,12 +341,10 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
 		if shouldPlay {
             musicPlayer.prepareToPlay(completionHandler: { _ in
                 self.musicPlayer.play()
-//                self.nowPlayingInfoHelper.publishNowPlayingInfo(newItem, currentIndex: index, queueCount: mediaItems.count)
             })
 		}
         playbackStateManager.correctPlaybackState()
 
-        lowestIndexPersisted = 0
         refreshIndexOfNowPlayingItem()
     }
     
@@ -346,8 +354,7 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
             Logger.error("Now playing queue is not one that contains MPMediaItem objects.  Cannot persist to queue")
             return
         }
-        
-        lowestIndexPersisted = indexOfNowPlayingItem
+
         var truncatedQueue = [MPMediaItem]()
         let repeatAllEnabled = repeatMode == .all
         truncatedQueue.reserveCapacity(repeatAllEnabled ? queue.count : queue.count - indexOfNowPlayingItem)
@@ -376,7 +383,6 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
         
         playQueue.indexOfNowPlayingItem = 0
-        lowestIndexPersisted = 0
         musicPlayer.setQueue(with: MPMediaItemCollection(items: nowPlayingQueue as! [MPMediaItem]))
         musicPlayer.nowPlayingItem = nowPlayingQueue[indexOfNowPlayingItem] as? MPMediaItem
         playbackStateManager.correctPlaybackState()
@@ -384,37 +390,32 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
     }
     
     private func refreshIndexOfNowPlayingItem() {
-        guard let nowPlayingItem = self.nowPlayingItem else {
+        guard self.nowPlayingItem != nil else {
             resetQueueStateToBeginning()
             return
         }
-        
-        let count = nowPlayingQueue.count
-        let newIndex = deriveQueueIndex(musicPlayer: musicPlayer,
-                                        lowestIndexPersisted: lowestIndexPersisted,
-                                        queueSize: count)
 
-        indexOfNowPlayingItem = newIndex
+        indexOfNowPlayingItem = musicPlayer.indexOfNowPlayingItem
     }
 
     
     
     //MARK: - Notification handling functions
     
-    func handleNowPlayingItemChanged(_ notification:Notification) {
+    @objc func handleNowPlayingItemChanged(_ notification:Notification) {
         refreshIndexOfNowPlayingItem()
         publishNotification(for: .nowPlayingItemChanged)
     }
     
-    func handlePlaybackStateChanged(_ notification:Notification) {
+    @objc func handlePlaybackStateChanged(_ notification:Notification) {
         publishNotification(for: .playbackStateUpdate)
     }
     
-    func handleApplicationDidResignActive(_ notification:Notification) {
+    @objc func handleApplicationDidResignActive(_ notification:Notification) {
         
     }
     
-    func handleApplicationDidBecomeActive(_ notification:Notification) {
+    @objc func handleApplicationDidBecomeActive(_ notification:Notification) {
         playbackStateManager.correctPlaybackState()
         refreshIndexOfNowPlayingItem()
         if musicPlayer.shuffleMode != .off && nowPlayingItem != nil {
@@ -428,9 +429,18 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
             ac.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
             ContainerViewController.instance.present(ac, animated: true, completion: nil)
         }
+
+        musicPlayer.perform(queueTransaction: { _ in
+            //no op
+        }) { (queue, _) in
+            let audioTracks: [AudioTrack] = queue.items
+            var newPlayQueue = PlayQueue(originalQueue: audioTracks, forType: self.type)
+            newPlayQueue.indexOfNowPlayingItem = self.musicPlayer.indexOfNowPlayingItem
+            self.playQueue = newPlayQueue
+        }
     }
     
-    func handleApplicationWillTerminate(_ notification:Notification) {
+    @objc func handleApplicationWillTerminate(_ notification:Notification) {
         
     }
     
@@ -457,7 +467,7 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
             name: NSNotification.Name.UIApplicationWillTerminate, object: application)
         
     }
-    
+
     private func unregisterForMediaPlayerNotifications() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.removeObserver(self)

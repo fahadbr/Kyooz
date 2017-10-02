@@ -150,12 +150,12 @@ class TutorialViewController : UIViewController, CAAnimationDelegate {
 
     }
     
-    func removeAnimations() {
+    @objc func removeAnimations() {
 		circleLayer.removeAllAnimations()
 		circleLayer.removeFromSuperlayer()
     }
 	
-    func applyAnimation() {
+    @objc func applyAnimation() {
 		circleLayer.removeAllAnimations()
 		if circleLayer.superlayer == nil {
 			view.layer.addSublayer(circleLayer)

@@ -68,7 +68,7 @@ final class AudioEntityLibraryViewController : AudioEntityHeaderViewController {
 	
 	//MARK: - Class functions
 	
-	override func reloadSourceData() {
+	@objc override func reloadSourceData() {
 		super.reloadSourceData()
 		updateFooterView()
 	}

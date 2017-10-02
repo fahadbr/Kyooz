@@ -268,7 +268,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     
     // MARK: Gesture recognizer
     
-    func handleTouchGesture(_ recognizer:UITapGestureRecognizer) {
+    @objc func handleTouchGesture(_ recognizer:UITapGestureRecognizer) {
         if recognizer.state == .ended {
             toggleSidePanel()
         }
@@ -315,7 +315,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
     }
     
     
-    func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(_ recognizer: UIPanGestureRecognizer) {
 
         switch(recognizer.state) {
         case .changed:
@@ -344,7 +344,7 @@ final class ContainerViewController : UIViewController , GestureHandlerDelegate,
         
     }
     
-    func handleLongPressGesture(_ recognizer:UILongPressGestureRecognizer) {
+    @objc func handleLongPressGesture(_ recognizer:UILongPressGestureRecognizer) {
         switch(recognizer.state) {
         case .began:
             //initialize the drag and drop handler and all the resources necessary for the drag and drop handler

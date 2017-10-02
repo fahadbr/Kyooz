@@ -129,7 +129,7 @@ class AudioEntityHeaderViewController: AudioEntityViewController, UIScrollViewDe
 extension AudioEntityHeaderViewController {
 	
 	
-	func toggleSelectMode() {
+    @objc func toggleSelectMode() {
 		let willEdit = !tableView.isEditing
 		
 		tableView.setEditing(willEdit, animated: true)
@@ -158,7 +158,7 @@ extension AudioEntityHeaderViewController {
 		refreshButtonStates()
 	}
 	
-	func shuffleAllItems(_ sender:UIButton?) {
+    @objc func shuffleAllItems(_ sender:UIButton?) {
 		playAllItems(sender, shouldShuffle: true)
 	}
 	
@@ -176,7 +176,7 @@ extension AudioEntityHeaderViewController {
 	}
 	
 	
-	func refreshButtonStates() {
+    @objc func refreshButtonStates() {
         guard tableView.isEditing else { return }
         
 		let isNotEmpty = tableView.indexPathsForSelectedRows != nil
@@ -188,7 +188,7 @@ extension AudioEntityHeaderViewController {
 		selectAllButton.title = isNotEmpty ? KyoozConstants.deselectAllString : KyoozConstants.selectAllString
 	}
 	
-	func selectOrDeselectAll() {
+    @objc func selectOrDeselectAll() {
 		tableView.selectOrDeselectAll()
 		refreshButtonStates()
 	}
@@ -197,7 +197,7 @@ extension AudioEntityHeaderViewController {
         return tableView.indexPathsForSelectedRows?.sorted(by: <).flatMap() { self.sourceData.getTracksAtIndex($0) }
 	}
 	
-	func playSelectedTracks(_ sender:AnyObject!) {
+    @objc func playSelectedTracks(_ sender:AnyObject!) {
 		guard let tracks = getOrderedTracks() else { return }
 		
 		playTracks(tracks, shouldShuffle: (sender != nil && sender is ShuffleButtonView))
@@ -206,7 +206,7 @@ extension AudioEntityHeaderViewController {
 		toggleSelectMode()
 	}
 	
-	func showAddToOptions(_ sender:UIBarButtonItem!) {
+    @objc func showAddToOptions(_ sender:UIBarButtonItem!) {
 		guard let items = getOrderedTracks() else { return }
 		let b = MenuBuilder()
             .with(title: "\(tableView.indexPathsForSelectedRows?.count ?? 0) Selected Items")
@@ -219,7 +219,7 @@ extension AudioEntityHeaderViewController {
 	}
 	
 	
-	func deleteSelectedItems() {
+    @objc func deleteSelectedItems() {
 		
 		func deleteInternal() {
 			guard let mutableSourceData = self.sourceData as? MutableAudioEntitySourceData,

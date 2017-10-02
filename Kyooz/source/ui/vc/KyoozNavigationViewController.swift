@@ -216,7 +216,7 @@ final class KyoozNavigationViewController : UIViewController, UITableViewDataSou
         return sectionConfigurations[section].sectionName
     }
 	
-    func transitionOut() {
+    @objc func transitionOut() {
         ContainerViewController.instance.longPressGestureRecognizer.isEnabled = true
         view.layer.add(fadeOutAnimation, forKey: nil)
     }

@@ -148,7 +148,7 @@ class AddToPlaylistViewController: UINavigationController {
         return .lightContent
     }
 	
-	func showNewPlaylistMenu() {
+    @objc func showNewPlaylistMenu() {
         Playlists.showPlaylistCreationController(for: tracksToAdd,
                                                  presentationController: self,
                                                  completionAction: dismissAddToPlaylistController)
@@ -159,7 +159,7 @@ class AddToPlaylistViewController: UINavigationController {
         completionAction?()
     }
     
-    func dismissOnly() {
+    @objc func dismissOnly() {
         dismiss(animated: true, completion: nil)
     }
 

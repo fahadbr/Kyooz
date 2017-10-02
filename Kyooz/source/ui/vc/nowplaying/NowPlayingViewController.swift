@@ -67,15 +67,15 @@ final class NowPlayingViewController: UIViewController {
     }
 
     
-    func goToArtist(_ sender: AnyObject) {
+    @objc func goToArtist(_ sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Artists)
     }
     
-    func goToAlbum(_ sender: AnyObject) {
+    @objc func goToAlbum(_ sender: AnyObject) {
         goToVCWithGrouping(LibraryGrouping.Albums)
     }
     
-    func addToPlaylist(_ sender: AnyObject) {
+    @objc func addToPlaylist(_ sender: AnyObject) {
         guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else { return }
         Playlists.showAvailablePlaylists(forAddingTracks:[nowPlayingItem])
     }
@@ -92,7 +92,7 @@ final class NowPlayingViewController: UIViewController {
 		}
     }
 	
-    func collapseViewController(_ sender: AnyObject) {
+    @objc func collapseViewController(_ sender: AnyObject) {
         RootViewController.instance.animatePullablePanel(shouldExpand: false)
     }
 	
@@ -245,7 +245,7 @@ final class NowPlayingViewController: UIViewController {
     }
 	
 
-    func reloadData(_ notification:Notification?) {
+    @objc func reloadData(_ notification:Notification?) {
         guard UIApplication.shared.applicationState == UIApplicationState.active else { return }
         
         func transitionPageVC(_ pageVC:NowPlayingPageViewController, withVC vc:()->WrapperViewController){

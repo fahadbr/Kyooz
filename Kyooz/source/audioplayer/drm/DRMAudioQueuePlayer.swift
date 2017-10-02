@@ -408,20 +408,20 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
     
     //MARK: - Notification handling functions
     
-    func handleNowPlayingItemChanged(_ notification:Notification) {
+    @objc func handleNowPlayingItemChanged(_ notification:Notification) {
         refreshIndexOfNowPlayingItem()
         publishNotification(for: .nowPlayingItemChanged)
     }
     
-    func handlePlaybackStateChanged(_ notification:Notification) {
+    @objc func handlePlaybackStateChanged(_ notification:Notification) {
         publishNotification(for: .playbackStateUpdate)
     }
     
-    func handleApplicationDidResignActive(_ notification:Notification) {
+    @objc func handleApplicationDidResignActive(_ notification:Notification) {
         
     }
     
-    func handleApplicationDidBecomeActive(_ notification:Notification) {
+    @objc func handleApplicationDidBecomeActive(_ notification:Notification) {
         playbackStateManager.correctPlaybackState()
         refreshIndexOfNowPlayingItem()
         if musicPlayer.shuffleMode != .off && nowPlayingItem != nil {
@@ -437,7 +437,7 @@ final class DRMAudioQueuePlayer: NSObject, AudioQueuePlayer {
         }
     }
     
-    func handleApplicationWillTerminate(_ notification:Notification) {
+    @objc func handleApplicationWillTerminate(_ notification:Notification) {
         
     }
     

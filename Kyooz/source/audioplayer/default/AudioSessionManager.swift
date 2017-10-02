@@ -40,7 +40,7 @@ final class AudioSessionManager : NSObject {
         deviceSampleRate = audioSession.sampleRate
     }
     
-    func handleAudioSessionChange(_ notification:Notification) {
+    @objc func handleAudioSessionChange(_ notification:Notification) {
         ApplicationDefaults.audioQueuePlayer.pause()
     }
     

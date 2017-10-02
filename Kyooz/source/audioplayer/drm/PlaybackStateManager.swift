@@ -87,7 +87,7 @@ final class PlaybackStateManager: NSObject {
     
 
     
-    func handlePlaybackStateChanged(_ notification:Notification){
+    @objc func handlePlaybackStateChanged(_ notification:Notification){
         musicPlaybackState = musicPlayer.playbackState
         correctPlaybackState()
     }

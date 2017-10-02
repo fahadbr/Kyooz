@@ -49,7 +49,7 @@ class TextViewController: UIViewController {
         navigationController?.isToolbarHidden = false
     }
     
-    func dismissVC() {
+    @objc func dismissVC() {
         self.dismiss(animated: true, completion: completionAction)
     }
 	

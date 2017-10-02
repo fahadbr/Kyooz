@@ -78,7 +78,7 @@ final class MiniPlayerViewController: AbstractPlaybackViewController, PlaybackPr
         }
     }
 	
-	func menuButtonPressed(_ sender: AnyObject) {
+    @objc func menuButtonPressed(_ sender: AnyObject) {
 		guard let nowPlayingItem = audioQueuePlayer.nowPlayingItem else {
 			return
 		}

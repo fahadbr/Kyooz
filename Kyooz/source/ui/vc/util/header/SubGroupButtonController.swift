@@ -44,7 +44,7 @@ class SubGroupButtonController: UIViewController {
 		view = libraryGroupingButton
 	}
 	
-	func showSubGroupings(_ sender: AnyObject) {
+    @objc func showSubGroupings(_ sender: AnyObject) {
 		
 		let b = MenuBuilder().with(title: "Change Grouping Type")
     

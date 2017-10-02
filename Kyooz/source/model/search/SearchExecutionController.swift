@@ -114,7 +114,7 @@ class SearchExecutionController : NSObject {
         defaultSearchQueue.addOperation(block)
     }
     
-    final func rebuildSearchIndex() {
+    @objc final func rebuildSearchIndex() {
         guard let indexBuildingOp = createIndexBuildingOperation() else {
             Logger.error("failed to create index building operation")
             return
