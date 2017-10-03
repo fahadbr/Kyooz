@@ -241,22 +241,12 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
         let mediaItems = tracksToInsert as! [MPMediaItem]
         musicPlayer.perform(queueTransaction: { (mutableQueue) in
             Logger.debug("performing queue txn with \(mediaItems.count) media items ")
-//            for item in mediaItems.reversed() {
-//                let query = MPMediaQuery()
-//                query.addFilterPredicate(MPMediaPropertyPredicate(value: item.persistentID, forProperty: MPMediaItemPropertyPersistentID))
-//
-//                let qd = MPMusicPlayerMediaItemQueueDescriptor(query: query)
-//
-//                mutableQueue.insert(qd, after: mutableQueue.items[index - 1])
-//            }
 
             let qd = MPMusicPlayerStoreQueueDescriptor(storeIDs: mediaItems.map({ (item) -> String in
                 let storeId = item.playbackStoreID
                 Logger.debug("storeId is \(storeId)")
                 return storeId
             }))
-//            let c = MPMediaItemCollection(items: mediaItems)
-//            let qd = MPMusicPlayerMediaItemQueueDescriptor(itemCollection: c)
             mutableQueue.insert(qd, after: mutableQueue.items[index - 1])
 
         }, completionHandler: {queue, error in
@@ -271,6 +261,39 @@ final class ApplicationAudioQueuePlayer: NSObject, AudioQueuePlayer {
             }
         })
         return tracksToInsert.count
+    }
+
+    private func getQueueDescriptorWrappers(_ mediaItems: [MPMediaItem]) -> [QueueDescriptorWrapper] {
+        
+    }
+
+    private func performTxn(with queueDescriptors: [QueueDescriptorWrapper], at qdIndex: Int, after queueIndex: Int) {
+        if qdIndex >= queueDescriptors.count {
+            return
+        }
+
+        let qdw = queueDescriptors[qdIndex]
+        musicPlayer.perform(queueTransaction: { (mutableQueue) in
+            mutableQueue.insert(qdw.queueDescriptor, after: mutableQueue.items[queueIndex - 1])
+        }) { (queue, error) in
+            if let e = error {
+                Logger.error(e.description)
+                return
+            }
+            if queue.items.count != self.playQueue.currentQueue.count {
+                Logger.debug("something didnt go right. \(queue.items.count) items after adjustment instead of \(self.nowPlayingQueue.count)")
+                self.playQueue = PlayQueue( originalQueue: queue.items, forType: .appleDRM)
+                self.playQueue.indexOfNowPlayingItem = self.musicPlayer.indexOfNowPlayingItem
+            } else {
+                self.performTxn(with: queueDescriptors, at: qdIndex + 1, after: queueIndex + qdw.count)
+            }
+
+        }
+    }
+
+    private struct QueueDescriptorWrapper {
+        let queueDescriptor: MPMusicPlayerQueueDescriptor
+        let count: Int
     }
     
     func delete(at indicies: [Int]) {
